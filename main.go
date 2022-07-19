@@ -6,12 +6,13 @@ import (
 	"github.com/go-rod/rod/lib/input"
 	"github.com/maaslalani/frame/ffmpeg"
 	"github.com/maaslalani/frame/keys"
+	"github.com/maaslalani/frame/setup"
 )
 
 func main() {
 	framesPath := "tmp/frame-%02d.png"
 	width := 1200
-	page, cleanup := setup(Options{
+	page, cleanup := setup.Frame(setup.Options{
 		FramePath: framesPath,
 		FrameRate: 60,
 		Port:      7681,

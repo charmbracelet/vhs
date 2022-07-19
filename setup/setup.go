@@ -1,4 +1,4 @@
-package main
+package setup
 
 import (
 	"fmt"
@@ -12,8 +12,6 @@ import (
 	"github.com/maaslalani/frame/ttyd"
 )
 
-type cleanup func()
-
 // Options is the set of options for the setup.
 type Options struct {
 	FramePath string
@@ -24,7 +22,9 @@ type Options struct {
 	FontSize  int
 }
 
-func setup(opts Options) (*rod.Page, cleanup) {
+// Frame sets up ttyd and go-rod for recording frames.
+// Returns the set-up rod.Page and a function for cleanup.
+func Frame(opts Options) (*rod.Page, func()) {
 	tty := ttyd.Start(ttyd.Options{
 		Port:       opts.Port,
 		FontFamily: "SF Mono",
