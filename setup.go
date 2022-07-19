@@ -27,6 +27,11 @@ func setup() (*rod.Page, cleanup) {
 	page.MustElement("textarea").MustInput("clear").MustType(input.Enter)
 	page.MustWaitIdle()
 
+	// Wait for terminal overlay to disappear.
+	// Ideally, we would hide this with JavaScript but it unfortunately does
+	// not have a class selector.
+	time.Sleep(2 * time.Second)
+
 	go func() {
 		counter := 0
 		for {

@@ -10,6 +10,11 @@ func keys(s string) []input.Key {
 	return keys
 }
 
+func shift(k input.Key) input.Key {
+	k, _ = k.Shift()
+	return k
+}
+
 var keymap = map[rune]input.Key{
 	'a':    input.KeyA,
 	'b':    input.KeyB,
@@ -111,9 +116,4 @@ var keymap = map[rune]input.Key{
 	'\b':   input.Backspace,
 	'\r':   input.Enter,
 	'\x1b': input.Escape,
-}
-
-func shift(k input.Key) input.Key {
-	k, _ = k.Shift()
-	return k
 }
