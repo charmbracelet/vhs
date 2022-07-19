@@ -2,24 +2,41 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/input"
+	"github.com/go-rod/rod/lib/proto"
+	"github.com/maaslalani/frame/ttyd"
 )
 
 type cleanup func()
 
-func setup() (*rod.Page, cleanup) {
-	ttyd := ttydCmd()
-	go ttyd.Run()
+// Options is the set of options for the setup.
+type Options struct {
+	FramePath string
+	FrameRate float64
+	Height    int
+	Width     int
+	Port      int
+}
+
+func setup(opts Options) (*rod.Page, cleanup) {
+	tty := ttyd.Start(ttyd.Options{
+		Port:       opts.Port,
+		FontFamily: "SF Mono",
+		FontSize:   22,
+		LineHeight: 1.2,
+	})
+	go tty.Run()
 
 	browser := rod.New().MustConnect()
 
 	// Setup the terminal to match Charm Theme.
 	// Includes prompt, theme, font, etc...
-	page := browser.MustPage(fmt.Sprintf("http://localhost:%d", port))
-	page = page.MustSetViewport(width, height, 1, false)
+	page := browser.MustPage(fmt.Sprintf("http://localhost:%d", opts.Port))
+	page = page.MustSetViewport(opts.Width, opts.Height, 1, false)
 	page.MustWaitIdle()
 	page.MustElement(".xterm").Eval(`this.style.padding = '5em'`)
 	page.MustElement(".xterm-viewport").Eval(`this.style.overflow = 'hidden'`)
@@ -36,13 +53,19 @@ func setup() (*rod.Page, cleanup) {
 		counter := 0
 		for {
 			counter++
-			page.MustScreenshot(fmt.Sprintf(capturesPath, counter))
-			time.Sleep(time.Second / 60)
+			if page != nil {
+				screenshot, err := page.Screenshot(false, &proto.PageCaptureScreenshot{})
+				if err != nil {
+					break
+				}
+				os.WriteFile(fmt.Sprintf(opts.FramePath, counter), screenshot, 0644)
+			}
+			time.Sleep(time.Second / time.Duration(opts.FrameRate))
 		}
 	}()
 
 	return page, func() {
 		browser.MustClose()
-		ttyd.Process.Kill()
+		tty.Process.Kill()
 	}
 }

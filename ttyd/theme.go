@@ -1,4 +1,4 @@
-package main
+package ttyd
 
 // Theme is a terminal theme for xterm
 type Theme struct {

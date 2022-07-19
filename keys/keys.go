@@ -1,8 +1,8 @@
-package main
+package keys
 
 import "github.com/go-rod/rod/lib/input"
 
-func keys(s string) []input.Key {
+func Type(s string) []input.Key {
 	var keys []input.Key
 	for _, r := range s {
 		keys = append(keys, keymap[r])
