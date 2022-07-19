@@ -1,6 +1,6 @@
 # Frame
 
-Programatically record frames of a terminal and output GIFs.
+Programatically record frames of a terminal and output GIFs. 🎬
 
 ```go
 for _, kp := range keys.Type("echo 'Hello, Demo!'") {
@@ -21,4 +21,4 @@ then run the file. This will automatically spawn
 perform the actions via [`go-rod`](https://github.com/go-rod/rod).
 
 ```bash
-go run main.go
+go run .
