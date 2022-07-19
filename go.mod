@@ -1,4 +1,4 @@
-module github.com/maaslalani/frame
+module github.com/charmbracelet/frame
 
 go 1.18
 

@@ -3,10 +3,10 @@ package main
 import (
 	"time"
 
+	"github.com/charmbracelet/frame/ffmpeg"
+	"github.com/charmbracelet/frame/keys"
+	"github.com/charmbracelet/frame/setup"
 	"github.com/go-rod/rod/lib/input"
-	"github.com/maaslalani/frame/ffmpeg"
-	"github.com/maaslalani/frame/keys"
-	"github.com/maaslalani/frame/setup"
 )
 
 func main() {

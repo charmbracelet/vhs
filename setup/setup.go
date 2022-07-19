@@ -6,10 +6,10 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/charmbracelet/frame/ttyd"
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
-	"github.com/maaslalani/frame/ttyd"
 )
 
 // Options is the set of options for the setup.
