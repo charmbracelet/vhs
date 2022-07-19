@@ -1,47 +1,37 @@
 package main
 
 import (
-	"fmt"
+	"time"
 
-	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/input"
 )
 
-const port = 7681
-const width = 800
-const height = 400
-
-const capturesPath = "captures/input/input-%02d.png"
-const gifPath = "captures/input/input.gif"
-
 func main() {
-	ttyd := ttydCmd()
-	go ttyd.Run()
-
-	browser := rod.New().MustConnect()
-
-	defer browser.MustClose()
-	defer ttyd.Process.Kill()
-
-	// Setup the terminal to match Charm Theme.
-	// Includes prompt, theme, font, etc...
-	page := browser.MustPage(fmt.Sprintf("http://localhost:%d", port))
-	page = page.MustSetViewport(width, height, 1, false)
-	page.MustWaitIdle()
-	page.MustElement(".xterm").Eval(`this.style.padding = '5em'`)
-	page.MustElement(".xterm-viewport").Eval(`this.style.overflow = 'hidden'`)
-	page.MustElement("textarea").MustInput("PROMPT='%F{#5a56e0}>%f '").MustType(input.Enter)
-	page.MustElement("textarea").MustInput("clear").MustType(input.Enter)
-	page.MustWaitIdle()
-
-	// Now do whatever you want to record.
-	counter := 0
-
-	page.MustElement("textarea").MustInput("gum input --width 80").MustType(input.Enter)
-	page.MustWaitIdle()
-	page.MustScreenshot(fmt.Sprintf(capturesPath, counter))
+	page, cleanup := setup()
+	defer cleanup()
 
 	keypresses := []input.Key{
+		input.KeyG,
+		input.KeyU,
+		input.KeyM,
+		input.Space,
+		input.KeyI,
+		input.KeyN,
+		input.KeyP,
+		input.KeyU,
+		input.KeyT,
+		input.Space,
+		input.Minus,
+		input.Minus,
+		input.KeyW,
+		input.KeyI,
+		input.KeyD,
+		input.KeyT,
+		input.KeyH,
+		input.Space,
+		input.Digit8,
+		input.Digit0,
+		input.Enter,
 		input.KeyH,
 		input.KeyI,
 		input.Space,
@@ -49,18 +39,24 @@ func main() {
 		input.KeyU,
 		input.KeyM,
 		shift(input.Digit1),
+		input.Enter,
 	}
 
 	for _, kp := range keypresses {
+		time.Sleep(100 * time.Millisecond)
 		page.Keyboard.Type(kp)
 		page.MustWaitIdle()
-		counter++
-		page.MustScreenshot(fmt.Sprintf(capturesPath, counter))
+		if kp == input.Enter {
+			time.Sleep(500 * time.Millisecond)
+		}
 	}
-	counter++
-	page.MustScreenshot(fmt.Sprintf(capturesPath, counter))
 
-	ffmpegCmd().Run()
+	time.Sleep(time.Second)
+
+	err := ffmpegCmd().Run()
+	if err != nil {
+		panic(err)
+	}
 }
 
 func shift(k input.Key) input.Key {

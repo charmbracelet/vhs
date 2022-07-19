@@ -6,10 +6,6 @@ import (
 	"os/exec"
 )
 
-const fontFamily = "SF Mono"
-const fontSize = 22
-const lineHeight = 1.2
-
 func ttydCmd() *exec.Cmd {
 	theme, _ := json.Marshal(DefaultTheme)
 

@@ -5,15 +5,13 @@ import (
 	"os/exec"
 )
 
-const maxColors = 256
-const scale = "scale=1200:600:-1"
-const flags = "lanczos"
-
 func ffmpegCmd() *exec.Cmd {
 	return exec.Command(
 		"ffmpeg",
+		"-y",
 		"-i", capturesPath,
-		"-vf", fmt.Sprintf("scale=%s:flags=%s,split[s0][s1];[s0]palettegen=max_colors=%d[p];[s1][p]paletteuse", scale, flags, maxColors),
+		"-framerate", fmt.Sprint(framerate),
+		"-vf", fmt.Sprintf("fps=%d,scale=%d:-1:flags=%s,split[s0][s1];[s0]palettegen=max_colors=%d[p];[s1][p]paletteuse", framerate, width, ffmpegFlags, maxColors),
 		gifPath,
 	)
 }

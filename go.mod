@@ -1,4 +1,4 @@
-module github.com/maaslalani/recorder
+module github.com/maaslalani/frame
 
 go 1.18
 
