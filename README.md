@@ -1,6 +1,6 @@
-# Recorder
+# Frame
 
-Automatically record and take screenshots of a terminal programmatically.
+Programatically record frames of a terminal and output GIFs.
 
 ```go
 page.MustElement("textarea").MustInput("echo 'Automatic Screenshot'").MustType(input.Enter)
