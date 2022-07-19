@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/go-rod/rod"
@@ -31,6 +32,9 @@ func setup(opts Options) (*rod.Page, cleanup) {
 		LineHeight: 1.2,
 	})
 	go tty.Run()
+
+	// Make directory if it doesn't already exist.
+	os.MkdirAll(filepath.Dir(fmt.Sprintf(opts.FramePath, 0)), os.ModePerm)
 
 	browser := rod.New().MustConnect()
 

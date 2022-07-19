@@ -3,12 +3,17 @@
 Programatically record frames of a terminal and output GIFs.
 
 ```go
-page.MustElement("textarea").MustInput("echo 'Automatic Screenshot'").MustType(input.Enter)
-page.MustWaitIdle()
-page.MustScreenshot("out.png")
+for _, kp := range keys.Type("echo 'Hello, Demo!'") {
+    time.Sleep(time.Millisecond * 100)
+    page.Keyboard.Type(kp)
+    page.MustWaitIdle()
+}
+
+page.Keyboard.Type(input.Enter)
+time.Sleep(time.Second)
 ```
 
-<img width="400" src="./out.png" alt="automatic screenshot with frame" />
+<img width="400" src="./demo.gif" alt="Automatic GIF recording" />
 
 Update the `main.go` file to perform the actions you need to screenshot and
 then run the file. This will automatically spawn
