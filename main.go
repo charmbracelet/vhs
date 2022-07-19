@@ -9,19 +9,22 @@ import (
 )
 
 func main() {
+	framesPath := "captures/input-%02d.png"
+	width := 1200
 	page, cleanup := setup(Options{
-		FramePath: "captures/input-%02d.png",
+		FramePath: framesPath,
 		FrameRate: 60,
 		Port:      7681,
-		Width:     1200,
+		Width:     width,
 		Height:    600,
+		FontSize:  42,
 	})
 	defer cleanup()
 	defer ffmpeg.MakeGIF(ffmpeg.Options{
-		Input:     "captures/input-%02d.png",
+		Input:     framesPath,
 		Output:    "captures/input.gif",
 		Framerate: 50,
-		Width:     1200,
+		Width:     width,
 		MaxColors: 256,
 	}).Run()
 

@@ -20,13 +20,14 @@ type Options struct {
 	Height    int
 	Width     int
 	Port      int
+	FontSize  int
 }
 
 func setup(opts Options) (*rod.Page, cleanup) {
 	tty := ttyd.Start(ttyd.Options{
 		Port:       opts.Port,
 		FontFamily: "SF Mono",
-		FontSize:   22,
+		FontSize:   opts.FontSize,
 		LineHeight: 1.2,
 	})
 	go tty.Run()
