@@ -10,7 +10,7 @@ import (
 	"github.com/go-rod/rod/lib/input"
 )
 
-func gumWrite() {
+func gumFilter() {
 	os.RemoveAll("tmp")
 
 	setupOptions := setup.DefaultOptions()
@@ -18,10 +18,10 @@ func gumWrite() {
 	page, cleanup := setup.Frame(setupOptions)
 	defer cleanup()
 	ffmpegOptions := ffmpeg.DefaultOptions()
-	ffmpegOptions.Output = "write.gif"
+	ffmpegOptions.Output = "filter.gif"
 	defer ffmpeg.MakeGIF(ffmpegOptions).Run()
 
-	for _, kp := range keys.Type("gum write > story.txt") {
+	for _, kp := range keys.Type("gum filter < flavors.txt > choice.txt") {
 		time.Sleep(100 * time.Millisecond)
 		page.Keyboard.Type(kp)
 	}
@@ -30,23 +30,47 @@ func gumWrite() {
 	page.Keyboard.Type(input.Enter)
 	time.Sleep(1 * time.Second)
 
-	for _, kp := range keys.Type("Once upon a time...\nIn a land far far away...") {
+	for _, kp := range keys.Type("Cher") {
 		time.Sleep(100 * time.Millisecond)
 		page.Keyboard.Type(kp)
 	}
 
-	time.Sleep(100 * time.Millisecond)
-	page.Keyboard.Type(input.Enter)
-	time.Sleep(1 * time.Second)
-	page.Keyboard.Type(input.Escape)
 	time.Sleep(1 * time.Second)
 
-	for _, kp := range keys.Type("cat story.txt") {
+	for _, kp := range keys.Type("\b\b\b\b") {
+		time.Sleep(50 * time.Millisecond)
+		page.Keyboard.Type(kp)
+	}
+
+	time.Sleep(1 * time.Second)
+
+	for _, kp := range keys.Type("one") {
 		time.Sleep(100 * time.Millisecond)
 		page.Keyboard.Type(kp)
 	}
 
-	time.Sleep(100 * time.Millisecond)
-	page.Keyboard.Type(input.Enter)
 	time.Sleep(1 * time.Second)
+
+	for _, kp := range keys.Type("\b\b\b") {
+		time.Sleep(50 * time.Millisecond)
+		page.Keyboard.Type(kp)
+	}
+
+	time.Sleep(1 * time.Second)
+
+	page.Keyboard.Type(input.ArrowDown)
+	time.Sleep(100 * time.Millisecond)
+	page.Keyboard.Type(input.ArrowDown)
+	time.Sleep(250 * time.Millisecond)
+	page.Keyboard.Type(input.Enter)
+	time.Sleep(500 * time.Millisecond)
+
+	for _, kp := range keys.Type("cat choice.txt") {
+		time.Sleep(50 * time.Millisecond)
+		page.Keyboard.Type(kp)
+	}
+
+	time.Sleep(500 * time.Millisecond)
+	page.Keyboard.Type(input.Enter)
+	time.Sleep(time.Second)
 }

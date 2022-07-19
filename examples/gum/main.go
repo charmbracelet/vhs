@@ -17,6 +17,7 @@ func main() {
 	case "write":
 		gumWrite()
 	case "filter":
+		gumFilter()
 	case "choose":
 	case "spin":
 	case "style":
