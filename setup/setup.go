@@ -22,6 +22,18 @@ type Options struct {
 	FontSize  int
 }
 
+// DefaultOptions returns the default set of options to use for the setup function.
+func DefaultOptions() Options {
+	return Options{
+		FramePath: "tmp/frame-%02d.png",
+		FrameRate: 60,
+		Width:     1200,
+		Height:    600,
+		Port:      7681,
+		FontSize:  22,
+	}
+}
+
 // Frame sets up ttyd and go-rod for recording frames.
 // Returns the set-up rod.Page and a function for cleanup.
 func Frame(opts Options) (*rod.Page, func()) {

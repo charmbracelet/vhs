@@ -10,11 +10,46 @@ import (
 )
 
 func main() {
-	page, cleanup := setup.Frame(setup.Options{FramePath: "tmp/frame-%02d.png", FrameRate: 60, Width: 1200, Height: 600, Port: 7681, FontSize: 42})
+	// gumInput()
+	gumWrite()
+	// gumFilter()
+	// gumChoose()
+	// gumSpin()
+	// gumStyle()
+	// gumJoin()
+	// gumFormat()
+}
+
+func gumInput() {
+	page, cleanup := setup.Frame(setup.DefaultOptions())
 	defer cleanup()
-	defer ffmpeg.MakeGIF(ffmpeg.Options{Width: 1200, Input: "tmp/frame-%02d.png", Output: "input.gif", Framerate: 50, MaxColors: 256}).Run()
+	defer ffmpeg.MakeGIF(ffmpeg.DefaultOptions()).Run()
 
 	for _, kp := range keys.Type("gum input") {
+		time.Sleep(100 * time.Millisecond)
+		page.Keyboard.Type(kp)
+	}
+
+	time.Sleep(100 * time.Millisecond)
+	page.Keyboard.Type(input.Enter)
+	time.Sleep(1 * time.Second)
+
+	for _, kp := range keys.Type("Hello, gum!") {
+		time.Sleep(100 * time.Millisecond)
+		page.Keyboard.Type(kp)
+	}
+
+	time.Sleep(100 * time.Millisecond)
+	page.Keyboard.Type(input.Enter)
+	time.Sleep(1 * time.Second)
+}
+
+func gumWrite() {
+	page, cleanup := setup.Frame(setup.DefaultOptions())
+	defer cleanup()
+	defer ffmpeg.MakeGIF(ffmpeg.DefaultOptions()).Run()
+
+	for _, kp := range keys.Type("gum write") {
 		time.Sleep(100 * time.Millisecond)
 		page.Keyboard.Type(kp)
 	}

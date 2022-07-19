@@ -10,24 +10,14 @@ import (
 )
 
 func main() {
-	framesPath := "tmp/frame-%02d.png"
-	width := 1200
-	page, cleanup := setup.Frame(setup.Options{
-		FramePath: framesPath,
-		FrameRate: 60,
-		Port:      7681,
-		Width:     width,
-		Height:    600,
-		FontSize:  42,
-	})
+	setupOptions := setup.DefaultOptions()
+	setupOptions.FontSize = 42
+	ffmpegOptions := ffmpeg.DefaultOptions()
+	ffmpegOptions.Output = "demo.gif"
+	page, cleanup := setup.Frame(setupOptions)
 	defer cleanup()
-	defer ffmpeg.MakeGIF(ffmpeg.Options{
-		Input:     framesPath,
-		Output:    "demo.gif",
-		Framerate: 50,
-		Width:     width,
-		MaxColors: 256,
-	}).Run()
+
+	defer ffmpeg.MakeGIF(ffmpegOptions).Run()
 
 	for _, kp := range keys.Type("echo 'Hello, Demo!'") {
 		time.Sleep(time.Millisecond * 100)

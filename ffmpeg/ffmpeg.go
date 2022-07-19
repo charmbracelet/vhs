@@ -14,6 +14,17 @@ type Options struct {
 	MaxColors int
 }
 
+// DefaultOptions returns the default set of options for ffmpeg
+func DefaultOptions() Options {
+	return Options{
+		Width:     1200,
+		Input:     "tmp/frame-%02d.png",
+		Output:    "out.gif",
+		Framerate: 50,
+		MaxColors: 256,
+	}
+}
+
 // MakeGIF takes a list of images (as frames) and converts them to a GIF.
 func MakeGIF(opts Options) *exec.Cmd {
 	flags := fmt.Sprintf(
