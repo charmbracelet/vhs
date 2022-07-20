@@ -1,4 +1,4 @@
-package keys
+package frame
 
 import "github.com/go-rod/rod/lib/input"
 

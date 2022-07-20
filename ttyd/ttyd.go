@@ -14,6 +14,16 @@ type Options struct {
 	LineHeight float64
 }
 
+// DefaultOptions are the default options for the `tty`.
+func DefaultOptions() Options {
+	return Options{
+		FontFamily: "SF Mono",
+		FontSize:   22,
+		LineHeight: 1.2,
+		Port:       7681,
+	}
+}
+
 // Start starts the ttyd process on the given port and options.
 func Start(opts Options) *exec.Cmd {
 	theme, _ := json.Marshal(DefaultTheme)
