@@ -19,7 +19,7 @@ func DefaultOptions() Options {
 	return Options{
 		Width:     1200,
 		Input:     "tmp/frame-%02d.png",
-		Output:    "demo.gif",
+		Output:    "out.gif",
 		Framerate: 50,
 		MaxColors: 256,
 	}

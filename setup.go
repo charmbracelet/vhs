@@ -1,19 +1,19 @@
-package frame
+package dolly
 
 import (
 	"fmt"
 	"os"
 	"time"
 
-	"github.com/charmbracelet/frame/ffmpeg"
-	"github.com/charmbracelet/frame/ttyd"
+	"github.com/charmbracelet/dolly/ffmpeg"
+	"github.com/charmbracelet/dolly/ttyd"
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
 )
 
-// Frame is the object that controls the setup.
-type Frame struct {
+// Dolly is the object that controls the setup.
+type Dolly struct {
 	Page    *rod.Page
 	Cleanup func()
 }
@@ -108,7 +108,7 @@ func WithLineHeight(height float64) Option {
 
 // New sets up ttyd and go-rod for recording frames.
 // Returns the set-up rod.Page and a function for cleanup.
-func New(opts ...Option) Frame {
+func New(opts ...Option) Dolly {
 	options := DefaultOptions()
 	for _, opt := range opts {
 		opt(&options)
@@ -148,7 +148,7 @@ func New(opts ...Option) Frame {
 		}
 	}()
 
-	return Frame{
+	return Dolly{
 		Page: page,
 		Cleanup: func() {
 			// Tear down the processes we started.
@@ -159,6 +159,7 @@ func New(opts ...Option) Frame {
 			err := ffmpeg.MakeGIF(
 				ffmpeg.WithFramerate(50),
 				ffmpeg.WithInput(options.Folder+"/"+options.Format),
+				ffmpeg.WithOutput(options.Folder+"/_out.gif"),
 			).Run()
 
 			// Cleanup frames if we successfully made the GIF.

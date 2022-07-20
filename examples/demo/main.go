@@ -3,15 +3,15 @@ package main
 import (
 	"time"
 
-	"github.com/charmbracelet/frame"
+	"github.com/charmbracelet/dolly"
 )
 
 func main() {
-	f := frame.New(frame.WithFontSize(42))
-	defer f.Cleanup()
+	d := dolly.New(dolly.WithFontSize(42))
+	defer d.Cleanup()
 
-	f.Type("echo 'Hello, Demo!'", 50*time.Millisecond)
-	f.Enter()
+	d.Type("echo 'Hello, Demo!'", 50*time.Millisecond)
+	d.Enter()
 
 	time.Sleep(time.Second)
 }

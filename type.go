@@ -1,4 +1,4 @@
-package frame
+package dolly
 
 import (
 	"time"
@@ -8,7 +8,7 @@ import (
 
 // Type types the given string onto the page at the given speed. The delay is
 // the time between each key press.
-func (f Frame) Type(str string, delay time.Duration) {
+func (f Dolly) Type(str string, delay time.Duration) {
 	for _, r := range str {
 		f.Page.Keyboard.Type(keymap[r])
 		time.Sleep(delay)
@@ -16,7 +16,7 @@ func (f Frame) Type(str string, delay time.Duration) {
 }
 
 // Enter is a helper function that press the enter key.
-func (f Frame) Enter() {
+func (f Dolly) Enter() {
 	f.Page.Keyboard.Type(input.Enter)
 }
 

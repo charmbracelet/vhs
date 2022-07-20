@@ -1,4 +1,4 @@
-module github.com/charmbracelet/frame
+module github.com/charmbracelet/dolly
 
 go 1.18
 
