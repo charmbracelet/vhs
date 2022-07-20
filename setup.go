@@ -22,6 +22,7 @@ type Dolly struct {
 type Options struct {
 	Folder    string
 	Format    string
+	Output    string
 	Framerate float64
 	Height    int
 	Width     int
@@ -34,6 +35,7 @@ func DefaultOptions() Options {
 		Framerate: 60,
 		Folder:    "tmp",
 		Format:    "frame-%02d.png",
+		Output:    "_out.gif",
 		Height:    600,
 		Width:     1200,
 		TTY:       ttyd.DefaultOptions(),
@@ -106,6 +108,13 @@ func WithLineHeight(height float64) Option {
 	}
 }
 
+// WithOutput sets the output file for the GIF.
+func WithOutput(output string) Option {
+	return func(o *Options) {
+		o.Output = output
+	}
+}
+
 // New sets up ttyd and go-rod for recording frames.
 // Returns the set-up rod.Page and a function for cleanup.
 func New(opts ...Option) Dolly {
@@ -159,7 +168,7 @@ func New(opts ...Option) Dolly {
 			err := ffmpeg.MakeGIF(
 				ffmpeg.WithFramerate(50),
 				ffmpeg.WithInput(options.Folder+"/"+options.Format),
-				ffmpeg.WithOutput(options.Folder+"/_out.gif"),
+				ffmpeg.WithOutput(options.Output),
 			).Run()
 
 			// Cleanup frames if we successfully made the GIF.

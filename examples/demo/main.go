@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	d := dolly.New(dolly.WithFontSize(42))
+	d := dolly.New(dolly.WithFontSize(42), dolly.WithOutput("demo.gif"))
 	defer d.Cleanup()
 
 	d.Type("echo 'Hello, Demo!'", 50*time.Millisecond)
