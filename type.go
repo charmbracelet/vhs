@@ -1,6 +1,7 @@
 package dolly
 
 import (
+	"math/rand"
 	"time"
 
 	"github.com/go-rod/rod/lib/input"
@@ -8,7 +9,7 @@ import (
 
 // TypeOptions are the possible typing options.
 type TypeOptions struct {
-	Speed    int
+	Speed    float64
 	Variance float64
 }
 
@@ -24,7 +25,7 @@ func DefaultTypeOptions() TypeOptions {
 type TypeOption func(*TypeOptions)
 
 // WithSpeed sets the typing speed.
-func WithSpeed(speed int) TypeOption {
+func WithSpeed(speed float64) TypeOption {
 	return func(o *TypeOptions) { o.Speed = speed }
 }
 
@@ -49,7 +50,10 @@ func (d Dolly) Type(str string, opts ...TypeOption) {
 			d.Page.MustElement("textarea").Input(string(r))
 			d.Page.MustWaitIdle()
 		}
-		time.Sleep(time.Millisecond * time.Duration(options.Speed))
+
+		r := (rand.Float64() - 0.5)
+		v := r * (options.Variance * options.Speed)
+		time.Sleep(time.Millisecond * time.Duration(v+options.Speed))
 	}
 }
 

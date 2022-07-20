@@ -14,7 +14,7 @@ func main() {
 	defer d.Cleanup()
 
 	// Type a command
-	d.Type("echo 'Hello, 多莉!'", dolly.WithSpeed(100))
+	d.Type("echo 'Hello, 多莉!'", dolly.WithSpeed(100), dolly.WithVariance(0.5))
 	d.Enter()
 
 	// Give some buffer time for the GIF
