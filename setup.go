@@ -5,11 +5,18 @@ import (
 	"os"
 	"time"
 
+	"github.com/charmbracelet/frame/ffmpeg"
 	"github.com/charmbracelet/frame/ttyd"
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
 )
+
+// Frame is the object that controls the setup.
+type Frame struct {
+	Page    *rod.Page
+	Cleanup func()
+}
 
 // Options is the set of options for the setup.
 type Options struct {
@@ -101,7 +108,7 @@ func WithLineHeight(height float64) Option {
 
 // New sets up ttyd and go-rod for recording frames.
 // Returns the set-up rod.Page and a function for cleanup.
-func New(opts ...Option) (*rod.Page, func()) {
+func New(opts ...Option) Frame {
 	options := DefaultOptions()
 	for _, opt := range opts {
 		opt(&options)
@@ -132,7 +139,8 @@ func New(opts ...Option) (*rod.Page, func()) {
 			if page != nil {
 				screenshot, err := page.Screenshot(false, &proto.PageCaptureScreenshot{})
 				if err != nil {
-					break
+					time.Sleep(time.Second / time.Duration(options.Framerate))
+					continue
 				}
 				os.WriteFile((options.Folder + "/" + fmt.Sprintf(options.Format, counter)), screenshot, 0644)
 			}
@@ -140,8 +148,23 @@ func New(opts ...Option) (*rod.Page, func()) {
 		}
 	}()
 
-	return page, func() {
-		browser.MustClose()
-		tty.Process.Kill()
+	return Frame{
+		Page: page,
+		Cleanup: func() {
+			// Tear down the processes we started.
+			browser.MustClose()
+			tty.Process.Kill()
+
+			// Make GIF with frames
+			err := ffmpeg.MakeGIF(
+				ffmpeg.WithFramerate(50),
+				ffmpeg.WithInput(options.Folder+"/"+options.Format),
+			).Run()
+
+			// Cleanup frames if we successfully made the GIF.
+			if err == nil {
+				os.RemoveAll(options.Folder)
+			}
+		},
 	}
 }
