@@ -1,16 +1,20 @@
 package main
 
 import (
+	"os"
 	"time"
 
 	"github.com/charmbracelet/dolly"
 )
 
+const storyFile = "story.txt"
+
 func main() {
 	d := dolly.New(dolly.WithOutput("write.gif"), dolly.WithFontSize(40), dolly.WithHeight(600))
 	defer d.Cleanup()
 
-	d.Type(`gum write > story.txt`, dolly.WithSpeed(40))
+	defer os.Remove(storyFile)
+	d.Type(`gum write > `+storyFile, dolly.WithSpeed(40))
 	d.Enter()
 	time.Sleep(time.Second)
 
@@ -27,7 +31,7 @@ func main() {
 
 	time.Sleep(time.Second)
 
-	d.Type("cat story.txt", dolly.WithSpeed(40))
+	d.Type("cat "+storyFile, dolly.WithSpeed(40))
 	d.Enter()
 	time.Sleep(time.Second)
 }
