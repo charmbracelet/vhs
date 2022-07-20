@@ -6,9 +6,41 @@ import (
 	"github.com/go-rod/rod/lib/input"
 )
 
+// TypeOptions are the possible typing options.
+type TypeOptions struct {
+	Speed    int
+	Variance float64
+}
+
+// DefaultTypeOptions returns the default typing options.
+func DefaultTypeOptions() TypeOptions {
+	return TypeOptions{
+		Speed:    75,
+		Variance: 0.1,
+	}
+}
+
+// TypeOption is a typing option.
+type TypeOption func(*TypeOptions)
+
+// WithSpeed sets the typing speed.
+func WithSpeed(speed int) TypeOption {
+	return func(o *TypeOptions) { o.Speed = speed }
+}
+
+// WithVariance sets the typing speed variance.
+func WithVariance(variance float64) TypeOption {
+	return func(o *TypeOptions) { o.Variance = variance }
+}
+
 // Type types the given string onto the page at the given speed. The delay is
 // the time between each key press.
-func (d Dolly) Type(str string, delay time.Duration) {
+func (d Dolly) Type(str string, opts ...TypeOption) {
+	options := DefaultTypeOptions()
+	for _, opt := range opts {
+		opt(&options)
+	}
+
 	for _, r := range str {
 		k, ok := keymap[r]
 		if ok {
@@ -17,12 +49,25 @@ func (d Dolly) Type(str string, delay time.Duration) {
 			d.Page.MustElement("textarea").Input(string(r))
 			d.Page.MustWaitIdle()
 		}
-		time.Sleep(delay)
+		time.Sleep(time.Millisecond * time.Duration(options.Speed))
 	}
 }
 
 // Enter is a helper function that press the enter key.
 func (d Dolly) Enter() { d.Page.Keyboard.Type(input.Enter) }
+
+// WithCtrl presses a key with the ctrl key held down.
+func (d Dolly) WithCtrl(k input.Key) {
+	d.Page.Keyboard.Press(input.ControlLeft)
+	d.Page.Keyboard.Type(k)
+	d.Page.Keyboard.Release(input.ControlLeft)
+}
+
+// CtrlU is a helper function that presses the ctrl-u key.
+func (d Dolly) CtrlU() { d.WithCtrl(input.KeyU) }
+
+// CtrlC is a helper function that presses the ctrl-c key.
+func (d Dolly) CtrlC() { d.WithCtrl(shift(input.KeyC)) }
 
 func shift(k input.Key) input.Key {
 	k, _ = k.Shift()
