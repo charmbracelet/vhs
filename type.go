@@ -9,8 +9,8 @@ import (
 // Type types the given string onto the page at the given speed. The delay is
 // the time between each key press.
 func (f Frame) Type(str string, delay time.Duration) {
-	for _, kp := range Keys(str) {
-		f.Page.Keyboard.Type(kp)
+	for _, r := range str {
+		f.Page.Keyboard.Type(keymap[r])
 		time.Sleep(delay)
 	}
 }
@@ -18,15 +18,6 @@ func (f Frame) Type(str string, delay time.Duration) {
 // Enter is a helper function that press the enter key.
 func (f Frame) Enter() {
 	f.Page.Keyboard.Type(input.Enter)
-}
-
-// Keys returns the []input.Key from a string.
-func Keys(s string) []input.Key {
-	var keys []input.Key
-	for _, r := range s {
-		keys = append(keys, keymap[r])
-	}
-	return keys
 }
 
 func shift(k input.Key) input.Key {
