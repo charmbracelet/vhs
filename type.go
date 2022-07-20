@@ -67,6 +67,10 @@ func (d Dolly) WithCtrl(k input.Key) {
 	d.Page.Keyboard.Release(input.ControlLeft)
 }
 
+// Clear is a helper function that clears the screen.
+// Must be currently on shell to work (not inside input / program)
+func (d Dolly) Clear() { d.WithCtrl(shift(input.KeyL)) }
+
 // CtrlU is a helper function that presses the ctrl-u key.
 func (d Dolly) CtrlU() { d.WithCtrl(input.KeyU) }
 
