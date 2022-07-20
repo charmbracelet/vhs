@@ -1,4 +1,4 @@
-.PHONY: input write filter choose format spin style demo
+.PHONY: input write filter choose format spin style demo join
 
 input:
 	go run input/main.go
@@ -14,6 +14,8 @@ spin:
 	go run spin/main.go
 style:
 	go run style/main.go
+join:
+	go run join/main.go
 
 demo:
 	go run demo/main.go
