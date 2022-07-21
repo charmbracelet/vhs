@@ -7,7 +7,7 @@ import (
 	"github.com/charmbracelet/dolly"
 )
 
-const markdownFile = "readme.md"
+const markdownFile = "README.md"
 const markdownContent = `# Gum Formats
 - Markdown
 - Code
@@ -26,7 +26,7 @@ func main() {
 const templateFile = "tmpl.txt"
 
 func main() {
-	d := dolly.New(dolly.WithOutput("format.gif"), dolly.WithFontSize(24), dolly.WithLineHeight(1))
+	d := dolly.New(dolly.WithOutput("format.gif"), dolly.WithFontSize(26), dolly.WithLineHeight(1.1))
 	defer d.Cleanup()
 
 	os.WriteFile(markdownFile, []byte(markdownContent), 0644)
@@ -49,7 +49,11 @@ func main() {
 	d.Clear()
 	time.Sleep(time.Second)
 
-	d.Type(`echo '{{ Bold "Tasty" }} {{ Color "99" "0" " Gum! " }}' > ` + templateFile)
+	d.Type(`echo '{{ Bold "Tasty" }}' >> ` + templateFile)
+	d.Enter()
+	d.Type(`echo '{{ Italic "Bubble" }}' >> ` + templateFile)
+	d.Enter()
+	d.Type(`echo '{{ Color "99" "0" " Gum! " }}' >> ` + templateFile)
 	d.Enter()
 	time.Sleep(time.Second / 2)
 	d.Type(`cat ` + templateFile + ` | gum format -t template`)
