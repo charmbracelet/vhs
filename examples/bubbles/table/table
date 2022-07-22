@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd $HOME/src/bubbletea/examples/table
+go run .
