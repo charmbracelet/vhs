@@ -60,6 +60,14 @@ func (d Dolly) Type(str string, opts ...TypeOption) {
 // Enter is a helper function that press the enter key.
 func (d Dolly) Enter() { d.Page.Keyboard.Type(input.Enter) }
 
+// Execute executes a command in the terminal without showing output and clears
+// the screen.
+func (d Dolly) Execute(cmd string) {
+	d.Type(cmd, WithSpeed(0))
+	d.Enter()
+	d.Clear()
+}
+
 // WithCtrl presses a key with the ctrl key held down.
 func (d Dolly) WithCtrl(k input.Key) {
 	d.Page.Keyboard.Press(input.ControlLeft)

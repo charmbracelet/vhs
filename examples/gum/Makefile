@@ -1,4 +1,4 @@
-.PHONY: input write filter choose format spin style demo join
+.PHONY: input write filter choose format spin style demo join pick-commit
 
 input:
 	go run input/main.go
@@ -16,6 +16,9 @@ style:
 	go run style/main.go
 join:
 	go run join/main.go
+
+pick-commit:
+	go run pick-commit/main.go
 
 demo:
 	go run demo/main.go
