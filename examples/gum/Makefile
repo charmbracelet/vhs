@@ -1,4 +1,4 @@
-.PHONY: input write filter choose format spin style demo join pick-commit
+.PHONY: input write filter choose format spin style demo join pick-commit pick-tmux-session customization
 
 input:
 	go run input/main.go
@@ -19,6 +19,10 @@ join:
 
 pick-commit:
 	go run pick-commit/main.go
+pick-tmux-session:
+	go run pick-tmux-session/main.go
+customization:
+	go run customization/main.go
 
 demo:
 	go run demo/main.go
