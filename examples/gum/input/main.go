@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	d := dolly.New(dolly.WithOutput("input.gif"), dolly.WithFontSize(40), dolly.WithHeight(600))
+	d := dolly.New(dolly.WithOutput("input.gif"), dolly.WithFontSize(38), dolly.WithHeight(400))
 	defer d.Cleanup()
 
 	d.Type(`gum input --placeholder "What's up?"`, dolly.WithSpeed(40))
