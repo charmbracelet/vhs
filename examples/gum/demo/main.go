@@ -22,25 +22,38 @@ func main() {
 	d.Type("Walter")
 	time.Sleep(time.Second)
 	d.Enter()
+
+	time.Sleep(4 * time.Second)
+
+	d.Type("Nope, sorry!")
+	time.Sleep(time.Second / 2)
+	d.Enter()
+	d.Enter()
+	time.Sleep(time.Second / 2)
+	d.Type("I don't trust you.")
+	d.Enter()
+
+	time.Sleep(1 * time.Second)
+
+	d.CtrlC()
+
 	time.Sleep(2 * time.Second)
 
-	d.Type("57", dolly.WithSpeed(150))
+	d.Type(" ↓ ↓ ↓", dolly.WithSpeed(350))
 	time.Sleep(time.Second)
 	d.Enter()
 
-	time.Sleep(10 * time.Second)
+	time.Sleep(7 * time.Second)
 
-	d.Type("↓↓↑", dolly.WithSpeed(350))
-	d.Type("oran", dolly.WithSpeed(150))
+	d.Type("li", dolly.WithSpeed(350))
+	time.Sleep(1 * time.Second)
+	d.Enter()
+
+	time.Sleep(4 * time.Second)
+
+	d.Type("↓↓↑↑", dolly.WithSpeed(350))
 	time.Sleep(time.Second)
 	d.Enter()
 
-	time.Sleep(3 * time.Second)
-
-	d.Type("↓↑", dolly.WithSpeed(350))
-	time.Sleep(time.Second)
-
-	d.Enter()
-
-	time.Sleep(10 * time.Second)
+	time.Sleep(12 * time.Second)
 }
