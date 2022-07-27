@@ -48,5 +48,13 @@ func main() {
 	// Lol, we introduce a typo on purpose and then backspace to fix it.
 	d.Type("This commit show \bs just how much I love chewing Bubble Gum!!!", dolly.WithSpeed(125), dolly.WithVariance(0.75))
 
+	time.Sleep(2 * time.Second)
+
+	d.CtrlC()
+
+	time.Sleep(1 * time.Second)
+
+	d.Type("→←", dolly.WithSpeed(200))
+
 	time.Sleep(3 * time.Second)
 }
