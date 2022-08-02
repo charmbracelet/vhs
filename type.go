@@ -60,6 +60,18 @@ func (d Dolly) Type(str string, opts ...TypeOption) {
 // Enter is a helper function that press the enter key.
 func (d Dolly) Enter() { d.Page.Keyboard.Type(input.Enter) }
 
+// Up is a helper function that presses the up key.
+func (d Dolly) Up() { d.Page.Keyboard.Type(input.ArrowUp) }
+
+// Down is a helper function that presses the down key.
+func (d Dolly) Down() { d.Page.Keyboard.Type(input.ArrowDown) }
+
+// Left is a helper function that presses the left key.
+func (d Dolly) Left() { d.Page.Keyboard.Type(input.ArrowLeft) }
+
+// Right is a helper function that presses the right key.
+func (d Dolly) Right() { d.Page.Keyboard.Type(input.ArrowRight) }
+
 // Execute executes a command in the terminal without showing output and clears
 // the screen.
 func (d Dolly) Execute(cmd string) {

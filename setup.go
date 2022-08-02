@@ -2,6 +2,7 @@ package dolly
 
 import (
 	"fmt"
+	"net"
 	"os"
 	"time"
 
@@ -31,9 +32,10 @@ type Options struct {
 
 // DefaultOptions returns the default set of options to use for the setup function.
 func DefaultOptions() Options {
+	tmp, _ := os.MkdirTemp(os.TempDir(), "dolly")
 	return Options{
 		Framerate: 60,
-		Folder:    "tmp",
+		Folder:    tmp,
 		Format:    "frame-%02d.png",
 		Output:    "_out.gif",
 		Height:    600,
@@ -115,6 +117,13 @@ func WithOutput(output string) Option {
 	}
 }
 
+// WithDebug sets the debug flag for setup.
+func WithDebug() Option {
+	return func(o *Options) {
+		o.TTY.Debug = true
+	}
+}
+
 // New sets up ttyd and go-rod for recording frames.
 // Returns the set-up rod.Page and a function for cleanup.
 func New(opts ...Option) Dolly {
@@ -123,6 +132,12 @@ func New(opts ...Option) Dolly {
 		opt(&options)
 	}
 
+	// Get a random port when port is 0.
+	if options.TTY.Port == 0 {
+		addr, _ := net.Listen("tcp", ":0")
+		addr.Close()
+		options.TTY.Port = addr.Addr().(*net.TCPAddr).Port
+	}
 	tty := ttyd.Start(options.TTY)
 	go tty.Run()
 
