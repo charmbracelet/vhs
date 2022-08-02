@@ -26,7 +26,7 @@ time.Sleep(time.Second)
 
 Update the `main.go` file to perform the actions you need to screenshot and
 then run the file. This will automatically spawn
-[`ttyd`](https://github.com/tsl0922/ttyd) (which must be installed) and then
+[`ttyd`](https://github.com/tsl0922/ttyd) (the latest version from `main` must be installed) and then
 perform the actions via [`go-rod`](https://github.com/go-rod/rod).
 
 ```bash
