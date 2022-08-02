@@ -31,9 +31,10 @@ type Options struct {
 
 // DefaultOptions returns the default set of options to use for the setup function.
 func DefaultOptions() Options {
+	tmp, _ := os.MkdirTemp(os.TempDir(), "dolly")
 	return Options{
 		Framerate: 60,
-		Folder:    "tmp",
+		Folder:    tmp,
 		Format:    "frame-%02d.png",
 		Output:    "_out.gif",
 		Height:    600,
