@@ -2,6 +2,7 @@ package dolly
 
 import (
 	"fmt"
+	"net"
 	"os"
 	"time"
 
@@ -131,6 +132,12 @@ func New(opts ...Option) Dolly {
 		opt(&options)
 	}
 
+	// Get a random port when port is 0.
+	if options.TTY.Port == 0 {
+		addr, _ := net.Listen("tcp", ":0")
+		addr.Close()
+		options.TTY.Port = addr.Addr().(*net.TCPAddr).Port
+	}
 	tty := ttyd.Start(options.TTY)
 	go tty.Run()
 

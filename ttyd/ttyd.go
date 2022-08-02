@@ -3,6 +3,7 @@ package ttyd
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"os/exec"
 )
 
@@ -21,7 +22,6 @@ func DefaultOptions() Options {
 		FontFamily: "SF Mono",
 		FontSize:   22,
 		LineHeight: 1.2,
-		Port:       7681,
 	}
 }
 
