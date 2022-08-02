@@ -1,4 +1,8 @@
-.PHONY: input write filter choose confirm format spin style demo join commit pick-commit pick-tmux-session customization
+GIFS = input write filter choose confirm format spin style demo join commit pick-commit pick-tmux-session customization
+
+.PHONY: $(GIFS)
+
+all: $(GIFS)
 
 input:
 	go run input/main.go
