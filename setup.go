@@ -158,6 +158,7 @@ func New(opts ...Option) Dolly {
 	page = page.MustSetViewport(options.Width, options.Height, 1, false)
 	page.MustWaitIdle()
 	page.MustElement(".xterm").Eval(fmt.Sprintf(`this.style.padding = '%s'`, options.Padding))
+	page.MustElement("body").Eval(`this.style.overflow = 'hidden'`)
 	page.MustElement(".xterm-viewport").Eval(`this.style.overflow = 'hidden'`)
 	page.MustElement("textarea").MustInput("PROMPT='%F{#5a56e0}>%f '").MustType(input.Enter)
 	page.MustElement("textarea").MustInput("clear").MustType(input.Enter)
