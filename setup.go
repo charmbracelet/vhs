@@ -27,6 +27,7 @@ type Options struct {
 	Framerate float64
 	Height    int
 	Width     int
+	Padding   string
 	TTY       ttyd.Options
 }
 
@@ -40,6 +41,7 @@ func DefaultOptions() Options {
 		Output:    "_out.gif",
 		Height:    600,
 		Width:     1200,
+		Padding:   "5em",
 		TTY:       ttyd.DefaultOptions(),
 	}
 }
@@ -124,6 +126,13 @@ func WithDebug() Option {
 	}
 }
 
+// WithPadding sets the padding for the session.
+func WithPadding(p string) Option {
+	return func(o *Options) {
+		o.Padding = p
+	}
+}
+
 // New sets up ttyd and go-rod for recording frames.
 // Returns the set-up rod.Page and a function for cleanup.
 func New(opts ...Option) Dolly {
@@ -148,7 +157,7 @@ func New(opts ...Option) Dolly {
 	page := browser.MustPage(fmt.Sprintf("http://localhost:%d", options.TTY.Port))
 	page = page.MustSetViewport(options.Width, options.Height, 1, false)
 	page.MustWaitIdle()
-	page.MustElement(".xterm").Eval(`this.style.padding = '5em'`)
+	page.MustElement(".xterm").Eval(fmt.Sprintf(`this.style.padding = '%s'`, options.Padding))
 	page.MustElement(".xterm-viewport").Eval(`this.style.overflow = 'hidden'`)
 	page.MustElement("textarea").MustInput("PROMPT='%F{#5a56e0}>%f '").MustType(input.Enter)
 	page.MustElement("textarea").MustInput("clear").MustType(input.Enter)
