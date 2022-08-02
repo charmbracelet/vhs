@@ -115,6 +115,13 @@ func WithOutput(output string) Option {
 	}
 }
 
+// WithDebug sets the debug flag for setup.
+func WithDebug() Option {
+	return func(o *Options) {
+		o.TTY.Debug = true
+	}
+}
+
 // New sets up ttyd and go-rod for recording frames.
 // Returns the set-up rod.Page and a function for cleanup.
 func New(opts ...Option) Dolly {

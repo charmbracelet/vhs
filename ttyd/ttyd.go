@@ -12,6 +12,7 @@ type Options struct {
 	FontFamily string
 	FontSize   int
 	LineHeight float64
+	Debug      bool
 }
 
 // DefaultOptions are the default options for the `tty`.
@@ -28,7 +29,7 @@ func DefaultOptions() Options {
 func Start(opts Options) *exec.Cmd {
 	theme, _ := json.Marshal(DefaultTheme)
 
-	return exec.Command(
+	cmd := exec.Command(
 		"ttyd", fmt.Sprintf("--port=%d", opts.Port),
 		"-t", fmt.Sprintf("fontFamily='%s'", opts.FontFamily),
 		"-t", fmt.Sprintf("fontSize=%d", opts.FontSize),
@@ -37,4 +38,9 @@ func Start(opts Options) *exec.Cmd {
 		"-t", "customGlyphs=true",
 		"zsh", "-d", "-f",
 	)
+	if opts.Debug {
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+	}
+	return cmd
 }
