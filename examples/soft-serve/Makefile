@@ -1,8 +1,8 @@
-GIFS = landing
+GIFS = demo
 
 .PHONY: $(GIFS)
 
 all: $(GIFS)
 
-landing:
-	go run landing/main.go
+demo:
+	go run demo/main.go
