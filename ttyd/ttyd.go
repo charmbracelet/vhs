@@ -35,6 +35,6 @@ func Start(opts Options) *exec.Cmd {
 		"-t", fmt.Sprintf("lineHeight=%f", opts.LineHeight),
 		"-t", fmt.Sprintf("theme=%s", string(theme)),
 		"-t", "customGlyphs=true",
-		"zsh",
+		"zsh", "-d", "-f",
 	)
 }
