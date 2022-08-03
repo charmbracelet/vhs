@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/charmbracelet/dolly"
-	"github.com/go-rod/rod/lib/input"
 )
 
 func main() {
@@ -23,61 +22,35 @@ func main() {
 
 	time.Sleep(time.Second * 2)
 
-	waitBetween := func() {
-		time.Sleep(time.Millisecond * 300)
-	}
-
-	d.Down()
-	waitBetween()
-	d.Down()
-	waitBetween()
-	d.Down()
-	waitBetween()
-	d.Enter()
-	waitBetween()
-	for i := 0; i < 20; i++ {
-		d.Down()
-		waitBetween()
-	}
-	d.Page.Keyboard.Type(input.Tab)
-	waitBetween()
-	d.Page.Keyboard.Type(input.Tab)
-	waitBetween()
-
-	for i := 0; i < 10; i++ {
-		d.Down()
-		waitBetween()
-	}
-	d.Enter()
-	waitBetween()
-	for i := 0; i < 20; i++ {
-		d.Down()
-		waitBetween()
-	}
-	d.Type("h")
-
-	// Goto tags tab
-	d.Page.Keyboard.Type(input.Tab)
-	waitBetween()
-	d.Page.Keyboard.Type(input.Tab)
-	waitBetween()
-	d.Down()
-	waitBetween()
-	d.Down()
-	waitBetween()
+	// Choose repository
+	d.Type("↓", dolly.WithSpeed(300), dolly.WithRepeat(3))
 	d.Enter()
 	time.Sleep(time.Second * 1)
 
-	d.Down()
-	waitBetween()
-	d.Down()
-	waitBetween()
-	d.Type("l")
-	waitBetween()
-	d.Down()
-	waitBetween()
-	d.Type("l")
-	waitBetween()
+	// Scroll readme
+	d.Type("↓", dolly.WithSpeed(300), dolly.WithRepeat(20))
+	// Goto commits tab
+	d.Type("\t", dolly.WithSpeed(300), dolly.WithRepeat(2))
 
+	// Choose the 10th commit
+	d.Type("↓", dolly.WithSpeed(300), dolly.WithRepeat(10))
+	d.Enter()
+	time.Sleep(time.Second * 1)
+
+	// Scroll commit
+	d.Type("↓", dolly.WithSpeed(300), dolly.WithRepeat(20))
+	// Go back to commits log
+	d.Type("h", dolly.WithSpeed(300))
+
+	// Goto tags tab
+	d.Type("\t", dolly.WithSpeed(300), dolly.WithRepeat(2))
+
+	// Choose the 2nd tag
+	d.Type("↓", dolly.WithSpeed(300), dolly.WithRepeat(2))
+	d.Enter()
+	time.Sleep(time.Second * 1)
+
+	// Select file
+	d.Type("↓↓l↓l", dolly.WithSpeed(300))
 	time.Sleep(time.Second * 2)
 }

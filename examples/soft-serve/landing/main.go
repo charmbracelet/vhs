@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/charmbracelet/dolly"
-	"github.com/go-rod/rod/lib/input"
 )
 
 func main() {
@@ -23,37 +22,18 @@ func main() {
 
 	time.Sleep(time.Second * 2)
 
-	waitBetween := func() {
-		time.Sleep(time.Millisecond * 300)
-	}
+	// Move up/down
+	d.Type("↓", dolly.WithSpeed(300), dolly.WithVariance(4), dolly.WithRepeat(4))
+	d.Type("↑", dolly.WithSpeed(300), dolly.WithVariance(2), dolly.WithRepeat(3))
 
-	d.Down()
-	waitBetween()
-	d.Down()
-	waitBetween()
-	d.Down()
-	waitBetween()
-	d.Down()
-	waitBetween()
-	d.Up()
-	waitBetween()
-	d.Up()
-	waitBetween()
-	d.Up()
-	waitBetween()
-	d.Type("?")
-	waitBetween()
-	d.Type("c")
-	time.Sleep(time.Second * 2)
-	for i := 0; i < 3; i++ {
-		d.Page.Keyboard.Type(input.Tab)
-		time.Sleep(time.Millisecond * 500)
-	}
-	for i := 0; i < 3; i++ {
-		d.Page.Keyboard.Type(input.Tab)
-		time.Sleep(time.Millisecond * 800)
-	}
-	d.Page.Keyboard.Type(input.Tab)
-	time.Sleep(time.Second * 1)
-	time.Sleep(time.Second * 3)
+	// Toggle help
+	d.Type("?", dolly.WithSpeed(1000))
+
+	// Copy command
+	d.Type("c", dolly.WithSpeed(2000))
+
+	// Move between tabs
+	d.Type("\t", dolly.WithSpeed(500), dolly.WithRepeat(3))
+	d.Type("\t", dolly.WithSpeed(800), dolly.WithRepeat(3))
+	d.Type("\t", dolly.WithSpeed(3000))
 }

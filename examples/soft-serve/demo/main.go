@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/charmbracelet/dolly"
-	"github.com/go-rod/rod/lib/input"
 )
 
 func main() {
@@ -23,65 +22,37 @@ func main() {
 
 	time.Sleep(time.Second * 2)
 
-	waitBetween := func() {
-		time.Sleep(time.Millisecond * 300)
-	}
+	// Select repository
+	d.Type("↓", dolly.WithSpeed(300), dolly.WithVariance(2), dolly.WithRepeat(4))
+	d.Type("↑", dolly.WithSpeed(300), dolly.WithVariance(3), dolly.WithRepeat(3))
+	d.Enter()
+	time.Sleep(time.Second * 1)
 
-	d.Down()
-	waitBetween()
-	d.Down()
-	waitBetween()
-	d.Down()
-	waitBetween()
-	d.Down()
-	waitBetween()
-	d.Up()
-	waitBetween()
-	d.Up()
-	waitBetween()
-	d.Up()
-	waitBetween()
-	d.Enter()
-	waitBetween()
-	for i := 0; i < 20; i++ {
-		d.Down()
-		waitBetween()
-	}
-	for i := 0; i < 2; i++ {
-		d.Page.Keyboard.Type(input.Tab)
-		time.Sleep(time.Second * 1)
-	}
+	// Scroll readme
+	d.Type("↓", dolly.WithSpeed(300), dolly.WithRepeat(20))
 
-	for i := 0; i < 9; i++ {
-		d.Down()
-		waitBetween()
-	}
+	// Goto commits tab
+	d.Type("\t\t", dolly.WithSpeed(1000))
+	// Select the 9th commit
+	d.Type("↓", dolly.WithSpeed(300), dolly.WithRepeat(9))
 	d.Enter()
-	waitBetween()
-	for i := 0; i < 30; i++ {
-		d.Down()
-		waitBetween()
-	}
-	d.Type("h")
-	waitBetween()
-	d.Page.Keyboard.Type(input.Tab)
-	waitBetween()
-	d.Down()
-	waitBetween()
-	d.Down()
-	waitBetween()
+	time.Sleep(time.Second * 1)
+
+	// Scroll commit
+	d.Type("↓", dolly.WithSpeed(300), dolly.WithRepeat(30))
+	// Go back to commits log
+	d.Type("h", dolly.WithSpeed(300))
+	// Goto branches tab
+	d.Type("\t", dolly.WithSpeed(300))
+
+	// Select the 2nd branch
+	d.Type("↓↓", dolly.WithSpeed(300))
 	d.Enter()
-	waitBetween()
-	d.Down()
-	waitBetween()
-	d.Down()
-	waitBetween()
-	d.Type("l")
-	waitBetween()
-	d.Type("l")
-	waitBetween()
-	for i := 0; i < 10; i++ {
-		d.Down()
-		waitBetween()
-	}
+	time.Sleep(time.Second * 1)
+
+	// Select file
+	d.Type("↓↓", dolly.WithSpeed(300))
+	d.Type("ll", dolly.WithSpeed(300))
+	// Scroll file
+	d.Type("↓", dolly.WithSpeed(300), dolly.WithRepeat(10))
 }
