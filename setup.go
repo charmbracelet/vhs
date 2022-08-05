@@ -156,9 +156,17 @@ func New(opts ...Option) Dolly {
 
 	page := browser.MustPage(fmt.Sprintf("http://localhost:%d", options.TTY.Port))
 	page = page.MustSetViewport(options.Width, options.Height, 1, false)
-	page.MustWaitIdle()
+	page = page.MustWaitLoad()
+	page = page.MustWaitIdle()
 	page.MustElement(".xterm").Eval(fmt.Sprintf(`this.style.padding = '%s'`, options.Padding))
+	page.MustElement("body").Eval(`this.style.overflow = 'hidden'`)
+	page.MustElement("#terminal-container").Eval(`this.style.overflow = 'hidden'`)
 	page.MustElement(".xterm-viewport").Eval(`this.style.overflow = 'hidden'`)
+	// Fit ttyd xterm window to the screen.
+	// ttyd stores its xterm instance at `window.term`
+	// https://xtermjs.org/docs/api/addons/fit/
+	// https://github.com/tsl0922/ttyd/blob/723ae966939527e8db35f27fb69bac0e02860099/html/src/components/terminal/index.tsx#L167-L196
+	page.MustEval("() => { window.term.fit() }")
 	page.MustElement("textarea").MustInput("PROMPT='%F{#5a56e0}>%f '").MustType(input.Enter)
 	page.MustElement("textarea").MustInput("clear").MustType(input.Enter)
 	page.MustWaitIdle()
@@ -193,6 +201,7 @@ func New(opts ...Option) Dolly {
 				ffmpeg.WithFramerate(50),
 				ffmpeg.WithInput(options.Folder+"/"+options.Format),
 				ffmpeg.WithOutput(options.Output),
+				ffmpeg.WithWidth(options.Width),
 			).Run()
 
 			// Cleanup frames if we successfully made the GIF.

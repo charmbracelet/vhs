@@ -2,6 +2,7 @@ package dolly
 
 import (
 	"math/rand"
+	"strings"
 	"time"
 
 	"github.com/go-rod/rod/lib/input"
@@ -11,6 +12,7 @@ import (
 type TypeOptions struct {
 	Speed    float64
 	Variance float64
+	Repeat   int
 }
 
 // DefaultTypeOptions returns the default typing options.
@@ -18,6 +20,7 @@ func DefaultTypeOptions() TypeOptions {
 	return TypeOptions{
 		Speed:    75,
 		Variance: 0.1,
+		Repeat:   0,
 	}
 }
 
@@ -34,6 +37,11 @@ func WithVariance(variance float64) TypeOption {
 	return func(o *TypeOptions) { o.Variance = variance }
 }
 
+// WithRepeat repeats the given string n times.
+func WithRepeat(n int) TypeOption {
+	return func(o *TypeOptions) { o.Repeat = n }
+}
+
 // Type types the given string onto the page at the given speed. The delay is
 // the time between each key press.
 func (d Dolly) Type(str string, opts ...TypeOption) {
@@ -42,6 +50,9 @@ func (d Dolly) Type(str string, opts ...TypeOption) {
 		opt(&options)
 	}
 
+	if options.Repeat > 0 {
+		str = strings.Repeat(str, options.Repeat)
+	}
 	for _, r := range str {
 		k, ok := keymap[r]
 		if ok {
