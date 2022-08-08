@@ -166,7 +166,7 @@ func New(opts ...Option) Dolly {
 	// ttyd stores its xterm instance at `window.term`
 	// https://xtermjs.org/docs/api/addons/fit/
 	// https://github.com/tsl0922/ttyd/blob/723ae966939527e8db35f27fb69bac0e02860099/html/src/components/terminal/index.tsx#L167-L196
-	page.MustEval("() => { window.term.fit() }")
+	page.MustEval("window.term.fit")
 	page.MustElement("textarea").MustInput("PROMPT='%F{#5a56e0}>%f '").MustType(input.Enter)
 	page.MustElement("textarea").MustInput("clear").MustType(input.Enter)
 	page.MustWaitIdle()
