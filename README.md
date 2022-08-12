@@ -6,7 +6,7 @@ Programmatically record GIFs for terminal applications with Go 🎬
 
 The above example is generated from a single Go file ([source](./examples/demo/main.go))
 
-### Tutorial
+## Tutorial
 
 Instantiate a new `dolly` with any options you want.
 
@@ -57,11 +57,11 @@ Running this program will output a GIF in the same folder with the name given by
 
 <img width="400" src="./demo.gif" alt="Automatic GIF recording" />
 
-### API
+## API
 
 See [Go Doc](https://pkg.go.dev/github.com/charmbracelet/dolly) for latest documentation.
 
-#### New
+### New
 
 `New` instantiates and returns a new `Dolly` and begins capturing frames of the terminal in the background.
 
@@ -83,7 +83,7 @@ d := dolly.New(
 )
 ```
 
-#### Type
+### Type
 
 `Type` a string into the terminal with configurable options.
 
@@ -97,7 +97,7 @@ For example, `Type` a command with 100ms between each keystroke and a randomizat
 d.Type("echo 'Hello, Demo!'", dolly.WithSpeed(100), dolly.WithVariance(0.5))
 ```
 
-#### Helpers
+### Helpers
 
 ```go
 // Enter presses the return key on the terminal
@@ -116,7 +116,7 @@ d.Left()
 d.Right()
 ```
 
-### Setup
+## Setup
 
 Dolly is a library with which to write Go programs.
 You do not need to _install_ `dolly` on to your machine (just import it in your Go programs).
@@ -139,7 +139,7 @@ yay -S ttyd
 nix-env -iA nixpkgs.ttyd nixpkgs.ffmpeg
 ```
 
-### Examples
+## Examples
 
 * [Gum `README` GIFs](./examples/gum)
 * [Soft Serve GIF](./examples/soft-serve)
