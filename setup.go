@@ -19,8 +19,8 @@ type Dolly struct {
 	Cleanup func()
 }
 
-// Options is the set of options for the setup.
-type Options struct {
+// SetupOptions is the set of options for the setup.
+type SetupOptions struct {
 	Folder    string
 	Format    string
 	Output    string
@@ -32,9 +32,9 @@ type Options struct {
 }
 
 // DefaultOptions returns the default set of options to use for the setup function.
-func DefaultOptions() Options {
+func DefaultOptions() SetupOptions {
 	tmp, _ := os.MkdirTemp(os.TempDir(), "dolly")
-	return Options{
+	return SetupOptions{
 		Framerate: 60,
 		Folder:    tmp,
 		Format:    "frame-%02d.png",
@@ -46,96 +46,95 @@ func DefaultOptions() Options {
 	}
 }
 
-// Option is a function that can be used to set options.
-type Option func(*Options)
+// SetupOption is a function that can be used to set options.
+type SetupOption func(*SetupOptions)
 
 // WithFolder sets the folder where we should save the frames
-func WithFolder(folder string) Option {
-	return func(o *Options) {
+func WithFolder(folder string) SetupOption {
+	return func(o *SetupOptions) {
 		o.Folder = folder
 	}
 }
 
 // WithFormat sets the format string for the frames pngs (default: frame-%02d.png)
-func WithFormat(format string) Option {
-	return func(o *Options) {
+func WithFormat(format string) SetupOption {
+	return func(o *SetupOptions) {
 		o.Format = format
 	}
 }
 
 // WithFPS sets the frames per second.
-func WithFPS(fps float64) Option {
-	return func(o *Options) {
+func WithFPS(fps float64) SetupOption {
+	return func(o *SetupOptions) {
 		o.Framerate = fps
 	}
 }
 
 // WithHeight sets the height of the frame.
-func WithHeight(height int) Option {
-	return func(o *Options) {
+func WithHeight(height int) SetupOption {
+	return func(o *SetupOptions) {
 		o.Height = height
 	}
 }
 
 // WithWidth sets the width of the frame.
-func WithWidth(width int) Option {
-	return func(o *Options) {
+func WithWidth(width int) SetupOption {
+	return func(o *SetupOptions) {
 		o.Width = width
 	}
 }
 
 // WithPort sets the port to use for the setup.
-func WithPort(port int) Option {
-	return func(o *Options) {
+func WithPort(port int) SetupOption {
+	return func(o *SetupOptions) {
 		o.TTY.Port = port
 	}
 }
 
 // WithFontSize sets the font size for the setup.
-func WithFontSize(size int) Option {
-	return func(o *Options) {
+func WithFontSize(size int) SetupOption {
+	return func(o *SetupOptions) {
 		o.TTY.FontSize = size
 	}
 }
 
 // WithFontFamily sets the font family for the setup.
-func WithFontFamily(family string) Option {
-	return func(o *Options) {
+func WithFontFamily(family string) SetupOption {
+	return func(o *SetupOptions) {
 		o.TTY.FontFamily = family
 	}
 }
 
 // WithLineHeight sets the line height for the setup.
-func WithLineHeight(height float64) Option {
-	return func(o *Options) {
+func WithLineHeight(height float64) SetupOption {
+	return func(o *SetupOptions) {
 		o.TTY.LineHeight = height
 	}
 }
 
 // WithOutput sets the output file for the GIF.
-func WithOutput(output string) Option {
-	return func(o *Options) {
+func WithOutput(output string) SetupOption {
+	return func(o *SetupOptions) {
 		o.Output = output
 	}
 }
 
 // WithDebug sets the debug flag for setup.
-func WithDebug() Option {
-	return func(o *Options) {
+func WithDebug() SetupOption {
+	return func(o *SetupOptions) {
 		o.TTY.Debug = true
 	}
 }
 
 // WithPadding sets the padding for the session.
-func WithPadding(p string) Option {
-	return func(o *Options) {
+func WithPadding(p string) SetupOption {
+	return func(o *SetupOptions) {
 		o.Padding = p
 	}
 }
 
 // New sets up ttyd and go-rod for recording frames.
-// Returns the set-up rod.Page and a function for cleanup.
-func New(opts ...Option) Dolly {
+func New(opts ...SetupOption) Dolly {
 	options := DefaultOptions()
 	for _, opt := range opts {
 		opt(&options)
