@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/charmbracelet/dolly/ffmpeg"
-	"github.com/charmbracelet/dolly/ttyd"
+	"github.com/charmbracelet/dolly/tty"
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/proto"
@@ -28,7 +28,7 @@ type SetupOptions struct {
 	Height    int
 	Width     int
 	Padding   string
-	TTY       ttyd.Options
+	TTY       tty.Options
 }
 
 // DefaultOptions returns the default set of options to use for the setup function.
@@ -42,7 +42,7 @@ func DefaultOptions() SetupOptions {
 		Height:    600,
 		Width:     1200,
 		Padding:   "5em",
-		TTY:       ttyd.DefaultOptions(),
+		TTY:       tty.DefaultOptions(),
 	}
 }
 
@@ -126,6 +126,13 @@ func WithDebug() SetupOption {
 	}
 }
 
+// WithTheme sets the theme for the setup.
+func WithTheme(theme tty.Theme) SetupOption {
+	return func(o *SetupOptions) {
+		o.TTY.Theme = theme
+	}
+}
+
 // WithPadding sets the padding for the session.
 func WithPadding(p string) SetupOption {
 	return func(o *SetupOptions) {
@@ -146,7 +153,7 @@ func New(opts ...SetupOption) Dolly {
 		addr.Close()
 		options.TTY.Port = addr.Addr().(*net.TCPAddr).Port
 	}
-	tty := ttyd.Start(options.TTY)
+	tty := tty.Start(options.TTY)
 	go tty.Run()
 
 	os.MkdirAll(options.Folder, os.ModePerm)
