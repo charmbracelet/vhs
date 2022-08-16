@@ -1,8 +1,9 @@
-Type@100 echo "Hello, World!"
-Left 3
-Right 2
-Enter
+Type echo 'Hello World'
+Backspace 2
+Down 1
+Enter 3
+Left 2
+Right 8
 Sleep 1s
-Space 10
-Sleep 1s
-Backspace 10
+Space 5
+Up 2

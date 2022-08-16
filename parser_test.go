@@ -2,12 +2,6 @@ package dolly
 
 import "testing"
 
-func TestAllCommands(t *testing.T) {
-	if len(allCommands) != 9 {
-		t.Errorf("unexpected number of commands: %d", len(allCommands))
-	}
-}
-
 func TestParse(t *testing.T) {
 	input := `
 Type@100 echo 'Hi, there!'

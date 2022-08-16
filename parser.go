@@ -1,11 +1,3 @@
-// ./dolly.vhs
-//
-// Type@100 echo "Hi, there!"
-// Left 3
-// Right 2
-// Enter
-// Sleep 1s
-//
 package dolly
 
 import (
@@ -15,28 +7,6 @@ import (
 
 const commentPrefix = "#"
 const optionsPrefix = "@"
-
-type CommandType string
-
-const (
-	Backspace CommandType = "Backspace"
-	Down      CommandType = "Down"
-	Enter     CommandType = "Enter"
-	Left      CommandType = "Left"
-	Right     CommandType = "Right"
-	Sleep     CommandType = "Sleep"
-	Space     CommandType = "Space"
-	Type      CommandType = "Type"
-	Up        CommandType = "Up"
-)
-
-var allCommands = []CommandType{Backspace, Down, Enter, Left, Right, Sleep, Space, Type, Up}
-
-type Command struct {
-	Type    CommandType
-	Options string
-	Args    string
-}
 
 // Parse takes a string as input and returns the commands to be executed.
 func Parse(s string) ([]Command, error) {
@@ -49,13 +19,13 @@ func Parse(s string) ([]Command, error) {
 			continue
 		}
 
-		for _, command := range allCommands {
-			if strings.HasPrefix(line, string(command)) {
+		for commandType, command := range Commands {
+			if strings.HasPrefix(line, command) {
 				options, args, err := parseArgs(command, line)
 				if err != nil {
 					return nil, err
 				}
-				commands = append(commands, Command{command, options, args})
+				commands = append(commands, Command{commandType, options, args})
 				break
 			}
 		}
@@ -64,8 +34,8 @@ func Parse(s string) ([]Command, error) {
 	return commands, nil
 }
 
-func parseArgs(commandType CommandType, line string) (string, string, error) {
-	rawArgs := line[len(commandType):]
+func parseArgs(command string, line string) (string, string, error) {
+	rawArgs := line[len(command):]
 	if !strings.HasPrefix(rawArgs, optionsPrefix) {
 		return "", strings.TrimPrefix(rawArgs, " "), nil
 	}
@@ -74,7 +44,7 @@ func parseArgs(commandType CommandType, line string) (string, string, error) {
 	splitIndex := strings.Index(rawArgs, " ")
 
 	if splitIndex < 0 || splitIndex == len(rawArgs)-1 {
-		return "", "", fmt.Errorf("no arguments found for %s", commandType)
+		return "", "", fmt.Errorf("no arguments found for %s", command)
 	}
 
 	options = rawArgs[:splitIndex]
