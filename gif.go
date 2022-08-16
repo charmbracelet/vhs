@@ -5,6 +5,8 @@ import (
 	"os/exec"
 )
 
+const frameFileFormat = "frame-%02d.png"
+
 // Options is the set of options for converting frames to a GIF.
 type GIFOptions struct {
 	InputFolder string
@@ -16,7 +18,7 @@ type GIFOptions struct {
 
 var DefaultGIFOptions = GIFOptions{
 	Width:       1200,
-	InputFolder: "tmp",
+	InputFolder: randomDir(),
 	Output:      "out.gif",
 	Framerate:   50,
 	MaxColors:   256,
@@ -32,7 +34,7 @@ func MakeGIF(opts GIFOptions) *exec.Cmd {
 		opts.MaxColors,
 	)
 	return exec.Command(
-		"ffmpeg", "-y", "-i", opts.InputFolder+"/frame-%02d.png",
+		"ffmpeg", "-y", "-i", opts.InputFolder+"/"+frameFileFormat,
 		"-framerate", fmt.Sprint(opts.Framerate),
 		"-vf", flags, opts.Output,
 	)

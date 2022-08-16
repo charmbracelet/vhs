@@ -14,6 +14,7 @@ const (
 	Enter
 	Left
 	Right
+	Set
 	Sleep
 	Space
 	Type
@@ -26,6 +27,7 @@ var Commands = map[CommandType]string{
 	Enter:     "Enter",
 	Left:      "Left",
 	Right:     "Right",
+	Set:       "Set",
 	Sleep:     "Sleep",
 	Space:     "Space",
 	Type:      "Type",
@@ -40,6 +42,7 @@ var CommandFuncs = map[CommandType]CommandFunc{
 	Enter:     ExecuteEnter,
 	Left:      ExecuteLeft,
 	Right:     ExecuteRight,
+	Set:       ExecuteSet,
 	Sleep:     ExecuteSleep,
 	Space:     ExecuteSpace,
 	Type:      ExecuteType,

@@ -18,13 +18,10 @@ type Dolly struct {
 
 // DollyOptions is the set of options for the setup.
 type DollyOptions struct {
-	Folder    string
-	Format    string
-	Output    string
 	Framerate float64
 	Height    int
-	Width     int
 	Padding   string
+	Width     int
 
 	TTY TTYOptions
 	GIF GIFOptions
@@ -32,34 +29,23 @@ type DollyOptions struct {
 
 // DefaultDollyOptions returns the default set of options to use for the setup function.
 func DefaultDollyOptions() DollyOptions {
-	dir := randomDir()
-	gifOptions := DefaultGIFOptions
-	gifOptions.InputFolder = dir
-
 	return DollyOptions{
 		Framerate: 60,
-		Folder:    dir,
-		Format:    "frame-%02d.png",
-		Output:    "_out.gif",
 		Height:    600,
 		Width:     1200,
 		Padding:   "5em",
 
 		TTY: DefaultTTYOptions,
-		GIF: gifOptions,
+		GIF: DefaultGIFOptions,
 	}
 }
 
 // New sets up ttyd and go-rod for recording frames.
 func New(opts DollyOptions) Dolly {
-	if opts.TTY.Port == 0 {
-		opts.TTY.Port = randomPort()
-	}
-
 	tty := StartTTY(opts.TTY)
 	go tty.Run()
 
-	os.MkdirAll(opts.Folder, os.ModePerm)
+	os.MkdirAll(opts.GIF.InputFolder, os.ModePerm)
 
 	browser := rod.New().MustConnect()
 
@@ -92,7 +78,7 @@ func New(opts DollyOptions) Dolly {
 					time.Sleep(time.Second / time.Duration(opts.Framerate))
 					continue
 				}
-				os.WriteFile((opts.Folder + "/" + fmt.Sprintf(opts.Format, counter)), screenshot, 0644)
+				os.WriteFile((opts.GIF.InputFolder + "/" + fmt.Sprintf(frameFileFormat, counter)), screenshot, 0644)
 			}
 			time.Sleep(time.Second / time.Duration(opts.Framerate))
 		}
@@ -110,7 +96,7 @@ func New(opts DollyOptions) Dolly {
 
 			// Cleanup frames if we successfully made the GIF.
 			if err == nil {
-				os.RemoveAll(opts.Folder)
+				os.RemoveAll(opts.GIF.InputFolder)
 			}
 		},
 	}
