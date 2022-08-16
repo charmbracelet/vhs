@@ -2,7 +2,6 @@ package dolly
 
 import (
 	"math/rand"
-	"strings"
 	"time"
 
 	"github.com/go-rod/rod/lib/input"
@@ -12,47 +11,17 @@ import (
 type TypeOptions struct {
 	Speed    float64
 	Variance float64
-	Repeat   int
 }
 
 // DefaultTypeOptions returns the default typing options.
-func DefaultTypeOptions() TypeOptions {
-	return TypeOptions{
-		Speed:    75,
-		Variance: 0.1,
-		Repeat:   0,
-	}
-}
-
-// TypeOption is a typing option.
-type TypeOption func(*TypeOptions)
-
-// WithSpeed sets the typing speed.
-func WithSpeed(speed float64) TypeOption {
-	return func(o *TypeOptions) { o.Speed = speed }
-}
-
-// WithVariance sets the typing speed variance.
-func WithVariance(variance float64) TypeOption {
-	return func(o *TypeOptions) { o.Variance = variance }
-}
-
-// WithRepeat repeats the given string n times.
-func WithRepeat(n int) TypeOption {
-	return func(o *TypeOptions) { o.Repeat = n }
+var DefaultTypeOptions = TypeOptions{
+	Speed:    75,
+	Variance: 0.1,
 }
 
 // Type types the given string onto the page at the given speed. The delay is
 // the time between each key press.
-func (d Dolly) Type(str string, opts ...TypeOption) {
-	options := DefaultTypeOptions()
-	for _, opt := range opts {
-		opt(&options)
-	}
-
-	if options.Repeat > 0 {
-		str = strings.Repeat(str, options.Repeat)
-	}
+func (d Dolly) Type(str string, opts TypeOptions) {
 	for _, r := range str {
 		k, ok := keymap[r]
 		if ok {
@@ -63,50 +32,10 @@ func (d Dolly) Type(str string, opts ...TypeOption) {
 		}
 
 		r := (rand.Float64() - 0.5)
-		v := r * (options.Variance * options.Speed)
-		time.Sleep(time.Millisecond * time.Duration(v+options.Speed))
+		v := r * (opts.Variance * opts.Speed)
+		time.Sleep(time.Millisecond * time.Duration(v+opts.Speed))
 	}
 }
-
-// Enter is a helper function that press the enter key.
-func (d Dolly) Enter() { d.Page.Keyboard.Type(input.Enter) }
-
-// Up is a helper function that presses the up key.
-func (d Dolly) Up() { d.Page.Keyboard.Type(input.ArrowUp) }
-
-// Down is a helper function that presses the down key.
-func (d Dolly) Down() { d.Page.Keyboard.Type(input.ArrowDown) }
-
-// Left is a helper function that presses the left key.
-func (d Dolly) Left() { d.Page.Keyboard.Type(input.ArrowLeft) }
-
-// Right is a helper function that presses the right key.
-func (d Dolly) Right() { d.Page.Keyboard.Type(input.ArrowRight) }
-
-// Execute executes a command in the terminal without showing output and clears
-// the screen.
-func (d Dolly) Execute(cmd string) {
-	d.Type(cmd, WithSpeed(0))
-	d.Enter()
-	d.Clear()
-}
-
-// WithCtrl presses a key with the ctrl key held down.
-func (d Dolly) WithCtrl(k input.Key) {
-	d.Page.Keyboard.Press(input.ControlLeft)
-	d.Page.Keyboard.Type(k)
-	d.Page.Keyboard.Release(input.ControlLeft)
-}
-
-// Clear is a helper function that clears the screen.
-// Must be currently on shell to work (not inside input / program)
-func (d Dolly) Clear() { d.WithCtrl(shift(input.KeyL)) }
-
-// CtrlU is a helper function that presses the ctrl-u key.
-func (d Dolly) CtrlU() { d.WithCtrl(input.KeyU) }
-
-// CtrlC is a helper function that presses the ctrl-c key.
-func (d Dolly) CtrlC() { d.WithCtrl(shift(input.KeyC)) }
 
 func shift(k input.Key) input.Key {
 	k, _ = k.Shift()
