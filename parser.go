@@ -30,7 +30,7 @@ const (
 	Up        CommandType = "Up"
 )
 
-var allCommands = []CommandType{Type, Down, Enter, Left, Right, Sleep, Up}
+var allCommands = []CommandType{Backspace, Down, Enter, Left, Right, Sleep, Space, Type, Up}
 
 type Command struct {
 	Type    CommandType

@@ -2,6 +2,12 @@ package dolly
 
 import "testing"
 
+func TestAllCommands(t *testing.T) {
+	if len(allCommands) != 9 {
+		t.Errorf("unexpected number of commands: %d", len(allCommands))
+	}
+}
+
 func TestParse(t *testing.T) {
 	input := `
 Type@100 echo 'Hi, there!'
@@ -51,6 +57,10 @@ Type bar `
 		t.Error(err)
 	}
 
+	if len(commands) != 2 {
+		t.Errorf("expected 2 commands, got %d", len(commands))
+	}
+
 	for i, command := range commands {
 		if command != expected[i] {
 			t.Errorf("expected %v, got %v", expected[i], command)
@@ -76,6 +86,10 @@ Backspace@100 10
 		t.Error(err)
 	}
 
+	if len(commands) != 3 {
+		t.Errorf("expected 3 commands, got %d", len(commands))
+	}
+
 	for i, command := range commands {
 		if command != expected[i] {
 			t.Errorf("expected %v, got %v", expected[i], command)
@@ -97,6 +111,10 @@ Sleep 100ms
 	commands, err := Parse(input)
 	if err != nil {
 		t.Error(err)
+	}
+
+	if len(commands) != 2 {
+		t.Errorf("expected 2 commands, got %d", len(commands))
 	}
 
 	for i, command := range commands {
