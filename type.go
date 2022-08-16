@@ -1,41 +1,8 @@
 package dolly
 
 import (
-	"math/rand"
-	"time"
-
 	"github.com/go-rod/rod/lib/input"
 )
-
-// TypeOptions are the possible typing options.
-type TypeOptions struct {
-	Speed    float64
-	Variance float64
-}
-
-// DefaultTypeOptions returns the default typing options.
-var DefaultTypeOptions = TypeOptions{
-	Speed:    75,
-	Variance: 0.1,
-}
-
-// Type types the given string onto the page at the given speed. The delay is
-// the time between each key press.
-func (d Dolly) Type(str string, opts TypeOptions) {
-	for _, r := range str {
-		k, ok := keymap[r]
-		if ok {
-			d.Page.Keyboard.Type(k)
-		} else {
-			d.Page.MustElement("textarea").Input(string(r))
-			d.Page.MustWaitIdle()
-		}
-
-		r := (rand.Float64() - 0.5)
-		v := r * (opts.Variance * opts.Speed)
-		time.Sleep(time.Millisecond * time.Duration(v+opts.Speed))
-	}
-}
 
 func shift(k input.Key) input.Key {
 	k, _ = k.Shift()
