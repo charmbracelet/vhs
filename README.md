@@ -2,7 +2,7 @@
 
 Programmatically record GIFs for terminal applications with Go 🎬
 
-<img width="400" src="./demo.gif" alt="Automatic GIF recording" />
+<img width="400" src="./out.gif" alt="Automatic GIF recording" />
 
 The above example is generated from a single Go file ([source](./examples/demo/main.go))
 
