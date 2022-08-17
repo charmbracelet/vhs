@@ -15,11 +15,11 @@ func main() {
 
 	b, err := os.ReadFile(os.Args[1])
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 	cmds, err := dolly.Parse(string(b))
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 	dolly.Run(cmds)
 }
