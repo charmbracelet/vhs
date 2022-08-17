@@ -1,6 +1,7 @@
 package dolly
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"time"
@@ -118,12 +119,12 @@ func ExecuteSet(c Command, d *Dolly) {
 
 func ApplyFontSize(c Command, d *Dolly) {
 	fontSize, _ := strconv.Atoi(c.Args)
-	d.Options.TTY.FontSize = fontSize
+	d.Options.FontSize = fontSize
 	d.Page.Eval(fmt.Sprintf("term.setOption('fontSize', '%d')", fontSize))
 }
 
 func ApplyFontFamily(c Command, d *Dolly) {
-	d.Options.TTY.FontFamily = c.Args
+	d.Options.FontFamily = c.Args
 	d.Page.Eval(fmt.Sprintf("term.setOption('fontFamily', '%s')", c.Args))
 }
 
@@ -137,11 +138,16 @@ func ApplyWidth(c Command, d *Dolly) {
 
 func ApplyLineHeight(c Command, d *Dolly) {
 	lineHeight, _ := strconv.ParseFloat(c.Args, 64)
-	d.Options.TTY.LineHeight = lineHeight
+	d.Options.LineHeight = lineHeight
 	d.Page.Eval(fmt.Sprintf("term.setOption('lineHeight', '%f')", lineHeight))
 }
 
 func ApplyTheme(c Command, d *Dolly) {
+	err := json.Unmarshal([]byte(c.Args), &d.Options.Theme)
+	if err != nil {
+		d.Options.Theme = DefaultTheme
+		return
+	}
 	d.Page.Eval(fmt.Sprintf("term.setOption('theme', '%s')", c.Args))
 }
 

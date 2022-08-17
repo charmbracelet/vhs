@@ -21,24 +21,29 @@ type Dolly struct {
 
 // DollyOptions is the set of options for the setup.
 type DollyOptions struct {
-	Framerate float64
-	Height    int
-	Padding   string
-	Width     int
-
-	TTY TTYOptions
-	GIF GIFOptions
+	Framerate  float64
+	Height     int
+	Padding    string
+	Width      int
+	FontFamily string
+	FontSize   int
+	LineHeight float64
+	Theme      Theme
+	GIF        GIFOptions
 }
 
 // DefaultDollyOptions returns the default set of options to use for the setup function.
 func DefaultDollyOptions() DollyOptions {
 	return DollyOptions{
-		Framerate: 60,
-		Height:    600,
-		Width:     1200,
-		Padding:   "5em",
+		Framerate:  60,
+		Height:     600,
+		Width:      1200,
+		Padding:    "5em",
+		FontFamily: "SF Mono",
+		FontSize:   22,
+		LineHeight: 1.2,
+		Theme:      DefaultTheme,
 
-		TTY: DefaultTTYOptions,
 		GIF: DefaultGIFOptions,
 	}
 }
@@ -56,11 +61,11 @@ func New() Dolly {
 
 	opts := DefaultDollyOptions()
 
-	theme, _ := json.Marshal(opts.TTY.Theme)
+	theme, _ := json.Marshal(opts.Theme)
 	page.Eval(fmt.Sprintf("term.setOption('theme', '%s')", theme))
-	page.Eval(fmt.Sprintf("term.setOption('fontFamily', '%s')", opts.TTY.FontFamily))
-	page.Eval(fmt.Sprintf("term.setOption('fontSize', '%d')", opts.TTY.FontSize))
-	page.Eval(fmt.Sprintf("term.setOption('lineHeight', '%f')", opts.TTY.LineHeight))
+	page.Eval(fmt.Sprintf("term.setOption('fontFamily', '%s')", opts.FontFamily))
+	page.Eval(fmt.Sprintf("term.setOption('fontSize', '%d')", opts.FontSize))
+	page.Eval(fmt.Sprintf("term.setOption('lineHeight', '%f')", opts.LineHeight))
 
 	return Dolly{
 		Options: &opts,
