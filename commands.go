@@ -1,6 +1,8 @@
 package dolly
 
 import (
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/go-rod/rod/lib/input"
@@ -14,11 +16,12 @@ const (
 	Enter
 	Left
 	Right
+	Space
+	Up
+
+	Type
 	Set
 	Sleep
-	Space
-	Type
-	Up
 )
 
 var Commands = map[CommandType]string{
@@ -27,26 +30,28 @@ var Commands = map[CommandType]string{
 	Enter:     "Enter",
 	Left:      "Left",
 	Right:     "Right",
-	Set:       "Set",
-	Sleep:     "Sleep",
 	Space:     "Space",
-	Type:      "Type",
 	Up:        "Up",
+
+	Set:   "Set",
+	Sleep: "Sleep",
+	Type:  "Type",
 }
 
 type CommandFunc func(c Command, d *Dolly)
 
 var CommandFuncs = map[CommandType]CommandFunc{
-	Backspace: ExecuteBackspace,
-	Down:      ExecuteDown,
-	Enter:     ExecuteEnter,
-	Left:      ExecuteLeft,
-	Right:     ExecuteRight,
-	Set:       ExecuteSet,
-	Sleep:     ExecuteSleep,
-	Space:     ExecuteSpace,
-	Type:      ExecuteType,
-	Up:        ExecuteUp,
+	Backspace: ExecuteKey(input.Backspace),
+	Down:      ExecuteKey(input.ArrowDown),
+	Enter:     ExecuteKey(input.Enter),
+	Left:      ExecuteKey(input.ArrowLeft),
+	Right:     ExecuteKey(input.ArrowRight),
+	Space:     ExecuteKey(input.Space),
+	Up:        ExecuteKey(input.ArrowUp),
+
+	Set:   ExecuteSet,
+	Sleep: ExecuteSleep,
+	Type:  ExecuteType,
 }
 
 type Command struct {
@@ -59,32 +64,20 @@ func (c Command) Execute(d *Dolly) {
 	CommandFuncs[c.Type](c, d)
 }
 
-func ExecuteBackspace(c Command, d *Dolly) {
-	d.Page.Keyboard.Type(input.Backspace)
+func (c Command) String() string {
+	return Commands[c.Type] + " " + c.Args
 }
 
-func ExecuteDown(c Command, d *Dolly) {
-	d.Page.Keyboard.Type(input.ArrowDown)
-}
-
-func ExecuteEnter(c Command, d *Dolly) {
-	d.Page.Keyboard.Type(input.Enter)
-}
-
-func ExecuteLeft(c Command, d *Dolly) {
-	d.Page.Keyboard.Type(input.ArrowLeft)
-}
-
-func ExecuteRight(c Command, d *Dolly) {
-	d.Page.Keyboard.Type(input.ArrowRight)
-}
-
-func ExecuteUp(c Command, d *Dolly) {
-	d.Page.Keyboard.Type(input.ArrowUp)
-}
-
-func ExecuteSpace(c Command, d *Dolly) {
-	d.Page.Keyboard.Type(input.Space)
+func ExecuteKey(k input.Key) CommandFunc {
+	return func(c Command, d *Dolly) {
+		num, err := strconv.Atoi(c.Args)
+		if err != nil {
+			num = 1
+		}
+		for i := 0; i < num; i++ {
+			d.Page.Keyboard.Type(k)
+		}
+	}
 }
 
 func ExecuteSleep(c Command, d *Dolly) {
@@ -105,5 +98,23 @@ func ExecuteType(c Command, d *Dolly) {
 			d.Page.MustWaitIdle()
 		}
 		time.Sleep(time.Millisecond * 100)
+	}
+}
+
+func ExecuteSet(c Command, d *Dolly) {
+	if strings.HasPrefix(c.Args, "FontSize") {
+		d.Options.TTY.FontSize, _ = strconv.Atoi(c.Args[len("FontSize "):])
+	} else if strings.HasPrefix(c.Args, "FontFamily") {
+		d.Options.TTY.FontFamily = c.Args[len("FontFamily "):]
+	} else if strings.HasPrefix(c.Args, "Width") {
+		d.Options.Width, _ = strconv.Atoi(c.Args[(len("Width ")):])
+	} else if strings.HasPrefix(c.Args, "Height") {
+		d.Options.Height, _ = strconv.Atoi(c.Args[(len("Height ")):])
+	} else if strings.HasPrefix(c.Args, "LineHeight") {
+		d.Options.TTY.LineHeight, _ = strconv.ParseFloat(c.Args[(len("LineHeight ")):], 64)
+	} else if strings.HasPrefix(c.Args, "Padding") {
+		d.Options.Padding = c.Args[(len("Padding ")):]
+	} else if strings.HasPrefix(c.Args, "Framerate") {
+		d.Options.Framerate, _ = strconv.ParseFloat(c.Args[(len("Framerate ")):], 64)
 	}
 }

@@ -1,29 +1,23 @@
 package dolly
 
 import (
-	"encoding/json"
 	"fmt"
-	"os"
 	"os/exec"
 )
 
 // TTYOptions is the set of options to pass to `ttyd`.
 type TTYOptions struct {
-	Port       int
 	FontFamily string
 	FontSize   int
 	LineHeight float64
-	Debug      bool
 	Theme      Theme
 }
 
 // DefaultTTYOptions is the set of options to pass to `ttyd` by default.
 var DefaultTTYOptions = TTYOptions{
-	Port:       randomPort(),
 	FontFamily: "SF Mono",
 	FontSize:   22,
 	LineHeight: 1.2,
-	Debug:      false,
 	Theme:      DefaultTheme,
 }
 
@@ -73,23 +67,11 @@ var DefaultTheme = Theme{
 }
 
 // StartTTY starts the ttyd process on the given port and options.
-func StartTTY(opts TTYOptions) *exec.Cmd {
-	theme, _ := json.Marshal(opts.Theme)
-
+func StartTTY(port int) *exec.Cmd {
 	cmd := exec.Command(
-		"ttyd", fmt.Sprintf("--port=%d", opts.Port),
-		"-t", fmt.Sprintf("fontFamily='%s'", opts.FontFamily),
-		"-t", fmt.Sprintf("fontSize=%d", opts.FontSize),
-		"-t", fmt.Sprintf("lineHeight=%f", opts.LineHeight),
-		"-t", fmt.Sprintf("theme=%s", theme),
+		"ttyd", fmt.Sprintf("--port=%d", port),
 		"-t", "customGlyphs=true",
 		"zsh", "-d", "-f",
 	)
-
-	if opts.Debug {
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-	}
-
 	return cmd
 }

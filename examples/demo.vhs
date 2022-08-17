@@ -1,6 +1,9 @@
-Set FontSize 42
+Set FontSize 32
+Set Padding 5em
+Set LineHeight 1.2
 
-Type echo 'Hello World'
+Type@100 echo 'Hello World'
+Backspace@100 5
+Type@200 '
 Enter
-Backspace 5
 Sleep 1s
