@@ -1,4 +1,4 @@
-Set FontSize32
+Set FontSize 32
 Set Padding 10em
 
 Type@100 echo 'Hello World'

@@ -65,7 +65,7 @@ func (c Command) Execute(d *Dolly) {
 }
 
 func (c Command) String() string {
-	return Commands[c.Type] + " " + c.Args
+	return Commands[c.Type] + " " + c.Options + " " + c.Args
 }
 
 func ExecuteKey(k input.Key) CommandFunc {
@@ -113,7 +113,7 @@ var SetCommands = map[string]CommandFunc{
 }
 
 func ExecuteSet(c Command, d *Dolly) {
-	SetCommands[c.Args](c, d)
+	SetCommands[c.Options](c, d)
 }
 
 func ApplyFontSize(c Command, d *Dolly) {
