@@ -8,6 +8,7 @@ import (
 // order, and then cleans up the processes, and compiles the GIF.
 func Run(commands []Command) {
 	d := New()
+	defer d.Cleanup()
 
 	var offset int
 
@@ -23,7 +24,6 @@ func Run(commands []Command) {
 	}
 
 	d.Start()
-	defer d.Cleanup()
 
 	// Execute the normal commands on the running instance.
 	for _, command := range commands[offset:] {
