@@ -3,7 +3,6 @@ package dolly
 import (
 	"fmt"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/go-rod/rod/lib/input"
@@ -102,31 +101,55 @@ func ExecuteType(c Command, d *Dolly) {
 	}
 }
 
+var SetCommands = map[string]CommandFunc{
+	"FontSize":   ApplyFontSize,
+	"FontFamily": ApplyFontFamily,
+	"Height":     ApplyHeight,
+	"Width":      ApplyWidth,
+	"LineHeight": ApplyLineHeight,
+	"Theme":      ApplyTheme,
+	"Padding":    ApplyPadding,
+	"Framerate":  ApplyFramerate,
+}
+
 func ExecuteSet(c Command, d *Dolly) {
-	if strings.HasPrefix(c.Args, "FontSize") {
-		fontSize, _ := strconv.Atoi(c.Args[len("FontSize "):])
-		d.Options.TTY.FontSize = fontSize
-		d.Page.Eval(fmt.Sprintf("term.setOption('fontSize', '%d')", fontSize))
-	} else if strings.HasPrefix(c.Args, "FontFamily") {
-		fontFamily := c.Args[len("FontFamily "):]
-		d.Options.TTY.FontFamily = fontFamily
-		d.Page.Eval(fmt.Sprintf("term.setOption('fontFamily', '%s')", fontFamily))
-	} else if strings.HasPrefix(c.Args, "Width") {
-		d.Options.Width, _ = strconv.Atoi(c.Args[(len("Width ")):])
-	} else if strings.HasPrefix(c.Args, "Height") {
-		d.Options.Height, _ = strconv.Atoi(c.Args[(len("Height ")):])
-	} else if strings.HasPrefix(c.Args, "LineHeight") {
-		lineHeight, _ := strconv.ParseFloat(c.Args[(len("LineHeight ")):], 64)
-		d.Options.TTY.LineHeight = lineHeight
-		d.Page.Eval(fmt.Sprintf("term.setOption('lineHeight', '%f')", lineHeight))
-	} else if strings.HasPrefix(c.Args, "Theme") {
-		theme := c.Args[len("Theme "):]
-		d.Page.Eval(fmt.Sprintf("term.setOption('theme', '%s')", theme))
-	} else if strings.HasPrefix(c.Args, "Padding") {
-		padding := c.Args[(len("Padding ")):]
-		d.Page.MustElement(".xterm").Eval(fmt.Sprintf(`this.style.padding = '%s'`, padding))
-		d.Options.Padding = padding
-	} else if strings.HasPrefix(c.Args, "Framerate") {
-		d.Options.Framerate, _ = strconv.ParseFloat(c.Args[(len("Framerate ")):], 64)
-	}
+	SetCommands[c.Args](c, d)
+}
+
+func ApplyFontSize(c Command, d *Dolly) {
+	fontSize, _ := strconv.Atoi(c.Args)
+	d.Options.TTY.FontSize = fontSize
+	d.Page.Eval(fmt.Sprintf("term.setOption('fontSize', '%d')", fontSize))
+}
+
+func ApplyFontFamily(c Command, d *Dolly) {
+	d.Options.TTY.FontFamily = c.Args
+	d.Page.Eval(fmt.Sprintf("term.setOption('fontFamily', '%s')", c.Args))
+}
+
+func ApplyHeight(c Command, d *Dolly) {
+	d.Options.Height, _ = strconv.Atoi(c.Args)
+}
+
+func ApplyWidth(c Command, d *Dolly) {
+	d.Options.Width, _ = strconv.Atoi(c.Args)
+}
+
+func ApplyLineHeight(c Command, d *Dolly) {
+	lineHeight, _ := strconv.ParseFloat(c.Args, 64)
+	d.Options.TTY.LineHeight = lineHeight
+	d.Page.Eval(fmt.Sprintf("term.setOption('lineHeight', '%f')", lineHeight))
+}
+
+func ApplyTheme(c Command, d *Dolly) {
+	d.Page.Eval(fmt.Sprintf("term.setOption('theme', '%s')", c.Args))
+}
+
+func ApplyPadding(c Command, d *Dolly) {
+	d.Options.Padding = c.Args
+	d.Page.MustElement(".xterm").Eval(fmt.Sprintf(`this.style.padding = '%s'`, c.Args))
+}
+
+func ApplyFramerate(c Command, d *Dolly) {
+	d.Options.Framerate, _ = strconv.ParseFloat(c.Args, 64)
 }

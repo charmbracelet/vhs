@@ -5,7 +5,7 @@ import (
 )
 
 func TestCommand(t *testing.T) {
-	if len(Commands) != 9 {
-		t.Errorf("Expected 9 commands, got %d", len(Commands))
+	if len(Commands) != 10 {
+		t.Errorf("Expected 10 commands, got %d", len(Commands))
 	}
 }

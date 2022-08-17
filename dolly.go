@@ -61,13 +61,14 @@ func New() Dolly {
 	page.Eval(fmt.Sprintf("term.setOption('fontFamily', '%s')", opts.TTY.FontFamily))
 	page.Eval(fmt.Sprintf("term.setOption('fontSize', '%d')", opts.TTY.FontSize))
 	page.Eval(fmt.Sprintf("term.setOption('lineHeight', '%f')", opts.TTY.LineHeight))
-	page = page.MustSetViewport(opts.Width, opts.Height, 1, false)
-	page.MustEval("term.fit")
 
 	return Dolly{
 		Options: &opts,
 		Page:    page,
 		Start: func() {
+			page = page.MustSetViewport(opts.Width, opts.Height, 1, false)
+			page.MustEval("window.term.fit")
+
 			page.MustElement(".xterm").Eval(fmt.Sprintf(`this.style.padding = '%s'`, opts.Padding))
 			page.MustElement("body").Eval(`this.style.overflow = 'hidden'`)
 			page.MustElement("#terminal-container").Eval(`this.style.overflow = 'hidden'`)

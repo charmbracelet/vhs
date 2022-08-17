@@ -1,12 +1,21 @@
 package dolly
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 )
 
-const commentPrefix = "#"
-const optionsPrefix = "@"
+var (
+	ErrMissingArguments = errors.New("missing arguments")
+	ErrUnknownCommand   = errors.New("unknown command")
+	ErrUnknownOptions   = errors.New("unknown options")
+)
+
+const (
+	commentPrefix = "#"
+	optionsPrefix = "@"
+)
 
 // Parse takes a string as input and returns the commands to be executed.
 func Parse(s string) ([]Command, error) {
@@ -19,6 +28,7 @@ func Parse(s string) ([]Command, error) {
 			continue
 		}
 
+		valid := false
 		for commandType, command := range Commands {
 			if strings.HasPrefix(line, command) {
 				options, args, err := parseArgs(command, line)
@@ -26,8 +36,12 @@ func Parse(s string) ([]Command, error) {
 					return nil, err
 				}
 				commands = append(commands, Command{commandType, options, args})
+				valid = true
 				break
 			}
+		}
+		if !valid {
+			return nil, fmt.Errorf("%s: %s", ErrUnknownCommand, line)
 		}
 	}
 
@@ -35,16 +49,36 @@ func Parse(s string) ([]Command, error) {
 }
 
 func parseArgs(command string, line string) (string, string, error) {
-	rawArgs := line[len(command):]
+	rawArgs := strings.TrimPrefix(line[len(command):], " ")
+
+	if command == Commands[Set] {
+		splitIndex := strings.Index(rawArgs, " ")
+		if splitIndex == -1 {
+			return "", "", fmt.Errorf("%s: %s", ErrMissingArguments, line)
+		}
+
+		options := rawArgs[:splitIndex]
+		args := rawArgs[splitIndex+1:]
+		_, ok := SetCommands[options]
+		if !ok {
+			return "", "", fmt.Errorf("%s: %s", ErrUnknownOptions, line)
+		}
+
+		return options, args, nil
+	}
+
 	if !strings.HasPrefix(rawArgs, optionsPrefix) {
-		return "", strings.TrimPrefix(rawArgs, " "), nil
+		if command == Commands[Type] && rawArgs == "" {
+			return "", "", ErrMissingArguments
+		}
+		return "", rawArgs, nil
 	}
 
 	var options, args string
 	splitIndex := strings.Index(rawArgs, " ")
 
 	if splitIndex < 0 || splitIndex == len(rawArgs)-1 {
-		return "", "", fmt.Errorf("no arguments found for %s", command)
+		return "", "", fmt.Errorf("%s: %s", ErrMissingArguments, line)
 	}
 
 	options = rawArgs[:splitIndex]
