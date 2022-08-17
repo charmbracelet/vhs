@@ -1,6 +1,7 @@
 package dolly
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -103,17 +104,28 @@ func ExecuteType(c Command, d *Dolly) {
 
 func ExecuteSet(c Command, d *Dolly) {
 	if strings.HasPrefix(c.Args, "FontSize") {
-		d.Options.TTY.FontSize, _ = strconv.Atoi(c.Args[len("FontSize "):])
+		fontSize, _ := strconv.Atoi(c.Args[len("FontSize "):])
+		d.Options.TTY.FontSize = fontSize
+		d.Page.Eval(fmt.Sprintf("term.setOption('fontSize', '%d')", fontSize))
 	} else if strings.HasPrefix(c.Args, "FontFamily") {
-		d.Options.TTY.FontFamily = c.Args[len("FontFamily "):]
+		fontFamily := c.Args[len("FontFamily "):]
+		d.Options.TTY.FontFamily = fontFamily
+		d.Page.Eval(fmt.Sprintf("term.setOption('fontFamily', '%s')", fontFamily))
 	} else if strings.HasPrefix(c.Args, "Width") {
 		d.Options.Width, _ = strconv.Atoi(c.Args[(len("Width ")):])
 	} else if strings.HasPrefix(c.Args, "Height") {
 		d.Options.Height, _ = strconv.Atoi(c.Args[(len("Height ")):])
 	} else if strings.HasPrefix(c.Args, "LineHeight") {
-		d.Options.TTY.LineHeight, _ = strconv.ParseFloat(c.Args[(len("LineHeight ")):], 64)
+		lineHeight, _ := strconv.ParseFloat(c.Args[(len("LineHeight ")):], 64)
+		d.Options.TTY.LineHeight = lineHeight
+		d.Page.Eval(fmt.Sprintf("term.setOption('lineHeight', '%f')", lineHeight))
+	} else if strings.HasPrefix(c.Args, "Theme") {
+		theme := c.Args[len("Theme "):]
+		d.Page.Eval(fmt.Sprintf("term.setOption('theme', '%s')", theme))
 	} else if strings.HasPrefix(c.Args, "Padding") {
-		d.Options.Padding = c.Args[(len("Padding ")):]
+		padding := c.Args[(len("Padding ")):]
+		d.Page.MustElement(".xterm").Eval(fmt.Sprintf(`this.style.padding = '%s'`, padding))
+		d.Options.Padding = padding
 	} else if strings.HasPrefix(c.Args, "Framerate") {
 		d.Options.Framerate, _ = strconv.ParseFloat(c.Args[(len("Framerate ")):], 64)
 	}

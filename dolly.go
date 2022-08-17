@@ -51,39 +51,35 @@ func New() Dolly {
 
 	browser := rod.New().MustConnect()
 	page := browser.MustPage(fmt.Sprintf("http://localhost:%d", port))
+	page = page.MustWaitLoad()
+	page = page.MustWaitIdle()
 
 	opts := DefaultDollyOptions()
+
+	theme, _ := json.Marshal(opts.TTY.Theme)
+	page.Eval(fmt.Sprintf("term.setOption('theme', '%s')", theme))
+	page.Eval(fmt.Sprintf("term.setOption('fontFamily', '%s')", opts.TTY.FontFamily))
+	page.Eval(fmt.Sprintf("term.setOption('fontSize', '%d')", opts.TTY.FontSize))
+	page.Eval(fmt.Sprintf("term.setOption('lineHeight', '%f')", opts.TTY.LineHeight))
+	page = page.MustSetViewport(opts.Width, opts.Height, 1, false)
+	page.MustEval("term.fit")
 
 	return Dolly{
 		Options: &opts,
 		Page:    page,
 		Start: func() {
-			os.MkdirAll(opts.GIF.InputFolder, os.ModePerm)
-
-			page = page.MustSetViewport(opts.Width, opts.Height, 1, false)
-			page = page.MustWaitLoad()
-			page = page.MustWaitIdle()
-
-			page.Eval(fmt.Sprintf("term.setOption('fontFamily', '%s')", opts.TTY.FontFamily))
-			page.Eval(fmt.Sprintf("term.setOption('fontSize', '%d')", opts.TTY.FontSize))
-			page.Eval(fmt.Sprintf("term.setOption('lineHeight', '%f')", opts.TTY.LineHeight))
-			theme, _ := json.Marshal(opts.TTY.Theme)
-			page.Eval(fmt.Sprintf("term.setOption('theme', '%s')", string(theme)))
-
 			page.MustElement(".xterm").Eval(fmt.Sprintf(`this.style.padding = '%s'`, opts.Padding))
 			page.MustElement("body").Eval(`this.style.overflow = 'hidden'`)
 			page.MustElement("#terminal-container").Eval(`this.style.overflow = 'hidden'`)
 			page.MustElement(".xterm-viewport").Eval(`this.style.overflow = 'hidden'`)
-			// Fit ttyd xterm window to the screen.
-			// ttyd stores its xterm instance at `window.term`
-			// https://xtermjs.org/docs/api/addons/fit/
-			// https://github.com/tsl0922/ttyd/blob/723ae966939527e8db35f27fb69bac0e02860099/html/src/components/terminal/index.tsx#L167-L196
-			page.MustEval("window.term.fit")
 			page.MustElement("textarea").MustInput("PROMPT='%F{#5a56e0}>%f '").MustType(input.Enter)
 			page.MustElement("textarea").MustInput("clear").MustType(input.Enter)
 			page.MustWaitIdle()
 
-			time.Sleep(2 * time.Second)
+			os.MkdirAll(opts.GIF.InputFolder, os.ModePerm)
+
+			time.Sleep(2500 * time.Millisecond)
+
 			go func() {
 				counter := 0
 				for {
