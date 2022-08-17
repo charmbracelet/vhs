@@ -1,6 +1,16 @@
+// theme contains the information about a terminal theme.
+// It stores the 16 base colors as well as the background and foreground colors
+// of the terminal theme.
+//
+// It can be changed through the Set command.
+//
+// Set Theme {"background": "#171717"}
+//
 package dolly
 
 // Theme is a terminal theme for xterm.js
+// It is used for marshalling between the xterm.js readable json format and a
+// valid go struct.
 type Theme struct {
 	Background    string `json:"background"`
 	Foreground    string `json:"foreground"`
@@ -23,7 +33,9 @@ type Theme struct {
 }
 
 // DefaultTheme is the default theme to use for recording demos and
-// screenshots. Taken from https://github.com/meowgorithm/dotfiles.
+// screenshots.
+//
+// Taken from https://github.com/meowgorithm/dotfiles.
 var DefaultTheme = Theme{
 	Background:    "#171717",
 	Foreground:    "#dddddd",

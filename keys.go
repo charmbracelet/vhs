@@ -1,14 +1,28 @@
+// keys defines the key map for the Type command.
+// The `keymap` map is used to convert runes from a string into the appropriate
+// go-rod input.
+//
+// Type Hello, world!
+//
+// The above command will type the string "Hello, world!" into the terminal,
+// by converting each rune into the correct input.
+//
+// Hello, world!
+// { shift(input.KeyH), input.KeyE, ..., input.KeyD, shift(input.Digit1) }
 package dolly
 
 import (
 	"github.com/go-rod/rod/lib/input"
 )
 
+// shift returns the input.Key with the shift modifier set.
 func shift(k input.Key) input.Key {
 	k, _ = k.Shift()
 	return k
 }
 
+// keymap is the map of runes to input.Keys.
+// It is used to convert a string to the correct set of input.Keys for go-rod.
 var keymap = map[rune]input.Key{
 	' ':    input.Space,
 	'!':    shift(input.Digit1),

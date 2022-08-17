@@ -1,11 +1,27 @@
+// gif spawns the ffmpeg process to convert the frames, collected by go-rod's
+// screenshots into the input folder, to a GIF.
+//
+// MakeGIF takes several options to modify the behaviour of the ffmpeg process,
+// which can be configured through the Set command.
+//
+// Set MaxColors 256
+// Set Output demo.gif
 package dolly
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 )
 
 const frameFileFormat = "frame-%02d.png"
+
+// randomDir returns a random temporary directory to be used for storing frames
+// from screenshots of the terminal.
+func randomDir() string {
+	tmp, _ := os.MkdirTemp(os.TempDir(), "dolly")
+	return tmp
+}
 
 // Options is the set of options for converting frames to a GIF.
 type GIFOptions struct {
@@ -16,6 +32,8 @@ type GIFOptions struct {
 	MaxColors   int
 }
 
+// DefaultGIFOptions is the set of default options for converting frames
+// to a GIF, which are used if they are not overridden.
 var DefaultGIFOptions = GIFOptions{
 	Width:       1200,
 	InputFolder: randomDir(),
