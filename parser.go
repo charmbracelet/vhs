@@ -18,12 +18,15 @@ const (
 )
 
 // Parse takes a string as input and returns the commands to be executed.
-func Parse(s string) ([]Command, error) {
+func Parse(s string) ([]Command, []error) {
 	var commands []Command
+	var errs []error
 
 	lines := strings.Split(s, "\n")
 
-	for _, line := range lines {
+	for i, line := range lines {
+		lineNumber := i + 1
+
 		if shouldSkip(line) {
 			continue
 		}
@@ -31,21 +34,23 @@ func Parse(s string) ([]Command, error) {
 		valid := false
 		for commandType, command := range Commands {
 			if strings.HasPrefix(line, command) {
+				valid = true
 				options, args, err := parseArgs(command, line)
 				if err != nil {
-					return nil, err
+					errs = append(errs, fmt.Errorf("%s\n%d | %s", err, lineNumber, line))
+					break
 				}
 				commands = append(commands, Command{commandType, options, args})
-				valid = true
 				break
 			}
 		}
 		if !valid {
-			return nil, fmt.Errorf("%s: %s", ErrUnknownCommand, line)
+			errs = append(errs, fmt.Errorf("%s\n%d | %s", ErrUnknownCommand, lineNumber, line))
+			continue
 		}
 	}
 
-	return commands, nil
+	return commands, errs
 }
 
 func parseArgs(command string, line string) (string, string, error) {
@@ -54,14 +59,14 @@ func parseArgs(command string, line string) (string, string, error) {
 	if command == Commands[Set] {
 		splitIndex := strings.Index(rawArgs, " ")
 		if splitIndex == -1 {
-			return "", "", fmt.Errorf("%s: %s", ErrMissingArguments, line)
+			return "", "", ErrMissingArguments
 		}
 
 		options := rawArgs[:splitIndex]
 		args := rawArgs[splitIndex+1:]
 		_, ok := SetCommands[options]
 		if !ok {
-			return "", "", fmt.Errorf("%s: %s", ErrUnknownOptions, line)
+			return "", "", ErrUnknownOptions
 		}
 
 		return options, args, nil
@@ -69,7 +74,7 @@ func parseArgs(command string, line string) (string, string, error) {
 
 	if !strings.HasPrefix(rawArgs, optionsPrefix) {
 		if command == Commands[Type] && rawArgs == "" {
-			return "", "", fmt.Errorf("%s: %s", ErrMissingArguments, line)
+			return "", "", ErrMissingArguments
 		}
 		return "", rawArgs, nil
 	}
@@ -78,7 +83,7 @@ func parseArgs(command string, line string) (string, string, error) {
 	splitIndex := strings.Index(rawArgs, " ")
 
 	if splitIndex < 0 || splitIndex == len(rawArgs)-1 {
-		return "", "", fmt.Errorf("%s: %s", ErrMissingArguments, line)
+		return "", "", ErrMissingArguments
 	}
 
 	options = rawArgs[:splitIndex]

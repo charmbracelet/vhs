@@ -23,9 +23,12 @@ Sleep 1s`
 		{Type: Sleep, Args: "1s"},
 	}
 
-	commands, err := Parse(input)
-	if err != nil {
-		t.Error(err)
+	commands, errs := Parse(input)
+	if len(errs) != 0 {
+		for _, err := range errs {
+			t.Log(err)
+		}
+		t.Fail()
 	}
 	if len(commands) != 5 {
 		t.Errorf("expected 5 commands, got %d", len(commands))
@@ -195,19 +198,27 @@ Set FontSize 30
 func TestInvalidString(t *testing.T) {
 	tests := []struct {
 		input string
-		err   error
+		errs  []error
 	}{
-		{input: "Set FontFamily", err: ErrMissingArguments},
-		{input: "Foo", err: ErrUnknownCommand},
-		{input: "Set Foo Bar", err: ErrUnknownOptions},
-		{input: "Type", err: ErrMissingArguments},
+		{input: "Set FontFamily", errs: []error{fmt.Errorf("%s\n1 | Set FontFamily", ErrMissingArguments)}},
+		{input: "Foo", errs: []error{fmt.Errorf("%s\n1 | Foo", ErrUnknownCommand)}},
+		{input: "Set Foo Bar", errs: []error{fmt.Errorf("%s\n1 | Set Foo Bar", ErrUnknownOptions)}},
+		{input: "Type", errs: []error{fmt.Errorf("%s\n1 | Type", ErrMissingArguments)}},
+		{input: "Set FontFamily Monospace\nFoobar\nType", errs: []error{fmt.Errorf("%s\n2 | Foobar", ErrUnknownCommand), fmt.Errorf("%s\n3 | Type", ErrMissingArguments)}},
 	}
 
 	for _, test := range tests {
-		_, err := Parse(test.input)
-		errMsg := fmt.Sprintf("%s: %s", test.err.Error(), test.input)
-		if err == nil || err.Error() != errMsg {
-			t.Errorf("expected %v, got %v", errMsg, err)
+		_, errs := Parse(test.input)
+		if len(errs) != len(test.errs) {
+			t.Errorf("expected %d errors, got %d", len(test.errs), len(errs))
+		}
+
+		for i, err := range errs {
+			if err.Error() != test.errs[i].Error() {
+				t.Logf("Expected:\n%s\n", test.errs[i])
+				t.Logf("Got:\n%s\n", err)
+				t.Fail()
+			}
 		}
 	}
 }
