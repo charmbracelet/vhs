@@ -69,7 +69,7 @@ func parseArgs(command string, line string) (string, string, error) {
 
 	if !strings.HasPrefix(rawArgs, optionsPrefix) {
 		if command == Commands[Type] && rawArgs == "" {
-			return "", "", ErrMissingArguments
+			return "", "", fmt.Errorf("%s: %s", ErrMissingArguments, line)
 		}
 		return "", rawArgs, nil
 	}

@@ -197,16 +197,17 @@ func TestInvalidString(t *testing.T) {
 		input string
 		err   error
 	}{
-		{input: "Set FontFamily", err: fmt.Errorf("%s: Set FontFamily", ErrMissingArguments)},
-		{input: "Foo", err: fmt.Errorf("%s: Foo", ErrUnknownCommand)},
-		{input: "Set Foo Bar", err: fmt.Errorf("%s: Set Foo Bar", ErrUnknownOptions)},
+		{input: "Set FontFamily", err: ErrMissingArguments},
+		{input: "Foo", err: ErrUnknownCommand},
+		{input: "Set Foo Bar", err: ErrUnknownOptions},
 		{input: "Type", err: ErrMissingArguments},
 	}
 
 	for _, test := range tests {
 		_, err := Parse(test.input)
-		if err == nil || err.Error() != test.err.Error() {
-			t.Errorf("expected %v, got %v", test.err, err)
+		errMsg := fmt.Sprintf("%s: %s", test.err.Error(), test.input)
+		if err == nil || err.Error() != errMsg {
+			t.Errorf("expected %v, got %v", errMsg, err)
 		}
 	}
 }
