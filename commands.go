@@ -71,12 +71,17 @@ func (c Command) String() string {
 
 func ExecuteKey(k input.Key) CommandFunc {
 	return func(c Command, d *Dolly) {
-		num, err := strconv.Atoi(c.Args)
+		repeat, err := strconv.Atoi(c.Args)
 		if err != nil {
-			num = 1
+			repeat = 1
 		}
-		for i := 0; i < num; i++ {
+		delayMs, err := strconv.Atoi(c.Options)
+		if err != nil {
+			delayMs = 100
+		}
+		for i := 0; i < repeat; i++ {
 			d.Page.Keyboard.Type(k)
+			time.Sleep(time.Millisecond * time.Duration(delayMs))
 		}
 	}
 }
@@ -98,11 +103,11 @@ func ExecuteType(c Command, d *Dolly) {
 			d.Page.MustElement("textarea").Input(string(r))
 			d.Page.MustWaitIdle()
 		}
-		ms, err := strconv.Atoi(c.Options)
+		delayMs, err := strconv.Atoi(c.Options)
 		if err != nil {
-			ms = 100
+			delayMs = 100
 		}
-		time.Sleep(time.Millisecond * time.Duration(ms))
+		time.Sleep(time.Millisecond * time.Duration(delayMs))
 	}
 }
 
