@@ -16,10 +16,12 @@ func main() {
 	b, err := os.ReadFile(os.Args[1])
 	if err != nil {
 		fmt.Println(err)
+		os.Exit(1)
 	}
 	cmds, err := dolly.Parse(string(b))
 	if err != nil {
 		fmt.Println(err)
+		os.Exit(1)
 	}
 	dolly.Run(cmds)
 }
