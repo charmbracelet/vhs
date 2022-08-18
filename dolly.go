@@ -61,11 +61,14 @@ func New() Dolly {
 
 	opts := DefaultDollyOptions()
 
-	theme, _ := json.Marshal(opts.Theme)
-	page.Eval(fmt.Sprintf("term.setOption('theme', '%s')", theme))
 	page.Eval(fmt.Sprintf("term.setOption('fontFamily', '%s')", opts.FontFamily))
 	page.Eval(fmt.Sprintf("term.setOption('fontSize', '%d')", opts.FontSize))
 	page.Eval(fmt.Sprintf("term.setOption('lineHeight', '%f')", opts.LineHeight))
+	theme, err := json.Marshal(opts.Theme)
+	if err == nil {
+		page.Eval(fmt.Sprintf("term.setOption('theme', %s)", theme))
+	}
+	page.MustElement(".xterm").Eval(fmt.Sprintf(`this.style.padding = '%s'`, opts.Padding))
 
 	return Dolly{
 		Options: &opts,
@@ -74,10 +77,10 @@ func New() Dolly {
 			page = page.MustSetViewport(opts.Width, opts.Height, 1, false)
 			page.MustEval("window.term.fit")
 
-			page.MustElement(".xterm").Eval(fmt.Sprintf(`this.style.padding = '%s'`, opts.Padding))
 			page.MustElement("body").Eval(`this.style.overflow = 'hidden'`)
 			page.MustElement("#terminal-container").Eval(`this.style.overflow = 'hidden'`)
 			page.MustElement(".xterm-viewport").Eval(`this.style.overflow = 'hidden'`)
+
 			page.MustElement("textarea").MustInput("PROMPT='%F{#5a56e0}>%f '").MustType(input.Enter)
 			page.MustElement("textarea").MustInput("clear").MustType(input.Enter)
 			page.MustWaitIdle()

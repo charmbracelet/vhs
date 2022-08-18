@@ -157,7 +157,7 @@ func ApplyTheme(c Command, d *Dolly) {
 		d.Options.Theme = DefaultTheme
 		return
 	}
-	d.Page.Eval(fmt.Sprintf("term.setOption('theme', '%s')", c.Args))
+	d.Page.Eval(fmt.Sprintf("term.setOption('theme', %s)", c.Args))
 }
 
 func ApplyPadding(c Command, d *Dolly) {
