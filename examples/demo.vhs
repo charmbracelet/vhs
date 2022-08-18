@@ -1,12 +1,6 @@
-Set FontSize 50
+Set FontSize 22
 Set Padding 5em
-
-Type@100 ls
-
-Sleep 500ms
-
-Enter
-
-Set FontSize 25
-
+Type@500 ls -lah
 Sleep 1s
+Enter
+Sleep 2s

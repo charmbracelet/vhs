@@ -56,6 +56,8 @@ func Parse(s string) ([]Command, []error) {
 func parseArgs(command string, line string) (string, string, error) {
 	rawArgs := strings.TrimPrefix(line[len(command):], " ")
 
+	// Set command
+	// Set <Option> <Value>
 	if command == Commands[Set] {
 		splitIndex := strings.Index(rawArgs, " ")
 		if splitIndex == -1 {
@@ -72,6 +74,7 @@ func parseArgs(command string, line string) (string, string, error) {
 		return options, args, nil
 	}
 
+	// No @ options, return rawArgs as args
 	if !strings.HasPrefix(rawArgs, optionsPrefix) {
 		if command == Commands[Type] && rawArgs == "" {
 			return "", "", ErrMissingArguments
@@ -79,6 +82,7 @@ func parseArgs(command string, line string) (string, string, error) {
 		return "", rawArgs, nil
 	}
 
+	// Has @ options, parse options and arguments
 	var options, args string
 	splitIndex := strings.Index(rawArgs, " ")
 
@@ -86,12 +90,7 @@ func parseArgs(command string, line string) (string, string, error) {
 		return "", "", ErrMissingArguments
 	}
 
-	options = rawArgs[:splitIndex]
-
-	if splitIndex >= len(rawArgs) {
-		return options, "", nil
-	}
-
+	options = strings.TrimPrefix(rawArgs[:splitIndex], optionsPrefix)
 	args = rawArgs[splitIndex+1:]
 	return options, args, nil
 }

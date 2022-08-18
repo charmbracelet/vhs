@@ -98,7 +98,11 @@ func ExecuteType(c Command, d *Dolly) {
 			d.Page.MustElement("textarea").Input(string(r))
 			d.Page.MustWaitIdle()
 		}
-		time.Sleep(time.Millisecond * 100)
+		ms, err := strconv.Atoi(c.Options)
+		if err != nil {
+			ms = 100
+		}
+		time.Sleep(time.Millisecond * time.Duration(ms))
 	}
 }
 
