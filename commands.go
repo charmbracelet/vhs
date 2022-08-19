@@ -9,34 +9,36 @@ import (
 	"github.com/go-rod/rod/lib/input"
 )
 
-type CommandType int
+type CommandType string
 
 const (
-	Backspace CommandType = iota
-	Down
-	Enter
-	Left
-	Right
-	Space
-	Up
-
-	Type
-	Set
-	Sleep
+	Backspace CommandType = "Backspace"
+	Down      CommandType = "Down"
+	Enter     CommandType = "Enter"
+	Left      CommandType = "Left"
+	Right     CommandType = "Right"
+	Space     CommandType = "Space"
+	Up        CommandType = "Up"
+	Type      CommandType = "Type"
+	Set       CommandType = "Set"
+	Sleep     CommandType = "Sleep"
 )
 
-var Commands = map[CommandType]string{
-	Backspace: "Backspace",
-	Down:      "Down",
-	Enter:     "Enter",
-	Left:      "Left",
-	Right:     "Right",
-	Space:     "Space",
-	Up:        "Up",
+var CommandTypes = []CommandType{
+	Backspace,
+	Down,
+	Enter,
+	Left,
+	Right,
+	Space,
+	Up,
+	Type,
+	Set,
+	Sleep,
+}
 
-	Set:   "Set",
-	Sleep: "Sleep",
-	Type:  "Type",
+func (c CommandType) String() string {
+	return string(c)
 }
 
 type CommandFunc func(c Command, d *Dolly)
@@ -49,10 +51,9 @@ var CommandFuncs = map[CommandType]CommandFunc{
 	Right:     ExecuteKey(input.ArrowRight),
 	Space:     ExecuteKey(input.Space),
 	Up:        ExecuteKey(input.ArrowUp),
-
-	Set:   ExecuteSet,
-	Sleep: ExecuteSleep,
-	Type:  ExecuteType,
+	Set:       ExecuteSet,
+	Sleep:     ExecuteSleep,
+	Type:      ExecuteType,
 }
 
 type Command struct {
@@ -61,12 +62,15 @@ type Command struct {
 	Args    string
 }
 
-func (c Command) Execute(d *Dolly) {
-	CommandFuncs[c.Type](c, d)
+func (c Command) String() string {
+	if c.Options != "" {
+		return fmt.Sprintf("%s %s %s", c.Type, c.Options, c.Args)
+	}
+	return fmt.Sprintf("%s %s", c.Type, c.Args)
 }
 
-func (c Command) String() string {
-	return Commands[c.Type] + " " + c.Options + " " + c.Args
+func (c Command) Execute(d *Dolly) {
+	CommandFuncs[c.Type](c, d)
 }
 
 func ExecuteKey(k input.Key) CommandFunc {

@@ -32,15 +32,15 @@ func Parse(s string) ([]Command, []error) {
 		}
 
 		valid := false
-		for commandType, command := range Commands {
-			if strings.HasPrefix(line, command) {
+		for _, command := range CommandTypes {
+			if strings.HasPrefix(line, command.String()) {
 				valid = true
 				options, args, err := parseArgs(command, line)
 				if err != nil {
 					errs = append(errs, fmt.Errorf("%s\n%d | %s", err, lineNumber, line))
 					break
 				}
-				commands = append(commands, Command{commandType, options, args})
+				commands = append(commands, Command{command, options, args})
 				break
 			}
 		}
@@ -53,12 +53,12 @@ func Parse(s string) ([]Command, []error) {
 	return commands, errs
 }
 
-func parseArgs(command string, line string) (string, string, error) {
+func parseArgs(command CommandType, line string) (string, string, error) {
 	rawArgs := strings.TrimPrefix(line[len(command):], " ")
 
 	// Set command
 	// Set <Option> <Value>
-	if command == Commands[Set] {
+	if command == Set {
 		splitIndex := strings.Index(rawArgs, " ")
 		if splitIndex == -1 {
 			return "", "", ErrMissingArguments
@@ -76,7 +76,7 @@ func parseArgs(command string, line string) (string, string, error) {
 
 	// No @ options, return rawArgs as args
 	if !strings.HasPrefix(rawArgs, optionsPrefix) {
-		if command == Commands[Type] && rawArgs == "" {
+		if command == Type && rawArgs == "" {
 			return "", "", ErrMissingArguments
 		}
 		return "", rawArgs, nil

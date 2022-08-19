@@ -16,7 +16,7 @@ Enter
 Sleep 1s`
 
 	expected := []Command{
-		{Type: Type, Options: "@100", Args: "echo 'Hi, there!'"},
+		{Type: Type, Options: "100", Args: "echo 'Hi, there!'"},
 		{Type: Left, Args: "3"},
 		{Type: Right, Args: "2"},
 		{Type: Enter},
@@ -48,7 +48,7 @@ Type@1 foo
 Type bar `
 
 	expected := []Command{
-		{Type: Type, Options: "@1", Args: "foo"},
+		{Type: Type, Options: "1", Args: "foo"},
 		{Type: Type, Args: "bar" + " "},
 	}
 
@@ -76,9 +76,9 @@ Backspace@100 10
 `
 
 	expected := []Command{
-		{Type: Space, Options: "@1000", Args: "5"},
+		{Type: Space, Options: "1000", Args: "5"},
 		{Type: Space, Options: "", Args: "5"},
-		{Type: Backspace, Options: "@100", Args: "10"},
+		{Type: Backspace, Options: "100", Args: "10"},
 	}
 
 	commands, err := Parse(input)

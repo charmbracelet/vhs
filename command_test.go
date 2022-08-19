@@ -4,8 +4,14 @@ import (
 	"testing"
 )
 
+const numberOfCommands = 10
+
 func TestCommand(t *testing.T) {
-	if len(Commands) != 10 {
-		t.Errorf("Expected 10 commands, got %d", len(Commands))
+	if len(CommandTypes) != numberOfCommands {
+		t.Errorf("Expected %d commands, got %d", numberOfCommands, len(CommandTypes))
+	}
+
+	if len(CommandFuncs) != numberOfCommands {
+		t.Errorf("Expected %d commands, got %d", numberOfCommands, len(CommandTypes))
 	}
 }
