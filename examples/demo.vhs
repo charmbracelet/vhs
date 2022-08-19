@@ -1,4 +1,4 @@
-Set FontSize 22
+Set FontSize 42
 Set Padding 5em
 Type echo 'Hello, world!'
 Left 3
