@@ -14,7 +14,7 @@ Sleep 100
 Sleep 3s`
 
 	expected := []Command{
-		{Type: Type, Args: "echo 'Hello, World!'"},
+		{Type: Type, Options: "100ms", Args: "echo 'Hello, World!'"},
 		{Type: Enter, Options: "100ms", Args: "1"},
 		{Type: Backspace, Options: "100ms", Args: "5"},
 		{Type: Backspace, Options: "100ms", Args: "5"},
