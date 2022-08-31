@@ -1,5 +1,6 @@
 package dolly
 
+// Lexer is a lexer that tokenizes the input.
 type Lexer struct {
 	ch      byte
 	input   string
@@ -9,20 +10,24 @@ type Lexer struct {
 	column  int
 }
 
+// NewLexer returns a new lexer for tokenizing the input string.
 func NewLexer(input string) *Lexer {
 	l := &Lexer{input: input, line: 1, column: 1}
 	l.readChar()
 	return l
 }
 
+// readChar advances the lexer to the next character.
 func (l *Lexer) readChar() {
 	l.ch = l.peekChar()
 	l.pos = l.nextPos
 	l.nextPos += 1
 }
 
+// NextToken returns the next token in the input.
 func (l *Lexer) NextToken() Token {
 	l.skipWhitespace()
+
 	var tok = Token{Line: l.line, Column: l.column}
 
 	switch l.ch {
@@ -55,6 +60,7 @@ func (l *Lexer) NextToken() Token {
 	return tok
 }
 
+// newToken creates a new token with the given type and literal.
 func (l *Lexer) newToken(tokenType TokenType, ch byte) Token {
 	return Token{
 		Type:    tokenType,
@@ -64,6 +70,8 @@ func (l *Lexer) newToken(tokenType TokenType, ch byte) Token {
 	}
 }
 
+// readString reads a string from the input.
+// "Foo" => Token(Foo)
 func (l *Lexer) readString() string {
 	pos := l.pos + 1
 	for {
@@ -75,6 +83,8 @@ func (l *Lexer) readString() string {
 	return l.input[pos:l.pos]
 }
 
+// readNumber reads a number from the input.
+// 123 => Token(123)
 func (l *Lexer) readNumber() string {
 	pos := l.pos
 	for isDigit(l.ch) {
@@ -83,6 +93,8 @@ func (l *Lexer) readNumber() string {
 	return l.input[pos:l.pos]
 }
 
+// readIdentifier reads an identifier from the input.
+// Foo => Token(Foo)
 func (l *Lexer) readIdentifier() string {
 	pos := l.pos
 	for isLetter(l.ch) {
@@ -91,6 +103,9 @@ func (l *Lexer) readIdentifier() string {
 	return l.input[pos:l.pos]
 }
 
+// skipWhitespace skips whitespace characters.
+// If it encounters a newline, it increments the line counter to keep track
+// of the token's line number.
 func (l *Lexer) skipWhitespace() {
 	for isWhitespace(l.ch) {
 		if isNewLine(l.ch) {
@@ -101,22 +116,27 @@ func (l *Lexer) skipWhitespace() {
 	}
 }
 
+// isLetter returns whether a character is a letter.
 func isLetter(ch byte) bool {
 	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z'
 }
 
+// isDigit returns whether a character is a digit.
 func isDigit(ch byte) bool {
 	return '0' <= ch && ch <= '9'
 }
 
+// isWhitespace returns whether a character is a whitespace.
 func isWhitespace(ch byte) bool {
 	return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r'
 }
 
+// isNewLine returns whether a character is a newline.
 func isNewLine(ch byte) bool {
 	return ch == '\n' || ch == '\r'
 }
 
+// peekChar returns the next character in the input without advancing the lexer.
 func (l *Lexer) peekChar() byte {
 	if l.nextPos >= len(l.input) {
 		return 0

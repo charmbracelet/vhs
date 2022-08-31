@@ -12,58 +12,49 @@ type Token struct {
 }
 
 const (
-	EOF     = "EOF"
-	ILLEGAL = "ILLEGAL"
-	NUMBER  = "NUMBER"
-	STRING  = "STRING"
-	SETTING = "SETTING"
-
-	AT      = "@"
-	EQUAL   = "="
-	PERCENT = "%"
-	PLUS    = "+"
-
+	AT           = "@"
+	EQUAL        = "="
+	PLUS         = "+"
+	PERCENT      = "%"
 	PX           = "PX"
 	EM           = "EM"
+	EOF          = "EOF"
+	ILLEGAL      = "ILLEGAL"
+	BACKSPACE    = "BACKSPACE"
+	CTRL         = "CTRL"
+	ENTER        = "ENTER"
+	NUMBER       = "NUMBER"
+	SET          = "SET"
+	SETTING      = "SETTING"
+	SLEEP        = "SLEEP"
+	STRING       = "STRING"
+	TYPE         = "TYPE"
+	DOWN         = "DOWN"
+	LEFT         = "LEFT"
+	RIGHT        = "RIGHT"
+	UP           = "UP"
 	SECONDS      = "SECONDS"
 	MILLISECONDS = "MILLISECONDS"
 	MINUTES      = "MINUTES"
-
-	ENTER     = "ENTER"
-	SET       = "SET"
-	SLEEP     = "SLEEP"
-	TYPE      = "TYPE"
-	BACKSPACE = "BACKSPACE"
-	CTRL      = "CTRL"
-
-	DOWN  = "DOWN"
-	LEFT  = "LEFT"
-	RIGHT = "RIGHT"
-	UP    = "UP"
 )
 
 var keywords = map[string]TokenType{
-	// Commands
-	"Set":       SET,
-	"Sleep":     SLEEP,
-	"Type":      TYPE,
-	"Enter":     ENTER,
-	"Backspace": BACKSPACE,
-	"Ctrl":      CTRL,
-	"Down":      DOWN,
-	"Left":      LEFT,
-	"Right":     RIGHT,
-	"Up":        UP,
-
-	// Units
-	"em": EM,
-	"px": PX,
-	"%":  PERCENT,
-	"s":  SECONDS,
-	"ms": MILLISECONDS,
-	"m":  MINUTES,
-
-	// Settings
+	"em":         EM,
+	"px":         PX,
+	"%":          PERCENT,
+	"s":          SECONDS,
+	"ms":         MILLISECONDS,
+	"m":          MINUTES,
+	"Set":        SET,
+	"Sleep":      SLEEP,
+	"Type":       TYPE,
+	"Enter":      ENTER,
+	"Backspace":  BACKSPACE,
+	"Ctrl":       CTRL,
+	"Down":       DOWN,
+	"Left":       LEFT,
+	"Right":      RIGHT,
+	"Up":         UP,
 	"FontFamily": SETTING,
 	"FontSize":   SETTING,
 	"Framerate":  SETTING,
@@ -74,6 +65,9 @@ var keywords = map[string]TokenType{
 	"Width":      SETTING,
 }
 
+// LookupIdentifier returns whether the identifier is a keyword.
+// In `dolly`, there are no _actual_ identifiers, i.e. there are no variables.
+// Instead, identifiers are simply strings (i.e. bare words).
 func LookupIdentifier(ident string) TokenType {
 	if t, ok := keywords[ident]; ok {
 		return t

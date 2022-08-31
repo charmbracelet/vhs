@@ -21,6 +21,8 @@ func NewParser(l *Lexer) *Parser {
 	return p
 }
 
+// Parse takes an input string provided by the lexer and parses it into a
+// list of commands.
 func (p *Parser) Parse() []Command {
 	cmds := []Command{}
 
@@ -32,6 +34,7 @@ func (p *Parser) Parse() []Command {
 	return cmds
 }
 
+// parseCommand parses a command.
 func (p *Parser) parseCommand() Command {
 	switch p.cur.Type {
 	case BACKSPACE:
