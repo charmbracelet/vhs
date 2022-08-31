@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-const numberOfCommands = 10
+const numberOfCommands = 11
 
 func TestCommand(t *testing.T) {
 	if len(CommandTypes) != numberOfCommands {

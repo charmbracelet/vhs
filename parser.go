@@ -53,9 +53,64 @@ func (p *Parser) parseCommand() Command {
 	case UP:
 		return p.parseUp()
 	default:
-		p.errors = append(p.errors, fmt.Sprintf("unknown command: %s", p.cur.Literal))
-		return Command{}
+		p.errors = append(p.errors, fmt.Sprintf("Unknown command: %s", p.cur.Literal))
+		return Command{Type: Unknown}
 	}
+}
+
+// parseSpeed parses a typing speed indication.
+//
+// i.e. @<time>
+//
+// This is optional (defaults to 100ms), thus skips (rather than error-ing)
+// if the typing speed is not specified.
+func (p *Parser) parseSpeed() string {
+	if p.peek.Type == AT {
+		p.nextToken()
+		return p.parseTime()
+	}
+
+	return "100ms"
+}
+
+// parseRepeat parses an optional repeat count for a command.
+//
+// i.e. Backspace [count]
+//
+// This is optional (defaults to 1), thus skips (rather than error-ing)
+// if the repeat count is not specified.
+func (p *Parser) parseRepeat() string {
+	if p.peek.Type == NUMBER {
+		count := p.peek.Literal
+		p.nextToken()
+		return count
+	}
+
+	return "1"
+}
+
+// parseTime parses a time argument.
+//
+// i.e. <number>(s|ms)
+//
+func (p *Parser) parseTime() string {
+	var t string
+
+	if p.peek.Type == NUMBER {
+		t = p.peek.Literal
+		p.nextToken()
+	} else {
+		p.errors = append(p.errors, "Unexpected token, expected time value")
+	}
+
+	if p.peek.Type == SECONDS || p.peek.Type == MILLISECONDS {
+		t += p.peek.Literal
+		p.nextToken()
+	} else {
+		t += "ms"
+	}
+
+	return t
 }
 
 // parseBackspace parses a backspace command.
@@ -64,9 +119,10 @@ func (p *Parser) parseCommand() Command {
 // Backspace[@<time>] [count]
 //
 func (p *Parser) parseBackspace() Command {
-	return Command{
-		Type: BACKSPACE,
-	}
+	cmd := Command{Type: Backspace}
+	cmd.Options = p.parseSpeed()
+	cmd.Args = p.parseRepeat()
+	return cmd
 }
 
 // parseEnter parses an enter command.
@@ -75,9 +131,10 @@ func (p *Parser) parseBackspace() Command {
 // Enter[@<time>] [count]
 //
 func (p *Parser) parseEnter() Command {
-	return Command{
-		Type: ENTER,
-	}
+	cmd := Command{Type: Enter}
+	cmd.Options = p.parseSpeed()
+	cmd.Args = p.parseRepeat()
+	return cmd
 }
 
 // parseSet parses a set command.
@@ -86,9 +143,28 @@ func (p *Parser) parseEnter() Command {
 // Set <setting> <value>
 //
 func (p *Parser) parseSet() Command {
-	return Command{
-		Type: SET,
+	cmd := Command{Type: Set}
+
+	if p.peek.Type == SETTING {
+		cmd.Options = p.peek.Literal
+	} else {
+		p.errors = append(p.errors, "Unknown setting: "+p.peek.Literal)
 	}
+	p.nextToken()
+
+	cmd.Args = p.peek.Literal
+	p.nextToken()
+
+	// Allow Padding to have bare units (e.g. 10px, 5em, 10%)
+	//
+	// Set Padding 5em
+	//
+	if p.peek.Type == EM || p.peek.Type == PX || p.peek.Type == PERCENT {
+		cmd.Args += p.peek.Literal
+		p.nextToken()
+	}
+
+	return cmd
 }
 
 // parseSleep parses a sleep command.
@@ -97,9 +173,9 @@ func (p *Parser) parseSet() Command {
 // Sleep <time>
 //
 func (p *Parser) parseSleep() Command {
-	return Command{
-		Type: SLEEP,
-	}
+	cmd := Command{Type: Sleep}
+	cmd.Args = p.parseTime()
+	return cmd
 }
 
 // parseType parses a type command.
@@ -108,9 +184,18 @@ func (p *Parser) parseSleep() Command {
 // Type "string"
 //
 func (p *Parser) parseType() Command {
-	return Command{
-		Type: TYPE,
+	cmd := Command{Type: Type}
+
+	cmd.Options = p.parseSpeed()
+
+	if p.peek.Type == STRING {
+		cmd.Args = p.peek.Literal
+		p.nextToken()
+	} else {
+		p.errors = append(p.errors, "Type command expected string argument")
 	}
+
+	return cmd
 }
 
 // parseDown parses a down command.
@@ -119,9 +204,10 @@ func (p *Parser) parseType() Command {
 // Down[@<time>] [count]
 //
 func (p *Parser) parseDown() Command {
-	return Command{
-		Type: DOWN,
-	}
+	cmd := Command{Type: Down}
+	cmd.Options = p.parseSpeed()
+	cmd.Args = p.parseRepeat()
+	return cmd
 }
 
 // parseLeft parses a left command.
@@ -130,9 +216,10 @@ func (p *Parser) parseDown() Command {
 // Left[@<time>] [count]
 //
 func (p *Parser) parseLeft() Command {
-	return Command{
-		Type: LEFT,
-	}
+	cmd := Command{Type: Left}
+	cmd.Options = p.parseSpeed()
+	cmd.Args = p.parseRepeat()
+	return cmd
 }
 
 // parseRight parses a right command.
@@ -141,9 +228,10 @@ func (p *Parser) parseLeft() Command {
 // Right[@<time>] [count]
 //
 func (p *Parser) parseRight() Command {
-	return Command{
-		Type: RIGHT,
-	}
+	cmd := Command{Type: Right}
+	cmd.Options = p.parseSpeed()
+	cmd.Args = p.parseRepeat()
+	return cmd
 }
 
 // parseUp parses a up command.
@@ -152,9 +240,10 @@ func (p *Parser) parseRight() Command {
 // Up[@<time>] [count]
 //
 func (p *Parser) parseUp() Command {
-	return Command{
-		Type: UP,
-	}
+	cmd := Command{Type: Up}
+	cmd.Options = p.parseSpeed()
+	cmd.Args = p.parseRepeat()
+	return cmd
 }
 
 // Errors returns any errors that occurred during parsing.
