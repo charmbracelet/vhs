@@ -1,9 +1,4 @@
-// Package lexer tokenizes an input string.
-package lexer
-
-import (
-	"github.com/charmbracelet/dolly/token"
-)
+package dolly
 
 type Lexer struct {
 	ch      byte
@@ -12,7 +7,7 @@ type Lexer struct {
 	nextPos int
 }
 
-func New(input string) *Lexer {
+func NewLexer(input string) *Lexer {
 	l := &Lexer{input: input}
 	l.readChar()
 	return l
@@ -24,40 +19,40 @@ func (l *Lexer) readChar() {
 	l.nextPos += 1
 }
 
-func (l *Lexer) NextToken() token.Token {
-	var tok token.Token
+func (l *Lexer) NextToken() Token {
+	var tok Token
 
 	l.skipWhitespace()
 
 	switch l.ch {
 	case 0:
-		tok = newToken(token.EOF, 0)
+		tok = newToken(EOF, 0)
 	case '@':
-		tok = newToken(token.AT, l.ch)
+		tok = newToken(AT, l.ch)
 		l.readChar()
 	case '=':
-		tok = newToken(token.EQUAL, l.ch)
+		tok = newToken(EQUAL, l.ch)
 		l.readChar()
 	case '"':
-		tok.Type = token.STRING
+		tok.Type = STRING
 		tok.Literal = l.readString()
 		l.readChar()
 	default:
 		if isLetter(l.ch) {
 			tok.Literal = l.readIdentifier()
-			tok.Type = token.LookupIdentifier(tok.Literal)
+			tok.Type = LookupIdentifier(tok.Literal)
 		} else if isDigit(l.ch) {
 			tok.Literal = l.readNumber()
-			tok.Type = token.NUMBER
+			tok.Type = NUMBER
 		} else {
-			tok = newToken(token.ILLEGAL, l.ch)
+			tok = newToken(ILLEGAL, l.ch)
 		}
 	}
 	return tok
 }
 
-func newToken(tokenType token.Type, ch byte) token.Token {
-	return token.Token{Type: tokenType, Literal: string(ch)}
+func newToken(tokenType TokenType, ch byte) Token {
+	return Token{Type: tokenType, Literal: string(ch)}
 }
 
 func (l *Lexer) readString() string {
