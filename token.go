@@ -1,12 +1,11 @@
-// Package token contains the tokens of the VHS language.
-package token
+package dolly
 
 // Type represents a token's type.
-type Type string
+type TokenType string
 
 // Token represents a lexer token.
 type Token struct {
-	Type    Type
+	Type    TokenType
 	Literal string
 }
 
@@ -40,7 +39,7 @@ const (
 	UP    = "UP"
 )
 
-var keywords = map[string]Type{
+var keywords = map[string]TokenType{
 	// Commands
 	"Set":       SET,
 	"Sleep":     SLEEP,
@@ -71,7 +70,7 @@ var keywords = map[string]Type{
 	"Width":      SETTING,
 }
 
-func LookupIdentifier(ident string) Type {
+func LookupIdentifier(ident string) TokenType {
 	if t, ok := keywords[ident]; ok {
 		return t
 	}

@@ -18,7 +18,12 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	cmds, errs := dolly.Parse(string(b))
+
+	l := dolly.NewLexer(string(b))
+	p := dolly.NewParser(l)
+
+	cmds := p.Parse()
+	errs := p.Errors()
 	if len(errs) != 0 {
 		for _, err := range errs {
 			fmt.Println(err)
