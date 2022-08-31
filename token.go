@@ -12,14 +12,14 @@ type Token struct {
 const (
 	EOF     = "EOF"
 	ILLEGAL = "ILLEGAL"
-	STRING  = "STRING"
 	NUMBER  = "NUMBER"
-	IDENT   = "IDENT"
+	STRING  = "STRING"
 	SETTING = "SETTING"
 
 	AT      = "@"
 	EQUAL   = "="
 	PERCENT = "%"
+	PLUS    = "+"
 
 	PX           = "PX"
 	EM           = "EM"
@@ -32,6 +32,7 @@ const (
 	SLEEP     = "SLEEP"
 	TYPE      = "TYPE"
 	BACKSPACE = "BACKSPACE"
+	CTRL      = "CTRL"
 
 	DOWN  = "DOWN"
 	LEFT  = "LEFT"
@@ -46,6 +47,7 @@ var keywords = map[string]TokenType{
 	"Type":      TYPE,
 	"Enter":     ENTER,
 	"Backspace": BACKSPACE,
+	"Ctrl":      CTRL,
 	"Down":      DOWN,
 	"Left":      LEFT,
 	"Right":     RIGHT,

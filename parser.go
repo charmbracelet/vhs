@@ -52,6 +52,8 @@ func (p *Parser) parseCommand() Command {
 		return p.parseRight()
 	case UP:
 		return p.parseUp()
+	case CTRL:
+		return p.parseCtrl()
 	default:
 		p.errors = append(p.errors, fmt.Sprintf("Unknown command: %s", p.cur.Literal))
 		return Command{Type: Unknown}
@@ -111,6 +113,25 @@ func (p *Parser) parseTime() string {
 	}
 
 	return t
+}
+
+// parseCtrl parses a control command.
+// A control command takes a character to type while the modifier is held down.
+//
+// Ctrl+<character>
+//
+func (p *Parser) parseCtrl() Command {
+	if p.peek.Type == PLUS {
+		p.nextToken()
+		if p.peek.Type == STRING {
+			c := p.peek.Literal
+			p.nextToken()
+			return Command{Type: Ctrl, Args: c}
+		}
+	}
+
+	p.errors = append(p.errors, "Unexpected token, expected control character")
+	return Command{Type: Ctrl}
 }
 
 // parseBackspace parses a backspace command.

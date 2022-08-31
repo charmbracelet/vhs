@@ -22,6 +22,7 @@ const (
 	Type      CommandType = "Type"
 	Set       CommandType = "Set"
 	Sleep     CommandType = "Sleep"
+	Ctrl      CommandType = "Ctrl"
 	Unknown   CommandType = "Unknown"
 )
 
@@ -36,6 +37,7 @@ var CommandTypes = []CommandType{
 	Type,
 	Set,
 	Sleep,
+	Ctrl,
 	Unknown,
 }
 
@@ -56,6 +58,7 @@ var CommandFuncs = map[CommandType]CommandFunc{
 	Set:       ExecuteSet,
 	Sleep:     ExecuteSleep,
 	Type:      ExecuteType,
+	Ctrl:      ExecuteCtrl,
 	Unknown:   ExecuteNoop,
 }
 
@@ -93,6 +96,16 @@ func ExecuteKey(k input.Key) CommandFunc {
 			time.Sleep(delay)
 		}
 	}
+}
+
+func ExecuteCtrl(c Command, d *Dolly) {
+	_ = d.Page.Keyboard.Press(input.ControlLeft)
+	for _, r := range c.Args {
+		if k, ok := keymap[r]; ok {
+			_ = d.Page.Keyboard.Type(k)
+		}
+	}
+	_ = d.Page.Keyboard.Release(input.ControlLeft)
 }
 
 func ExecuteSleep(c Command, d *Dolly) {

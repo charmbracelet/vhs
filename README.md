@@ -11,7 +11,7 @@ The above example is generated from a single dolly file: ([demo.vhs](./examples/
 Type anything into the terminal with the `Type` command.
 
 ```
-Type echo 'Hello, world!'
+Type "echo 'Hello, world!'"
 ```
 
 Press the Enter key with the `Enter` command.
@@ -35,7 +35,7 @@ Sleep 1s
 Putting it all together...
 
 ```
-Type echo 'Hello World'
+Type "echo 'Hello World'"
 Enter
 Backspace 5
 Sleep 1s
@@ -53,16 +53,19 @@ open out.gif
 The following is an exhaustive list of all the commands that can be used with `dolly`.
 
 ```
-Backspace [count]
-Enter [count]
-Sleep <duration>
-Space [count]
-Type <characters...>
+Backspace[@<time>] [count]
+Enter[@<time>] [count]
+Sleep <time>
+Space[@<time>] [count]
+Type[@<time>] <characters...>
 
-Down [count]
-Left [count]
-Right [count]
-Up [count]
+Down[@<time>] [count]
+Left[@<time>] [count]
+Right[@<time>] [count]
+Up[@<time>] [count]
+
+Alt+<character>
+Ctrl+<character>
 ```
 
 

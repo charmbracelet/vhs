@@ -9,5 +9,6 @@ Right@100ms 3
 Sleep 500ms
 Enter
 Type "Nevermind"
-Backspace@10 9
+Backspace@50 3
+Ctrl+C
 Sleep 2s

@@ -15,6 +15,7 @@ Left 3
 Sleep 1s
 Right@100ms 3
 Sleep 500ms
+Ctrl+C
 Enter
 Sleep 2s`
 
@@ -50,6 +51,9 @@ Sleep 2s`
 		{SLEEP, "Sleep"},
 		{NUMBER, "500"},
 		{MILLISECONDS, "ms"},
+		{CTRL, "Ctrl"},
+		{PLUS, "+"},
+		{STRING, "C"},
 		{ENTER, "Enter"},
 		{SLEEP, "Sleep"},
 		{NUMBER, "2"},

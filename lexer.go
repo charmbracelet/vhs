@@ -33,6 +33,9 @@ func (l *Lexer) NextToken() Token {
 	case '=':
 		tok = newToken(EQUAL, l.ch)
 		l.readChar()
+	case '+':
+		tok = newToken(PLUS, l.ch)
+		l.readChar()
 	case '"':
 		tok.Type = STRING
 		tok.Literal = l.readString()

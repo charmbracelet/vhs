@@ -10,6 +10,8 @@ Backspace@100ms 5
 Backspace@1s 5
 Right 3 Left 3
 Up@50 Down 2
+Ctrl+C
+Ctrl+L
 Sleep 100
 Sleep 3s`
 
@@ -23,6 +25,8 @@ Sleep 3s`
 		{Type: Left, Options: "100ms", Args: "3"},
 		{Type: Up, Options: "50ms", Args: "1"},
 		{Type: Down, Options: "100ms", Args: "2"},
+		{Type: Ctrl, Options: "", Args: "C"},
+		{Type: Ctrl, Options: "", Args: "L"},
 		{Type: Sleep, Args: "100ms"},
 		{Type: Sleep, Args: "3s"},
 	}
