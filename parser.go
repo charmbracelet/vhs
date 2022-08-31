@@ -58,7 +58,7 @@ func (p *Parser) parseCommand() Command {
 	case CTRL:
 		return p.parseCtrl()
 	default:
-		p.errors = append(p.errors, fmt.Sprintf("%2d:%-2d │ Error Unknown command: %s", p.cur.Line, p.cur.Column, p.cur.Literal))
+		p.errors = append(p.errors, fmt.Sprintf("%2d:%-2d │ Invalid command: %s", p.cur.Line, p.cur.Column, p.cur.Literal))
 		return Command{Type: Unknown}
 	}
 }
@@ -105,7 +105,7 @@ func (p *Parser) parseTime() string {
 		t = p.peek.Literal
 		p.nextToken()
 	} else {
-		p.errors = append(p.errors, fmt.Sprintf("%2d:%-2d │ Unexpected token %s, expected time value", p.peek.Line, p.peek.Column, p.peek.Literal))
+		p.errors = append(p.errors, fmt.Sprintf("%2d:%-2d │ Expected time, got %s", p.cur.Line, p.cur.Column, p.peek.Literal))
 	}
 
 	if p.peek.Type == SECONDS || p.peek.Type == MILLISECONDS {
@@ -133,7 +133,7 @@ func (p *Parser) parseCtrl() Command {
 		}
 	}
 
-	p.errors = append(p.errors, "Unexpected token, expected control character")
+	p.errors = append(p.errors, fmt.Sprintf("%2d:%-2d │ Expected character, got %s", p.cur.Line, p.cur.Column, p.peek.Literal))
 	return Command{Type: Ctrl}
 }
 
@@ -172,7 +172,7 @@ func (p *Parser) parseSet() Command {
 	if p.peek.Type == SETTING {
 		cmd.Options = p.peek.Literal
 	} else {
-		p.errors = append(p.errors, fmt.Sprintf("%d:%d │ Unknown setting: %s", p.peek.Line, p.peek.Column, p.peek.Literal))
+		p.errors = append(p.errors, fmt.Sprintf("%2d:%-2d │ Unknown setting: %s", p.peek.Line, p.peek.Column, p.peek.Literal))
 	}
 	p.nextToken()
 
@@ -216,7 +216,7 @@ func (p *Parser) parseType() Command {
 		cmd.Args = p.peek.Literal
 		p.nextToken()
 	} else {
-		p.errors = append(p.errors, fmt.Sprintf("%2d:%-2d │ %s command expected string argument", p.cur.Line, p.cur.Column, p.cur.Literal))
+		p.errors = append(p.errors, fmt.Sprintf("%2d:%-2d │ %s expects string", p.cur.Line, p.cur.Column, p.cur.Literal))
 	}
 
 	return cmd

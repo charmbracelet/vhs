@@ -1,3 +1,5 @@
+Set Foo Bar
+
 Foo
 
 Type Enter
