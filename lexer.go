@@ -5,10 +5,12 @@ type Lexer struct {
 	input   string
 	pos     int
 	nextPos int
+	line    int
+	column  int
 }
 
 func NewLexer(input string) *Lexer {
-	l := &Lexer{input: input}
+	l := &Lexer{input: input, line: 1, column: 1}
 	l.readChar()
 	return l
 }
@@ -20,21 +22,20 @@ func (l *Lexer) readChar() {
 }
 
 func (l *Lexer) NextToken() Token {
-	var tok Token
-
 	l.skipWhitespace()
+	var tok = Token{Line: l.line, Column: l.column}
 
 	switch l.ch {
 	case 0:
-		tok = newToken(EOF, 0)
+		tok = l.newToken(EOF, l.ch)
 	case '@':
-		tok = newToken(AT, l.ch)
+		tok = l.newToken(AT, l.ch)
 		l.readChar()
 	case '=':
-		tok = newToken(EQUAL, l.ch)
+		tok = l.newToken(EQUAL, l.ch)
 		l.readChar()
 	case '+':
-		tok = newToken(PLUS, l.ch)
+		tok = l.newToken(PLUS, l.ch)
 		l.readChar()
 	case '"':
 		tok.Type = STRING
@@ -48,14 +49,19 @@ func (l *Lexer) NextToken() Token {
 			tok.Literal = l.readNumber()
 			tok.Type = NUMBER
 		} else {
-			tok = newToken(ILLEGAL, l.ch)
+			tok = l.newToken(ILLEGAL, l.ch)
 		}
 	}
 	return tok
 }
 
-func newToken(tokenType TokenType, ch byte) Token {
-	return Token{Type: tokenType, Literal: string(ch)}
+func (l *Lexer) newToken(tokenType TokenType, ch byte) Token {
+	return Token{
+		Type:    tokenType,
+		Literal: string(ch),
+		Line:    l.line,
+		Column:  l.column,
+	}
 }
 
 func (l *Lexer) readString() string {
@@ -87,6 +93,10 @@ func (l *Lexer) readIdentifier() string {
 
 func (l *Lexer) skipWhitespace() {
 	for isWhitespace(l.ch) {
+		if isNewLine(l.ch) {
+			l.line += 1
+			l.column = 1
+		}
 		l.readChar()
 	}
 }
@@ -101,6 +111,10 @@ func isDigit(ch byte) bool {
 
 func isWhitespace(ch byte) bool {
 	return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r'
+}
+
+func isNewLine(ch byte) bool {
+	return ch == '\n' || ch == '\r'
 }
 
 func (l *Lexer) peekChar() byte {
