@@ -22,6 +22,7 @@ const (
 	Type      CommandType = "Type"
 	Set       CommandType = "Set"
 	Sleep     CommandType = "Sleep"
+	Unknown   CommandType = "Unknown"
 )
 
 var CommandTypes = []CommandType{
@@ -35,6 +36,7 @@ var CommandTypes = []CommandType{
 	Type,
 	Set,
 	Sleep,
+	Unknown,
 }
 
 func (c CommandType) String() string {
@@ -54,6 +56,7 @@ var CommandFuncs = map[CommandType]CommandFunc{
 	Set:       ExecuteSet,
 	Sleep:     ExecuteSleep,
 	Type:      ExecuteType,
+	Unknown:   ExecuteNoop,
 }
 
 type Command struct {
@@ -73,6 +76,8 @@ func (c Command) Execute(d *Dolly) {
 	CommandFuncs[c.Type](c, d)
 }
 
+func ExecuteNoop(c Command, d *Dolly) {}
+
 func ExecuteKey(k input.Key) CommandFunc {
 	return func(c Command, d *Dolly) {
 		repeat, err := strconv.Atoi(c.Args)
@@ -84,7 +89,7 @@ func ExecuteKey(k input.Key) CommandFunc {
 			delayMs = 100
 		}
 		for i := 0; i < repeat; i++ {
-			d.Page.Keyboard.Type(k)
+			_ = d.Page.Keyboard.Type(k)
 			time.Sleep(time.Millisecond * time.Duration(delayMs))
 		}
 	}
@@ -102,9 +107,9 @@ func ExecuteType(c Command, d *Dolly) {
 	for _, r := range c.Args {
 		k, ok := keymap[r]
 		if ok {
-			d.Page.Keyboard.Type(k)
+			_ = d.Page.Keyboard.Type(k)
 		} else {
-			d.Page.MustElement("textarea").Input(string(r))
+			_ = d.Page.MustElement("textarea").Input(string(r))
 			d.Page.MustWaitIdle()
 		}
 		delayMs, err := strconv.Atoi(c.Options)
@@ -133,12 +138,12 @@ func ExecuteSet(c Command, d *Dolly) {
 func ApplyFontSize(c Command, d *Dolly) {
 	fontSize, _ := strconv.Atoi(c.Args)
 	d.Options.FontSize = fontSize
-	d.Page.Eval(fmt.Sprintf("term.setOption('fontSize', '%d')", fontSize))
+	_, _ = d.Page.Eval(fmt.Sprintf("term.setOption('fontSize', '%d')", fontSize))
 }
 
 func ApplyFontFamily(c Command, d *Dolly) {
 	d.Options.FontFamily = c.Args
-	d.Page.Eval(fmt.Sprintf("term.setOption('fontFamily', '%s')", c.Args))
+	_, _ = d.Page.Eval(fmt.Sprintf("term.setOption('fontFamily', '%s')", c.Args))
 }
 
 func ApplyHeight(c Command, d *Dolly) {
@@ -152,7 +157,7 @@ func ApplyWidth(c Command, d *Dolly) {
 func ApplyLineHeight(c Command, d *Dolly) {
 	lineHeight, _ := strconv.ParseFloat(c.Args, 64)
 	d.Options.LineHeight = lineHeight
-	d.Page.Eval(fmt.Sprintf("term.setOption('lineHeight', '%f')", lineHeight))
+	_, _ = d.Page.Eval(fmt.Sprintf("term.setOption('lineHeight', '%f')", lineHeight))
 }
 
 func ApplyTheme(c Command, d *Dolly) {
@@ -161,12 +166,12 @@ func ApplyTheme(c Command, d *Dolly) {
 		d.Options.Theme = DefaultTheme
 		return
 	}
-	d.Page.Eval(fmt.Sprintf("term.setOption('theme', %s)", c.Args))
+	_, _ = d.Page.Eval(fmt.Sprintf("term.setOption('theme', %s)", c.Args))
 }
 
 func ApplyPadding(c Command, d *Dolly) {
 	d.Options.Padding = c.Args
-	d.Page.MustElement(".xterm").Eval(fmt.Sprintf(`this.style.padding = '%s'`, c.Args))
+	_, _ = d.Page.MustElement(".xterm").Eval(fmt.Sprintf(`this.style.padding = '%s'`, c.Args))
 }
 
 func ApplyFramerate(c Command, d *Dolly) {

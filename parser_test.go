@@ -5,21 +5,75 @@ import "testing"
 func TestParser(t *testing.T) {
 	input := `
 Type "echo 'Hello, World!'" Enter
+Backspace@100 5
+Backspace@100ms 5
+Backspace@1s 5
 Right 3 Left 3
+Up@50 Down 2
+Sleep 100
 Sleep 3s`
+
+	expected := []Command{
+		{Type: Type, Args: "echo 'Hello, World!'"},
+		{Type: Enter, Options: "100ms", Args: "1"},
+		{Type: Backspace, Options: "100ms", Args: "5"},
+		{Type: Backspace, Options: "100ms", Args: "5"},
+		{Type: Backspace, Options: "1s", Args: "5"},
+		{Type: Right, Options: "100ms", Args: "3"},
+		{Type: Left, Options: "100ms", Args: "3"},
+		{Type: Up, Options: "50ms", Args: "1"},
+		{Type: Down, Options: "100ms", Args: "2"},
+		{Type: Sleep, Args: "100ms"},
+		{Type: Sleep, Args: "3s"},
+	}
 
 	l := NewLexer(input)
 	p := NewParser(l)
 
 	cmds := p.Parse()
-	errs := p.Errors()
-	if len(errs) != 0 {
-		for _, err := range errs {
-			t.Error(err)
-		}
+
+	if len(cmds) != len(expected) {
+		t.Fatalf("Expected %d commands, got %d", len(expected), len(cmds))
 	}
 
-	for _, cmd := range cmds {
-		t.Log(cmd)
+	for i, cmd := range cmds {
+		if cmd.Type != expected[i].Type {
+			t.Errorf("Expected command %d to be %s, got %s", i, expected[i].Type, cmd.Type)
+		}
+		if cmd.Args != expected[i].Args {
+			t.Errorf("Expected command %d to have args %s, got %s", i, expected[i].Args, cmd.Args)
+		}
+		if cmd.Options != expected[i].Options {
+			t.Errorf("Expected command %d to have options %s, got %s", i, expected[i].Options, cmd.Options)
+		}
+	}
+}
+
+func TestParserErrors(t *testing.T) {
+	input := `
+Type
+Type "echo 'Hello, World!'" Enter
+Foo
+Sleep`
+
+	l := NewLexer(input)
+	p := NewParser(l)
+
+	_ = p.Parse()
+
+	expectedErrors := []string{
+		"Type command expected string argument",
+		"Unknown command: Foo",
+		"Unexpected token, expected time value",
+	}
+
+	if len(p.errors) != len(expectedErrors) {
+		t.Fatalf("Expected %d errors, got %d", len(expectedErrors), len(p.errors))
+	}
+
+	for i, err := range p.errors {
+		if err != expectedErrors[i] {
+			t.Errorf("Expected error %d to be %s, got %s", i, expectedErrors[i], err)
+		}
 	}
 }
