@@ -84,13 +84,13 @@ func ExecuteKey(k input.Key) CommandFunc {
 		if err != nil {
 			repeat = 1
 		}
-		delayMs, err := strconv.Atoi(c.Options)
+		delay, err := time.ParseDuration(c.Options)
 		if err != nil {
-			delayMs = 100
+			delay = time.Millisecond * 100
 		}
 		for i := 0; i < repeat; i++ {
 			_ = d.Page.Keyboard.Type(k)
-			time.Sleep(time.Millisecond * time.Duration(delayMs))
+			time.Sleep(delay)
 		}
 	}
 }
