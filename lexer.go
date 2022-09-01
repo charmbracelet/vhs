@@ -39,6 +39,9 @@ func (l *Lexer) NextToken() Token {
 	case '=':
 		tok = l.newToken(EQUAL, l.ch)
 		l.readChar()
+	case '%':
+		tok = l.newToken(PERCENT, l.ch)
+		l.readChar()
 	case '+':
 		tok = l.newToken(PLUS, l.ch)
 		l.readChar()
@@ -55,6 +58,7 @@ func (l *Lexer) NextToken() Token {
 			tok.Type = NUMBER
 		} else {
 			tok = l.newToken(ILLEGAL, l.ch)
+			l.readChar()
 		}
 	}
 	return tok
@@ -87,7 +91,7 @@ func (l *Lexer) readString() string {
 // 123 => Token(123)
 func (l *Lexer) readNumber() string {
 	pos := l.pos
-	for isDigit(l.ch) {
+	for isDigit(l.ch) || isDot(l.ch) {
 		l.readChar()
 	}
 	return l.input[pos:l.pos]
@@ -97,7 +101,7 @@ func (l *Lexer) readNumber() string {
 // Foo => Token(Foo)
 func (l *Lexer) readIdentifier() string {
 	pos := l.pos
-	for isLetter(l.ch) {
+	for isLetter(l.ch) || isDot(l.ch) {
 		l.readChar()
 	}
 	return l.input[pos:l.pos]
@@ -114,6 +118,11 @@ func (l *Lexer) skipWhitespace() {
 		}
 		l.readChar()
 	}
+}
+
+// isDot returns whether a character is a dot.
+func isDot(ch byte) bool {
+	return ch == '.'
 }
 
 // isLetter returns whether a character is a letter.

@@ -16,6 +16,7 @@ const (
 	EQUAL        = "="
 	PLUS         = "+"
 	PERCENT      = "%"
+	DOT          = "."
 	PX           = "PX"
 	EM           = "EM"
 	EOF          = "EOF"
@@ -41,7 +42,6 @@ const (
 var keywords = map[string]TokenType{
 	"em":         EM,
 	"px":         PX,
-	"%":          PERCENT,
 	"s":          SECONDS,
 	"ms":         MILLISECONDS,
 	"m":          MINUTES,
