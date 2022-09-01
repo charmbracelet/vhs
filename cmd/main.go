@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"os"
 
@@ -9,12 +10,15 @@ import (
 )
 
 func main() {
-	if len(os.Args) < 2 {
-		fmt.Fprintln(os.Stderr, "usage: vhs < file.tape")
-		os.Exit(1)
+	var b []byte
+	var err error
+
+	if len(os.Args) > 1 {
+		b, err = os.ReadFile(os.Args[1])
+	} else {
+		b, err = io.ReadAll(os.Stdin)
 	}
 
-	b, err := os.ReadFile(os.Args[1])
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
