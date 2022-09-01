@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/charmbracelet/dolly"
@@ -19,6 +20,9 @@ func main() {
 		os.Exit(1)
 	}
 
+	d := dolly.New()
+	defer d.Cleanup()
+
 	l := dolly.NewLexer(string(b))
 	p := dolly.NewParser(l)
 
@@ -30,5 +34,24 @@ func main() {
 		}
 		os.Exit(1)
 	}
-	dolly.Run(cmds)
+
+	var offset int
+
+	for i, cmd := range cmds {
+		if cmd.Type == dolly.Set {
+			log.Printf("Setting %s to %s", cmd.Options, cmd.Args)
+			cmd.Execute(&d)
+		} else {
+			offset = i
+			break
+		}
+	}
+
+	d.Start()
+
+	for _, cmd := range cmds[offset:] {
+		log.Println(cmd)
+		cmd.Execute(&d)
+	}
+
 }

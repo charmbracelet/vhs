@@ -8,6 +8,10 @@
 //
 package dolly
 
+import (
+	"encoding/json"
+)
+
 // Theme is a terminal theme for xterm.js
 // It is used for marshalling between the xterm.js readable json format and a
 // valid go struct.
@@ -30,6 +34,15 @@ type Theme struct {
 	BrightCyan    string `json:"brightCyan"`
 	White         string `json:"white"`
 	BrightWhite   string `json:"brightWhite"`
+}
+
+func (t Theme) String() string {
+	ts, err := json.Marshal(t)
+	if err != nil {
+		dts, _ := json.Marshal(DefaultTheme)
+		return string(dts)
+	}
+	return string(ts)
 }
 
 // DefaultTheme is the default theme to use for recording demos and

@@ -196,6 +196,7 @@ func ApplyHeight(c Command, d *Dolly) {
 // ApplyWidth applies the width on the dolly.
 func ApplyWidth(c Command, d *Dolly) {
 	d.Options.Width, _ = strconv.Atoi(c.Args)
+	d.Options.GIF.Width, _ = strconv.Atoi(c.Args)
 }
 
 // ApplyLineHeight applies the line height on the dolly.

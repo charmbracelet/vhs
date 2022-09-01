@@ -1,7 +1,6 @@
 package dolly
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"time"
@@ -43,8 +42,7 @@ func DefaultDollyOptions() DollyOptions {
 		FontSize:   22,
 		LineHeight: 1.2,
 		Theme:      DefaultTheme,
-
-		GIF: DefaultGIFOptions,
+		GIF:        DefaultGIFOptions,
 	}
 }
 
@@ -56,38 +54,44 @@ func New() Dolly {
 
 	browser := rod.New().MustConnect()
 	page := browser.MustPage(fmt.Sprintf("http://localhost:%d", port))
-	page = page.MustWaitLoad()
-	page = page.MustWaitIdle()
-
 	opts := DefaultDollyOptions()
-
-	page.Eval(fmt.Sprintf("term.setOption('fontFamily', '%s')", opts.FontFamily))
-	page.Eval(fmt.Sprintf("term.setOption('fontSize', '%d')", opts.FontSize))
-	page.Eval(fmt.Sprintf("term.setOption('lineHeight', '%f')", opts.LineHeight))
-	theme, err := json.Marshal(opts.Theme)
-	if err == nil {
-		page.Eval(fmt.Sprintf("term.setOption('theme', %s)", theme))
-	}
-	page.MustElement(".xterm").Eval(fmt.Sprintf(`this.style.padding = '%s'`, opts.Padding))
 
 	return Dolly{
 		Options: &opts,
 		Page:    page,
 		Start: func() {
-			page = page.MustSetViewport(opts.Width, opts.Height, 1, false)
-			page.MustEval("window.term.fit")
+			fmt.Println(opts)
+			page = page.MustSetViewport(opts.Width, opts.Height, 1, false).
+				// Let's wait until we can access the window.term variable
+				MustWait("() => window.term != undefined")
 
-			page.MustElement("body").Eval(`this.style.overflow = 'hidden'`)
-			page.MustElement("#terminal-container").Eval(`this.style.overflow = 'hidden'`)
-			page.MustElement(".xterm-viewport").Eval(`this.style.overflow = 'hidden'`)
+			page.MustEval("term.fit")
+			page.MustWait("() => document.querySelector('.xterm').childElementCount == 3")
 
-			page.MustElement("textarea").MustInput("PROMPT='%F{#5a56e0}>%f '").MustType(input.Enter)
-			page.MustElement("textarea").MustInput("clear").MustType(input.Enter)
-			page.MustWaitIdle()
+			// There is an annoying overlay that displays how large the terminal is, which goes away after
+			// two seconds. We could wait those two seconds (i.e. time.Sleep(2 * time.Second)), but to optimize
+			// for the user and GIF generating times, we can remove the overlay manually.
+			//
+			// This is more complicated than it needs to be since the overlay does not have an ID, or class.
+			// The correct solution is to use a CSS selector, but that is not supported in the current version.
+			//
+			// TODO: Add an ID to the overlay in TTYD and then use that here instead.
+			// However, for now, we simply check whether the overlay is active by seeing if .xterm has 3 children.
+			page.MustEval("() => document.querySelector('.xterm').lastChild.remove()")
 
-			os.MkdirAll(opts.GIF.InputFolder, os.ModePerm)
+			// Apply default options to the terminal
+			page.MustEval(fmt.Sprintf("() => term.setOption('fontSize', '%d')", opts.FontSize))
+			page.MustEval(fmt.Sprintf("() => term.setOption('fontFamily', '%s')", opts.FontFamily))
+			page.MustEval(fmt.Sprintf("() => term.setOption('lineHeight', '%f')", opts.LineHeight))
+			page.MustEval(fmt.Sprintf("() => term.setOption('theme', %s)", opts.Theme.String()))
+			page.MustElement(".xterm").MustEval(fmt.Sprintf("() => this.style.padding = '%s'", opts.Padding))
 
-			time.Sleep(2500 * time.Millisecond)
+			page.MustElement("textarea").MustInput(" fc -p; PROMPT='%F{#5a56e0}>%f '; clear").MustType(input.Enter)
+			page.MustElement("body").MustEval("() => this.style.overflow = 'hidden'")
+			page.MustElement("#terminal-container").MustEval("() => this.style.overflow = 'hidden'")
+			page.MustElement(".xterm-viewport").MustEval("() => this.style.overflow = 'hidden'")
+
+			_ = os.MkdirAll(opts.GIF.InputFolder, os.ModePerm)
 
 			go func() {
 				counter := 0
