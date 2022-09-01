@@ -1,14 +1,20 @@
 Set FontSize 42
 Set Padding 5em
-Type "echo 'Hello, world!'"
+
+Type "echo 'Hi, there!'"
 Enter
-Type@100ms "echo 'Hello, world!'"
-Left 3
+
 Sleep 1s
-Right@100ms 3
-Sleep 500ms
+Type "echo 'Welcome to VHS!'"
 Enter
-Type "Nevermind"
-Backspace@50 3
-Ctrl+C
-Sleep 2s
+Sleep 1s
+Ctrl+L
+
+Type "echo 'This GIF is made with code!'"
+Enter
+Sleep 1s
+Ctrl+L
+
+Type "echo 'Cool, huh?'"
+Sleep 1s
+Ctrl+U

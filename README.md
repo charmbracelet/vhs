@@ -2,7 +2,7 @@
 
 GIFs as code. Record GIFs for terminal applications with a just few lines of code 🎬.
 
-<img width="400" src="./out.gif" alt="Automatic GIF recording with vhs" />
+<img width="400" src="./examples/out.gif" alt="Automatic GIF recording with vhs" />
 
 The above example is generated from a single vhs file: ([demo.vhs](./examples/demo.vhs)).
 
@@ -47,6 +47,8 @@ Save the above text to a file (`demo.vhs`) and generate the GIF with `vhs`:
 vhs demo.vhs
 open out.gif
 ```
+
+<img width="400" src="./examples/tutorial.gif" alt="Tutorial GIF recording with VHS" />
 
 ## Commands
 
