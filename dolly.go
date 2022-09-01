@@ -50,7 +50,7 @@ func DefaultDollyOptions() DollyOptions {
 func New() Dolly {
 	port := randomPort()
 	tty := StartTTY(port)
-	go tty.Run()
+	go tty.Run() //nolint:errcheck
 
 	browser := rod.New().MustConnect()
 	page := browser.MustPage(fmt.Sprintf("http://localhost:%d", port))
@@ -60,7 +60,6 @@ func New() Dolly {
 		Options: &opts,
 		Page:    page,
 		Start: func() {
-			fmt.Println(opts)
 			page = page.MustSetViewport(opts.Width, opts.Height, 1, false).
 				// Let's wait until we can access the window.term variable
 				MustWait("() => window.term != undefined")
@@ -79,7 +78,8 @@ func New() Dolly {
 			// However, for now, we simply check whether the overlay is active by seeing if .xterm has 3 children.
 			page.MustEval("() => document.querySelector('.xterm').lastChild.remove()")
 
-			// Apply default options to the terminal
+			// Apply options to the terminal
+			// By this point the setting commands have been executed, so the `opts` struct is up to date.
 			page.MustEval(fmt.Sprintf("() => term.setOption('fontSize', '%d')", opts.FontSize))
 			page.MustEval(fmt.Sprintf("() => term.setOption('fontFamily', '%s')", opts.FontFamily))
 			page.MustEval(fmt.Sprintf("() => term.setOption('lineHeight', '%f')", opts.LineHeight))
@@ -103,7 +103,7 @@ func New() Dolly {
 							time.Sleep(time.Second / time.Duration(opts.Framerate))
 							continue
 						}
-						os.WriteFile((opts.GIF.InputFolder + "/" + fmt.Sprintf(frameFileFormat, counter)), screenshot, 0644)
+						_ = os.WriteFile((opts.GIF.InputFolder + "/" + fmt.Sprintf(frameFileFormat, counter)), screenshot, 0644)
 					}
 					time.Sleep(time.Second / time.Duration(opts.Framerate))
 				}
@@ -112,7 +112,7 @@ func New() Dolly {
 		Cleanup: func() {
 			// Tear down the processes we started.
 			browser.MustClose()
-			tty.Process.Kill()
+			_ = tty.Process.Kill()
 
 			// Make GIF with frames
 			err := MakeGIF(opts.GIF).Run()
