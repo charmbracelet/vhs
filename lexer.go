@@ -101,7 +101,7 @@ func (l *Lexer) readNumber() string {
 // Foo => Token(Foo)
 func (l *Lexer) readIdentifier() string {
 	pos := l.pos
-	for isLetter(l.ch) || isDot(l.ch) {
+	for isLetter(l.ch) || isDot(l.ch) || isSlash(l.ch) {
 		l.readChar()
 	}
 	return l.input[pos:l.pos]
@@ -123,6 +123,11 @@ func (l *Lexer) skipWhitespace() {
 // isDot returns whether a character is a dot.
 func isDot(ch byte) bool {
 	return ch == '.'
+}
+
+// isSlash returns whether a character is a slash.
+func isSlash(ch byte) bool {
+	return ch == '/'
 }
 
 // isLetter returns whether a character is a letter.

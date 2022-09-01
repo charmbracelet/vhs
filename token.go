@@ -16,6 +16,7 @@ const (
 	EQUAL        = "="
 	PLUS         = "+"
 	PERCENT      = "%"
+	SLASH        = "/"
 	DOT          = "."
 	PX           = "PX"
 	EM           = "EM"
