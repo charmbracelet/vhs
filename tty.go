@@ -7,7 +7,7 @@
 // Set FontFamily SF Mono
 // Set FontSize 12
 // Set Padding 1em
-package dolly
+package vhs
 
 import (
 	"fmt"

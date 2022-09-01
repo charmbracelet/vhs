@@ -1,4 +1,4 @@
-package dolly
+package vhs
 
 // Lexer is a lexer that tokenizes the input.
 type Lexer struct {

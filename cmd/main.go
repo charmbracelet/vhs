@@ -5,12 +5,12 @@ import (
 	"log"
 	"os"
 
-	"github.com/charmbracelet/dolly"
+	"github.com/charmbracelet/vhs"
 )
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Fprintln(os.Stderr, "usage: dolly <file.vhs>")
+		fmt.Fprintln(os.Stderr, "usage: vhs < file.tape")
 		os.Exit(1)
 	}
 
@@ -20,11 +20,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	d := dolly.New()
+	d := vhs.New()
 	defer d.Cleanup()
 
-	l := dolly.NewLexer(string(b))
-	p := dolly.NewParser(l)
+	l := vhs.NewLexer(string(b))
+	p := vhs.NewParser(l)
 
 	cmds := p.Parse()
 	errs := p.Errors()
@@ -38,7 +38,7 @@ func main() {
 	var offset int
 
 	for i, cmd := range cmds {
-		if cmd.Type == dolly.Set {
+		if cmd.Type == vhs.Set {
 			log.Printf("Setting %s to %s", cmd.Options, cmd.Args)
 			cmd.Execute(&d)
 		} else {

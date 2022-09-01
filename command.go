@@ -1,4 +1,4 @@
-package dolly
+package vhs
 
 import (
 	"encoding/json"
@@ -49,8 +49,8 @@ func (c CommandType) String() string {
 }
 
 // CommandFunc is a function that executes a command on a running
-// instance of dolly.
-type CommandFunc func(c Command, d *Dolly)
+// instance of vhs.
+type CommandFunc func(c Command, d *VHS)
 
 // CommandFuncs maps command types to their executable functions.
 var CommandFuncs = map[CommandType]CommandFunc{
@@ -84,15 +84,15 @@ func (c Command) String() string {
 	return fmt.Sprintf("%s %s", c.Type, c.Args)
 }
 
-// Execute executes a command on a running instance of dolly.
-func (c Command) Execute(d *Dolly) {
+// Execute executes a command on a running instance of vhs.
+func (c Command) Execute(d *VHS) {
 	CommandFuncs[c.Type](c, d)
 }
 
 // ExecuteNoop is a no-op command that does nothing.
 // Generally, this is used for Unknown commands when dealing with
 // commands that are not recognized.
-func ExecuteNoop(c Command, d *Dolly) {}
+func ExecuteNoop(c Command, d *VHS) {}
 
 // ExecuteKey is a higher-order function that returns a CommandFunc to execute
 // a key press for a given key. This is so that the logic for key pressing
@@ -101,7 +101,7 @@ func ExecuteNoop(c Command, d *Dolly) {}
 // i.e. ExecuteKey(input.ArrowDown) would return a CommandFunc that executes
 // the ArrowDown key press.
 func ExecuteKey(k input.Key) CommandFunc {
-	return func(c Command, d *Dolly) {
+	return func(c Command, d *VHS) {
 		repeat, err := strconv.Atoi(c.Args)
 		if err != nil {
 			repeat = 1
@@ -118,8 +118,8 @@ func ExecuteKey(k input.Key) CommandFunc {
 }
 
 // ExecuteCtrl is a CommandFunc that presses the argument key with the ctrl key
-// held down on the running instance of dolly.
-func ExecuteCtrl(c Command, d *Dolly) {
+// held down on the running instance of vhs.
+func ExecuteCtrl(c Command, d *VHS) {
 	_ = d.Page.Keyboard.Press(input.ControlLeft)
 	for _, r := range c.Args {
 		if k, ok := keymap[r]; ok {
@@ -131,7 +131,7 @@ func ExecuteCtrl(c Command, d *Dolly) {
 
 // ExecuteSleep sleeps for the desired time specified through the argument of
 // the Sleep command.
-func ExecuteSleep(c Command, d *Dolly) {
+func ExecuteSleep(c Command, d *VHS) {
 	dur, err := time.ParseDuration(c.Args)
 	if err != nil {
 		return
@@ -139,8 +139,8 @@ func ExecuteSleep(c Command, d *Dolly) {
 	time.Sleep(dur)
 }
 
-// ExecuteType types the argument string on the running instance of dolly.
-func ExecuteType(c Command, d *Dolly) {
+// ExecuteType types the argument string on the running instance of vhs.
+func ExecuteType(c Command, d *VHS) {
 	for _, r := range c.Args {
 		k, ok := keymap[r]
 		if ok {
@@ -170,45 +170,45 @@ var Settings = map[string]CommandFunc{
 	"Output":     ApplyOutput,
 }
 
-// ExecuteSet applies the settings on the running dolly specified by the
+// ExecuteSet applies the settings on the running vhs specified by the
 // option and argument pass to the command.
-func ExecuteSet(c Command, d *Dolly) {
+func ExecuteSet(c Command, d *VHS) {
 	Settings[c.Options](c, d)
 }
 
-// ApplyFontSize applies the font size on the dolly.
-func ApplyFontSize(c Command, d *Dolly) {
+// ApplyFontSize applies the font size on the vhs.
+func ApplyFontSize(c Command, d *VHS) {
 	fontSize, _ := strconv.Atoi(c.Args)
 	d.Options.FontSize = fontSize
 	_, _ = d.Page.Eval(fmt.Sprintf("term.setOption('fontSize', '%d')", fontSize))
 }
 
-// ApplyFontFamily applies the font family on the dolly.
-func ApplyFontFamily(c Command, d *Dolly) {
+// ApplyFontFamily applies the font family on the vhs.
+func ApplyFontFamily(c Command, d *VHS) {
 	d.Options.FontFamily = c.Args
 	_, _ = d.Page.Eval(fmt.Sprintf("term.setOption('fontFamily', '%s')", c.Args))
 }
 
-// ApplyHeight applies the height on the dolly.
-func ApplyHeight(c Command, d *Dolly) {
+// ApplyHeight applies the height on the vhs.
+func ApplyHeight(c Command, d *VHS) {
 	d.Options.Height, _ = strconv.Atoi(c.Args)
 }
 
-// ApplyWidth applies the width on the dolly.
-func ApplyWidth(c Command, d *Dolly) {
+// ApplyWidth applies the width on the vhs.
+func ApplyWidth(c Command, d *VHS) {
 	d.Options.Width, _ = strconv.Atoi(c.Args)
 	d.Options.GIF.Width, _ = strconv.Atoi(c.Args)
 }
 
-// ApplyLineHeight applies the line height on the dolly.
-func ApplyLineHeight(c Command, d *Dolly) {
+// ApplyLineHeight applies the line height on the vhs.
+func ApplyLineHeight(c Command, d *VHS) {
 	lineHeight, _ := strconv.ParseFloat(c.Args, 64)
 	d.Options.LineHeight = lineHeight
 	_, _ = d.Page.Eval(fmt.Sprintf("term.setOption('lineHeight', '%f')", lineHeight))
 }
 
-// ApplyTheme applies the theme on the dolly.
-func ApplyTheme(c Command, d *Dolly) {
+// ApplyTheme applies the theme on the vhs.
+func ApplyTheme(c Command, d *VHS) {
 	err := json.Unmarshal([]byte(c.Args), &d.Options.Theme)
 	if err != nil {
 		d.Options.Theme = DefaultTheme
@@ -217,18 +217,18 @@ func ApplyTheme(c Command, d *Dolly) {
 	_, _ = d.Page.Eval(fmt.Sprintf("term.setOption('theme', %s)", c.Args))
 }
 
-// ApplyPadding applies the padding on the dolly.
-func ApplyPadding(c Command, d *Dolly) {
+// ApplyPadding applies the padding on the vhs.
+func ApplyPadding(c Command, d *VHS) {
 	d.Options.Padding = c.Args
 	_, _ = d.Page.MustElement(".xterm").Eval(fmt.Sprintf(`this.style.padding = '%s'`, c.Args))
 }
 
-// ApplyFramerate applies the framerate on the dolly.
-func ApplyFramerate(c Command, d *Dolly) {
+// ApplyFramerate applies the framerate on the vhs.
+func ApplyFramerate(c Command, d *VHS) {
 	d.Options.Framerate, _ = strconv.ParseFloat(c.Args, 64)
 }
 
-// ApplyOutput applies the output on the dolly GIF.
-func ApplyOutput(c Command, d *Dolly) {
+// ApplyOutput applies the output on the vhs GIF.
+func ApplyOutput(c Command, d *VHS) {
 	d.Options.GIF.Output = c.Args
 }

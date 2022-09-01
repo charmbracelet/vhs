@@ -1,4 +1,4 @@
-package dolly
+package vhs
 
 // Type represents a token's type.
 type TokenType string
@@ -67,7 +67,7 @@ var keywords = map[string]TokenType{
 }
 
 // LookupIdentifier returns whether the identifier is a keyword.
-// In `dolly`, there are no _actual_ identifiers, i.e. there are no variables.
+// In `vhs`, there are no _actual_ identifiers, i.e. there are no variables.
 // Instead, identifiers are simply strings (i.e. bare words).
 func LookupIdentifier(ident string) TokenType {
 	if t, ok := keywords[ident]; ok {

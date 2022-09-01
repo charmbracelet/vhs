@@ -1,10 +1,10 @@
-# Dolly
+# VHS
 
 GIFs as code. Record GIFs for terminal applications with a just few lines of code 🎬.
 
-<img width="400" src="./out.gif" alt="Automatic GIF recording with dolly" />
+<img width="400" src="./out.gif" alt="Automatic GIF recording with vhs" />
 
-The above example is generated from a single dolly file: ([demo.vhs](./examples/demo.vhs)).
+The above example is generated from a single vhs file: ([demo.vhs](./examples/demo.vhs)).
 
 ## Tutorial
 
@@ -41,16 +41,16 @@ Backspace 5
 Sleep 1s
 ```
 
-Save the above text to a file (`demo.vhs`) and generate the GIF with `dolly`:
+Save the above text to a file (`demo.vhs`) and generate the GIF with `vhs`:
 
 ```bash
-dolly demo.vhs
+vhs demo.vhs
 open out.gif
 ```
 
 ## Commands
 
-The following is an exhaustive list of all the commands that can be used with `dolly`.
+The following is an exhaustive list of all the commands that can be used with `vhs`.
 
 ```
 Backspace[@<time>] [count]
@@ -79,7 +79,7 @@ We’d love to hear your thoughts on this project. Feel free to drop us a note!
 
 ## License
 
-[MIT](https://github.com/charmbracelet/dolly/raw/main/LICENSE)
+[MIT](https://github.com/charmbracelet/vhs/raw/main/LICENSE)
 
 ---
 

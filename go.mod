@@ -1,4 +1,4 @@
-module github.com/charmbracelet/dolly
+module github.com/charmbracelet/vhs
 
 go 1.18
 

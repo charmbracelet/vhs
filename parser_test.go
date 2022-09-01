@@ -1,4 +1,4 @@
-package dolly
+package vhs
 
 import "testing"
 

@@ -6,7 +6,7 @@
 //
 // Set MaxColors 256
 // Set Output demo.gif
-package dolly
+package vhs
 
 import (
 	"fmt"
@@ -19,7 +19,7 @@ const frameFileFormat = "frame-%02d.png"
 // randomDir returns a random temporary directory to be used for storing frames
 // from screenshots of the terminal.
 func randomDir() string {
-	tmp, _ := os.MkdirTemp(os.TempDir(), "dolly")
+	tmp, _ := os.MkdirTemp(os.TempDir(), "vhs")
 	return tmp
 }
 

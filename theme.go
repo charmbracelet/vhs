@@ -6,7 +6,7 @@
 //
 // Set Theme {"background": "#171717"}
 //
-package dolly
+package vhs
 
 import (
 	"encoding/json"

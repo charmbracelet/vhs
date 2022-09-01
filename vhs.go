@@ -1,4 +1,4 @@
-package dolly
+package vhs
 
 import (
 	"fmt"
@@ -10,16 +10,16 @@ import (
 	"github.com/go-rod/rod/lib/proto"
 )
 
-// Dolly is the object that controls the setup.
-type Dolly struct {
-	Options *DollyOptions
+// VHS is the object that controls the setup.
+type VHS struct {
+	Options *VHSOptions
 	Page    *rod.Page
 	Start   func()
 	Cleanup func()
 }
 
-// DollyOptions is the set of options for the setup.
-type DollyOptions struct {
+// VHSOptions is the set of options for the setup.
+type VHSOptions struct {
 	Framerate  float64
 	Height     int
 	Padding    string
@@ -31,9 +31,9 @@ type DollyOptions struct {
 	GIF        GIFOptions
 }
 
-// DefaultDollyOptions returns the default set of options to use for the setup function.
-func DefaultDollyOptions() DollyOptions {
-	return DollyOptions{
+// DefaultVHSOptions returns the default set of options to use for the setup function.
+func DefaultVHSOptions() VHSOptions {
+	return VHSOptions{
 		Framerate:  60,
 		Height:     600,
 		Width:      1200,
@@ -47,16 +47,16 @@ func DefaultDollyOptions() DollyOptions {
 }
 
 // New sets up ttyd and go-rod for recording frames.
-func New() Dolly {
+func New() VHS {
 	port := randomPort()
 	tty := StartTTY(port)
 	go tty.Run() //nolint:errcheck
 
 	browser := rod.New().MustConnect()
 	page := browser.MustPage(fmt.Sprintf("http://localhost:%d", port))
-	opts := DefaultDollyOptions()
+	opts := DefaultVHSOptions()
 
-	return Dolly{
+	return VHS{
 		Options: &opts,
 		Page:    page,
 		Start: func() {
