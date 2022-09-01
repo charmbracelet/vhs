@@ -60,6 +60,7 @@ var keywords = map[string]TokenType{
 	"Framerate":  SETTING,
 	"Height":     SETTING,
 	"LineHeight": SETTING,
+	"Output":     SETTING,
 	"Padding":    SETTING,
 	"Theme":      SETTING,
 	"Width":      SETTING,

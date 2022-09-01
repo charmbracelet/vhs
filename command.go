@@ -167,6 +167,7 @@ var Settings = map[string]CommandFunc{
 	"Theme":      ApplyTheme,
 	"Padding":    ApplyPadding,
 	"Framerate":  ApplyFramerate,
+	"Output":     ApplyOutput,
 }
 
 // ExecuteSet applies the settings on the running dolly specified by the
@@ -225,4 +226,9 @@ func ApplyPadding(c Command, d *Dolly) {
 // ApplyFramerate applies the framerate on the dolly.
 func ApplyFramerate(c Command, d *Dolly) {
 	d.Options.Framerate, _ = strconv.ParseFloat(c.Args, 64)
+}
+
+// ApplyOutput applies the output on the dolly GIF.
+func ApplyOutput(c Command, d *Dolly) {
+	d.Options.GIF.Output = c.Args
 }
