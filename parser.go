@@ -1,18 +1,16 @@
 package vhs
 
-import "fmt"
-
 // Parser is the structure that manages the parsing of tokens.
 type Parser struct {
 	l      *Lexer
-	errors []string
+	errors []ParserError
 	cur    Token
 	peek   Token
 }
 
 // NewParser returns a new Parser.
 func NewParser(l *Lexer) *Parser {
-	p := &Parser{l: l, errors: []string{}}
+	p := &Parser{l: l, errors: []ParserError{}}
 
 	// Read two tokens, so cur and peek are both set.
 	p.nextToken()
@@ -58,7 +56,7 @@ func (p *Parser) parseCommand() Command {
 	case CTRL:
 		return p.parseCtrl()
 	default:
-		p.errors = append(p.errors, fmt.Sprintf("%2d:%-2d │ Invalid command: %s", p.cur.Line, p.cur.Column, p.cur.Literal))
+		p.errors = append(p.errors, NewError(p.cur, "Invalid command: "+p.cur.Literal))
 		return Command{Type: Unknown}
 	}
 }
@@ -105,7 +103,7 @@ func (p *Parser) parseTime() string {
 		t = p.peek.Literal
 		p.nextToken()
 	} else {
-		p.errors = append(p.errors, fmt.Sprintf("%2d:%-2d │ Expected time, got %s", p.cur.Line, p.cur.Column, p.peek.Literal))
+		p.errors = append(p.errors, NewError(p.cur, "Expected time, got "+p.peek.Literal))
 	}
 
 	if p.peek.Type == SECONDS || p.peek.Type == MILLISECONDS {
@@ -133,7 +131,7 @@ func (p *Parser) parseCtrl() Command {
 		}
 	}
 
-	p.errors = append(p.errors, fmt.Sprintf("%2d:%-2d │ Expected character, got %s", p.cur.Line, p.cur.Column, p.peek.Literal))
+	p.errors = append(p.errors, NewError(p.cur, "Expected control character, got "+p.cur.Literal))
 	return Command{Type: Ctrl}
 }
 
@@ -172,7 +170,7 @@ func (p *Parser) parseSet() Command {
 	if p.peek.Type == SETTING {
 		cmd.Options = p.peek.Literal
 	} else {
-		p.errors = append(p.errors, fmt.Sprintf("%2d:%-2d │ Unknown setting: %s", p.peek.Line, p.peek.Column, p.peek.Literal))
+		p.errors = append(p.errors, NewError(p.cur, "Unknown setting: "+p.cur.Literal))
 	}
 	p.nextToken()
 
@@ -216,7 +214,7 @@ func (p *Parser) parseType() Command {
 		cmd.Args = p.peek.Literal
 		p.nextToken()
 	} else {
-		p.errors = append(p.errors, fmt.Sprintf("%2d:%-2d │ %s expects string", p.cur.Line, p.cur.Column, p.cur.Literal))
+		p.errors = append(p.errors, NewError(p.cur, p.cur.Literal+" expects string"))
 	}
 
 	return cmd
@@ -271,7 +269,7 @@ func (p *Parser) parseUp() Command {
 }
 
 // Errors returns any errors that occurred during parsing.
-func (p *Parser) Errors() []string {
+func (p *Parser) Errors() []ParserError {
 	return p.errors
 }
 

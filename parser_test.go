@@ -77,7 +77,7 @@ Sleep Bar`
 	}
 
 	for i, err := range p.errors {
-		if err != expectedErrors[i] {
+		if err.String() != expectedErrors[i] {
 			t.Errorf("Expected error %d to be [%s], got (%s)", i, expectedErrors[i], err)
 		}
 	}
