@@ -1,3 +1,4 @@
+.DS_Store
+.ssh/
 captures/
 tmp/
-.DS_Store
