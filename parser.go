@@ -103,7 +103,7 @@ func (p *Parser) parseTime() string {
 		t = p.peek.Literal
 		p.nextToken()
 	} else {
-		p.errors = append(p.errors, NewError(p.cur, "Expected time, got "+p.peek.Literal))
+		p.errors = append(p.errors, NewError(p.cur, "Expected time after "+p.cur.Literal))
 	}
 
 	if p.peek.Type == SECONDS || p.peek.Type == MILLISECONDS {
@@ -170,7 +170,7 @@ func (p *Parser) parseSet() Command {
 	if p.peek.Type == SETTING {
 		cmd.Options = p.peek.Literal
 	} else {
-		p.errors = append(p.errors, NewError(p.cur, "Unknown setting: "+p.cur.Literal))
+		p.errors = append(p.errors, NewError(p.peek, "Unknown setting: "+p.peek.Literal))
 	}
 	p.nextToken()
 
@@ -214,7 +214,7 @@ func (p *Parser) parseType() Command {
 		cmd.Args = p.peek.Literal
 		p.nextToken()
 	} else {
-		p.errors = append(p.errors, NewError(p.cur, p.cur.Literal+" expects string"))
+		p.errors = append(p.errors, NewError(p.peek, p.cur.Literal+" expects string"))
 	}
 
 	return cmd

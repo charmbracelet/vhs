@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/charmbracelet/vhs"
 )
@@ -33,8 +34,13 @@ func main() {
 	cmds := p.Parse()
 	errs := p.Errors()
 	if len(errs) != 0 {
+		lines := strings.Split(string(b), "\n")
 		for _, err := range errs {
-			fmt.Println(err)
+			fmt.Print(vhs.LineNumber(err.Token.Line))
+			fmt.Println(lines[err.Token.Line-1])
+			fmt.Print(strings.Repeat(" ", err.Token.Column+5))
+			fmt.Println(vhs.Underline(len(err.Token.Literal)), err.Msg)
+			fmt.Println()
 		}
 		os.Exit(1)
 	}

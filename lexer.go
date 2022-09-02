@@ -12,13 +12,14 @@ type Lexer struct {
 
 // NewLexer returns a new lexer for tokenizing the input string.
 func NewLexer(input string) *Lexer {
-	l := &Lexer{input: input, line: 1, column: 1}
+	l := &Lexer{input: input, line: 1, column: 0}
 	l.readChar()
 	return l
 }
 
 // readChar advances the lexer to the next character.
 func (l *Lexer) readChar() {
+	l.column += 1
 	l.ch = l.peekChar()
 	l.pos = l.nextPos
 	l.nextPos += 1
@@ -66,9 +67,10 @@ func (l *Lexer) NextToken() Token {
 
 // newToken creates a new token with the given type and literal.
 func (l *Lexer) newToken(tokenType TokenType, ch byte) Token {
+	literal := string(ch)
 	return Token{
 		Type:    tokenType,
-		Literal: string(ch),
+		Literal: literal,
 		Line:    l.line,
 		Column:  l.column,
 	}
@@ -114,7 +116,7 @@ func (l *Lexer) skipWhitespace() {
 	for isWhitespace(l.ch) {
 		if isNewLine(l.ch) {
 			l.line += 1
-			l.column = 1
+			l.column = 0
 		}
 		l.readChar()
 	}
