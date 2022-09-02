@@ -2,7 +2,7 @@
 
 GIFs as code. Record GIFs for terminal applications with a just few lines of code 🎬.
 
-<img width="400" src="./examples/out.gif" alt="Automatic GIF recording with vhs" />
+<img width="400" src="./examples/demo.gif" alt="Automatic GIF recording with vhs" />
 
 The above example is generated from a single tape file: ([demo.tape](./examples/demo.tape)).
 

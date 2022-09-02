@@ -1,3 +1,4 @@
+Set Output ./examples/demo.gif
 Set FontSize 42
 Set Padding 5em
 
