@@ -58,7 +58,7 @@ func TestParserErrors(t *testing.T) {
 Type
 Type "echo 'Hello, World!'" Enter
 Foo
-Sleep`
+Sleep Bar`
 
 	l := NewLexer(input)
 	p := NewParser(l)
@@ -66,9 +66,10 @@ Sleep`
 	_ = p.Parse()
 
 	expectedErrors := []string{
-		"Type command expected string argument",
-		"Unknown command: Foo",
-		"Unexpected token, expected time value",
+		" 2:1  │ Type expects string",
+		" 4:1  │ Invalid command: Foo",
+		" 5:1  │ Expected time, got Bar",
+		" 5:1  │ Invalid command: Bar",
 	}
 
 	if len(p.errors) != len(expectedErrors) {
@@ -77,7 +78,7 @@ Sleep`
 
 	for i, err := range p.errors {
 		if err != expectedErrors[i] {
-			t.Errorf("Expected error %d to be %s, got %s", i, expectedErrors[i], err)
+			t.Errorf("Expected error %d to be [%s], got (%s)", i, expectedErrors[i], err)
 		}
 	}
 }
