@@ -26,6 +26,7 @@ func randomPort() int {
 func StartTTY(port int) *exec.Cmd {
 	cmd := exec.Command(
 		"ttyd", fmt.Sprintf("--port=%d", port),
+		"-t", "disableResizeOverlay=true",
 		"-t", "customGlyphs=true",
 		"zsh",
 	)
