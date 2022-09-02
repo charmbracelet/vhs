@@ -1,4 +1,4 @@
-Set Output examples/tutorial.gif
+Set Output ./examples/tutorial.gif
 Set FontSize 42
 
 Type "echo 'Hello World'"
