@@ -4,7 +4,7 @@ GIFs as code. Record GIFs for terminal applications with a just few lines of cod
 
 <img width="400" src="./examples/out.gif" alt="Automatic GIF recording with vhs" />
 
-The above example is generated from a single vhs file: ([demo.vhs](./examples/demo.vhs)).
+The above example is generated from a single tape file: ([demo.tape](./examples/demo.tape)).
 
 ## Tutorial
 
@@ -41,10 +41,10 @@ Backspace 5
 Sleep 1s
 ```
 
-Save the above text to a file (`demo.vhs`) and generate the GIF with `vhs`:
+Save the above text to a file (`demo.tape`) and generate the GIF with `vhs`:
 
 ```bash
-vhs demo.vhs
+vhs < demo.tape
 open out.gif
 ```
 
