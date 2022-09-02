@@ -56,7 +56,7 @@ func main() {
 						return
 					}
 
-					err = vhs.Evaluate(b.String(), s)
+					err = vhs.Evaluate(b.String(), s.Stderr())
 					if err != nil {
 						_ = s.Exit(1)
 					}
