@@ -23,7 +23,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	err = vhs.Evaluate(string(b), os.Stdout)
+	err = vhs.Evaluate(string(b), os.Stdout, "")
 	if err != nil {
 		os.Exit(1)
 	}

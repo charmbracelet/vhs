@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math/rand"
 	"os"
 	"os/signal"
 	"syscall"
@@ -56,10 +57,17 @@ func main() {
 						return
 					}
 
-					err = vhs.Evaluate(b.String(), s.Stderr())
+					rand := rand.Int63n(1000000000)
+					tempFile := fmt.Sprintf("vhs-%d.gif", rand)
+
+					err = vhs.Evaluate(b.String(), s.Stderr(), tempFile)
 					if err != nil {
 						_ = s.Exit(1)
 					}
+
+					gif, _ := os.ReadFile(tempFile)
+					wish.Print(s, string(gif))
+					os.Remove(tempFile)
 
 					h(s)
 				}

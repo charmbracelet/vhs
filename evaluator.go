@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func Evaluate(tape string, w io.Writer) error {
+func Evaluate(tape string, w io.Writer, outputFile string) error {
 	v := New()
 	defer v.Cleanup()
 
@@ -25,7 +25,7 @@ func Evaluate(tape string, w io.Writer) error {
 			fmt.Fprintln(w, Underline(len(err.Token.Literal)), err.Msg)
 			fmt.Fprintln(w)
 		}
-		return errors.New("Parse error")
+		return errors.New("parse error")
 	}
 
 	var offset int
@@ -45,6 +45,18 @@ func Evaluate(tape string, w io.Writer) error {
 	for _, cmd := range cmds[offset:] {
 		fmt.Fprintln(w, cmd)
 		cmd.Execute(&v)
+	}
+
+	// If running as an SSH server, the output file is a temporary file
+	// to use for the output.
+	//
+	// We need to do this before the GIF is created but after all of the settings
+	// and commands are executed.
+	//
+	// Since the GIF creation is deferred, setting the output file here will
+	// achieve what we want.
+	if outputFile != "" {
+		v.Options.GIF.Output = outputFile
 	}
 
 	return nil
