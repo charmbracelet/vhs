@@ -20,29 +20,31 @@ type VHS struct {
 
 // VHSOptions is the set of options for the setup.
 type VHSOptions struct {
-	Framerate  float64
-	Height     int
-	Padding    string
-	Width      int
-	FontFamily string
-	FontSize   int
-	LineHeight float64
-	Theme      Theme
-	GIF        GIFOptions
+	Framerate     float64
+	Height        int
+	Padding       string
+	Width         int
+	FontFamily    string
+	FontSize      int
+	LetterSpacing float64
+	LineHeight    float64
+	Theme         Theme
+	GIF           GIFOptions
 }
 
 // DefaultVHSOptions returns the default set of options to use for the setup function.
 func DefaultVHSOptions() VHSOptions {
 	return VHSOptions{
-		Framerate:  60,
-		Height:     600,
-		Width:      1200,
-		Padding:    "5em",
-		FontFamily: "SF Mono",
-		FontSize:   22,
-		LineHeight: 1.2,
-		Theme:      DefaultTheme,
-		GIF:        DefaultGIFOptions,
+		Framerate:     60,
+		Height:        600,
+		Width:         1200,
+		Padding:       "5em",
+		FontFamily:    "SF Mono",
+		FontSize:      22,
+		LetterSpacing: 1.0,
+		LineHeight:    1.2,
+		Theme:         DefaultTheme,
+		GIF:           DefaultGIFOptions,
 	}
 }
 
@@ -82,6 +84,7 @@ func New() VHS {
 			// By this point the setting commands have been executed, so the `opts` struct is up to date.
 			page.MustEval(fmt.Sprintf("() => term.setOption('fontSize', '%d')", opts.FontSize))
 			page.MustEval(fmt.Sprintf("() => term.setOption('fontFamily', '%s')", opts.FontFamily))
+			page.MustEval(fmt.Sprintf("() => term.setOption('letterSpacing', '%f')", opts.LetterSpacing))
 			page.MustEval(fmt.Sprintf("() => term.setOption('lineHeight', '%f')", opts.LineHeight))
 			page.MustEval(fmt.Sprintf("() => term.setOption('theme', %s)", opts.Theme.String()))
 			page.MustElement(".xterm").MustEval(fmt.Sprintf("() => this.style.padding = '%s'", opts.Padding))

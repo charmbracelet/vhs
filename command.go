@@ -159,15 +159,16 @@ func ExecuteType(c Command, d *VHS) {
 
 // Settings maps the Set commands to their respective functions.
 var Settings = map[string]CommandFunc{
-	"FontSize":   ApplyFontSize,
-	"FontFamily": ApplyFontFamily,
-	"Height":     ApplyHeight,
-	"Width":      ApplyWidth,
-	"LineHeight": ApplyLineHeight,
-	"Theme":      ApplyTheme,
-	"Padding":    ApplyPadding,
-	"Framerate":  ApplyFramerate,
-	"Output":     ApplyOutput,
+	"FontSize":      ApplyFontSize,
+	"FontFamily":    ApplyFontFamily,
+	"Height":        ApplyHeight,
+	"Width":         ApplyWidth,
+	"LetterSpacing": ApplyLetterSpacing,
+	"LineHeight":    ApplyLineHeight,
+	"Theme":         ApplyTheme,
+	"Padding":       ApplyPadding,
+	"Framerate":     ApplyFramerate,
+	"Output":        ApplyOutput,
 }
 
 // ExecuteSet applies the settings on the running vhs specified by the
@@ -198,6 +199,14 @@ func ApplyHeight(c Command, d *VHS) {
 func ApplyWidth(c Command, d *VHS) {
 	d.Options.Width, _ = strconv.Atoi(c.Args)
 	d.Options.GIF.Width, _ = strconv.Atoi(c.Args)
+}
+
+// ApplyLetterSpacing applies letter tracking (also known as tracking) on the
+// vhs.
+func ApplyLetterSpacing(c Command, d *VHS) {
+	letterSpacing, _ := strconv.ParseFloat(c.Args, 64)
+	d.Options.LetterSpacing = letterSpacing
+	_, _ = d.Page.Eval(fmt.Sprintf("term.setOption('letterSpacing', '%f')", letterSpacing))
 }
 
 // ApplyLineHeight applies the line height on the vhs.
