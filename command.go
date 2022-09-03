@@ -201,7 +201,7 @@ func ApplyWidth(c Command, d *VHS) {
 	d.Options.GIF.Width, _ = strconv.Atoi(c.Args)
 }
 
-// ApplyLetterSpacing applies letter tracking (also known as tracking) on the
+// ApplyLetterSpacing applies letter spacing (also known as tracking) on the
 // vhs.
 func ApplyLetterSpacing(c Command, d *VHS) {
 	letterSpacing, _ := strconv.ParseFloat(c.Args, 64)
