@@ -67,18 +67,6 @@ func New() VHS {
 				MustWait("() => window.term != undefined")
 
 			page.MustEval("term.fit")
-			page.MustWait("() => document.querySelector('.xterm').childElementCount == 3")
-
-			// There is an annoying overlay that displays how large the terminal is, which goes away after
-			// two seconds. We could wait those two seconds (i.e. time.Sleep(2 * time.Second)), but to optimize
-			// for the user and GIF generating times, we can remove the overlay manually.
-			//
-			// This is more complicated than it needs to be since the overlay does not have an ID, or class.
-			// The correct solution is to use a CSS selector, but that is not supported in the current version.
-			//
-			// TODO: Add an ID to the overlay in TTYD and then use that here instead.
-			// However, for now, we simply check whether the overlay is active by seeing if .xterm has 3 children.
-			page.MustEval("() => document.querySelector('.xterm').lastChild.remove()")
 
 			// Apply options to the terminal
 			// By this point the setting commands have been executed, so the `opts` struct is up to date.
