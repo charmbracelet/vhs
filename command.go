@@ -16,18 +16,18 @@ type CommandType TokenType
 // CommandTypes is a list of the available commands that can be executed.
 var CommandTypes = []CommandType{
 	BACKSPACE,
+	CTRL,
 	DOWN,
 	ENTER,
+	ILLEGAL,
 	LEFT,
 	RIGHT,
-	SPACE,
-	UP,
-	TAB,
-	TYPE,
 	SET,
 	SLEEP,
-	CTRL,
-	ILLEGAL,
+	SPACE,
+	TAB,
+	TYPE,
+	UP,
 }
 
 // String returns the string representation of the command.

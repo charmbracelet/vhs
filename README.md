@@ -52,83 +52,39 @@ open out.gif
 
 ## Commands
 
-The following is an exhaustive list of all the commands that can be used with `vhs`.
+* [`Set <Setting> Value`](#set)
+	- [`Set FontSize <Number>`](#set-font-size)
+	- [`Set FontFamily <String>`](#set-font-family)
+	- [`Set Height <Number>`](#set-height)
+	- [`Set Width <Number>`](#set-width)
+	- [`Set LetterSpacing <Float>`](#set-letter-spacing)
+	- [`Set LineHeight <Float>`](#set-line-height)
+	- [`Set Theme <String>`](#set-theme)
+	- [`Set Padding <Number>[em|px]`](#set-padding)
+	- [`Set Framerate <Number>`](#set-framerate)
+	- [`Set Output <Path>`](#set-output)
+* [`Sleep <time>`](#sleep)
+* [`Type "<characters>"`](#type)
 
-The `Set` command allows you to change settings from the defaults in order to style the output GIF how you want it to look.
-See the [Settings](#Settings) section for a list of all possible settings.
+#### Keys
 
-```
-Set <setting> <value>
-```
-
-Type allows you to type a string into the terminal at a given typing speed which can be specified with the `@time` modifier.
-
-```
-Type[@<time>] "<characters...>"
-```
-
-To press special keys such as `Enter`, `Backspace`, and arrow keys, you can use the following commands.
-Each of these commands also takes an optional `@time` to specify typing speed with an optional repeat `count`.
-
-```
-Enter[@<time>] [count]
-Backspace[@<time>] [count]
-Down[@<time>] [count]
-Left[@<time>] [count]
-Right[@<time>] [count]
-Up[@<time>] [count]
-```
-
-To allow the GIF to keep recording without any user input use the `Sleep` command.
-This command continues recording the terminal for the specified duration so you can still view what is happening in the terminal.
+Key commands take an optional `@time` and repeat `count`.
+For example, the following presses the `Left` key 5 times with a 500 millisecond delay between each keystroke.
 
 ```
-Sleep <time>
+Left@500ms 5
 ```
 
-To press special characters such as `Ctrl+C` or `Ctrl+L` you can use the `Ctrl+<character>` command.
+* [`Backspace`](#backspace)
+* [`Ctrl`](#ctrl)
+* [`Down`](#down)
+* [`Enter`](#enter)
+* [`Left`](#left)
+* [`Right`](#right)
+* [`Space`](#space)
+* [`Tab`](#tab)
+* [`Up`](#up)
 
-```
-Alt+<character>
-Ctrl+<character>
-```
-
-## Settings
-
-You can change some settings for your GIFs through the `Set` command.
-
-The `Output` setting allows you to specify the name that the output file will be named.
-
-```
-Set Output out.gif
-```
-
-You can change certain font settings of the terminal with `FontFamily`, `FontSize` and `LineHeight`.
-
-```
-Set FontFamily "SF Mono"
-Set FontSize 32
-Set LineHeight 1.2
-```
-
-You can also change the `Framerate` (the rate at which screenshots are captured).
-
-```
-Set Framerate 60
-```
-
-Using the `Width` and `Height` settings, you can specify the dimensions of your terminal and output GIF.
-
-```
-Set Width 1200
-Set Height 600
-```
-
-You can also set the padding of your terminal with the `Padding` command.
-
-```
-Set Padding 5em
-```
 
 ## Feedback
 
