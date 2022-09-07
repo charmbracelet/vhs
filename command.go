@@ -4,50 +4,35 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/go-rod/rod/lib/input"
 )
 
 // CommandType is a type that represents a command.
-type CommandType string
-
-const (
-	Backspace CommandType = "Backspace"
-	Down      CommandType = "Down"
-	Enter     CommandType = "Enter"
-	Left      CommandType = "Left"
-	Right     CommandType = "Right"
-	Space     CommandType = "Space"
-	Up        CommandType = "Up"
-	Tab       CommandType = "Tab"
-	Type      CommandType = "Type"
-	Set       CommandType = "Set"
-	Sleep     CommandType = "Sleep"
-	Ctrl      CommandType = "Ctrl"
-	Unknown   CommandType = "Unknown"
-)
+type CommandType TokenType
 
 // CommandTypes is a list of the available commands that can be executed.
 var CommandTypes = []CommandType{
-	Backspace,
-	Down,
-	Enter,
-	Left,
-	Right,
-	Space,
-	Up,
-	Tab,
-	Type,
-	Set,
-	Sleep,
-	Ctrl,
-	Unknown,
+	BACKSPACE,
+	DOWN,
+	ENTER,
+	LEFT,
+	RIGHT,
+	SPACE,
+	UP,
+	TAB,
+	TYPE,
+	SET,
+	SLEEP,
+	CTRL,
+	ILLEGAL,
 }
 
 // String returns the string representation of the command.
 func (c CommandType) String() string {
-	return string(c)
+	return strings.Title(strings.ToLower(string(c)))
 }
 
 // CommandFunc is a function that executes a command on a running
@@ -56,19 +41,19 @@ type CommandFunc func(c Command, d *VHS)
 
 // CommandFuncs maps command types to their executable functions.
 var CommandFuncs = map[CommandType]CommandFunc{
-	Backspace: ExecuteKey(input.Backspace),
-	Down:      ExecuteKey(input.ArrowDown),
-	Enter:     ExecuteKey(input.Enter),
-	Left:      ExecuteKey(input.ArrowLeft),
-	Right:     ExecuteKey(input.ArrowRight),
-	Space:     ExecuteKey(input.Space),
-	Up:        ExecuteKey(input.ArrowUp),
-	Tab:       ExecuteKey(input.Tab),
-	Set:       ExecuteSet,
-	Sleep:     ExecuteSleep,
-	Type:      ExecuteType,
-	Ctrl:      ExecuteCtrl,
-	Unknown:   ExecuteNoop,
+	BACKSPACE: ExecuteKey(input.Backspace),
+	DOWN:      ExecuteKey(input.ArrowDown),
+	ENTER:     ExecuteKey(input.Enter),
+	LEFT:      ExecuteKey(input.ArrowLeft),
+	RIGHT:     ExecuteKey(input.ArrowRight),
+	SPACE:     ExecuteKey(input.Space),
+	UP:        ExecuteKey(input.ArrowUp),
+	TAB:       ExecuteKey(input.Tab),
+	SET:       ExecuteSet,
+	SLEEP:     ExecuteSleep,
+	TYPE:      ExecuteType,
+	CTRL:      ExecuteCtrl,
+	ILLEGAL:   ExecuteNoop,
 }
 
 // Command represents a command with options and arguments.

@@ -22,6 +22,7 @@ const (
 	EM           = "EM"
 	EOF          = "EOF"
 	ILLEGAL      = "ILLEGAL"
+	SPACE        = "SPACE"
 	BACKSPACE    = "BACKSPACE"
 	CTRL         = "CTRL"
 	ENTER        = "ENTER"
@@ -36,6 +37,7 @@ const (
 	RIGHT        = "RIGHT"
 	UP           = "UP"
 	TAB          = "TAB"
+	ESCAPE       = "ESCAPE"
 	SECONDS      = "SECONDS"
 	MILLISECONDS = "MILLISECONDS"
 	MINUTES      = "MINUTES"
@@ -51,6 +53,7 @@ var keywords = map[string]TokenType{
 	"Sleep":         SLEEP,
 	"Type":          TYPE,
 	"Enter":         ENTER,
+	"Space":         SPACE,
 	"Backspace":     BACKSPACE,
 	"Ctrl":          CTRL,
 	"Down":          DOWN,
@@ -58,6 +61,7 @@ var keywords = map[string]TokenType{
 	"Right":         RIGHT,
 	"Up":            UP,
 	"Tab":           TAB,
+	"Escape":        ESCAPE,
 	"FontFamily":    SETTING,
 	"FontSize":      SETTING,
 	"Framerate":     SETTING,

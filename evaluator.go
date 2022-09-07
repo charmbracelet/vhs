@@ -31,7 +31,7 @@ func Evaluate(tape string, w io.Writer, outputFile string) error {
 	var offset int
 
 	for i, cmd := range cmds {
-		if cmd.Type == Set {
+		if cmd.Type == SET {
 			fmt.Fprintf(w, "Setting %s to %s\n", cmd.Options, cmd.Args)
 			cmd.Execute(&v)
 		} else {
