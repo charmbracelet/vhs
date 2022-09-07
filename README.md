@@ -182,6 +182,50 @@ Space 10
 
 <img alt="" src="./examples/space.gif" width="600" />
 
+### Settings
+
+#### Set Font Size
+
+Set the font size with the `Set FontSize <Number>` command.
+
+```
+Set FontSize 10
+Set FontSize 20
+Set FontSize 30
+Set FontSize 40
+```
+
+<img alt="" src="./examples/set-font-size.gif" width="600" />
+
+#### Set Font Family
+
+Set the font family with the `Set FontFamily "<Font>"` command
+
+```
+Set FontFamily "Fira Code"
+Set FontFamily "Menlo"
+Set FontFamily "Monaco"
+Set FontFamily "Monoflow"
+Set FontFamily "SF Mono"
+```
+
+<img alt="" src="./examples/set-font-family.gif" width="600" />
+
+#### Set Height
+#### Set Width
+
+#### Set Letter Spacing
+
+#### Set Line Height
+
+#### Set Theme
+
+#### Set Padding
+
+#### Set Framerate
+
+#### Set Output
+
 ## Feedback
 
 We’d love to hear your thoughts on this project. Feel free to drop us a note!

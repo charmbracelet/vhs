@@ -18,6 +18,7 @@ const (
 	PERCENT      = "%"
 	SLASH        = "/"
 	DOT          = "."
+	DASH         = "-"
 	PX           = "PX"
 	EM           = "EM"
 	EOF          = "EOF"
