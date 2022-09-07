@@ -118,25 +118,65 @@ Type "Meow"
 
 #### Backspace
 
+Press the backspace key with the `Backspace` command.
+
+```
+Backspace 22
+```
+
 <img alt="Press Backspace" src="./examples/backspace.gif" width="600" />
 
 #### Ctrl
+
+Press a control sequence with the `Ctrl` command.
+
+```
+Ctrl+L
+Ctrl+C
+```
 
 <img alt="" src="./examples/ctrl.gif" width="600" />
 
 #### Enter
 
+Press the enter key with the `Enter` command.
+
+```
+Enter
+```
+
 <img alt="" src="./examples/enter.gif" width="600" />
 
 #### Arrow Keys
+
+Press any of the arrow keys with the `Up`, `Down`, `Left`, `Right` commands.
+
+```
+Up 2
+Down 3
+Left 10
+Right 10
+```
 
 <img alt="" src="./examples/arrow.gif" width="600" />
 
 #### Tab
 
+Press the tab key with the `Tab` command.
+
+```
+Tab@500ms 4
+```
+
 <img alt="" src="./examples/tab.gif" width="600" />
 
 #### Space
+
+Press the space bar with the `Space` command.
+
+```
+Space 10
+```
 
 <img alt="" src="./examples/space.gif" width="600" />
 
