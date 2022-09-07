@@ -69,13 +69,16 @@ Left@500ms 5
 * [`Ctrl`](#ctrl)
 * [`Down`](#down)
 * [`Enter`](#enter)
-* [`Left`](#left)
-* [`Right`](#right)
 * [`Space`](#space)
 * [`Tab`](#tab)
-* [`Up`](#up)
+* [`Left`](#arrow-keys)
+* [`Right`](#arrow-keys)
+* [`Up`](#arrow-keys)
+* [`Down`](#arrow-keys)
 
 ### Settings
+
+The `Set` command allows you to change aspects of the terminal, such as the font settings, window dimensions, and output GIF location.
 
 * [`Set FontSize <Number>`](#set-font-size)
 * [`Set FontFamily <String>`](#set-font-family)
@@ -90,7 +93,7 @@ Left@500ms 5
 
 ### Sleep
 
-The Sleep command allows you to continue capturing frames without interacting with the terminal.
+The `Sleep` command allows you to continue capturing frames without interacting with the terminal.
 This is useful when you need to wait on something to complete while including it in the recording like a spinner or loading state.
 The command takes a time argument with optional units (`s` or `ms`) by default the units are in `ms`.
 
@@ -110,6 +113,32 @@ The command takes a string argument with the characters to type.
 Type "echo 'Beep'"
 Type "Meow"
 ```
+
+### Keys
+
+#### Backspace
+
+<img alt="Press Backspace" src="./examples/backspace.gif" width="600" />
+
+#### Ctrl
+
+<img alt="" src="./examples/ctrl.gif" width="600" />
+
+#### Enter
+
+<img alt="" src="./examples/enter.gif" width="600" />
+
+#### Arrow Keys
+
+<img alt="" src="./examples/arrow.gif" width="600" />
+
+#### Tab
+
+<img alt="" src="./examples/tab.gif" width="600" />
+
+#### Space
+
+<img alt="" src="./examples/space.gif" width="600" />
 
 ## Feedback
 
