@@ -53,6 +53,8 @@ func (p *Parser) parseCommand() Command {
 		return p.parseRight()
 	case UP:
 		return p.parseUp()
+	case TAB:
+		return p.parseTab()
 	case CTRL:
 		return p.parseCtrl()
 	default:
@@ -263,6 +265,18 @@ func (p *Parser) parseRight() Command {
 //
 func (p *Parser) parseUp() Command {
 	cmd := Command{Type: Up}
+	cmd.Options = p.parseSpeed()
+	cmd.Args = p.parseRepeat()
+	return cmd
+}
+
+// parseTab parses a tab command.
+// A tab command takes an optional typing speed and optional count.
+//
+// Tab[@<time>] [count]
+//
+func (p *Parser) parseTab() Command {
+	cmd := Command{Type: Tab}
 	cmd.Options = p.parseSpeed()
 	cmd.Args = p.parseRepeat()
 	return cmd

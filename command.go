@@ -20,6 +20,7 @@ const (
 	Right     CommandType = "Right"
 	Space     CommandType = "Space"
 	Up        CommandType = "Up"
+	Tab       CommandType = "Tab"
 	Type      CommandType = "Type"
 	Set       CommandType = "Set"
 	Sleep     CommandType = "Sleep"
@@ -36,6 +37,7 @@ var CommandTypes = []CommandType{
 	Right,
 	Space,
 	Up,
+	Tab,
 	Type,
 	Set,
 	Sleep,
@@ -61,6 +63,7 @@ var CommandFuncs = map[CommandType]CommandFunc{
 	Right:     ExecuteKey(input.ArrowRight),
 	Space:     ExecuteKey(input.Space),
 	Up:        ExecuteKey(input.ArrowUp),
+	Tab:       ExecuteKey(input.Tab),
 	Set:       ExecuteSet,
 	Sleep:     ExecuteSleep,
 	Type:      ExecuteType,

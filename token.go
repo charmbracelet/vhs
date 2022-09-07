@@ -35,6 +35,7 @@ const (
 	LEFT         = "LEFT"
 	RIGHT        = "RIGHT"
 	UP           = "UP"
+	TAB          = "TAB"
 	SECONDS      = "SECONDS"
 	MILLISECONDS = "MILLISECONDS"
 	MINUTES      = "MINUTES"
@@ -56,6 +57,7 @@ var keywords = map[string]TokenType{
 	"Left":          LEFT,
 	"Right":         RIGHT,
 	"Up":            UP,
+	"Tab":           TAB,
 	"FontFamily":    SETTING,
 	"FontSize":      SETTING,
 	"Framerate":     SETTING,
