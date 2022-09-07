@@ -52,21 +52,11 @@ open out.gif
 
 ## Commands
 
-* [`Set <Setting> Value`](#set)
-	- [`Set FontSize <Number>`](#set-font-size)
-	- [`Set FontFamily <String>`](#set-font-family)
-	- [`Set Height <Number>`](#set-height)
-	- [`Set Width <Number>`](#set-width)
-	- [`Set LetterSpacing <Float>`](#set-letter-spacing)
-	- [`Set LineHeight <Float>`](#set-line-height)
-	- [`Set Theme <String>`](#set-theme)
-	- [`Set Padding <Number>[em|px]`](#set-padding)
-	- [`Set Framerate <Number>`](#set-framerate)
-	- [`Set Output <Path>`](#set-output)
+* [`Set <Setting> Value`](#settings)
 * [`Sleep <time>`](#sleep)
 * [`Type "<characters>"`](#type)
 
-#### Keys
+### Keys
 
 Key commands take an optional `@time` and repeat `count`.
 For example, the following presses the `Left` key 5 times with a 500 millisecond delay between each keystroke.
@@ -85,6 +75,41 @@ Left@500ms 5
 * [`Tab`](#tab)
 * [`Up`](#up)
 
+### Settings
+
+* [`Set FontSize <Number>`](#set-font-size)
+* [`Set FontFamily <String>`](#set-font-family)
+* [`Set Height <Number>`](#set-height)
+* [`Set Width <Number>`](#set-width)
+* [`Set LetterSpacing <Float>`](#set-letter-spacing)
+* [`Set LineHeight <Float>`](#set-line-height)
+* [`Set Theme <String>`](#set-theme)
+* [`Set Padding <Number>[em|px]`](#set-padding)
+* [`Set Framerate <Number>`](#set-framerate)
+* [`Set Output <Path>`](#set-output)
+
+### Sleep
+
+The Sleep command allows you to continue capturing frames without interacting with the terminal.
+This is useful when you need to wait on something to complete while including it in the recording like a spinner or loading state.
+The command takes a time argument with optional units (`s` or `ms`) by default the units are in `ms`.
+
+```
+Sleep 2s
+Sleep 500ms
+Sleep 2000
+```
+
+### Type
+
+The `Type` command allows you to type in the terminal and emulate key presses.
+This is useful for typing commands or interacting with the terminal.
+The command takes a string argument with the characters to type.
+
+```
+Type "echo 'Beep'"
+Type "Meow"
+```
 
 ## Feedback
 
