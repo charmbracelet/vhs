@@ -114,6 +114,8 @@ Type "echo 'Beep'"
 Type "Meow"
 ```
 
+<img alt="Type" src="./examples/type.gif" width="600" />
+
 ### Keys
 
 #### Backspace
