@@ -35,28 +35,14 @@ func (p *Parser) Parse() []Command {
 // parseCommand parses a command.
 func (p *Parser) parseCommand() Command {
 	switch p.cur.Type {
-	case SPACE:
-		return p.parseSpace()
-	case BACKSPACE:
-		return p.parseBackspace()
-	case ENTER:
-		return p.parseEnter()
+	case SPACE, BACKSPACE, ENTER, TAB, DOWN, LEFT, RIGHT, UP:
+		return p.parseKeypress(p.cur.Type)
 	case SET:
 		return p.parseSet()
 	case SLEEP:
 		return p.parseSleep()
 	case TYPE:
 		return p.parseType()
-	case DOWN:
-		return p.parseDown()
-	case LEFT:
-		return p.parseLeft()
-	case RIGHT:
-		return p.parseRight()
-	case UP:
-		return p.parseUp()
-	case TAB:
-		return p.parseTab()
 	case CTRL:
 		return p.parseCtrl()
 	default:
@@ -139,37 +125,13 @@ func (p *Parser) parseCtrl() Command {
 	return Command{Type: CTRL}
 }
 
-// parseSpace parses a space command.
-// A space command takes an optional typing speed and optional count.
+// parseKeypress parses a repeatable and time adjustable keypress command.
+// A keypress command takes an optional typing speed and optional count.
 //
-// Space[@<time>] [count]
+// Key[@<time>] [count]
 //
-func (p *Parser) parseSpace() Command {
-	cmd := Command{Type: SPACE}
-	cmd.Options = p.parseSpeed()
-	cmd.Args = p.parseRepeat()
-	return cmd
-}
-
-// parseBackspace parses a backspace command.
-// A backspace command takes an optional typing speed and optional count.
-//
-// Backspace[@<time>] [count]
-//
-func (p *Parser) parseBackspace() Command {
-	cmd := Command{Type: BACKSPACE}
-	cmd.Options = p.parseSpeed()
-	cmd.Args = p.parseRepeat()
-	return cmd
-}
-
-// parseEnter parses an enter command.
-// An enter command takes an optional typing speed and optional count.
-//
-// Enter[@<time>] [count]
-//
-func (p *Parser) parseEnter() Command {
-	cmd := Command{Type: ENTER}
+func (p *Parser) parseKeypress(ct TokenType) Command {
+	cmd := Command{Type: CommandType(ct)}
 	cmd.Options = p.parseSpeed()
 	cmd.Args = p.parseRepeat()
 	return cmd
@@ -233,66 +195,6 @@ func (p *Parser) parseType() Command {
 		p.errors = append(p.errors, NewError(p.peek, p.cur.Literal+" expects string"))
 	}
 
-	return cmd
-}
-
-// parseDown parses a down command.
-// A down command takes an optional typing speed and optional count.
-//
-// Down[@<time>] [count]
-//
-func (p *Parser) parseDown() Command {
-	cmd := Command{Type: DOWN}
-	cmd.Options = p.parseSpeed()
-	cmd.Args = p.parseRepeat()
-	return cmd
-}
-
-// parseLeft parses a left command.
-// A left command takes an optional typing speed and optional count.
-//
-// Left[@<time>] [count]
-//
-func (p *Parser) parseLeft() Command {
-	cmd := Command{Type: LEFT}
-	cmd.Options = p.parseSpeed()
-	cmd.Args = p.parseRepeat()
-	return cmd
-}
-
-// parseRight parses a right command.
-// A right command takes an optional typing speed and optional count.
-//
-// Right[@<time>] [count]
-//
-func (p *Parser) parseRight() Command {
-	cmd := Command{Type: RIGHT}
-	cmd.Options = p.parseSpeed()
-	cmd.Args = p.parseRepeat()
-	return cmd
-}
-
-// parseUp parses a up command.
-// A up command takes an optional typing speed and optional count.
-//
-// Up[@<time>] [count]
-//
-func (p *Parser) parseUp() Command {
-	cmd := Command{Type: UP}
-	cmd.Options = p.parseSpeed()
-	cmd.Args = p.parseRepeat()
-	return cmd
-}
-
-// parseTab parses a tab command.
-// A tab command takes an optional typing speed and optional count.
-//
-// Tab[@<time>] [count]
-//
-func (p *Parser) parseTab() Command {
-	cmd := Command{Type: TAB}
-	cmd.Options = p.parseSpeed()
-	cmd.Args = p.parseRepeat()
 	return cmd
 }
 
