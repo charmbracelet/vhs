@@ -208,6 +208,7 @@ func ApplyLineHeight(c Command, d *VHS) {
 func ApplyTheme(c Command, d *VHS) {
 	err := json.Unmarshal([]byte(c.Args), &d.Options.Theme)
 	if err != nil {
+		fmt.Println(err)
 		d.Options.Theme = DefaultTheme
 		return
 	}
