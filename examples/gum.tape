@@ -1,10 +1,14 @@
 Set FontSize 32
+Set FontFamily "Menlo"
+Set Output ./examples/gum.ascii
+Set Output ./examples/gum.gif
 
-Type "gum filter --no-limit"
+Type "gum filter --no-limit --height 5"
 Enter
 Sleep 1s
-Down 5
+Tab@500ms 4
 Sleep 1s
-Type "\t\t\t\t"
 Up 3
+Sleep 500ms
 Enter
+Sleep 1s
