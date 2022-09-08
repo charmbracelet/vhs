@@ -1,7 +1,11 @@
 Set Output ./examples/tutorial.gif
-Set FontSize 42
+Set FontSize 32
 
-Type "echo 'Hello World'"
+Type "gum choose bubbles gum skate glow lipgloss wish"
 Enter
-Backspace 5
+Sleep 500ms
+Down@500ms 4
+Up@1s 3
+Sleep 500ms
+Enter
 Sleep 1s

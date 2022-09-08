@@ -1,54 +1,65 @@
 # VHS
 
-GIFs as code. Record GIFs for terminal applications with a just few lines of code 🎬.
+GIFs as code. Record GIFs for terminal applications with only a few lines of code.
 
-<img width="400" src="./examples/demo.gif" alt="Automatic GIF recording with vhs" />
-
-The above example is generated from a single tape file: ([demo.tape](./examples/demo.tape)).
+<img alt="Type" src="./examples/demo.gif" width="600" />
 
 ## Tutorial
 
-Type anything into the terminal with the `Type` command.
+Let's build a GIF for our [Gum](https://github.com/charmbracelet/gum) tool.
 
-```
-Type "echo 'Hello, world!'"
-```
-
-Press the Enter key with the `Enter` command.
-
-```
-Enter
-```
-
-Press the Backspace key in the terminal with the `Backspace` command.
-
-```
-Backspace
-```
-
-Wait for a certain amount of time with the `Sleep` command.
-
-```
-Sleep 1s
-```
-
-Putting it all together...
-
-```
-Type "echo 'Hello World'"
-Enter
-Backspace 5
-Sleep 1s
-```
-
-Save the above text to a file (`demo.tape`) and generate the GIF with `vhs`:
+VHS reads `.tape` files and outputs GIFs. To get started let's make a new `.tape` file.
 
 ```bash
-vhs < demo.tape
-open out.gif
+touch gum.tape
 ```
 
-<img width="400" src="./examples/tutorial.gif" alt="Tutorial GIF recording with VHS" />
+Let's start editing our `.tape` file. We need to adjust the font size of the terminal.
+We can do this with the `Set FontSize` command.
+We also need to specify the location at which to save the GIF.
+We can do this with the `Set Output` command.
+
+```
+Set Output ./examples/tutorial.gif
+Set FontSize 32
+```
+
+Now, we need to run the [Gum](https://github.com/charmbracelet/gum) tool.
+Let's `Type` into the terminal and press `Enter` to run the command.
+
+```
+Type "gum choose bubbletea gum soft-serve glow lipgloss wish'"
+Enter
+Sleep 500ms
+```
+
+Let's show a user moving their arrow keys up and down.
+
+```
+Down@500ms 4
+Up@1s 3
+```
+
+Show the user waiting and then selecting a choice.
+
+```
+Sleep 500ms
+Enter
+```
+
+Let's sleep for a bit to allow the user to see the selection.
+
+```
+Sleep 1s
+```
+
+Now, we can render the GIF with the `vhs` CLI:
+
+```
+vhs < gum.tape
+```
+
+<img alt="Type" src="./examples/tutorial.gif" width="600" />
 
 ## Commands
 
