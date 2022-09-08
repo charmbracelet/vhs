@@ -231,7 +231,15 @@ Set Width 2000
 
 #### Set Letter Spacing
 
+Set the spacing between letters (tracking) with the `Set LetterSpacing` Command.
+
+<img alt="" src="./examples/set-letter-spacing.gif" width="600" />
+
 #### Set Line Height
+
+Set the spacing between lines with the `Set LineHeight` Command.
+
+<img alt="" src="./examples/set-line-height.gif" width="600" />
 
 #### Set Theme
 
