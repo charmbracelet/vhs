@@ -32,6 +32,7 @@ const (
 	SETTING      = "SETTING"
 	SLEEP        = "SLEEP"
 	STRING       = "STRING"
+	JSON         = "JSON"
 	TYPE         = "TYPE"
 	DOWN         = "DOWN"
 	LEFT         = "LEFT"

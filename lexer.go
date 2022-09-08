@@ -46,6 +46,10 @@ func (l *Lexer) NextToken() Token {
 	case '+':
 		tok = l.newToken(PLUS, l.ch)
 		l.readChar()
+	case '{':
+		tok.Type = JSON
+		tok.Literal = "{" + l.readJson() + "}"
+		l.readChar()
 	case '"':
 		tok.Type = STRING
 		tok.Literal = l.readString()
@@ -83,6 +87,19 @@ func (l *Lexer) readString() string {
 	for {
 		l.readChar()
 		if l.ch == '"' || l.ch == 0 {
+			break
+		}
+	}
+	return l.input[pos:l.pos]
+}
+
+// readJson reads a JSON object from the input.
+// {"foo": "bar"} => Token({"foo": "bar"})
+func (l *Lexer) readJson() string {
+	pos := l.pos + 1
+	for {
+		l.readChar()
+		if l.ch == '}' || l.ch == 0 {
 			break
 		}
 	}
