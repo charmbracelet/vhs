@@ -1,0 +1,14 @@
+> echo 'Hello'
+---
+> echo 'Hello'
+---
+> echo 'Hello'
+---
+> echo 'Hello'
+Hello
+>
+---
+> echo 'Hello'
+Hello
+>
+---

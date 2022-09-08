@@ -29,6 +29,7 @@ type VHSOptions struct {
 	LetterSpacing float64
 	LineHeight    float64
 	Theme         Theme
+	Test          TestOptions
 	GIF           GIFOptions
 }
 

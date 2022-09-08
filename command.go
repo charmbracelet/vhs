@@ -37,7 +37,7 @@ func (c CommandType) String() string {
 
 // CommandFunc is a function that executes a command on a running
 // instance of vhs.
-type CommandFunc func(c Command, d *VHS)
+type CommandFunc func(c Command, v *VHS)
 
 // CommandFuncs maps command types to their executable functions.
 var CommandFuncs = map[CommandType]CommandFunc{
@@ -73,14 +73,17 @@ func (c Command) String() string {
 }
 
 // Execute executes a command on a running instance of vhs.
-func (c Command) Execute(d *VHS) {
-	CommandFuncs[c.Type](c, d)
+func (c Command) Execute(v *VHS) {
+	CommandFuncs[c.Type](c, v)
+	if v.Options.Test.Output != "" {
+		v.SaveOutput()
+	}
 }
 
 // ExecuteNoop is a no-op command that does nothing.
 // Generally, this is used for Unknown commands when dealing with
 // commands that are not recognized.
-func ExecuteNoop(c Command, d *VHS) {}
+func ExecuteNoop(c Command, v *VHS) {}
 
 // ExecuteKey is a higher-order function that returns a CommandFunc to execute
 // a key press for a given key. This is so that the logic for key pressing
@@ -89,7 +92,7 @@ func ExecuteNoop(c Command, d *VHS) {}
 // i.e. ExecuteKey(input.ArrowDown) would return a CommandFunc that executes
 // the ArrowDown key press.
 func ExecuteKey(k input.Key) CommandFunc {
-	return func(c Command, d *VHS) {
+	return func(c Command, v *VHS) {
 		repeat, err := strconv.Atoi(c.Args)
 		if err != nil {
 			repeat = 1
@@ -99,7 +102,7 @@ func ExecuteKey(k input.Key) CommandFunc {
 			delay = time.Millisecond * 100
 		}
 		for i := 0; i < repeat; i++ {
-			_ = d.Page.Keyboard.Type(k)
+			_ = v.Page.Keyboard.Type(k)
 			time.Sleep(delay)
 		}
 	}
@@ -107,19 +110,19 @@ func ExecuteKey(k input.Key) CommandFunc {
 
 // ExecuteCtrl is a CommandFunc that presses the argument key with the ctrl key
 // held down on the running instance of vhs.
-func ExecuteCtrl(c Command, d *VHS) {
-	_ = d.Page.Keyboard.Press(input.ControlLeft)
+func ExecuteCtrl(c Command, v *VHS) {
+	_ = v.Page.Keyboard.Press(input.ControlLeft)
 	for _, r := range c.Args {
 		if k, ok := keymap[r]; ok {
-			_ = d.Page.Keyboard.Type(k)
+			_ = v.Page.Keyboard.Type(k)
 		}
 	}
-	_ = d.Page.Keyboard.Release(input.ControlLeft)
+	_ = v.Page.Keyboard.Release(input.ControlLeft)
 }
 
 // ExecuteSleep sleeps for the desired time specified through the argument of
 // the Sleep command.
-func ExecuteSleep(c Command, d *VHS) {
+func ExecuteSleep(c Command, v *VHS) {
 	dur, err := time.ParseDuration(c.Args)
 	if err != nil {
 		return
@@ -128,14 +131,14 @@ func ExecuteSleep(c Command, d *VHS) {
 }
 
 // ExecuteType types the argument string on the running instance of vhs.
-func ExecuteType(c Command, d *VHS) {
+func ExecuteType(c Command, v *VHS) {
 	for _, r := range c.Args {
 		k, ok := keymap[r]
 		if ok {
-			_ = d.Page.Keyboard.Type(k)
+			_ = v.Page.Keyboard.Type(k)
 		} else {
-			_ = d.Page.MustElement("textarea").Input(string(r))
-			d.Page.MustWaitIdle()
+			_ = v.Page.MustElement("textarea").Input(string(r))
+			v.Page.MustWaitIdle()
 		}
 		delayMs, err := strconv.Atoi(c.Options)
 		if err != nil {
@@ -161,72 +164,76 @@ var Settings = map[string]CommandFunc{
 
 // ExecuteSet applies the settings on the running vhs specified by the
 // option and argument pass to the command.
-func ExecuteSet(c Command, d *VHS) {
-	Settings[c.Options](c, d)
+func ExecuteSet(c Command, v *VHS) {
+	Settings[c.Options](c, v)
 }
 
 // ApplyFontSize applies the font size on the vhs.
-func ApplyFontSize(c Command, d *VHS) {
+func ApplyFontSize(c Command, v *VHS) {
 	fontSize, _ := strconv.Atoi(c.Args)
-	d.Options.FontSize = fontSize
-	_, _ = d.Page.Eval(fmt.Sprintf("term.setOption('fontSize', '%d')", fontSize))
+	v.Options.FontSize = fontSize
+	_, _ = v.Page.Eval(fmt.Sprintf("term.setOption('fontSize', '%d')", fontSize))
 }
 
 // ApplyFontFamily applies the font family on the vhs.
-func ApplyFontFamily(c Command, d *VHS) {
-	d.Options.FontFamily = c.Args
-	_, _ = d.Page.Eval(fmt.Sprintf("term.setOption('fontFamily', '%s')", c.Args))
+func ApplyFontFamily(c Command, v *VHS) {
+	v.Options.FontFamily = c.Args
+	_, _ = v.Page.Eval(fmt.Sprintf("term.setOption('fontFamily', '%s')", c.Args))
 }
 
 // ApplyHeight applies the height on the vhs.
-func ApplyHeight(c Command, d *VHS) {
-	d.Options.Height, _ = strconv.Atoi(c.Args)
+func ApplyHeight(c Command, v *VHS) {
+	v.Options.Height, _ = strconv.Atoi(c.Args)
 }
 
 // ApplyWidth applies the width on the vhs.
-func ApplyWidth(c Command, d *VHS) {
-	d.Options.Width, _ = strconv.Atoi(c.Args)
-	d.Options.GIF.Width, _ = strconv.Atoi(c.Args)
+func ApplyWidth(c Command, v *VHS) {
+	v.Options.Width, _ = strconv.Atoi(c.Args)
+	v.Options.GIF.Width, _ = strconv.Atoi(c.Args)
 }
 
 // ApplyLetterSpacing applies letter spacing (also known as tracking) on the
 // vhs.
-func ApplyLetterSpacing(c Command, d *VHS) {
+func ApplyLetterSpacing(c Command, v *VHS) {
 	letterSpacing, _ := strconv.ParseFloat(c.Args, 64)
-	d.Options.LetterSpacing = letterSpacing
-	_, _ = d.Page.Eval(fmt.Sprintf("term.setOption('letterSpacing', '%f')", letterSpacing))
+	v.Options.LetterSpacing = letterSpacing
+	_, _ = v.Page.Eval(fmt.Sprintf("term.setOption('letterSpacing', '%f')", letterSpacing))
 }
 
 // ApplyLineHeight applies the line height on the vhs.
-func ApplyLineHeight(c Command, d *VHS) {
+func ApplyLineHeight(c Command, v *VHS) {
 	lineHeight, _ := strconv.ParseFloat(c.Args, 64)
-	d.Options.LineHeight = lineHeight
-	_, _ = d.Page.Eval(fmt.Sprintf("term.setOption('lineHeight', '%f')", lineHeight))
+	v.Options.LineHeight = lineHeight
+	_, _ = v.Page.Eval(fmt.Sprintf("term.setOption('lineHeight', '%f')", lineHeight))
 }
 
 // ApplyTheme applies the theme on the vhs.
-func ApplyTheme(c Command, d *VHS) {
-	err := json.Unmarshal([]byte(c.Args), &d.Options.Theme)
+func ApplyTheme(c Command, v *VHS) {
+	err := json.Unmarshal([]byte(c.Args), &v.Options.Theme)
 	if err != nil {
 		fmt.Println(err)
-		d.Options.Theme = DefaultTheme
+		v.Options.Theme = DefaultTheme
 		return
 	}
-	_, _ = d.Page.Eval(fmt.Sprintf("term.setOption('theme', %s)", c.Args))
+	_, _ = v.Page.Eval(fmt.Sprintf("term.setOption('theme', %s)", c.Args))
 }
 
 // ApplyPadding applies the padding on the vhs.
-func ApplyPadding(c Command, d *VHS) {
-	d.Options.Padding = c.Args
-	_, _ = d.Page.MustElement(".xterm").Eval(fmt.Sprintf(`this.style.padding = '%s'`, c.Args))
+func ApplyPadding(c Command, v *VHS) {
+	v.Options.Padding = c.Args
+	_, _ = v.Page.MustElement(".xterm").Eval(fmt.Sprintf(`this.style.padding = '%s'`, c.Args))
 }
 
 // ApplyFramerate applies the framerate on the vhs.
-func ApplyFramerate(c Command, d *VHS) {
-	d.Options.Framerate, _ = strconv.ParseFloat(c.Args, 64)
+func ApplyFramerate(c Command, v *VHS) {
+	v.Options.Framerate, _ = strconv.ParseFloat(c.Args, 64)
 }
 
 // ApplyOutput applies the output on the vhs GIF.
-func ApplyOutput(c Command, d *VHS) {
-	d.Options.GIF.Output = c.Args
+func ApplyOutput(c Command, v *VHS) {
+	if strings.HasSuffix(c.Args, ".gif") {
+		v.Options.GIF.Output = c.Args
+	} else if strings.HasSuffix(c.Args, ".ascii") || strings.HasSuffix(c.Args, ".test") || strings.HasSuffix(c.Args, ".txt") {
+		v.Options.Test.Output = c.Args
+	}
 }
