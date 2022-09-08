@@ -1,0 +1,64 @@
+> gum filter --no-limit --height 5
+---
+> gum filter --no-limit --height 5
+> Filter...
+• ○ Makefile
+○ README.md
+○ cmd/serve/serve.go
+○ cmd/vhs/vhs.go
+○ command.go
+---
+> gum filter --no-limit --height 5
+> Filter...
+• ○ Makefile
+○ README.md
+○ cmd/serve/serve.go
+○ cmd/vhs/vhs.go
+○ command.go
+---
+> gum filter --no-limit --height 5
+> Filter...
+◉ Makefile
+◉ README.md
+◉ cmd/serve/serve.go
+◉ cmd/vhs/vhs.go
+• ○ command.go
+---
+> gum filter --no-limit --height 5
+> Filter...
+◉ Makefile
+◉ README.md
+◉ cmd/serve/serve.go
+◉ cmd/vhs/vhs.go
+• ○ command.go
+---
+> gum filter --no-limit --height 5
+> Filter...
+◉ Makefile
+• ◉ README.md
+◉ cmd/serve/serve.go
+◉ cmd/vhs/vhs.go
+○ command.go
+---
+> gum filter --no-limit --height 5
+> Filter...
+◉ Makefile
+• ◉ README.md
+◉ cmd/serve/serve.go
+◉ cmd/vhs/vhs.go
+○ command.go
+---
+> gum filter --no-limit --height 5
+Makefile
+README.md
+cmd/serve/serve.go
+cmd/vhs/vhs.go
+>
+---
+> gum filter --no-limit --height 5
+Makefile
+README.md
+cmd/serve/serve.go
+cmd/vhs/vhs.go
+>
+---
