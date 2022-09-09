@@ -56,7 +56,7 @@ func Evaluate(tape string, w io.Writer, outputFile string) error {
 	// Since the GIF creation is deferred, setting the output file here will
 	// achieve what we want.
 	if outputFile != "" {
-		v.Options.GIF.Output = outputFile
+		v.Options.Video.Output.GIF = outputFile
 	}
 
 	return nil

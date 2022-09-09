@@ -189,7 +189,7 @@ func ApplyHeight(c Command, v *VHS) {
 // ApplyWidth applies the width on the vhs.
 func ApplyWidth(c Command, v *VHS) {
 	v.Options.Width, _ = strconv.Atoi(c.Args)
-	v.Options.GIF.Width, _ = strconv.Atoi(c.Args)
+	v.Options.Video.Width, _ = strconv.Atoi(c.Args)
 }
 
 // ApplyLetterSpacing applies letter spacing (also known as tracking) on the
@@ -234,9 +234,13 @@ func ApplyOutput(c Command, v *VHS) {
 	if strings.HasSuffix(c.Args, ".ascii") || strings.HasSuffix(c.Args, ".test") || strings.HasSuffix(c.Args, ".txt") {
 		v.Options.Test.Output = c.Args
 	} else if strings.HasSuffix(c.Args, ".png") {
-		v.Options.GIF.Input = c.Args
-		v.Options.GIF.CleanupFrames = false
+		v.Options.Video.Input = c.Args
+		v.Options.Video.CleanupFrames = false
+	} else if strings.HasSuffix(c.Args, ".webm") {
+		v.Options.Video.Output.WebM = c.Args
+	} else if strings.HasSuffix(c.Args, ".mp4") {
+		v.Options.Video.Output.MP4 = c.Args
 	} else {
-		v.Options.GIF.Output = c.Args
+		v.Options.Video.Output.GIF = c.Args
 	}
 }

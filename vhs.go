@@ -3,6 +3,7 @@ package vhs
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"time"
 
@@ -31,7 +32,7 @@ type VHSOptions struct {
 	LineHeight    float64
 	Theme         Theme
 	Test          TestOptions
-	GIF           GIFOptions
+	Video         VideoOptions
 }
 
 // DefaultVHSOptions returns the default set of options to use for the setup function.
@@ -46,7 +47,7 @@ func DefaultVHSOptions() VHSOptions {
 		LetterSpacing: 1.0,
 		LineHeight:    1.2,
 		Theme:         DefaultTheme,
-		GIF:           DefaultGIFOptions,
+		Video:         DefaultVideoOptions,
 	}
 }
 
@@ -84,7 +85,7 @@ func New() VHS {
 			page.MustElement("#terminal-container").MustEval("() => this.style.overflow = 'hidden'")
 			page.MustElement(".xterm-viewport").MustEval("() => this.style.overflow = 'hidden'")
 
-			_ = os.MkdirAll(filepath.Dir(opts.GIF.Input), os.ModePerm)
+			_ = os.MkdirAll(filepath.Dir(opts.Video.Input), os.ModePerm)
 
 			go func() {
 				counter := 0
@@ -96,7 +97,7 @@ func New() VHS {
 							time.Sleep(time.Second / time.Duration(opts.Framerate))
 							continue
 						}
-						_ = os.WriteFile(fmt.Sprintf(opts.GIF.Input, counter), screenshot, 0644)
+						_ = os.WriteFile(fmt.Sprintf(opts.Video.Input, counter), screenshot, 0644)
 					}
 					time.Sleep(time.Second / time.Duration(opts.Framerate))
 				}
@@ -107,12 +108,22 @@ func New() VHS {
 			browser.MustClose()
 			_ = tty.Process.Kill()
 
-			// Make GIF with frames
-			err := MakeGIF(opts.GIF).Run()
+			// Generate the video(s) with the frames.
+			var cmds []*exec.Cmd
+			cmds = append(cmds, MakeGIF(opts.Video))
+			cmds = append(cmds, MakeMP4(opts.Video))
+			cmds = append(cmds, MakeWebM(opts.Video))
+
+			for _, cmd := range cmds {
+				if cmd == nil {
+					continue
+				}
+				_ = cmd.Run()
+			}
 
 			// Cleanup frames if we successfully made the GIF.
-			if opts.GIF.CleanupFrames && err == nil {
-				os.RemoveAll(opts.GIF.Input)
+			if opts.Video.CleanupFrames {
+				os.RemoveAll(opts.Video.Input)
 			}
 		},
 	}
