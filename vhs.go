@@ -25,6 +25,7 @@ type VHSOptions struct {
 	Framerate     float64
 	Height        int
 	Padding       string
+	Prompt        string
 	Width         int
 	FontFamily    string
 	FontSize      int
@@ -42,6 +43,7 @@ func DefaultVHSOptions() VHSOptions {
 		Height:        600,
 		Width:         1200,
 		Padding:       "5em",
+		Prompt:        "\\[\\e[38;2;90;86;224m\\]> \\[\\e[0m\\]",
 		FontFamily:    "SF Mono",
 		FontSize:      22,
 		LetterSpacing: 1.0,
@@ -80,7 +82,7 @@ func New() VHS {
 			page.MustEval(fmt.Sprintf("() => term.setOption('theme', %s)", opts.Theme.String()))
 			page.MustElement(".xterm").MustEval(fmt.Sprintf("() => this.style.padding = '%s'", opts.Padding))
 
-			page.MustElement("textarea").MustInput(" fc -p; PROMPT='%F{#5a56e0}>%f '; clear").MustType(input.Enter)
+			page.MustElement("textarea").MustInput(fmt.Sprintf(` set +o history; PS1="%s"; clear`, opts.Prompt)).MustType(input.Enter)
 			page.MustElement("body").MustEval("() => this.style.overflow = 'hidden'")
 			page.MustElement("#terminal-container").MustEval("() => this.style.overflow = 'hidden'")
 			page.MustElement(".xterm-viewport").MustEval("() => this.style.overflow = 'hidden'")
