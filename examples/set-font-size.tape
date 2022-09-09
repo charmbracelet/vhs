@@ -3,7 +3,7 @@ Set Height 225
 
 Set FontSize 10
 
-Type "echo 'Change Font Size'"
+Type "Super Mushroom!!!"
 
 Sleep 1s
 

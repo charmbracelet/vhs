@@ -1,8 +1,8 @@
 Set Output ./examples/set-font-family.gif
 Set FontSize 42
-Set Height 250
+Set Height 225
 
-Type "echo 'Change Font Family'"
+Type "One moment please..."
 
 Sleep 1s
 Set FontFamily "JetBrains Mono"

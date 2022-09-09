@@ -1,8 +1,8 @@
 Set Output ./examples/set-letter-spacing.gif
-Set Height 250
 Set FontSize 42
+Set Height 225
 
-Type "echo 'Change Letter Spacing'"
+Type "Smooooooooth"
 Sleep 500ms
 
 Set LetterSpacing 1.5

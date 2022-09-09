@@ -227,7 +227,6 @@ Set the rate at which VHS captures frames with the `Set Framerate` command.
 Set Framerate 60
 ```
 
-
 #### Set Output
 
 Set the location at which to save the final rendered GIF with the `Set Output` command.

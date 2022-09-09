@@ -2,7 +2,7 @@ Set Output ./examples/set-line-height.gif
 Set Height 400
 Set FontSize 32
 
-Type "echo 'Change Line Height'"
+Type "Stay away!"
 Sleep 500ms
 Enter
 Sleep 1s
