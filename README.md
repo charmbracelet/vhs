@@ -115,7 +115,7 @@ Right 10
 Press the tab key with the `Tab` command.
 
 ```
-Tab@500ms 4
+Tab@500ms 2
 ```
 
 <img alt="" src="./examples/tab.gif" width="600" />

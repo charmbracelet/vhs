@@ -1,6 +1,6 @@
 Set Output ./examples/space.gif
 Set FontSize 42
-Set Height 250
+Set Height 225
 
 Sleep 250ms
 Space 10

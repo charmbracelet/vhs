@@ -1,10 +1,10 @@
 Set Output ./examples/arrow.gif
 Set FontSize 42
-Set Height 250
+Set Height 225
 
-Type@25ms "echo 'Press Left and Right'"
+Type "Navigate around"
 Sleep 250ms
 Left 10
 Sleep 1s
-Right@50ms 10
+Right@50 10
 Sleep 1s
