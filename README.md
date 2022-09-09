@@ -60,8 +60,7 @@ This is useful for typing commands or interacting with the terminal.
 The command takes a string argument with the characters to type.
 
 ```
-Type "echo 'Beep'"
-Type "Meow"
+Type "Whatever you want"
 ```
 
 <img alt="Type" src="./examples/type.gif" width="600" />
