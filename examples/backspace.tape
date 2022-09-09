@@ -1,7 +1,7 @@
 Set Output ./examples/backspace.gif
 Set FontSize 42
-Set Height 250
+Set Height 225
 
-Type@25ms "echo 'Press Backspace'"
-Backspace 22
+Type@25ms "Delete anything..."
+Backspace 18
 Sleep 1s

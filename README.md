@@ -72,7 +72,7 @@ Type "Whatever you want"
 Press the backspace key with the `Backspace` command.
 
 ```
-Backspace 22
+Backspace 18
 ```
 
 <img alt="Press Backspace" src="./examples/backspace.gif" width="600" />
@@ -82,8 +82,7 @@ Backspace 22
 Press a control sequence with the `Ctrl` command.
 
 ```
-Ctrl+L
-Ctrl+C
+Ctrl+R
 ```
 
 <img alt="" src="./examples/ctrl.gif" width="600" />
@@ -93,7 +92,7 @@ Ctrl+C
 Press the enter key with the `Enter` command.
 
 ```
-Enter
+Enter 2
 ```
 
 <img alt="" src="./examples/enter.gif" width="600" />
