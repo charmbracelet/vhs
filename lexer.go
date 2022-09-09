@@ -120,7 +120,7 @@ func (l *Lexer) readNumber() string {
 // Foo => Token(Foo)
 func (l *Lexer) readIdentifier() string {
 	pos := l.pos
-	for isLetter(l.ch) || isDot(l.ch) || isDash(l.ch) || isSlash(l.ch) {
+	for isLetter(l.ch) || isDot(l.ch) || isDash(l.ch) || isSlash(l.ch) || isPercent(l.ch) || isDigit(l.ch) {
 		l.readChar()
 	}
 	return l.input[pos:l.pos]
@@ -147,6 +147,11 @@ func isDot(ch byte) bool {
 // isDash returns whether a character is a dash.
 func isDash(ch byte) bool {
 	return ch == '-'
+}
+
+// isPercent returns whether a character is a percent.
+func isPercent(ch byte) bool {
+	return ch == '%'
 }
 
 // isSlash returns whether a character is a slash.

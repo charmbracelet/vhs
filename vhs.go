@@ -3,6 +3,7 @@ package vhs
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/go-rod/rod"
@@ -83,7 +84,7 @@ func New() VHS {
 			page.MustElement("#terminal-container").MustEval("() => this.style.overflow = 'hidden'")
 			page.MustElement(".xterm-viewport").MustEval("() => this.style.overflow = 'hidden'")
 
-			_ = os.MkdirAll(opts.GIF.InputFolder, os.ModePerm)
+			_ = os.MkdirAll(filepath.Dir(opts.GIF.Input), os.ModePerm)
 
 			go func() {
 				counter := 0
@@ -95,7 +96,7 @@ func New() VHS {
 							time.Sleep(time.Second / time.Duration(opts.Framerate))
 							continue
 						}
-						_ = os.WriteFile((opts.GIF.InputFolder + "/" + fmt.Sprintf(frameFileFormat, counter)), screenshot, 0644)
+						_ = os.WriteFile(fmt.Sprintf(opts.GIF.Input, counter), screenshot, 0644)
 					}
 					time.Sleep(time.Second / time.Duration(opts.Framerate))
 				}
@@ -110,8 +111,8 @@ func New() VHS {
 			err := MakeGIF(opts.GIF).Run()
 
 			// Cleanup frames if we successfully made the GIF.
-			if err == nil {
-				os.RemoveAll(opts.GIF.InputFolder)
+			if opts.GIF.CleanupFrames && err == nil {
+				os.RemoveAll(opts.GIF.Input)
 			}
 		},
 	}

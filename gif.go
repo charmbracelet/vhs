@@ -14,7 +14,7 @@ import (
 	"os/exec"
 )
 
-const frameFileFormat = "frame-%02d.png"
+const defaultFrameFileFormat = "frame-%02d.png"
 
 // randomDir returns a random temporary directory to be used for storing frames
 // from screenshots of the terminal.
@@ -25,21 +25,23 @@ func randomDir() string {
 
 // Options is the set of options for converting frames to a GIF.
 type GIFOptions struct {
-	InputFolder string
-	Output      string
-	Framerate   int
-	Width       int
-	MaxColors   int
+	CleanupFrames bool
+	Framerate     int
+	Input         string
+	MaxColors     int
+	Output        string
+	Width         int
 }
 
 // DefaultGIFOptions is the set of default options for converting frames
 // to a GIF, which are used if they are not overridden.
 var DefaultGIFOptions = GIFOptions{
-	Width:       1200,
-	InputFolder: randomDir(),
-	Output:      "out.gif",
-	Framerate:   50,
-	MaxColors:   256,
+	CleanupFrames: true,
+	Framerate:     50,
+	Input:         randomDir() + "/" + defaultFrameFileFormat,
+	MaxColors:     256,
+	Output:        "out.gif",
+	Width:         1200,
 }
 
 // MakeGIF takes a list of images (as frames) and converts them to a GIF.
@@ -52,7 +54,7 @@ func MakeGIF(opts GIFOptions) *exec.Cmd {
 		opts.MaxColors,
 	)
 	return exec.Command(
-		"ffmpeg", "-y", "-i", opts.InputFolder+"/"+frameFileFormat,
+		"ffmpeg", "-y", "-i", opts.Input,
 		"-framerate", fmt.Sprint(opts.Framerate),
 		"-vf", flags, opts.Output,
 	)

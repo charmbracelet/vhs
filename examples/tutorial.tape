@@ -1,4 +1,5 @@
 Set Output ./examples/tutorial.gif
+Set Output ./frames/frames-%05d.png
 Set FontSize 32
 
 Type gum choose bubbles gum skate glow lipgloss wish

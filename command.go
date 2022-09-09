@@ -233,6 +233,9 @@ func ApplyFramerate(c Command, v *VHS) {
 func ApplyOutput(c Command, v *VHS) {
 	if strings.HasSuffix(c.Args, ".ascii") || strings.HasSuffix(c.Args, ".test") || strings.HasSuffix(c.Args, ".txt") {
 		v.Options.Test.Output = c.Args
+	} else if strings.HasSuffix(c.Args, ".png") {
+		v.Options.GIF.Input = c.Args
+		v.Options.GIF.CleanupFrames = false
 	} else {
 		v.Options.GIF.Output = c.Args
 	}
