@@ -39,6 +39,8 @@ func (p *Parser) parseCommand() Command {
 		return p.parseKeypress(p.cur.Type)
 	case SET:
 		return p.parseSet()
+	case OUTPUT:
+		return p.parseOutput()
 	case SLEEP:
 		return p.parseSleep()
 	case TYPE:
@@ -138,6 +140,23 @@ func (p *Parser) parseKeypress(ct TokenType) Command {
 	cmd := Command{Type: CommandType(ct)}
 	cmd.Options = p.parseSpeed()
 	cmd.Args = p.parseRepeat()
+	return cmd
+}
+
+// parseOutput parses an output command.
+// An output command takes a file path to which to output.
+//
+// Output <path>
+//
+func (p *Parser) parseOutput() Command {
+	cmd := Command{Type: OUTPUT}
+
+	if p.peek.Type != STRING {
+		p.errors = append(p.errors, NewError(p.peek, "Expected file path"))
+	}
+
+	cmd.Args = p.peek.Literal
+	p.nextToken()
 	return cmd
 }
 

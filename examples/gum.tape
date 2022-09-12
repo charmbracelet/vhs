@@ -1,7 +1,7 @@
 Set FontSize 32
 Set FontFamily "Menlo"
-Set Output ./examples/gum.ascii
-Set Output ./examples/gum.gif
+Output ./examples/gum.ascii
+Output ./examples/gum.gif
 
 Type "gum filter --no-limit --height 5"
 Enter

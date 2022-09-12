@@ -1,4 +1,4 @@
-Set Output ./examples/arrow.gif
+Output ./examples/arrow.gif
 Set FontSize 42
 Set Height 225
 

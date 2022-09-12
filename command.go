@@ -24,6 +24,7 @@ var CommandTypes = []CommandType{
 	LEFT,
 	RIGHT,
 	SET,
+	OUTPUT,
 	SLEEP,
 	SPACE,
 	START,
@@ -56,6 +57,7 @@ var CommandFuncs = map[CommandType]CommandFunc{
 	START:     ExecuteStart,
 	STOP:      ExecuteStop,
 	SET:       ExecuteSet,
+	OUTPUT:    ExecuteOutput,
 	SLEEP:     ExecuteSleep,
 	TYPE:      ExecuteType,
 	CTRL:      ExecuteCtrl,
@@ -164,6 +166,22 @@ func ExecuteType(c Command, v *VHS) {
 	}
 }
 
+// ExecuteOutput applies the output on the vhs videos.
+func ExecuteOutput(c Command, v *VHS) {
+	if strings.HasSuffix(c.Args, ".ascii") || strings.HasSuffix(c.Args, ".test") || strings.HasSuffix(c.Args, ".txt") {
+		v.Options.Test.Output = c.Args
+	} else if strings.HasSuffix(c.Args, ".png") {
+		v.Options.Video.Input = c.Args
+		v.Options.Video.CleanupFrames = false
+	} else if strings.HasSuffix(c.Args, ".webm") {
+		v.Options.Video.Output.WebM = c.Args
+	} else if strings.HasSuffix(c.Args, ".mp4") {
+		v.Options.Video.Output.MP4 = c.Args
+	} else {
+		v.Options.Video.Output.GIF = c.Args
+	}
+}
+
 // Settings maps the Set commands to their respective functions.
 var Settings = map[string]CommandFunc{
 	"FontSize":      ApplyFontSize,
@@ -175,7 +193,6 @@ var Settings = map[string]CommandFunc{
 	"Theme":         ApplyTheme,
 	"Padding":       ApplyPadding,
 	"Framerate":     ApplyFramerate,
-	"Output":        ApplyOutput,
 }
 
 // ExecuteSet applies the settings on the running vhs specified by the
@@ -243,20 +260,4 @@ func ApplyPadding(c Command, v *VHS) {
 // ApplyFramerate applies the framerate on the vhs.
 func ApplyFramerate(c Command, v *VHS) {
 	v.Options.Framerate, _ = strconv.ParseFloat(c.Args, 64)
-}
-
-// ApplyOutput applies the output on the vhs GIF.
-func ApplyOutput(c Command, v *VHS) {
-	if strings.HasSuffix(c.Args, ".ascii") || strings.HasSuffix(c.Args, ".test") || strings.HasSuffix(c.Args, ".txt") {
-		v.Options.Test.Output = c.Args
-	} else if strings.HasSuffix(c.Args, ".png") {
-		v.Options.Video.Input = c.Args
-		v.Options.Video.CleanupFrames = false
-	} else if strings.HasSuffix(c.Args, ".webm") {
-		v.Options.Video.Output.WebM = c.Args
-	} else if strings.HasSuffix(c.Args, ".mp4") {
-		v.Options.Video.Output.MP4 = c.Args
-	} else {
-		v.Options.Video.Output.GIF = c.Args
-	}
 }

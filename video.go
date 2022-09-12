@@ -5,7 +5,6 @@
 // which can be configured through the Set command.
 //
 // Set MaxColors 256
-// Set Output demo.gif
 package vhs
 
 import (

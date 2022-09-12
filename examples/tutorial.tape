@@ -1,7 +1,7 @@
-Set Output ./examples/tutorial.gif
-Set Output ./frames/frames-%05d.png
-Set Output ./examples/tutorial.mp4
-Set Output ./examples/tutorial.webm
+Output ./examples/tutorial.gif
+Output ./frames/frames-%05d.png
+Output ./examples/tutorial.mp4
+Output ./examples/tutorial.webm
 Set FontSize 32
 
 Type gum choose bubbles gum skate glow lipgloss wish

@@ -6,7 +6,7 @@ import (
 
 func TestNextToken(t *testing.T) {
 	input := `
-Set Output examples/out.gif
+Output examples/out.gif
 Set FontSize 42
 Set Padding 5em
 Type "echo 'Hello, world!'"
@@ -24,8 +24,7 @@ Sleep 2s`
 		expectedType    TokenType
 		expectedLiteral string
 	}{
-		{SET, "Set"},
-		{SETTING, "Output"},
+		{OUTPUT, "Output"},
 		{STRING, "examples/out.gif"},
 		{SET, "Set"},
 		{SETTING, "FontSize"},

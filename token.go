@@ -42,6 +42,7 @@ const (
 	ESCAPE       = "ESCAPE"
 	START        = "START"
 	STOP         = "STOP"
+	OUTPUT       = "OUTPUT"
 	SECONDS      = "SECONDS"
 	MILLISECONDS = "MILLISECONDS"
 	MINUTES      = "MINUTES"
@@ -68,13 +69,13 @@ var keywords = map[string]TokenType{
 	"Escape":        ESCAPE,
 	"Start":         START,
 	"Stop":          STOP,
+	"Output":        OUTPUT,
 	"FontFamily":    SETTING,
 	"FontSize":      SETTING,
 	"Framerate":     SETTING,
 	"Height":        SETTING,
 	"LetterSpacing": SETTING,
 	"LineHeight":    SETTING,
-	"Output":        SETTING,
 	"Padding":       SETTING,
 	"Theme":         SETTING,
 	"Width":         SETTING,

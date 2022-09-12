@@ -5,7 +5,7 @@
 The following is the code that VHS consumed to create the above GIF.
 
 ```
-Set Output ./examples/demo.gif
+Output ./examples/demo.gif
 Set FontSize 26
 Set Height 600
 Set Width 1200
@@ -28,6 +28,7 @@ Sleep 2s
 * [`Set <Setting> Value`](#settings)
 * [`Sleep <time>`](#sleep)
 * [`Type "<characters>"`](#type)
+* [`Output <path>`](#output)
 
 ### Keys
 
@@ -62,7 +63,6 @@ The `Set` command allows you to change aspects of the terminal, such as the font
 * [`Set Theme <String>`](#set-theme)
 * [`Set Padding <Number>[em|px]`](#set-padding)
 * [`Set Framerate <Number>`](#set-framerate)
-* [`Set Output <Path>`](#set-output)
 
 ### Sleep
 
@@ -87,6 +87,19 @@ Type "Whatever you want"
 ```
 
 <img alt="Type" src="./examples/type.gif" width="600" />
+
+### Output
+
+The `Output` command allows you to specify the location and file format
+of the render. You can specify more than one output in a tape file which
+will render them to the respective locations.
+
+```
+Output out.gif
+Output out.mp4
+Output out.webm
+Output frames/frame-%05d.png
+```
 
 ### Keys
 
@@ -260,14 +273,6 @@ Set the rate at which VHS captures frames with the `Set Framerate` command.
 
 ```
 Set Framerate 60
-```
-
-#### Set Output
-
-Set the location at which to save the final rendered GIF with the `Set Output` command.
-
-```
-Set Output ./path/to/save.gif
 ```
 
 ## Feedback

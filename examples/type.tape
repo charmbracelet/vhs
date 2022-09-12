@@ -1,4 +1,4 @@
-Set Output ./examples/type.gif
+Output ./examples/type.gif
 Set FontSize 42
 Set Height 225
 
