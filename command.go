@@ -168,16 +168,17 @@ func ExecuteType(c Command, v *VHS) {
 
 // ExecuteOutput applies the output on the vhs videos.
 func ExecuteOutput(c Command, v *VHS) {
-	if strings.HasSuffix(c.Args, ".ascii") || strings.HasSuffix(c.Args, ".test") || strings.HasSuffix(c.Args, ".txt") {
+	switch c.Options {
+	case ".mp4":
+		v.Options.Video.Output.MP4 = c.Args
+	case ".test", ".ascii", ".txt":
 		v.Options.Test.Output = c.Args
-	} else if strings.HasSuffix(c.Args, ".png") {
+	case ".png":
 		v.Options.Video.Input = c.Args
 		v.Options.Video.CleanupFrames = false
-	} else if strings.HasSuffix(c.Args, ".webm") {
+	case ".webm":
 		v.Options.Video.Output.WebM = c.Args
-	} else if strings.HasSuffix(c.Args, ".mp4") {
-		v.Options.Video.Output.MP4 = c.Args
-	} else {
+	default:
 		v.Options.Video.Output.GIF = c.Args
 	}
 }

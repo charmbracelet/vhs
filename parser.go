@@ -1,5 +1,7 @@
 package vhs
 
+import "path/filepath"
+
 // Parser is the structure that manages the parsing of tokens.
 type Parser struct {
 	l      *Lexer
@@ -155,6 +157,7 @@ func (p *Parser) parseOutput() Command {
 		p.errors = append(p.errors, NewError(p.peek, "Expected file path"))
 	}
 
+	cmd.Options = filepath.Ext(p.peek.Literal)
 	cmd.Args = p.peek.Literal
 	p.nextToken()
 	return cmd

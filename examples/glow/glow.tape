@@ -1,4 +1,4 @@
-Output ../../../../Downloads/vhs-glow.gif
+Output out.gif
 
 Set Width 1600
 Set Height 1140
