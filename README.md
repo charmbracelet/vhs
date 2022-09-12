@@ -1,6 +1,6 @@
 # VHS
 
-<img alt="Demo" src="./examples/demo.gif" width="600" />
+<img alt="Demo" src="./examples/demo.gif" />
 
 The following is the code that VHS consumed to create the above GIF.
 
