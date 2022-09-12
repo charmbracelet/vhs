@@ -2,13 +2,13 @@
 ---
 > echo 'Hello'
 ---
-> echo 'Hello'
+> echo 'Hello'You can't see me!
 ---
-> echo 'Hello'
-Hello
+> echo 'Hello'You can't see me!
+---
+> echo 'Hello'You can't see me!
 >
 ---
-> echo 'Hello'
-Hello
+> echo 'Hello'You can't see me!
 >
 ---

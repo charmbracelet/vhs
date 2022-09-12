@@ -35,7 +35,7 @@ func (p *Parser) Parse() []Command {
 // parseCommand parses a command.
 func (p *Parser) parseCommand() Command {
 	switch p.cur.Type {
-	case SPACE, BACKSPACE, ENTER, TAB, DOWN, LEFT, RIGHT, UP:
+	case SPACE, BACKSPACE, ENTER, ESCAPE, TAB, DOWN, LEFT, RIGHT, UP:
 		return p.parseKeypress(p.cur.Type)
 	case SET:
 		return p.parseSet()
@@ -45,6 +45,10 @@ func (p *Parser) parseCommand() Command {
 		return p.parseType()
 	case CTRL:
 		return p.parseCtrl()
+	case START:
+		return p.parseStart()
+	case STOP:
+		return p.parseStop()
 	default:
 		p.errors = append(p.errors, NewError(p.cur, "Invalid command: "+p.cur.Literal))
 		return Command{Type: ILLEGAL}
@@ -175,6 +179,26 @@ func (p *Parser) parseSet() Command {
 func (p *Parser) parseSleep() Command {
 	cmd := Command{Type: SLEEP}
 	cmd.Args = p.parseTime()
+	return cmd
+}
+
+// parseStart parses a start command.
+// A start command takes no arguments.
+//
+// Start
+//
+func (p *Parser) parseStart() Command {
+	cmd := Command{Type: START}
+	return cmd
+}
+
+// parseStop parses a stop command.
+// A start command takes no arguments.
+//
+// Stop
+//
+func (p *Parser) parseStop() Command {
+	cmd := Command{Type: STOP}
 	return cmd
 }
 

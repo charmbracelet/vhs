@@ -9,7 +9,6 @@ import (
 
 func Evaluate(tape string, w io.Writer, outputFile string) error {
 	v := New()
-	defer v.Cleanup()
 
 	l := NewLexer(tape)
 	p := NewParser(l)
@@ -40,7 +39,9 @@ func Evaluate(tape string, w io.Writer, outputFile string) error {
 		}
 	}
 
-	v.Start()
+	v.Setup()
+	v.Record()
+	defer v.Cleanup()
 
 	for _, cmd := range cmds[offset:] {
 		fmt.Fprintln(w, cmd)

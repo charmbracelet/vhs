@@ -19,12 +19,15 @@ var CommandTypes = []CommandType{
 	CTRL,
 	DOWN,
 	ENTER,
+	ESCAPE,
 	ILLEGAL,
 	LEFT,
 	RIGHT,
 	SET,
 	SLEEP,
 	SPACE,
+	START,
+	STOP,
 	TAB,
 	TYPE,
 	UP,
@@ -49,6 +52,9 @@ var CommandFuncs = map[CommandType]CommandFunc{
 	SPACE:     ExecuteKey(input.Space),
 	UP:        ExecuteKey(input.ArrowUp),
 	TAB:       ExecuteKey(input.Tab),
+	ESCAPE:    ExecuteKey(input.Escape),
+	START:     ExecuteStart,
+	STOP:      ExecuteStop,
 	SET:       ExecuteSet,
 	SLEEP:     ExecuteSleep,
 	TYPE:      ExecuteType,
@@ -118,6 +124,16 @@ func ExecuteCtrl(c Command, v *VHS) {
 		}
 	}
 	_ = v.Page.Keyboard.Release(input.ControlLeft)
+}
+
+// ExecuteStart is a CommandFunc that starts the recording of the vhs.
+func ExecuteStart(c Command, v *VHS) {
+	v.ResumeRecording()
+}
+
+// ExecuteStop is a CommandFunc that stops the recording of the vhs.
+func ExecuteStop(c Command, v *VHS) {
+	v.PauseRecording()
 }
 
 // ExecuteSleep sleeps for the desired time specified through the argument of

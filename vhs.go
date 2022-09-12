@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"sync"
 	"time"
 
 	"github.com/go-rod/rod"
@@ -14,10 +15,12 @@ import (
 
 // VHS is the object that controls the setup.
 type VHS struct {
-	Options *VHSOptions
-	Page    *rod.Page
-	Start   func()
-	Cleanup func()
+	Options   *VHSOptions
+	Page      *rod.Page
+	browser   *rod.Browser
+	mutex     *sync.Mutex
+	recording bool
+	tty       *exec.Cmd
 }
 
 // VHSOptions is the set of options for the setup.
@@ -63,71 +66,100 @@ func New() VHS {
 	page := browser.MustPage(fmt.Sprintf("http://localhost:%d", port))
 	opts := DefaultVHSOptions()
 
+	mu := &sync.Mutex{}
+
 	return VHS{
-		Options: &opts,
-		Page:    page,
-		Start: func() {
-			page = page.MustSetViewport(opts.Width, opts.Height, 1, false)
+		Options:   &opts,
+		Page:      page,
+		browser:   browser,
+		tty:       tty,
+		recording: false,
+		mutex:     mu,
+	}
+}
 
-			// Let's wait until we can access the window.term variable
-			page = page.MustWait("() => window.term != undefined")
+func (vhs *VHS) Setup() {
+	vhs.Page = vhs.Page.MustSetViewport(vhs.Options.Width, vhs.Options.Height, 1, false)
 
-			// Apply options to the terminal
-			// By this point the setting commands have been executed, so the `opts` struct is up to date.
-			page.MustEval(fmt.Sprintf("() => term.setOption('fontSize', '%d')", opts.FontSize))
-			page.MustEval(fmt.Sprintf("() => term.setOption('fontFamily', '%s')", opts.FontFamily))
-			page.MustEval(fmt.Sprintf("() => term.setOption('letterSpacing', '%f')", opts.LetterSpacing))
-			page.MustEval(fmt.Sprintf("() => term.setOption('lineHeight', '%f')", opts.LineHeight))
-			page.MustEval(fmt.Sprintf("() => term.setOption('theme', %s)", opts.Theme.String()))
-			page.MustElement(".xterm").MustEval(fmt.Sprintf("() => this.style.padding = '%s'", opts.Padding))
+	// Let's wait until we can access the window.term variable
+	vhs.Page = vhs.Page.MustWait("() => window.term != undefined")
 
-			page.MustElement("textarea").MustInput(fmt.Sprintf(` set +o history; PS1="%s"; clear`, opts.Prompt)).MustType(input.Enter)
-			page.MustElement("body").MustEval("() => this.style.overflow = 'hidden'")
-			page.MustElement("#terminal-container").MustEval("() => this.style.overflow = 'hidden'")
-			page.MustElement(".xterm-viewport").MustEval("() => this.style.overflow = 'hidden'")
+	// Apply options to the terminal
+	// By this point the setting commands have been executed, so the `opts` struct is up to date.
+	vhs.Page.MustEval(fmt.Sprintf("() => term.setOption('fontSize', '%d')", vhs.Options.FontSize))
+	vhs.Page.MustEval(fmt.Sprintf("() => term.setOption('fontFamily', '%s')", vhs.Options.FontFamily))
+	vhs.Page.MustEval(fmt.Sprintf("() => term.setOption('letterSpacing', '%f')", vhs.Options.LetterSpacing))
+	vhs.Page.MustEval(fmt.Sprintf("() => term.setOption('lineHeight', '%f')", vhs.Options.LineHeight))
+	vhs.Page.MustEval(fmt.Sprintf("() => term.setOption('theme', %s)", vhs.Options.Theme.String()))
+	vhs.Page.MustElement(".xterm").MustEval(fmt.Sprintf("() => this.style.padding = '%s'", vhs.Options.Padding))
 
-			page.MustEval("window.term.fit")
+	vhs.Page.MustElement("textarea").MustInput(fmt.Sprintf(` set +o history; PS1="%s"; clear`, vhs.Options.Prompt)).MustType(input.Enter)
+	vhs.Page.MustElement("body").MustEval("() => this.style.overflow = 'hidden'")
+	vhs.Page.MustElement("#terminal-container").MustEval("() => this.style.overflow = 'hidden'")
+	vhs.Page.MustElement(".xterm-viewport").MustEval("() => this.style.overflow = 'hidden'")
 
-			_ = os.MkdirAll(filepath.Dir(opts.Video.Input), os.ModePerm)
+	vhs.Page.MustEval("window.term.fit")
 
-			go func() {
-				counter := 0
-				for {
-					counter++
-					if page != nil {
-						screenshot, err := page.Screenshot(false, &proto.PageCaptureScreenshot{})
-						if err != nil {
-							time.Sleep(time.Second / time.Duration(opts.Framerate))
-							continue
-						}
-						_ = os.WriteFile(fmt.Sprintf(opts.Video.Input, counter), screenshot, 0644)
-					}
-					time.Sleep(time.Second / time.Duration(opts.Framerate))
-				}
-			}()
-		},
-		Cleanup: func() {
-			// Tear down the processes we started.
-			browser.MustClose()
-			_ = tty.Process.Kill()
+	_ = os.MkdirAll(filepath.Dir(vhs.Options.Video.Input), os.ModePerm)
+}
 
-			// Generate the video(s) with the frames.
-			var cmds []*exec.Cmd
-			cmds = append(cmds, MakeGIF(opts.Video))
-			cmds = append(cmds, MakeMP4(opts.Video))
-			cmds = append(cmds, MakeWebM(opts.Video))
+func (vhs *VHS) Cleanup() {
+	// Tear down the processes we started.
+	vhs.browser.MustClose()
+	_ = vhs.tty.Process.Kill()
 
-			for _, cmd := range cmds {
-				if cmd == nil {
+	// Generate the video(s) with the frames.
+	var cmds []*exec.Cmd
+	cmds = append(cmds, MakeGIF(vhs.Options.Video))
+	cmds = append(cmds, MakeMP4(vhs.Options.Video))
+	cmds = append(cmds, MakeWebM(vhs.Options.Video))
+
+	for _, cmd := range cmds {
+		if cmd == nil {
+			continue
+		}
+		_ = cmd.Run()
+	}
+
+	// Cleanup frames if we successfully made the GIF.
+	if vhs.Options.Video.CleanupFrames {
+		os.RemoveAll(vhs.Options.Video.Input)
+	}
+}
+
+func (vhs *VHS) Record() {
+	vhs.ResumeRecording()
+	go func() {
+		counter := 0
+		for {
+			if !vhs.recording {
+				time.Sleep(100 * time.Millisecond)
+				continue
+			}
+			counter++
+			if vhs.Page != nil {
+				screenshot, err := vhs.Page.Screenshot(false, &proto.PageCaptureScreenshot{})
+				if err != nil {
+					time.Sleep(time.Second / time.Duration(vhs.Options.Framerate))
 					continue
 				}
-				_ = cmd.Run()
+				_ = os.WriteFile(fmt.Sprintf(vhs.Options.Video.Input, counter), screenshot, 0644)
 			}
+			time.Sleep(time.Second / time.Duration(vhs.Options.Framerate))
+		}
+	}()
+}
 
-			// Cleanup frames if we successfully made the GIF.
-			if opts.Video.CleanupFrames {
-				os.RemoveAll(opts.Video.Input)
-			}
-		},
-	}
+func (vhs *VHS) ResumeRecording() {
+	vhs.mutex.Lock()
+	defer vhs.mutex.Unlock()
+
+	vhs.recording = true
+}
+
+func (vhs *VHS) PauseRecording() {
+	vhs.mutex.Lock()
+	defer vhs.mutex.Unlock()
+
+	vhs.recording = false
 }
