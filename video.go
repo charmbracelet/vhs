@@ -56,6 +56,8 @@ func MakeGIF(opts VideoOptions) *exec.Cmd {
 		return nil
 	}
 
+	fmt.Println("Creating GIF...")
+
 	flags := fmt.Sprintf(
 		"fps=%d,scale=%d:-1:flags=%s,split[s0][s1];[s0]palettegen=max_colors=%d[p];[s1][p]paletteuse",
 		opts.Framerate,

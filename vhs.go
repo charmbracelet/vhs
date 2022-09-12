@@ -67,11 +67,10 @@ func New() VHS {
 		Options: &opts,
 		Page:    page,
 		Start: func() {
-			page = page.MustSetViewport(opts.Width, opts.Height, 1, false).
-				// Let's wait until we can access the window.term variable
-				MustWait("() => window.term != undefined")
+			page = page.MustSetViewport(opts.Width, opts.Height, 1, false)
 
-			page.MustEval("term.fit")
+			// Let's wait until we can access the window.term variable
+			page = page.MustWait("() => window.term != undefined")
 
 			// Apply options to the terminal
 			// By this point the setting commands have been executed, so the `opts` struct is up to date.
@@ -86,6 +85,8 @@ func New() VHS {
 			page.MustElement("body").MustEval("() => this.style.overflow = 'hidden'")
 			page.MustElement("#terminal-container").MustEval("() => this.style.overflow = 'hidden'")
 			page.MustElement(".xterm-viewport").MustEval("() => this.style.overflow = 'hidden'")
+
+			page.MustEval("window.term.fit")
 
 			_ = os.MkdirAll(filepath.Dir(opts.Video.Input), os.ModePerm)
 
