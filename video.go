@@ -14,7 +14,7 @@ import (
 	"os/exec"
 )
 
-const defaultFrameFileFormat = "frame-%02d.png"
+const defaultFrameFileFormat = "frame-%05d.png"
 
 // randomDir returns a random temporary directory to be used for storing frames
 // from screenshots of the terminal.
