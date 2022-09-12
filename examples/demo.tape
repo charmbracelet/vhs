@@ -1,46 +1,36 @@
 Set Output ./examples/demo.gif
 Set FontSize 26
+Set Height 600
+Set Width 1200
 
-Type@50ms "echo '# Welcome to VHS' > VHS.md"
-Sleep 250ms
-Enter
-
-Type@25ms "echo 'Define Terminal GIFs as code.\n\n' >> VHS.md"
-Sleep 250ms
-Enter
-
-Type@25ms "echo 'Record GIFs for your README!\n\n' >> VHS.md"
-Sleep 250ms
-Enter
-
-Type@25ms "echo 'Test out your command line apps like Glow!' >> VHS.md"
-Sleep 250ms
-Enter
+Type "👋  Hello, there! Welcome to VHS."
 
 Sleep 500ms
+Ctrl+C
+Sleep 500ms
 
-Ctrl+L
+Type "📼  VHS helps you record terminal GIFs and test your CLIs."
 
+Sleep 500ms
+Ctrl+C
+Sleep 500ms
+
+Type "Let's try it out."
+
+Sleep 500ms
+Ctrl+U
+Sleep 500ms
+
+Type glow
 Sleep 100ms
-
-Type "glow"
-Sleep 250ms
 Enter
 
+Sleep 2s
+Enter
 Sleep 1s
-Down 1
-Sleep 500ms
 
-Enter
+Down@250ms 20
 
-Sleep 3s
+Type q
 
-Type "q"
-
-Sleep 500ms
-
-Type "rm VHS.md"
-Sleep 250ms
-Enter
-
-Sleep 1s
+Sleep 2s
