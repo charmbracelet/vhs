@@ -6,7 +6,7 @@ import (
 
 func TestNextToken(t *testing.T) {
 	input := `
-Output examples/out.gif
+Output ./renders/out.gif
 Set FontSize 42
 Set Padding 5em
 Type "echo 'Hello, world!'"

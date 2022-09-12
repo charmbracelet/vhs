@@ -1,4 +1,4 @@
-Output ./examples/demo.gif
+Output ./renders/demo.gif
 Set FontSize 26
 Set Height 600
 Set Width 1200

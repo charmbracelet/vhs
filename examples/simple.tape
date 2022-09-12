@@ -1,5 +1,5 @@
-Output ./examples/simple.gif
-Output ./examples/simple.ascii
+Output ./renders/simple.gif
+Output ./renders/simple.ascii
 
 Set FontSize 42
 Type "echo 'Hello'"

@@ -1,4 +1,4 @@
-Output ./examples/set-letter-spacing.gif
+Output ./renders/set-letter-spacing.gif
 Set FontSize 42
 Set Height 225
 

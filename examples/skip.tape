@@ -1,4 +1,4 @@
-Output ./examples/skip.gif
+Output ./renders/skip.gif
 
 Stop
 Type@0ms "export HIDDEN=wow" Enter

@@ -1,4 +1,4 @@
-Output ./examples/set-font-family.gif
+Output ./renders/set-font-family.gif
 Set FontSize 42
 Set Height 225
 

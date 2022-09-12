@@ -1,4 +1,4 @@
-Output ./examples/set-font-size.gif
+Output ./renders/set-font-size.gif
 Set Height 225
 
 Set FontSize 10

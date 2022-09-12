@@ -1,4 +1,4 @@
-Output ./examples/enter.gif
+Output ./renders/enter.gif
 Set FontSize 42
 Set Height 350
 

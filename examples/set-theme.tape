@@ -1,4 +1,4 @@
-Output ./examples/set-theme.gif
+Output ./renders/set-theme.gif
 Set FontSize 42
 Set Height 225
 
