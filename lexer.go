@@ -43,11 +43,9 @@ func (l *Lexer) NextToken() Token {
 	case '%':
 		tok = l.newToken(PERCENT, l.ch)
 		l.readChar()
-	case '/':
-		if isSlash(l.peekChar()) {
-			tok.Type = COMMENT
-			tok.Literal = l.readComment()
-		}
+	case '#':
+		tok.Type = COMMENT
+		tok.Literal = l.readComment()
 	case '+':
 		tok = l.newToken(PLUS, l.ch)
 		l.readChar()
@@ -95,6 +93,8 @@ func (l *Lexer) readComment() string {
 			break
 		}
 	}
+	// The current character is a newline.
+	// skipWhitespace() will handle this for us and increment the line counter.
 	return l.input[pos:l.pos]
 }
 
