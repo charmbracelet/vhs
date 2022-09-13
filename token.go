@@ -47,6 +47,7 @@ const (
 	SECONDS      = "SECONDS"
 	MILLISECONDS = "MILLISECONDS"
 	MINUTES      = "MINUTES"
+	COMMENT      = "COMMENT"
 )
 
 var keywords = map[string]TokenType{

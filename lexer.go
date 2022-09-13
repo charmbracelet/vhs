@@ -43,6 +43,11 @@ func (l *Lexer) NextToken() Token {
 	case '%':
 		tok = l.newToken(PERCENT, l.ch)
 		l.readChar()
+	case '/':
+		if isSlash(l.peekChar()) {
+			tok.Type = COMMENT
+			tok.Literal = l.readComment()
+		}
 	case '+':
 		tok = l.newToken(PLUS, l.ch)
 		l.readChar()
@@ -78,6 +83,19 @@ func (l *Lexer) newToken(tokenType TokenType, ch byte) Token {
 		Line:    l.line,
 		Column:  l.column,
 	}
+}
+
+// readComment reads a comment.
+// // Foo => Token(Foo)
+func (l *Lexer) readComment() string {
+	pos := l.pos + 1
+	for {
+		l.readChar()
+		if isNewLine(l.ch) || l.ch == 0 {
+			break
+		}
+	}
+	return l.input[pos:l.pos]
 }
 
 // readString reads a string from the input.

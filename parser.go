@@ -27,6 +27,10 @@ func (p *Parser) Parse() []Command {
 	cmds := []Command{}
 
 	for p.cur.Type != EOF {
+		if p.cur.Type == COMMENT {
+			p.nextToken()
+			continue
+		}
 		cmds = append(cmds, p.parseCommand())
 		p.nextToken()
 	}
