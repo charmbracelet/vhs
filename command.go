@@ -158,11 +158,11 @@ func ExecuteType(c Command, v *VHS) {
 			_ = v.Page.MustElement("textarea").Input(string(r))
 			v.Page.MustWaitIdle()
 		}
-		delayMs, err := strconv.Atoi(c.Options)
+		delay, err := time.ParseDuration(c.Options)
 		if err != nil {
-			delayMs = 100
+			delay = time.Millisecond * 100
 		}
-		time.Sleep(time.Millisecond * time.Duration(delayMs))
+		time.Sleep(delay)
 	}
 }
 

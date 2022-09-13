@@ -27,6 +27,7 @@ func StartTTY(port int) *exec.Cmd {
 	cmd := exec.Command(
 		"ttyd", fmt.Sprintf("--port=%d", port),
 		"-t", "disableResizeOverlay=true",
+		"-t", "cursorBlink=true",
 		"-t", "customGlyphs=true",
 		"bash",
 	)
