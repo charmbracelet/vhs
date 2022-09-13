@@ -13,79 +13,79 @@ Enter
 
 Sleep 1s
 
-Stop
+Hidden Begin
   Tab
   Type "/artichoke"
   Enter
   Down 2
-Start
+Hidden End
 
 Sleep 500ms
 
 Down 20
 
-Stop
+Hidden Begin
   Escape
   Type l
   Down 5
-Start
+Hidden End
 
 Sleep 1s
 Up@400ms 5
 
-Stop
+Hidden Begin
   Type "/ulysses"
   Enter
-Start
+Hidden End
 
 Sleep 500ms
 
 Down@200ms 20
 
-Stop
+Hidden Begin
   Escape
   Type "/"
-Start
+Hidden End
 
 Sleep 500ms
 
 Type@500ms todo
 Sleep 1s
 
-Stop
+Hidden Begin
   Escape
   Type "/ulysses"
   Enter
-Start
+Hidden End
 
 Sleep 500ms
 
 Type@750ms "????"
 
-Stop
+Hidden Begin
   Escape
   Type "/artichoke"
   Enter
   Type "m"
   Ctrl+A
   Right 4
-Start
+Hidden End
 
 Sleep 1s
 Type@250ms "Tasty "
 Sleep 1s
 
-Stop
+Hidden Begin
   Escape
   Down 5
   Type "m"
   Ctrl+U
-Start
+Hidden End
 
 Sleep 1s
 Type@150ms "Your new internet thing"
 Sleep 3s
 
-Stop
+Hidden Begin
   Ctrl+C
-Start
+Hidden End

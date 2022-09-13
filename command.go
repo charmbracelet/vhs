@@ -27,8 +27,7 @@ var CommandTypes = []CommandType{
 	OUTPUT,
 	SLEEP,
 	SPACE,
-	START,
-	STOP,
+	HIDDEN,
 	TAB,
 	TYPE,
 	UP,
@@ -54,8 +53,7 @@ var CommandFuncs = map[CommandType]CommandFunc{
 	UP:        ExecuteKey(input.ArrowUp),
 	TAB:       ExecuteKey(input.Tab),
 	ESCAPE:    ExecuteKey(input.Escape),
-	START:     ExecuteStart,
-	STOP:      ExecuteStop,
+	HIDDEN:    ExecuteHidden,
 	SET:       ExecuteSet,
 	OUTPUT:    ExecuteOutput,
 	SLEEP:     ExecuteSleep,
@@ -128,14 +126,16 @@ func ExecuteCtrl(c Command, v *VHS) {
 	_ = v.Page.Keyboard.Release(input.ControlLeft)
 }
 
-// ExecuteStart is a CommandFunc that starts the recording of the vhs.
-func ExecuteStart(c Command, v *VHS) {
-	v.ResumeRecording()
-}
-
-// ExecuteStop is a CommandFunc that stops the recording of the vhs.
-func ExecuteStop(c Command, v *VHS) {
-	v.PauseRecording()
+// ExecuteHidden is a CommandFunc that starts or stops the recording of the vhs.
+func ExecuteHidden(c Command, v *VHS) {
+	// If we are beginning a hidden block / section
+	// we want to pause the recording. And, if we are ending
+	// a hidden block / section, we want to resume the recording.
+	if c.Args == "Begin" {
+		v.PauseRecording()
+	} else if c.Args == "End" {
+		v.ResumeRecording()
+	}
 }
 
 // ExecuteSleep sleeps for the desired time specified through the argument of
