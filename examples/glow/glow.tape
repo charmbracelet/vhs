@@ -1,4 +1,5 @@
 Output vhs-glow.gif
+Output glow.ascii
 
 Set Width 1600
 Set Height 1040

@@ -39,18 +39,30 @@ func (v *VHS) SaveOutput() {
 		file, _ = os.Create(v.Options.Test.Output)
 	})
 
-	// Get the current buffer.
-	o, err := v.Page.Eval("() => Array(term.rows).fill(0).map((e, i) => term.buffer.normal.getLine(i).translateToString().trimEnd())")
+	// Get the current normal buffer.
+	buf, err := v.Page.Eval("() => Array(term.rows).fill(0).map((e, i) => term.buffer.normal.getLine(i).translateToString().trimEnd())")
 	if err != nil {
 		return
 	}
 
-	for _, line := range o.Value.Arr() {
+	for _, line := range buf.Value.Arr() {
 		str := line.Str()
 		if str == "" {
 			continue
 		}
 		_, _ = file.WriteString(str + "\n")
+	}
+
+	_, _ = file.WriteString(frameSeparator + "\n")
+
+	// Get the current alternative buffer.
+	alt, err := v.Page.Eval("() => Array(term.rows).fill(0).map((e, i) => term.buffer.alternate.getLine(i).translateToString().trimEnd())")
+	if err != nil {
+		return
+	}
+
+	for _, line := range alt.Value.Arr() {
+		_, _ = file.WriteString(line.Str() + "\n")
 	}
 
 	_, _ = file.WriteString(frameSeparator + "\n")
