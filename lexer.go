@@ -53,9 +53,13 @@ func (l *Lexer) NextToken() Token {
 		tok.Type = JSON
 		tok.Literal = "{" + l.readJson() + "}"
 		l.readChar()
+	case '\'':
+		tok.Type = STRING
+		tok.Literal = l.readString('\'')
+		l.readChar()
 	case '"':
 		tok.Type = STRING
-		tok.Literal = l.readString()
+		tok.Literal = l.readString('"')
 		l.readChar()
 	default:
 		if isLetter(l.ch) || isDot(l.ch) {
@@ -100,11 +104,11 @@ func (l *Lexer) readComment() string {
 
 // readString reads a string from the input.
 // "Foo" => Token(Foo)
-func (l *Lexer) readString() string {
+func (l *Lexer) readString(endChar byte) string {
 	pos := l.pos + 1
 	for {
 		l.readChar()
-		if l.ch == '"' || l.ch == 0 {
+		if l.ch == endChar || l.ch == 0 {
 			break
 		}
 	}
