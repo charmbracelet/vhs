@@ -2,7 +2,9 @@
 
 <img alt="Demo" src="./renders/demo.gif" />
 
-The following is the code that VHS consumed to create the above GIF.
+Write terminal GIFs as code for integration testing and demoing your CLI tools.
+
+Code a GIF using simple commands saved to a text file:
 
 ```
 Output ./renders/demo.gif
@@ -32,6 +34,20 @@ Sleep 1s
 Type q
 
 Sleep 2s
+```
+
+After we save these commands to a file called `demo.tape`,
+we can render the GIF using the `vhs` binary:
+
+```bash
+vhs < demo.tape
+```
+
+React out to [vt100@charm.sh](mailto:vt100@charm.sh) to set up a cloud rendering server
+with an `ssh` interface for your team to avoid any local setup.
+
+```bash
+ssh vhs.charm.sh < demo.tape > demo.gif
 ```
 
 ## Commands
