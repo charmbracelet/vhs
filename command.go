@@ -81,7 +81,7 @@ func (c Command) String() string {
 // Execute executes a command on a running instance of vhs.
 func (c Command) Execute(v *VHS) {
 	CommandFuncs[c.Type](c, v)
-	if v.Options.Test.Output != "" {
+	if v.recording && v.Options.Test.Output != "" {
 		v.SaveOutput()
 	}
 }

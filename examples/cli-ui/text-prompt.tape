@@ -1,9 +1,10 @@
+Output text-prompt.ascii
 Output text-prompt.gif
 
 Set FontSize 32
 
 Set Width 2200
-Set Height 400
+Set Height 500
 
 Hidden Begin
   Type irb Enter
