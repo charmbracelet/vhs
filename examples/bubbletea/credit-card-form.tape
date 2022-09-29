@@ -1,4 +1,4 @@
-Output credit-card.gif
+Output credit-card-form.gif
 
 Hidden Begin
   Type "go build -o credit-card ." Enter
