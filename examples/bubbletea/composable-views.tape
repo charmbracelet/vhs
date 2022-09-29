@@ -1,0 +1,21 @@
+Output composable-views.gif
+
+Hidden Begin
+  Type "go build -o views ." Enter
+  Type "clear" Enter
+Hidden End
+
+Type "./views" Enter
+Sleep 1s
+Tab@2s 4
+Sleep 1s
+Type "n"
+Tab
+Sleep 1s
+Type@500ms "nnnn"
+Sleep 2s
+
+Hidden Begin
+  Ctrl+C
+  Type "rm views" Enter
+Hidden End
