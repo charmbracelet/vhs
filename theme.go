@@ -52,7 +52,7 @@ func (t Theme) String() string {
 var DefaultTheme = Theme{
 	Background:    "#171717",
 	Foreground:    "#dddddd",
-	Black:         "#000000",
+	Black:         "#282a2e",
 	BrightBlack:   "#4d4d4d",
 	Red:           "#c73b1d",
 	BrightRed:     "#e82100",
