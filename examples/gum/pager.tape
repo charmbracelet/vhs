@@ -1,0 +1,16 @@
+Output ../../renders/gum-pager.gif
+
+Set Padding 2em
+Set FontSize 16
+Set Height 800
+
+Type "gum pager < ~/src/gum/README.md --border normal"
+Sleep 1s
+Enter
+Sleep 2s
+Down@25ms 40
+Sleep 1s
+Up@25ms 30
+Sleep 1s
+Down@25ms 20
+Sleep 3s
