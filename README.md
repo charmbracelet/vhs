@@ -1,8 +1,21 @@
 # VHS
 
-<img alt="Demo" src="./renders/demo.gif" />
+<p>
+  <img src="https://user-images.githubusercontent.com/42545625/194411047-c6caf59c-4faf-4c55-9739-fb30383890e6.png#gh-dark-mode-only" width="400" />
+  <img src="https://user-images.githubusercontent.com/42545625/194411052-93919096-8d05-4cf5-97dc-6f15984b052a.png#gh-light-mode-only" width="400" />
+  <br><br>
+  <a href="https://github.com/charmbracelet/vhs/releases"><img src="https://img.shields.io/github/release/charmbracelet/vhs.svg" alt="Latest Release"></a>
+  <a href="https://pkg.go.dev/github.com/charmbracelet/vhs?tab=doc"><img src="https://godoc.org/github.com/golang/gddo?status.svg" alt="Go Docs"></a>
+  <a href="https://github.com/charmbracelet/vhs/actions"><img src="https://github.com/charmbracelet/vhs/workflows/build/badge.svg" alt="Build Status"></a>
+</p>
 
 Write terminal GIFs as code for integration testing and demoing your CLI tools.
+
+<picture>
+  <source media="(max-width: 600px)" srcset="./renders/demo.gif">
+  <source media="(min-width: 600px)" width="600" srcset="./renders/demo.gif">
+  <img alt="Display of demo.gif" src="./renders/demo.gif">
+</picture>
 
 Code a GIF using simple commands saved to a text file:
 
