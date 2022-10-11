@@ -29,7 +29,6 @@ var (
 
 // SaveOutput saves the current buffer to the output file.
 func (v *VHS) SaveOutput() {
-
 	// Create output file (once)
 	once.Do(func() {
 		err := os.MkdirAll(filepath.Dir(v.Options.Test.Output), 0770)

@@ -30,11 +30,8 @@ func Evaluate(tape string, w io.Writer, outputFile string) error {
 	var offset int
 
 	for i, cmd := range cmds {
-		if cmd.Type == SET {
-			fmt.Fprintf(w, "Setting %s to %s\n", cmd.Options, cmd.Args)
-			cmd.Execute(&v)
-		} else if cmd.Type == OUTPUT {
-			fmt.Fprintf(w, "Output %s to path %s\n", cmd.Options, cmd.Args)
+		if cmd.Type == SET || cmd.Type == OUTPUT {
+			fmt.Fprintln(w, cmd.Highlight())
 			cmd.Execute(&v)
 		} else {
 			offset = i
@@ -47,7 +44,7 @@ func Evaluate(tape string, w io.Writer, outputFile string) error {
 	defer v.Cleanup()
 
 	for _, cmd := range cmds[offset:] {
-		fmt.Fprintln(w, cmd)
+		fmt.Fprintln(w, cmd.Highlight())
 		cmd.Execute(&v)
 	}
 

@@ -77,6 +77,8 @@ func MakeWebM(opts VideoOptions) *exec.Cmd {
 		return nil
 	}
 
+	fmt.Println("Creating WebM...")
+
 	return exec.Command(
 		"ffmpeg", "-y", "-i", opts.Input,
 		"-framerate", fmt.Sprint(opts.Framerate),
@@ -94,6 +96,8 @@ func MakeMP4(opts VideoOptions) *exec.Cmd {
 	if opts.Output.MP4 == "" {
 		return nil
 	}
+
+	fmt.Println("Creating MP4...")
 
 	return exec.Command(
 		"ffmpeg", "-y", "-i", opts.Input,

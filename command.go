@@ -75,7 +75,7 @@ func (c Command) String() string {
 	if c.Options != "" {
 		return fmt.Sprintf("%s %s %s", c.Type, c.Options, c.Args)
 	}
-	return fmt.Sprintf("%s %s", c.Type, c.Args)
+	return fmt.Sprintf("%s %s", c.Type, c.Options)
 }
 
 // Execute executes a command on a running instance of vhs.
