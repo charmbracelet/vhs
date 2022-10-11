@@ -108,7 +108,7 @@ func (l *Lexer) readString(endChar byte) string {
 	pos := l.pos + 1
 	for {
 		l.readChar()
-		if l.ch == endChar || l.ch == 0 {
+		if l.ch == endChar || l.ch == 0 || isNewLine(l.ch) {
 			break
 		}
 	}
