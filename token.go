@@ -81,6 +81,7 @@ var keywords = map[string]TokenType{
 	"Height":        SETTING,
 	"LetterSpacing": SETTING,
 	"LineHeight":    SETTING,
+	"TypingSpeed":   SETTING,
 	"Padding":       SETTING,
 	"Theme":         SETTING,
 	"Width":         SETTING,

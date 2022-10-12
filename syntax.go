@@ -10,8 +10,9 @@ import (
 
 var (
 	commandStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("12"))
-	keywordStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("14"))
+	noStyle      = lipgloss.NewStyle()
 	faintStyle   = lipgloss.NewStyle().Foreground(lipgloss.AdaptiveColor{Light: "242", Dark: "238"})
+	keywordStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("14"))
 	numberStyle  = lipgloss.NewStyle().Foreground(lipgloss.Color("9"))
 	stringStyle  = lipgloss.NewStyle().Foreground(lipgloss.Color("10"))
 	timeStyle    = lipgloss.NewStyle().Foreground(lipgloss.Color("11"))
@@ -36,10 +37,13 @@ func (c Command) Highlight(faint bool) string {
 		optionsStyle = keywordStyle
 		if isNumber(c.Args) {
 			argsStyle = numberStyle
+		} else if isTime(c.Args) {
+			argsStyle = timeStyle
 		} else {
 			argsStyle = stringStyle
 		}
 	case OUTPUT:
+		optionsStyle = noStyle
 		argsStyle = stringStyle
 	case CTRL:
 		argsStyle = commandStyle
@@ -65,4 +69,10 @@ var numberRegex = regexp.MustCompile("^[0-9]+$")
 
 func isNumber(s string) bool {
 	return numberRegex.MatchString(s)
+}
+
+var timeRegex = regexp.MustCompile("^[0-9]+m?s$")
+
+func isTime(s string) bool {
+	return timeRegex.MatchString(s)
 }

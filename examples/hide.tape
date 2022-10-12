@@ -1,5 +1,6 @@
 Output ./renders/hide.gif
 
+Set TypingSpeed 10ms
 Set FontSize 42
 Set Height 300
 

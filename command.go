@@ -107,7 +107,7 @@ func ExecuteKey(k input.Key) CommandFunc {
 		}
 		delay, err := time.ParseDuration(c.Options)
 		if err != nil {
-			delay = time.Millisecond * 100
+			delay = v.Options.TypingSpeed
 		}
 		for i := 0; i < repeat; i++ {
 			_ = v.Page.Keyboard.Type(k)
@@ -160,7 +160,7 @@ func ExecuteType(c Command, v *VHS) {
 		}
 		delay, err := time.ParseDuration(c.Options)
 		if err != nil {
-			delay = time.Millisecond * 100
+			delay = v.Options.TypingSpeed
 		}
 		time.Sleep(delay)
 	}
@@ -185,15 +185,16 @@ func ExecuteOutput(c Command, v *VHS) {
 
 // Settings maps the Set commands to their respective functions.
 var Settings = map[string]CommandFunc{
-	"FontSize":      ApplyFontSize,
 	"FontFamily":    ApplyFontFamily,
+	"FontSize":      ApplyFontSize,
+	"Framerate":     ApplyFramerate,
 	"Height":        ApplyHeight,
-	"Width":         ApplyWidth,
 	"LetterSpacing": ApplyLetterSpacing,
 	"LineHeight":    ApplyLineHeight,
-	"Theme":         ApplyTheme,
 	"Padding":       ApplyPadding,
-	"Framerate":     ApplyFramerate,
+	"Theme":         ApplyTheme,
+	"TypingSpeed":   ApplyTypingSpeed,
+	"Width":         ApplyWidth,
 }
 
 // ExecuteSet applies the settings on the running vhs specified by the
@@ -250,6 +251,15 @@ func ApplyTheme(c Command, v *VHS) {
 		return
 	}
 	_, _ = v.Page.Eval(fmt.Sprintf("term.setOption('theme', %s)", c.Args))
+}
+
+// ApplyTypingSpeed applies the default typing speed on the vhs.
+func ApplyTypingSpeed(c Command, v *VHS) {
+	typingSpeed, err := time.ParseDuration(c.Args)
+	if err != nil {
+		return
+	}
+	v.Options.TypingSpeed = typingSpeed
 }
 
 // ApplyPadding applies the padding on the vhs.

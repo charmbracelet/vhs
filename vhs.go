@@ -34,6 +34,7 @@ type VHSOptions struct {
 	FontSize      int
 	LetterSpacing float64
 	LineHeight    float64
+	TypingSpeed   time.Duration
 	Theme         Theme
 	Test          TestOptions
 	Video         VideoOptions
@@ -51,6 +52,7 @@ func DefaultVHSOptions() VHSOptions {
 		FontSize:      22,
 		LetterSpacing: 1.0,
 		LineHeight:    1.2,
+		TypingSpeed:   100 * time.Millisecond,
 		Theme:         DefaultTheme,
 		Video:         DefaultVideoOptions,
 	}
@@ -133,7 +135,7 @@ func (vhs *VHS) Record() {
 		counter := 0
 		for {
 			if !vhs.recording {
-				time.Sleep(100 * time.Millisecond)
+				time.Sleep(time.Second / time.Duration(vhs.Options.Framerate))
 				continue
 			}
 			counter++

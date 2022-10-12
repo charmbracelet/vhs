@@ -74,8 +74,7 @@ func (p *Parser) parseSpeed() string {
 		p.nextToken()
 		return p.parseTime()
 	}
-
-	return "100ms"
+	return ""
 }
 
 // parseRepeat parses an optional repeat count for a command.
@@ -107,6 +106,8 @@ func (p *Parser) parseTime() string {
 	} else {
 		p.errors = append(p.errors, NewError(p.cur, "Expected time after "+p.cur.Literal))
 	}
+
+	// Allow TypingSpeed to have bare units (e.g. 10ms, 5s)
 
 	if p.peek.Type == SECONDS || p.peek.Type == MILLISECONDS {
 		t += p.peek.Literal
@@ -186,10 +187,11 @@ func (p *Parser) parseSet() Command {
 	p.nextToken()
 
 	// Allow Padding to have bare units (e.g. 10px, 5em, 10%)
-	//
 	// Set Padding 5em
 	//
-	if p.peek.Type == EM || p.peek.Type == PX || p.peek.Type == PERCENT {
+	// Allow TypingSpeed to have bare units (e.g. 10ms, 5s)
+	//
+	if p.peek.Type == EM || p.peek.Type == PX || p.peek.Type == PERCENT || p.peek.Type == MILLISECONDS || p.peek.Type == SECONDS {
 		cmd.Args += p.peek.Literal
 		p.nextToken()
 	}

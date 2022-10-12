@@ -4,6 +4,7 @@ import "testing"
 
 func TestParser(t *testing.T) {
 	input := `
+Set TypingSpeed 100ms
 Type "echo 'Hello, World!'" Enter
 Backspace@100 5
 Backspace@100ms 5
@@ -16,15 +17,16 @@ Sleep 100
 Sleep 3s`
 
 	expected := []Command{
-		{Type: TYPE, Options: "100ms", Args: "echo 'Hello, World!'"},
-		{Type: ENTER, Options: "100ms", Args: "1"},
+		{Type: SET, Options: "TypingSpeed", Args: "100ms"},
+		{Type: TYPE, Options: "", Args: "echo 'Hello, World!'"},
+		{Type: ENTER, Options: "", Args: "1"},
 		{Type: BACKSPACE, Options: "100ms", Args: "5"},
 		{Type: BACKSPACE, Options: "100ms", Args: "5"},
 		{Type: BACKSPACE, Options: "1s", Args: "5"},
-		{Type: RIGHT, Options: "100ms", Args: "3"},
-		{Type: LEFT, Options: "100ms", Args: "3"},
+		{Type: RIGHT, Options: "", Args: "3"},
+		{Type: LEFT, Options: "", Args: "3"},
 		{Type: UP, Options: "50ms", Args: "1"},
-		{Type: DOWN, Options: "100ms", Args: "2"},
+		{Type: DOWN, Options: "", Args: "2"},
 		{Type: CTRL, Options: "", Args: "C"},
 		{Type: CTRL, Options: "", Args: "L"},
 		{Type: SLEEP, Args: "100ms"},
