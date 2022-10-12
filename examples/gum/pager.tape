@@ -1,8 +1,8 @@
-Output ../../renders/gum-pager.gif
+Output ./renders/gum/pager.gif
 
 Set Padding 2em
 Set FontSize 16
-Set Height 800
+Set Height 600
 
 Type "gum pager < ~/src/gum/README.md --border normal"
 Sleep 1s
