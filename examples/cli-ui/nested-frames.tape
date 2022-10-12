@@ -5,14 +5,12 @@ Set FontSize 32
 Set Width 2000
 Set Height 750
 
-Hidden Begin
-
+Hide
 Type irb Enter
 Type "require 'cli/ui'" Enter
 Type "CLI::UI::StdoutRouter.enable" Enter
 Ctrl+L
-
-Hidden End
+Show
 
 Type "CLI::UI::Frame.open('Frame 1') do" Enter
 Type "  CLI::UI::Frame.open('Frame 2') { puts 'inside frame 2' }" Enter

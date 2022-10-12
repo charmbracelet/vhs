@@ -1,9 +1,9 @@
 Output help.gif
 
-Hidden Begin
-  Type "go build -o help ." Enter
-  Type "clear" Enter
-Hidden End
+Hide
+Type "go build -o help ." Enter
+Type "clear" Enter
+Show
 
 Type "./help" Enter
 Sleep 1s
@@ -21,6 +21,6 @@ Type "q"
 
 Sleep 2s
 
-Hidden Begin
-  Type "rm help" Enter
-Hidden End
+Hide
+Type "rm help" Enter
+Show

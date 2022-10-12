@@ -1,9 +1,9 @@
 Output pipe.gif
 
-Hidden Begin
-  Type "go build -o pipe ." Enter
-  Type "clear" Enter
-Hidden End
+Hide
+Type "go build -o pipe ." Enter
+Type "clear" Enter
+Show
 
 Type "echo 'Hello' | ./pipe" Enter
 Sleep 1s
@@ -13,7 +13,7 @@ Sleep 1s
 Enter
 Sleep 1s
 
-Hidden Begin
-  Ctrl+C
-  Type "rm pipe" Enter
-Hidden End
+Hide
+Ctrl+C
+Type "rm pipe" Enter
+Show

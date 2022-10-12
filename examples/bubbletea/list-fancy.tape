@@ -1,10 +1,10 @@
 Output list-fancy.gif
 Set FontSize 14
 
-Hidden Begin
-  Type "go build -o list-fancy ." Enter
-  Type "clear" Enter
-Hidden End
+Hide
+Type "go build -o list-fancy ." Enter
+Type "clear" Enter
+Show
 
 Type "./list-fancy" Enter
 Sleep 1s
@@ -19,7 +19,7 @@ Sleep 1s
 Type@250ms "aaaa"
 Type@250ms "xxxx"
 
-Hidden Begin
-  Ctrl+C
-  Type "rm list-fancy" Enter
-Hidden End
+Hide
+Ctrl+C
+Type "rm list-fancy" Enter
+Show

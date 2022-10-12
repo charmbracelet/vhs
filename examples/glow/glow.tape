@@ -14,79 +14,79 @@ Enter
 
 Sleep 1s
 
-Hidden Begin
-  Tab
-  Type "/artichoke"
-  Enter
-  Down 2
-Hidden End
+Hide
+Tab
+Type "/artichoke"
+Enter
+Down 2
+Show
 
 Sleep 500ms
 
 Down 20
 
-Hidden Begin
-  Escape
-  Type l
-  Down 5
-Hidden End
+Hide
+Escape
+Type l
+Down 5
+Show
 
 Sleep 1s
 Up@400ms 5
 
-Hidden Begin
-  Type "/ulysses"
-  Enter
-Hidden End
+Hide
+Type "/ulysses"
+Enter
+Show
 
 Sleep 500ms
 
 Down@200ms 20
 
-Hidden Begin
-  Escape
-  Type "/"
-Hidden End
+Hide
+Escape
+Type "/"
+Show
 
 Sleep 500ms
 
 Type@500ms todo
 Sleep 1s
 
-Hidden Begin
-  Escape
-  Type "/ulysses"
-  Enter
-Hidden End
+Hide
+Escape
+Type "/ulysses"
+Enter
+Show
 
 Sleep 500ms
 
 Type@750ms "????"
 
-Hidden Begin
-  Escape
-  Type "/artichoke"
-  Enter
-  Type "m"
-  Ctrl+A
-  Right 4
-Hidden End
+Hide
+Escape
+Type "/artichoke"
+Enter
+Type "m"
+Ctrl+A
+Right 4
+Show
 
 Sleep 1s
 Type@250ms "Tasty "
 Sleep 1s
 
-Hidden Begin
-  Escape
-  Down 5
-  Type "m"
-  Ctrl+U
-Hidden End
+Hide
+Escape
+Down 5
+Type "m"
+Ctrl+U
+Show
 
 Sleep 1s
 Type@150ms "Your new internet thing"
 Sleep 3s
 
-Hidden Begin
-  Ctrl+C
-Hidden End
+Hide
+Ctrl+C
+Show

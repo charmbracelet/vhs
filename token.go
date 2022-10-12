@@ -42,7 +42,8 @@ const (
 	ESCAPE       = "ESCAPE"
 	BEGIN        = "BEGIN"
 	END          = "END"
-	HIDDEN       = "HIDDEN"
+	HIDE         = "HIDE"
+	SHOW         = "SHOW"
 	OUTPUT       = "OUTPUT"
 	SECONDS      = "SECONDS"
 	MILLISECONDS = "MILLISECONDS"
@@ -71,7 +72,8 @@ var keywords = map[string]TokenType{
 	"Escape":        ESCAPE,
 	"Begin":         BEGIN,
 	"End":           END,
-	"Hidden":        HIDDEN,
+	"Hide":          HIDE,
+	"Show":          SHOW,
 	"Output":        OUTPUT,
 	"FontFamily":    SETTING,
 	"FontSize":      SETTING,

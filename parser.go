@@ -53,8 +53,10 @@ func (p *Parser) parseCommand() Command {
 		return p.parseType()
 	case CTRL:
 		return p.parseCtrl()
-	case HIDDEN:
-		return p.parseHidden()
+	case HIDE:
+		return p.parseHide()
+	case SHOW:
+		return p.parseShow()
 	default:
 		p.errors = append(p.errors, NewError(p.cur, "Invalid command: "+p.cur.Literal))
 		return Command{Type: ILLEGAL}
@@ -206,24 +208,23 @@ func (p *Parser) parseSleep() Command {
 	return cmd
 }
 
-// parseHidden parses a Hidden command.
-// A Hidden command takes one argument, whether to Begin or End it.
+// parseHide parses a Hide command.
 //
-// Hidden Begin
+// Hide
 //   ...
-// Hidden End
 //
-func (p *Parser) parseHidden() Command {
-	cmd := Command{Type: HIDDEN}
+func (p *Parser) parseHide() Command {
+	cmd := Command{Type: HIDE}
+	return cmd
+}
 
-	if p.peek.Type != BEGIN && p.peek.Type != END {
-		p.errors = append(p.errors, NewError(p.peek, "Hidden expects Begin or End"))
-		return cmd
-	}
-
-	cmd.Args = p.peek.Literal
-	p.nextToken()
-
+// parseShow parses a Show command.
+//
+//   ...
+// Show
+//
+func (p *Parser) parseShow() Command {
+	cmd := Command{Type: SHOW}
 	return cmd
 }
 

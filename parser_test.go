@@ -16,19 +16,19 @@ Sleep 100
 Sleep 3s`
 
 	expected := []Command{
-		{Type: Type, Options: "100ms", Args: "echo 'Hello, World!'"},
-		{Type: Enter, Options: "100ms", Args: "1"},
-		{Type: Backspace, Options: "100ms", Args: "5"},
-		{Type: Backspace, Options: "100ms", Args: "5"},
-		{Type: Backspace, Options: "1s", Args: "5"},
-		{Type: Right, Options: "100ms", Args: "3"},
-		{Type: Left, Options: "100ms", Args: "3"},
-		{Type: Up, Options: "50ms", Args: "1"},
-		{Type: Down, Options: "100ms", Args: "2"},
-		{Type: Ctrl, Options: "", Args: "C"},
-		{Type: Ctrl, Options: "", Args: "L"},
-		{Type: Sleep, Args: "100ms"},
-		{Type: Sleep, Args: "3s"},
+		{Type: TYPE, Options: "100ms", Args: "echo 'Hello, World!'"},
+		{Type: ENTER, Options: "100ms", Args: "1"},
+		{Type: BACKSPACE, Options: "100ms", Args: "5"},
+		{Type: BACKSPACE, Options: "100ms", Args: "5"},
+		{Type: BACKSPACE, Options: "1s", Args: "5"},
+		{Type: RIGHT, Options: "100ms", Args: "3"},
+		{Type: LEFT, Options: "100ms", Args: "3"},
+		{Type: UP, Options: "50ms", Args: "1"},
+		{Type: DOWN, Options: "100ms", Args: "2"},
+		{Type: CTRL, Options: "", Args: "C"},
+		{Type: CTRL, Options: "", Args: "L"},
+		{Type: SLEEP, Args: "100ms"},
+		{Type: SLEEP, Args: "3s"},
 	}
 
 	l := NewLexer(input)
@@ -55,7 +55,7 @@ Sleep 3s`
 
 func TestParserErrors(t *testing.T) {
 	input := `
-Type
+Type Enter
 Type "echo 'Hello, World!'" Enter
 Foo
 Sleep Bar`
@@ -66,10 +66,10 @@ Sleep Bar`
 	_ = p.Parse()
 
 	expectedErrors := []string{
-		" 2:1  │ Type expects string",
+		" 2:6  │ Type expects string",
 		" 4:1  │ Invalid command: Foo",
-		" 5:1  │ Expected time, got Bar",
-		" 5:1  │ Invalid command: Bar",
+		" 5:1  │ Expected time after Sleep",
+		" 5:7  │ Invalid command: Bar",
 	}
 
 	if len(p.errors) != len(expectedErrors) {

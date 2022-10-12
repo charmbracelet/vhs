@@ -25,7 +25,7 @@ Sleep 2s`
 		expectedLiteral string
 	}{
 		{OUTPUT, "Output"},
-		{STRING, "examples/out.gif"},
+		{STRING, "./renders/out.gif"},
 		{SET, "Set"},
 		{SETTING, "FontSize"},
 		{NUMBER, "42"},

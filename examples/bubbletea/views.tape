@@ -1,9 +1,9 @@
 Output views.gif
 
-Hidden Begin
-  Type "go build -o views ." Enter
-  Type "clear" Enter
-Hidden End
+Hide
+Type "go build -o views ." Enter
+Type "clear" Enter
+Show
 
 Type "./views" Enter
 Sleep 2s
@@ -13,7 +13,7 @@ Sleep 1s
 Enter
 Sleep 5s
 
-Hidden Begin
-  Ctrl+C
-  Type "rm views" Enter
-Hidden End
+Hide
+Ctrl+C
+Type "rm views" Enter
+Show

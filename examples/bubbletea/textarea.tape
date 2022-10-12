@@ -1,9 +1,9 @@
 Output textarea.gif
 
-Hidden Begin
-  Type "go build -o textarea ." Enter
-  Type "clear" Enter
-Hidden End
+Hide
+Type "go build -o textarea ." Enter
+Type "clear" Enter
+Show
 
 Type "./textarea" Enter
 Sleep 1s
@@ -17,6 +17,6 @@ Sleep 1s
 Ctrl+C
 Sleep 1s
 
-Hidden Begin
-  Type "rm textarea" Enter
-Hidden End
+Hide
+Type "rm textarea" Enter
+Show

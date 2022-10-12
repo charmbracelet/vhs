@@ -1,9 +1,9 @@
 Output exec.gif
 
-Hidden Begin
-  Type "go build -o exec ." Enter
-  Type "clear" Enter
-Hidden End
+Hide
+Type "go build -o exec ." Enter
+Type "clear" Enter
+Show
 
 Type "EDITOR=nano ./exec" Enter
 Sleep 1s
@@ -19,7 +19,7 @@ Sleep 1s
 Type "n"
 Sleep 2s
 
-Hidden Begin
-  Type "q"
-  Type "rm exec" Enter
-Hidden End
+Hide
+Type "q"
+Type "rm exec" Enter
+Show

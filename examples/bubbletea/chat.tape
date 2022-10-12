@@ -1,9 +1,9 @@
 Output chat.gif
 
-Hidden Begin
-  Type "go build -o chat ." Enter
-  Type "clear" Enter
-Hidden End
+Hide
+Type "go build -o chat ." Enter
+Type "clear" Enter
+Show
 
 Type "./chat" Enter
 Sleep 1s
@@ -12,7 +12,7 @@ Sleep 1s
 Type@200ms "!!!" Sleep 250ms Enter
 Sleep 1s
 
-Hidden Begin
-  Ctrl+C
-  Type "rm chat" Enter
-Hidden End
+Hide
+Ctrl+C
+Type "rm chat" Enter
+Show

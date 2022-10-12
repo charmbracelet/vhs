@@ -1,9 +1,9 @@
 Output realtime.gif
 
-Hidden Begin
-  Type "go build -o realtime ." Enter
-  Type "clear" Enter
-Hidden End
+Hide
+Type "go build -o realtime ." Enter
+Type "clear" Enter
+Show
 
 Type "./realtime" Enter
 Sleep 1s
@@ -12,7 +12,7 @@ Sleep 4s
 Space # Exit
 Sleep 1s
 
-Hidden Begin
-  Ctrl+C
-  Type "rm realtime" Enter
-Hidden End
+Hide
+Ctrl+C
+Type "rm realtime" Enter
+Show

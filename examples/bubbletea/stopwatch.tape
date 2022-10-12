@@ -1,9 +1,9 @@
 Output stopwatch.gif
 
-Hidden Begin
-  Type "go build -o stopwatch ." Enter
-  Type "clear" Enter
-Hidden End
+Hide
+Type "go build -o stopwatch ." Enter
+Type "clear" Enter
+Show
 
 Type "./stopwatch" Enter
 Sleep 1s
@@ -18,7 +18,7 @@ Sleep 3s
 Type "q"
 Sleep 1s
 
-Hidden Begin
-  Ctrl+C
-  Type "rm stopwatch" Enter
-Hidden End
+Hide
+Ctrl+C
+Type "rm stopwatch" Enter
+Show

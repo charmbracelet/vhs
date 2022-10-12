@@ -5,14 +5,12 @@ Set FontSize 32
 Set Width 2200
 Set Height 500
 
-Hidden Begin
-
+Hide
 Type irb Enter
 Type "require 'cli/ui'" Enter
 Type "CLI::UI::StdoutRouter.enable" Enter
 Ctrl+L
-
-Hidden End
+Show
 
 Type "CLI::UI.ask('What do you use?', options: %w(rails go ruby python))"
 Sleep 500ms

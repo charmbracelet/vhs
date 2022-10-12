@@ -1,9 +1,9 @@
 Output table.gif
 
-Hidden Begin
-  Type "go build -o table ." Enter
-  Type "clear" Enter
-Hidden End
+Hide
+Type "go build -o table ." Enter
+Type "clear" Enter
+Show
 
 Type "./table" Enter
 Sleep 1s
@@ -13,7 +13,7 @@ Sleep 1s
 Enter
 Sleep 2s
 
-Hidden Begin
-  Ctrl+C
-  Type "rm table" Enter
-Hidden End
+Hide
+Ctrl+C
+Type "rm table" Enter
+Show

@@ -1,10 +1,10 @@
 Output split-editors.gif
 Set FontSize 16
 
-Hidden Begin
-  Type "go build -o split-editors ." Enter
-  Type "clear" Enter
-Hidden End
+Hide
+Type "go build -o split-editors ." Enter
+Type "clear" Enter
+Show
 
 Type "./split-editors" Enter
 Sleep 2s
@@ -32,7 +32,7 @@ Tab@500ms 2
 Type "Hello, world!"
 Sleep 2s
 
-Hidden Begin
-  Escape
-  Type "rm split-editors" Enter
-Hidden End
+Hide
+Escape
+Type "rm split-editors" Enter
+Show

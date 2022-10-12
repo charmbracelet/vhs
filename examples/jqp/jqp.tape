@@ -3,9 +3,9 @@ Output renders/jqp.mp4
 Set Width 2400
 Set Height 1600
 
-Hidden Begin
+Hide
 Type "curl https://dummyjson.com/products | jqp"
-Hidden End
+Show
 
 Sleep 1s
 Enter

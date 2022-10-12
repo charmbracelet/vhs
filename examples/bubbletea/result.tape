@@ -1,9 +1,9 @@
 Output result.gif
 
-Hidden Begin
-  Type "go build -o result ." Enter
-  Type "clear" Enter
-Hidden End
+Hide
+Type "go build -o result ." Enter
+Type "clear" Enter
+Show
 
 Type "./result" Enter
 Sleep 1s
@@ -13,7 +13,7 @@ Up@500ms 2
 Enter
 Sleep 2s
 
-Hidden Begin
-  Ctrl+C
-  Type "rm result" Enter
-Hidden End
+Hide
+Ctrl+C
+Type "rm result" Enter
+Show
