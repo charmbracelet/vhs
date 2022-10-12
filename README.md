@@ -89,6 +89,7 @@ The `Set` command allows you to change aspects of the terminal, such as the font
 * [`Set Width <Number>`](#set-width)
 * [`Set LetterSpacing <Float>`](#set-letter-spacing)
 * [`Set LineHeight <Float>`](#set-line-height)
+* [`Set TypingSpeed <Time>`](#set-typing-speed)
 * [`Set Theme <String>`](#set-theme)
 * [`Set Padding <Number>[em|px]`](#set-padding)
 * [`Set Framerate <Number>`](#set-framerate)
@@ -289,6 +290,26 @@ Set LineHeight 1.8
 Set the spacing between lines with the `Set LineHeight` Command.
 
 <img alt="" src="./renders/set-line-height.gif" width="600" />
+
+#### Set Typing Speed
+
+```
+Set TypingSpeed 100ms
+Set TypingSpeed 1s
+```
+
+Set the typing speed of time per key press. For example, a typing speed of
+100ms would result in a 100ms delay between each character being typed.
+
+This setting can also be overridden per command with the `@<time>` syntax.
+
+```
+Set TypingSpeed 100ms
+Type "100ms delay per character"
+Type@500ms "500ms delay per character"
+```
+
+<img alt="" src="./renders/set-typing-speed.gif" width="600" />
 
 #### Set Theme
 
