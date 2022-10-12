@@ -43,8 +43,8 @@ we can render the GIF using the `vhs` binary:
 vhs < demo.tape
 ```
 
-React out to [vt100@charm.sh](mailto:vt100@charm.sh) to set up a cloud rendering server
-with an `ssh` interface for your team to avoid any local setup.
+Reach out to [vt100@charm.sh](mailto:vt100@charm.sh) to set up a VHS rendering
+server with an `ssh` interface for your team to avoid any local setup.
 
 ```bash
 ssh vhs.charm.sh < demo.tape > demo.gif
@@ -151,6 +151,8 @@ Type "You won't see this being typed."
 Show
 Type "You will see this being typed."
 ```
+
+<img alt="Hide Show" src="./renders/hide.gif" width="600" />
 
 ### Keys
 

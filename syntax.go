@@ -3,51 +3,62 @@ package vhs
 import (
 	"fmt"
 	"regexp"
+	"strings"
 
-	"github.com/muesli/termenv"
+	"github.com/charmbracelet/lipgloss"
 )
 
 var (
-	commandColor = termenv.ANSI.Color("12")
-	numberColor  = termenv.ANSI.Color("9")
-	settingColor = termenv.ANSI.Color("14")
-	stringColor  = termenv.ANSI.Color("10")
-	timeColor    = termenv.ANSI.Color("3")
-	pathColor    = termenv.ANSI.Color("2")
+	commandStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("12"))
+	keywordStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("14"))
+	faintStyle   = lipgloss.NewStyle().Foreground(lipgloss.AdaptiveColor{Light: "242", Dark: "238"})
+	numberStyle  = lipgloss.NewStyle().Foreground(lipgloss.Color("9"))
+	stringStyle  = lipgloss.NewStyle().Foreground(lipgloss.Color("10"))
+	timeStyle    = lipgloss.NewStyle().Foreground(lipgloss.Color("11"))
 )
 
-func (c Command) Highlight() string {
-	command := termenv.String(c.Type.String()).Foreground(commandColor)
+func (c Command) Highlight(faint bool) string {
+	var (
+		optionsStyle = timeStyle
+		argsStyle    = numberStyle
+	)
 
-	var options = termenv.String(c.Options)
-	var args = termenv.String(c.Args)
+	if faint {
+		if c.Options != "" {
+			return faintStyle.Render(fmt.Sprintf("%s %s %s", c.Type, c.Options, c.Args))
+		} else {
+			return faintStyle.Render(fmt.Sprintf("%s %s", c.Type, c.Args))
+		}
+	}
 
 	switch c.Type {
 	case SET:
-		options = options.Foreground(settingColor)
+		optionsStyle = keywordStyle
 		if isNumber(c.Args) {
-			args = args.Foreground(numberColor)
+			argsStyle = numberStyle
 		} else {
-			args = args.Foreground(stringColor)
+			argsStyle = stringStyle
 		}
 	case OUTPUT:
-		args = args.Foreground(pathColor)
+		argsStyle = stringStyle
 	case CTRL:
-		args = args.Foreground(commandColor)
+		argsStyle = commandStyle
 	case SLEEP:
-		args = args.Foreground(timeColor)
+		argsStyle = timeStyle
 	case TYPE:
-		args = args.Foreground(stringColor)
-		options = options.Foreground(timeColor)
-	default:
-		options = options.Foreground(timeColor)
-		args = args.Foreground(numberColor)
+		optionsStyle = timeStyle
+		argsStyle = stringStyle
+	case HIDE, SHOW:
+		return faintStyle.Render(c.Type.String())
 	}
 
+	var s strings.Builder
+	s.WriteString(commandStyle.Render(c.Type.String()) + " ")
 	if c.Options != "" {
-		return fmt.Sprintf("%s %s %s", command, options, args)
+		s.WriteString(optionsStyle.Render(c.Options) + " ")
 	}
-	return fmt.Sprintf("%s %s", command, args)
+	s.WriteString(argsStyle.Render(c.Args))
+	return s.String()
 }
 
 var numberRegex = regexp.MustCompile("^[0-9]+$")

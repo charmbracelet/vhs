@@ -31,7 +31,7 @@ func Evaluate(tape string, w io.Writer, outputFile string) error {
 
 	for i, cmd := range cmds {
 		if cmd.Type == SET || cmd.Type == OUTPUT {
-			fmt.Fprintln(w, cmd.Highlight())
+			fmt.Fprintln(w, cmd.Highlight(false))
 			cmd.Execute(&v)
 		} else {
 			offset = i
@@ -44,7 +44,7 @@ func Evaluate(tape string, w io.Writer, outputFile string) error {
 	defer v.Cleanup()
 
 	for _, cmd := range cmds[offset:] {
-		fmt.Fprintln(w, cmd.Highlight())
+		fmt.Fprintln(w, cmd.Highlight(!v.recording || cmd.Type == SHOW || cmd.Type == HIDE))
 		cmd.Execute(&v)
 	}
 
