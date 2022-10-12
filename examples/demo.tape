@@ -1,27 +1,14 @@
 Output ./renders/demo.gif
-Set FontSize 26
+Set FontSize 42
 Set Height 600
 Set Width 1200
 
-Type "Hello, there! Welcome to VHS."
+Type "Welcome to VHS!"
+Sleep 500ms Ctrl+C Sleep 500ms
+Type "VHS let's you write terminal GIFs as code."
+Sleep 500ms Ctrl+C Sleep 500ms
+Type "Let's take it for a spin."
+Sleep 500ms Ctrl+C Sleep 500ms
 
-Sleep 1s Ctrl+C Sleep 1s
-
-Type "VHS lets you script terminal GIFs and test your CLIs."
-
-Sleep 1s Ctrl+C Sleep 1s
-
-Type "Let's try it out."
-
-Sleep 1s Ctrl+C Sleep 1s
-
-Type glow
-
-Enter@2s 2
-Down@50ms 50
-
-Sleep 1s
-
-Type q
-
-Sleep 2s
+Type "gum spin -s line -- sleep 3" Enter
+Sleep 5s

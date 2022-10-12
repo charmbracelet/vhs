@@ -11,6 +11,8 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+
+	"github.com/muesli/termenv"
 )
 
 const defaultFrameFileFormat = "frame-%05d.png"
@@ -55,7 +57,7 @@ func MakeGIF(opts VideoOptions) *exec.Cmd {
 		return nil
 	}
 
-	fmt.Println("Creating GIF...")
+	fmt.Println(termenv.String("Creating GIF...").Foreground(termenv.ANSI.Color("7")))
 
 	flags := fmt.Sprintf(
 		"fps=%d,scale=%d:-1:flags=%s,split[s0][s1];[s0]palettegen=max_colors=%d[p];[s1][p]paletteuse",
@@ -77,7 +79,7 @@ func MakeWebM(opts VideoOptions) *exec.Cmd {
 		return nil
 	}
 
-	fmt.Println("Creating WebM...")
+	fmt.Println(termenv.String("Creating WebM...").Foreground(termenv.ANSI.Color("7")))
 
 	return exec.Command(
 		"ffmpeg", "-y", "-i", opts.Input,
@@ -97,7 +99,7 @@ func MakeMP4(opts VideoOptions) *exec.Cmd {
 		return nil
 	}
 
-	fmt.Println("Creating MP4...")
+	fmt.Println(termenv.String("Creating MP4...").Foreground(termenv.ANSI.Color("7")))
 
 	return exec.Command(
 		"ffmpeg", "-y", "-i", opts.Input,
