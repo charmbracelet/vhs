@@ -52,10 +52,12 @@ ssh vhs.charm.sh < demo.tape > demo.gif
 
 ## Commands
 
-* [`Set <Setting> Value`](#settings)
-* [`Sleep <time>`](#sleep)
-* [`Type "<characters>"`](#type)
 * [`Output <path>`](#output)
+* [`Set <Setting> Value`](#settings)
+* [`Type "<characters>"`](#type)
+* [`Sleep <time>`](#sleep)
+* [`Hide`](#hide)
+* [`Show`](#show)
 
 ### Keys
 
@@ -126,6 +128,28 @@ Output out.gif
 Output out.mp4
 Output out.webm
 Output frames/frame-%05d.png
+```
+
+### Hide
+
+The `Hide` command allows you to specify that the following commands should not
+be shown in the output.
+
+```
+Hide
+```
+
+### Show
+
+The `Show` command allows you to specify that the following commands should
+be shown in the output. Since this is the default case, the show command will
+usually be seen with the `Hide` command.
+
+```
+Hide
+Type "You won't see this being typed."
+Show
+Type "You will see this being typed."
 ```
 
 ### Keys
