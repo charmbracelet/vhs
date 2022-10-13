@@ -1,12 +1,14 @@
+name: vhs
+
 on:
   pull_request:
-    branches:
-      - main
+    branches: [ "main" ]
 
 jobs:
+
   vhs:
     runs-on: ubuntu-latest
-    name: A job to regenerate VHS outputs
+    name: gifs
     steps:
       - name: Checkout
         uses: actions/checkout@v3
