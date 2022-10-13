@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/input"
+	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 )
 
@@ -64,7 +65,9 @@ func New() VHS {
 	tty := StartTTY(port)
 	go tty.Run() //nolint:errcheck
 
-	browser := rod.New().MustConnect()
+	path, _ := launcher.LookPath()
+	u := launcher.New().Bin(path).MustLaunch()
+	browser := rod.New().ControlURL(u).MustConnect()
 	page := browser.MustPage(fmt.Sprintf("http://localhost:%d", port))
 	opts := DefaultVHSOptions()
 
