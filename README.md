@@ -131,30 +131,6 @@ Output out.webm
 Output frames/frame-%05d.png
 ```
 
-### Hide
-
-The `Hide` command allows you to specify that the following commands should not
-be shown in the output.
-
-```
-Hide
-```
-
-### Show
-
-The `Show` command allows you to specify that the following commands should
-be shown in the output. Since this is the default case, the show command will
-usually be seen with the `Hide` command.
-
-```
-Hide
-Type "You won't see this being typed."
-Show
-Type "You will see this being typed."
-```
-
-<img alt="Hide Show" src="./renders/hide.gif" width="600" />
-
 ### Keys
 
 #### Backspace
@@ -348,6 +324,31 @@ Set the rate at which VHS captures frames with the `Set Framerate` command.
 ```
 Set Framerate 60
 ```
+
+### Hide
+
+The `Hide` command allows you to specify that the following commands should not
+be shown in the output.
+
+```
+Hide
+```
+
+### Show
+
+The `Show` command allows you to specify that the following commands should
+be shown in the output. Since this is the default case, the show command will
+usually be seen with the `Hide` command.
+
+```
+Hide
+Type "You won't see this being typed."
+Show
+Type "You will see this being typed."
+```
+
+<img alt="Hide Show" src="./renders/hide.gif" width="600" />
+
 
 ## Feedback
 
