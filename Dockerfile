@@ -6,4 +6,4 @@ RUN go mod download && go mod verify
 COPY . .
 RUN go install cmd/vhs/vhs.go && \
     go install cmd/serve/serve.go
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["./entrypoint.sh"]
