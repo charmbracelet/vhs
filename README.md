@@ -43,6 +43,14 @@ we can render the GIF using the `vhs` binary:
 vhs < demo.tape
 ```
 
+<picture>
+  <source media="(max-width: 600px)" srcset="./renders/demo-render.gif">
+  <source media="(min-width: 600px)" width="600" srcset="./renders/demo-render.gif">
+  <img alt="Display of demo-render.gif" src="./renders/demo-render.gif">
+</picture>
+
+
+
 Reach out to [vt100@charm.sh](mailto:vt100@charm.sh) to set up a VHS rendering
 server with an `ssh` interface for your team to avoid any local setup.
 

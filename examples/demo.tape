@@ -5,8 +5,9 @@ Set Width 1200
 
 Hide
 Type "Welcome to VHS!"
+Ctrl+C
 Show
-Sleep 500ms Ctrl+C Sleep 500ms
+Sleep 1s
 Type "VHS let's you write terminal GIFs as code."
 Sleep 500ms Ctrl+C Sleep 500ms
 Type "Let's take it for a spin."
