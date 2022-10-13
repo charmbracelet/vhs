@@ -17,3 +17,13 @@ jobs:
         id: vhs
         with:
           tape: 'new.tape'
+      - name: Comment
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '<img src="${{ steps.vhs.outputs.gif }}" width="600" />'
+            })

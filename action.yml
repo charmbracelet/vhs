@@ -5,6 +5,11 @@ inputs:
     description: 'tape file'
     required: true
     default: 'vhs.tape'
+outputs:
+  gif:
+    description: 'generated gif url'
+  ascii:
+    description: 'generated ascii output'
 runs:
   using: 'docker'
   image: 'Dockerfile'
