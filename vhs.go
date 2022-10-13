@@ -48,7 +48,7 @@ func DefaultVHSOptions() VHSOptions {
 		Width:         1200,
 		Padding:       "5em",
 		Prompt:        "\\[\\e[38;2;90;86;224m\\]> \\[\\e[0m\\]",
-		FontFamily:    "SF Mono,JetBrains Mono,Menlo,Consolas,monospace",
+		FontFamily:    "SF Mono,JetBrains Mono,Menlo,DejaVu Sans Mono,Bitstream Vera Sans Mono,Consolas,monospace",
 		FontSize:      22,
 		LetterSpacing: 1.0,
 		LineHeight:    1.2,
