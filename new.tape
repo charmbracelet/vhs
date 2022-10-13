@@ -1,38 +1,43 @@
 # VHS documentation
 #
 # Output:
-#   Output <path>.gif
-#   Output <path>.mp4
-#   Output <path>.webm
+#   Output <path>.gif               Create a GIF output at the given <path>
+#   Output <path>.mp4               Create an MP4 output at the given <path>
+#   Output <path>.webm              Create a WebM output at the given <path>
 #
 # Settings:
-#   Set FontSize <Number>
-#   Set FontFamily <String>
-#   Set Height <Number>
-#   Set Width <Number>
-#   Set LetterSpacing <Float>
-#   Set LineHeight <Float>
-#   Set Theme <String>
-#   Set Padding <Number>[em|px]
-#   Set Framerate <Number>
+#   Set FontSize <Number>           Set the font size of the terminal
+#   Set FontFamily <String>         Set the font family of the terminal
+#   Set Height <Number>             Set the height of the terminal
+#   Set Width <Number>              Set the width of the terminal
+#   Set LetterSpacing <Float>       Set the font letter spacing (tracking)
+#   Set LineHeight <Float>          Set the font line height
+#   Set Theme <String>              Set the theme of the terminal (JSON)
+#   Set Padding <Number>[em|px]     Set the padding of the terminal
+#   Set Framerate <Number>          Set the framerate of the recording
 #
 # Sleep:
-#   Sleep <time>
+#   Sleep <time>                    Sleep for a set amount of <time>
 #
 # Type:
-#   Type[@<time>] "<characters>"
+#   Type[@<time>] "<characters>"    Type <characters> into the terminal with a
+#                                   <time> delay between each character
 #
 # Keys:
-#   Backspace[@<time>] [number]
-#   Down[@<time>] [number]
-#   Enter[@<time>] [number]
-#   Space[@<time>] [number]
-#   Tab[@<time>] [number]
-#   Left[@<time>] [number]
-#   Right[@<time>] [number]
-#   Up[@<time>] [number]
-#   Down[@<time>] [number]
-#   Ctrl+<key>
+#   Backspace[@<time>] [number]     Press the Backspace key
+#   Down[@<time>] [number]          Press the Down key
+#   Enter[@<time>] [number]         Press the Enter key
+#   Space[@<time>] [number]         Press the Space key
+#   Tab[@<time>] [number]           Press the Tab key
+#   Left[@<time>] [number]          Press the Left Arrow key
+#   Right[@<time>] [number]         Press the Right Arrow key
+#   Up[@<time>] [number]            Press the Up Arrow key
+#   Down[@<time>] [number]          Press the Down Arrow key
+#   Ctrl+<key>                      Press the Control key + <key> (e.g. Ctrl+C)
+#
+# Display:
+#   Hide                            Hide the subsequent commands from the output
+#   Show                            Show the subsequent commands in the output
 
 Output ./renders/demo.gif
 
