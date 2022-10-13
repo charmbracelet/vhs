@@ -1,0 +1,12 @@
+name: 'VHS'
+description: 'Run VHS to regenerate outputs'
+inputs:
+  tape:
+    description: 'tape file'
+    required: true
+    default: 'vhs.tape'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.tape }}

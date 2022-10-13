@@ -1,0 +1,17 @@
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  vhs:
+    runs-on: ubuntu-latest
+    name: A job to regenerate VHS outputs
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: VHS
+        uses: ./
+        id: vhs
+        with:
+          tape: 'new.tape'
