@@ -11,11 +11,7 @@
 
 Write terminal GIFs as code for integration testing and demoing your CLI tools.
 
-<picture>
-  <source media="(max-width: 600px)" srcset="./renders/demo.gif">
-  <source media="(min-width: 600px)" width="600" srcset="./renders/demo.gif">
-  <img alt="Display of demo.gif" src="./renders/demo.gif">
-</picture>
+<img alt="Display of demo.gif" src="./renders/demo.gif" width="600" />
 
 Code a GIF using simple commands saved to a text file:
 
@@ -43,13 +39,7 @@ we can render the GIF using the `vhs` binary:
 vhs < demo.tape
 ```
 
-<picture>
-  <source media="(max-width: 600px)" srcset="./renders/demo-render.gif">
-  <source media="(min-width: 600px)" width="600" srcset="./renders/demo-render.gif">
-  <img alt="Display of demo-render.gif" src="./renders/demo-render.gif">
-</picture>
-
-
+<img alt="Display of demo-render.gif" src="./renders/demo-render.gif" width="600" />
 
 Reach out to [vt100@charm.sh](mailto:vt100@charm.sh) to set up a VHS rendering
 server with an `ssh` interface for your team to avoid any local setup.
