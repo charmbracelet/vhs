@@ -39,7 +39,8 @@
 #   Hide                            Hide the subsequent commands from the output
 #   Show                            Show the subsequent commands in the output
 
-Output ./renders/demo.gif
+Output ./renders/new.gif
+Output ./renders/new.ascii
 
 Set FontSize 42
 Set Height 600

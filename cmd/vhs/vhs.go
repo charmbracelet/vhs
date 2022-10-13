@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	ensureInstalled("ffmpeg", "ttyd")
+	ensureInstalled("ffmpeg", "ttyd", "bash")
 
 	var b []byte
 	var err error
