@@ -70,8 +70,8 @@ ssh vhs.charm.sh < demo.tape > demo.gif
 Key commands take an optional `@time` and repeat `count`.
 For example, the following presses the `Left` key 5 times with a 500 millisecond delay between each keystroke.
 
-```
-Left@500ms 5
+```elixir
+Left@500 5
 ```
 
 * [`Backspace`](#backspace)
@@ -107,9 +107,8 @@ This is useful when you need to wait on something to complete while including it
 The command takes a time argument with optional units (`s` or `ms`) by default the units are in `ms`.
 
 ```elixir
-Sleep 500  # Sleep 500ms
-Sleep 2000 # Sleep 2s
-Sleep 2000 # Sleep 2000ms
+Sleep 500  # 500ms
+Sleep 2000 # 2s
 ```
 
 ### Type
@@ -187,7 +186,7 @@ Right 10
 Press the tab key with the `Tab` command.
 
 ```elixir
-Tab@500ms 2
+Tab@500 2
 ```
 
 <img alt="" src="./renders/tab.gif" width="600" />
@@ -276,8 +275,8 @@ Set the spacing between lines with the `Set LineHeight` Command.
 #### Set Typing Speed
 
 ```elixir
-Set TypingSpeed 100ms
-Set TypingSpeed 1s
+Set TypingSpeed 100  # 100ms
+Set TypingSpeed 1000 # 1s
 ```
 
 Set the typing speed of time per key press. For example, a typing speed of
@@ -286,9 +285,9 @@ Set the typing speed of time per key press. For example, a typing speed of
 This setting can also be overridden per command with the `@<time>` syntax.
 
 ```elixir
-Set TypingSpeed 100ms
+Set TypingSpeed 100
 Type "100ms delay per character"
-Type@500ms "500ms delay per character"
+Type@500 "500ms delay per character"
 ```
 
 <img alt="" src="./renders/set-typing-speed.gif" width="600" />
