@@ -16,11 +16,13 @@ Write terminal GIFs as code for integration testing and demoing your CLI tools.
 Code a GIF using simple commands saved to a text file:
 
 ```elixir
+# Render the Output to a file named demo.gif in the renders folder
 Output ./renders/demo.gif
 
+# Set up a 1200x600 frame with 42px font size.
 Set FontSize 42
-Set Height 600
 Set Width 1200
+Set Height 600
 
 Type "Welcome to VHS!"
 Sleep 500
@@ -45,14 +47,14 @@ Sleep 5000
 After we save these commands to a file called `demo.tape`,
 we can render the GIF using the `vhs` binary:
 
-```bash
+```sh
 vhs < demo.tape
 ```
 
 Reach out to [vt100@charm.sh](mailto:vt100@charm.sh) to set up a VHS rendering
 server with an `ssh` interface for your team to avoid any local setup.
 
-```bash
+```sh
 ssh vhs.charm.sh < demo.tape > demo.gif
 ```
 
