@@ -8,8 +8,6 @@ import (
 )
 
 func Evaluate(tape string, w io.Writer, outputFile string) error {
-	v := New()
-
 	l := NewLexer(tape)
 	p := NewParser(l)
 
@@ -27,8 +25,11 @@ func Evaluate(tape string, w io.Writer, outputFile string) error {
 		return errors.New("parse error")
 	}
 
-	var offset int
+	// Start VHS
 
+	v := New()
+
+	var offset int
 	for i, cmd := range cmds {
 		if cmd.Type == SET || cmd.Type == OUTPUT {
 			fmt.Fprintln(w, cmd.Highlight(false))

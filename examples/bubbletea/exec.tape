@@ -1,7 +1,7 @@
 Output exec.gif
 
 Hide
-Type "go build -o exec ."
+Tpe "go build -o exec ."
 Enter
 Type "clear"
 Enter
