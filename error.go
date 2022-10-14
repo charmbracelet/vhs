@@ -3,6 +3,8 @@ package vhs
 import (
 	"fmt"
 	"strings"
+
+	"github.com/charmbracelet/lipgloss"
 )
 
 type ParserError struct {
@@ -21,10 +23,13 @@ func (e ParserError) String() string {
 	return fmt.Sprintf("%2d:%-2d │ %s", e.Token.Line, e.Token.Column, e.Msg)
 }
 
+var redStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("1"))
+var grayStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("8"))
+
 func Underline(n int) string {
-	return fmt.Sprintf("%s%s%s", "\x1b[31m", strings.Repeat("^", n), "\x1b[0m")
+	return redStyle.Render(strings.Repeat("^", n))
 }
 
 func LineNumber(line int) string {
-	return fmt.Sprintf("\x1b[90m %2d │ \x1b[0m", line)
+	return grayStyle.Render(fmt.Sprintf(" %2d │ ", line))
 }
