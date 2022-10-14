@@ -25,24 +25,24 @@ Set Width 1200
 Set Height 600
 
 Type "Welcome to VHS!"
-Sleep .5
+Sleep 500ms
 Ctrl+C
-Sleep .5
+Sleep 500ms
 
 Type "VHS let's you write terminal GIFs as code."
-Sleep .5
+Sleep 500ms
 Ctrl+C
-Sleep .5
+Sleep 500ms
 
 Type "Let's take it for a spin."
-Sleep .5
+Sleep 500ms
 Ctrl+C
-Sleep .5
+Sleep 500ms
 
 Type "gum spin -s line -- sleep 5"
 Enter
 
-Sleep 5
+Sleep 5s
 ```
 
 After we save these commands to a file called `demo.tape`,
