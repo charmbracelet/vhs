@@ -10,7 +10,7 @@ Show
 Type "./views"
 Enter
 Sleep 1
-Tab@2s 4
+Tab@2 4
 Sleep 1
 Type "n"
 Tab

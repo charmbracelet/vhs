@@ -188,7 +188,7 @@ func (p *Parser) parseSet() Command {
 	// Allow Padding to have bare units (e.g. 10px, 5em, 10%)
 	// Set Padding 5em
 	//
-	// Allow TypingSpeed to have bare units (e.g. 10ms, 5s)
+	// Allow TypingSpeed to have bare units (e.g. 10ms)
 	//
 	if p.peek.Type == EM || p.peek.Type == PX || p.peek.Type == PERCENT || p.peek.Type == MILLISECONDS {
 		cmd.Args += p.peek.Literal
