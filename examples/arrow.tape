@@ -3,8 +3,8 @@ Set FontSize 42
 Set Height 225
 
 Type "Navigate around"
-Sleep 250ms
+Sleep .25
 Left 10
-Sleep 1s
+Sleep 1
 Right@50 10
-Sleep 1s
+Sleep 1

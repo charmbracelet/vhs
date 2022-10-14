@@ -45,7 +45,6 @@ const (
 	HIDE         = "HIDE"
 	SHOW         = "SHOW"
 	OUTPUT       = "OUTPUT"
-	SECONDS      = "SECONDS"
 	MILLISECONDS = "MILLISECONDS"
 	MINUTES      = "MINUTES"
 	COMMENT      = "COMMENT"
@@ -54,7 +53,6 @@ const (
 var keywords = map[string]TokenType{
 	"em":            EM,
 	"px":            PX,
-	"s":             SECONDS,
 	"ms":            MILLISECONDS,
 	"m":             MINUTES,
 	"Set":           SET,

@@ -6,9 +6,9 @@ Set FontSize 32
 
 Type gum choose bubbles gum skate glow lipgloss wish
 Enter
-Sleep 500ms
-Down@500ms 4
-Up@1s 3
-Sleep 500ms
+Sleep .5
+Down@.5 4
+Up@1 3
+Sleep .5
 Enter
-Sleep 1s
+Sleep 1

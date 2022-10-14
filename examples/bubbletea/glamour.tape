@@ -3,18 +3,22 @@ Set Height 750
 Set FontSize 16
 
 Hide
-Type "go build -o glamour ." Enter
-Type "clear" Enter
+Type "go build -o glamour ."
+Enter
+Type "clear"
+Enter
 Show
 
-Type "./glamour" Enter
-Sleep 1s
+Type "./glamour"
+Enter
+Sleep 1
 
 Down@10ms 25
 
-Sleep 2s
+Sleep 2
 
 Hide
 Type "q"
-Type "rm glamour" Enter
+Type "rm glamour"
+Enter
 Show

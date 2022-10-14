@@ -4,14 +4,14 @@ Set Height 225
 
 Type "One moment please..."
 
-Sleep 1s
+Sleep 1
 Set FontFamily "JetBrains Mono"
-Sleep 1s
+Sleep 1
 Set FontFamily "Menlo"
-Sleep 1s
+Sleep 1
 Set FontFamily "Monaco"
-Sleep 1s
+Sleep 1
 Set FontFamily "Monoflow"
-Sleep 1s
+Sleep 1
 Set FontFamily "SF Mono"
-Sleep 1s
+Sleep 1

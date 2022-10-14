@@ -1,17 +1,21 @@
 Output debounce.gif
 
 Hide
-Type "go build -o debounce ." Enter
-Type "clear" Enter
+Type "go build -o debounce ."
+Enter
+Type "clear"
+Enter
 Show
 
-Type "./debounce" Enter
-Sleep 1s
+Type "./debounce"
+Enter
+Sleep 1
 
-Space@500ms 10
-Sleep 2s
+Space@.5 10
+Sleep 2
 
 Hide
 Ctrl+C
-Type "rm debounce" Enter
+Type "rm debounce"
+Enter
 Show

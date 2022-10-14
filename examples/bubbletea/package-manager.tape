@@ -1,16 +1,20 @@
 Output package-manager.gif
 
 Hide
-Type "go build -o package-manager ." Enter
-Type "clear" Enter
+Type "go build -o package-manager ."
+Enter
+Type "clear"
+Enter
 Show
 
-Type "./package-manager" Enter
-Sleep 1s
+Type "./package-manager"
+Enter
+Sleep 1
 
-Sleep 10s
+Sleep 10
 
 Hide
 Ctrl+C
-Type "rm package-manager" Enter
+Type "rm package-manager"
+Enter
 Show

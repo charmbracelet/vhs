@@ -62,12 +62,12 @@ func (l *Lexer) NextToken() Token {
 		tok.Literal = l.readString('"')
 		l.readChar()
 	default:
-		if isLetter(l.ch) || isDot(l.ch) {
-			tok.Literal = l.readIdentifier()
-			tok.Type = LookupIdentifier(tok.Literal)
-		} else if isDigit(l.ch) {
+		if isDigit(l.ch) || (isDot(l.ch) && isDigit(l.peekChar())) {
 			tok.Literal = l.readNumber()
 			tok.Type = NUMBER
+		} else if isLetter(l.ch) || isDot(l.ch) {
+			tok.Literal = l.readIdentifier()
+			tok.Type = LookupIdentifier(tok.Literal)
 		} else {
 			tok = l.newToken(ILLEGAL, l.ch)
 			l.readChar()

@@ -25,23 +25,23 @@ Set Width 1200
 Set Height 600
 
 Type "Welcome to VHS!"
-Sleep 500
+Sleep .5
 Ctrl+C
-Sleep 500
+Sleep .5
 
 Type "VHS let's you write terminal GIFs as code."
-Sleep 500
+Sleep .5
 Ctrl+C
-Sleep 500
+Sleep .5
 
 Type "Let's take it for a spin."
-Sleep 500
+Sleep .5
 Ctrl+C
-Sleep 500
+Sleep .5
 
 Type "gum spin -s line -- sleep 5"
 Enter
-Sleep 5000
+Sleep .5
 ```
 
 After we save these commands to a file called `demo.tape`,
@@ -70,10 +70,10 @@ ssh vhs.charm.sh < demo.tape > demo.gif
 ### Keys
 
 Key commands take an optional `@time` and repeat `count`.
-For example, the following presses the `Left` key 5 times with a 500 millisecond delay between each keystroke.
+For example, the following presses the `Left` key 5 times with a 0.5 second delay between each keystroke.
 
 ```elixir
-Left@500 5
+Left@.5 5
 ```
 
 * [`Backspace`](#backspace)
@@ -104,13 +104,14 @@ The `Set` command allows you to change aspects of the terminal, such as the font
 
 ### Sleep
 
-The `Sleep` command allows you to continue capturing frames without interacting with the terminal.
-This is useful when you need to wait on something to complete while including it in the recording like a spinner or loading state.
-The command takes a time argument with optional units (`s` or `ms`) by default the units are in `ms`.
+The `Sleep` command allows you to continue capturing frames without interacting
+with the terminal. This is useful when you need to wait on something to
+complete while including it in the recording like a spinner or loading state.
+The command takes a number argument in seconds.
 
 ```elixir
-Sleep 500  # 500ms
-Sleep 2000 # 2s
+Sleep .5 # 500ms
+Sleep 2  # 2s
 ```
 
 ### Type
@@ -188,7 +189,7 @@ Right 10
 Press the tab key with the `Tab` command.
 
 ```elixir
-Tab@500 2
+Tab@.5 2
 ```
 
 <img alt="" src="./renders/tab.gif" width="600" />
@@ -277,19 +278,20 @@ Set the spacing between lines with the `Set LineHeight` Command.
 #### Set Typing Speed
 
 ```elixir
-Set TypingSpeed 100  # 100ms
-Set TypingSpeed 1000 # 1s
+Set TypingSpeed .1  # 100ms
+Set TypingSpeed 0.5 # 500ms
+Set TypingSpeed 1   # 1s
 ```
 
-Set the typing speed of time per key press. For example, a typing speed of
-100ms would result in a 100ms delay between each character being typed.
+Set the typing speed of seconds per key press. For example, a typing speed of
+0.1 would result in a 100ms delay between each character being typed.
 
 This setting can also be overridden per command with the `@<time>` syntax.
 
 ```elixir
-Set TypingSpeed 100
+Set TypingSpeed .1
 Type "100ms delay per character"
-Type@500 "500ms delay per character"
+Type@.5 "500ms delay per character"
 ```
 
 <img alt="" src="./renders/set-typing-speed.gif" width="600" />

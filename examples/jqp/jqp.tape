@@ -7,33 +7,33 @@ Hide
 Type "curl https://dummyjson.com/products | jqp"
 Show
 
-Sleep 1s
+Sleep 1
 Enter
-Sleep 1s
+Sleep 1
 
-Type@200ms '[ .products[] | select(.category=="smartphones") ]'
-Sleep 1s
+Type@.2'[ .products[] | select(.category=="smartphones") ]'
+Sleep 1
 Enter
 
-Sleep 1s
+Sleep 1
 Tab
 
-Sleep 1s
+Sleep 1
 Down@25ms 20
 
-Sleep 500ms
+Sleep .5
 Down@25ms 20
 
 Tab
 
-Sleep 500ms
+Sleep .5
 Down@25ms 30
 
-Sleep 1s
+Sleep 1
 Ctrl+S
 
-Sleep 3s
+Sleep 3
 
 Escape
 
-Sleep 3s
+Sleep 3

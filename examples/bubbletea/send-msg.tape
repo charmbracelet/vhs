@@ -1,18 +1,22 @@
 Output send-msg.gif
 
 Hide
-Type "go build -o send-msg ." Enter
-Type "clear" Enter
+Type "go build -o send-msg ."
+Enter
+Type "clear"
+Enter
 Show
 
-Type "./send-msg" Enter
-Sleep 1s
+Type "./send-msg"
+Enter
+Sleep 1
 
-Sleep 5s
+Sleep 5
 Space
-Sleep 2s
+Sleep 2
 
 Hide
 Ctrl+C
-Type "rm send-msg" Enter
+Type "rm send-msg"
+Enter
 Show

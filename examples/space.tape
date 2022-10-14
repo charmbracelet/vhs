@@ -2,6 +2,6 @@ Output ./renders/space.gif
 Set FontSize 42
 Set Height 225
 
-Sleep 250ms
+Sleep .25
 Space 10
-Sleep 1s
+Sleep 1

@@ -48,6 +48,6 @@ Set Width 1200
 
 Type "Welcome to VHS!"
 
-Sleep 1000
+Sleep 1
 
 Ctrl+C
