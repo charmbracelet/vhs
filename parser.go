@@ -108,8 +108,8 @@ func (p *Parser) parseTime() string {
 	}
 
 	// Allow TypingSpeed to have bare units (e.g. 50ms, 100ms)
-	if p.peek.Type == MILLISECONDS {
-		t += "ms"
+	if p.peek.Type == MILLISECONDS || p.peek.Type == SECONDS {
+		t += p.peek.Literal
 		p.nextToken()
 	} else {
 		t += "s"
@@ -190,7 +190,7 @@ func (p *Parser) parseSet() Command {
 	//
 	// Allow TypingSpeed to have bare units (e.g. 10ms)
 	//
-	if p.peek.Type == EM || p.peek.Type == PX || p.peek.Type == PERCENT || p.peek.Type == MILLISECONDS {
+	if p.peek.Type == EM || p.peek.Type == PX || p.peek.Type == PERCENT || p.peek.Type == MILLISECONDS || p.peek.Type == SECONDS {
 		cmd.Args += p.peek.Literal
 		p.nextToken()
 	}

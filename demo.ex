@@ -53,7 +53,7 @@ Type "Welcome to VHS!"
 Ctrl+C
 Show
 
-Sleep 1s
+Sleep 1
 
 Type "VHS let's you write terminal GIFs as code."
 Sleep .5
