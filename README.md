@@ -41,7 +41,8 @@ Sleep .5
 
 Type "gum spin -s line -- sleep 5"
 Enter
-Sleep .5
+
+Sleep 5
 ```
 
 After we save these commands to a file called `demo.tape`,

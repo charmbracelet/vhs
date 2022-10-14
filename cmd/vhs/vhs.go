@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"runtime/debug"
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
@@ -27,6 +28,10 @@ func main() {
 	}
 
 	switch command {
+	case "help", "--help", "-h":
+		Help()
+	case "version", "--version", "-v":
+		PrintVersion()
 	case "new":
 		err = New(os.Args[2:])
 	case "parse":
@@ -39,6 +44,24 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+}
+
+func Help() {
+
+}
+
+var Version string
+
+func PrintVersion() {
+	if Version == "" {
+		if info, ok := debug.ReadBuildInfo(); ok && info.Main.Sum != "" {
+			Version = info.Main.Version
+		} else {
+			Version = "unknown (built from source)"
+		}
+	}
+	version := fmt.Sprintf("VHS version %s", Version)
+	fmt.Println(version)
 }
 
 func Run(args []string) error {
@@ -67,7 +90,7 @@ func Parse(args []string) error {
 		return errors.New("parse expects at least one file")
 	}
 
-	passing := true
+	valid := true
 
 	for _, file := range args {
 		b, err := os.ReadFile(file)
@@ -91,11 +114,11 @@ func Parse(args []string) error {
 				fmt.Println(vhs.Underline(len(err.Token.Literal)), err.Msg)
 				fmt.Println()
 			}
-			passing = false
+			valid = false
 		}
 	}
 
-	if !passing {
+	if !valid {
 		return errors.New("invalid tape file(s)")
 	}
 
