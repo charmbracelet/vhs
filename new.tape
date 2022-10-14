@@ -46,10 +46,8 @@ Set FontSize 42
 Set Height 600
 Set Width 1200
 
-Type "Welcome "
-Type "to "
-Type "VHS!"
+Type "Welcome to VHS!"
 
-Sleep 1s
+Sleep 1000
 
 Ctrl+C
