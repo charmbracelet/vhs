@@ -10,8 +10,8 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/vhs"
+	"github.com/charmbracelet/vhs/style"
 )
 
 //go:embed demo.tape
@@ -32,6 +32,8 @@ func main() {
 		Help()
 	case "version", "--version", "-v":
 		PrintVersion()
+	case "man", "manual":
+		Manual()
 	case "new":
 		err = New(os.Args[2:])
 	case "parse":
@@ -46,8 +48,18 @@ func main() {
 	}
 }
 
-func Help() {
+//go:embed help.txt
+var help []byte
 
+func Help() {
+	fmt.Println(string(help))
+}
+
+//go:embed manual.txt
+var manual []byte
+
+func Manual() {
+	fmt.Println(string(manual))
 }
 
 var Version string
@@ -69,7 +81,14 @@ func Run(args []string) error {
 	var err error
 	if len(args) >= 1 {
 		b, err = os.ReadFile(args[0])
+		if err != nil {
+			Help()
+		}
 	} else {
+		if !hasStdin() {
+			Help()
+			return nil
+		}
 		b, err = io.ReadAll(os.Stdin)
 	}
 	if err != nil {
@@ -78,12 +97,16 @@ func Run(args []string) error {
 	return vhs.Evaluate(string(b), os.Stdout, "")
 }
 
-var errorStyle = lipgloss.NewStyle().
-	Border(lipgloss.NormalBorder()).
-	BorderForeground(lipgloss.Color("8")).
-	Foreground(lipgloss.Color("1")).
-	Padding(0, 1).
-	Width(80)
+func hasStdin() bool {
+	stat, err := os.Stdin.Stat()
+	if err != nil {
+		return false
+	}
+	if stat.Mode()&os.ModeNamedPipe == 0 && stat.Size() == 0 {
+		return false
+	}
+	return true
+}
 
 func Parse(args []string) error {
 	if len(args) < 1 {
@@ -106,7 +129,7 @@ func Parse(args []string) error {
 
 		if len(errs) != 0 {
 			lines := strings.Split(string(b), "\n")
-			fmt.Println(errorStyle.Render(file))
+			fmt.Println(style.ErrorFile.Render(file))
 			for _, err := range errs {
 				fmt.Print(vhs.LineNumber(err.Token.Line))
 				fmt.Println(lines[err.Token.Line-1])

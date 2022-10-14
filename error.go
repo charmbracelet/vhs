@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/vhs/style"
 )
 
 type ParserError struct {
@@ -23,13 +23,10 @@ func (e ParserError) String() string {
 	return fmt.Sprintf("%2d:%-2d │ %s", e.Token.Line, e.Token.Column, e.Msg)
 }
 
-var redStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("1"))
-var grayStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("8"))
-
 func Underline(n int) string {
-	return redStyle.Render(strings.Repeat("^", n))
+	return style.Red.Render(strings.Repeat("^", n))
 }
 
 func LineNumber(line int) string {
-	return grayStyle.Render(fmt.Sprintf(" %2d │ ", line))
+	return style.Gray.Render(fmt.Sprintf(" %2d │ ", line))
 }

@@ -5,59 +5,49 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/charmbracelet/lipgloss"
-)
-
-var (
-	commandStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("12"))
-	noStyle      = lipgloss.NewStyle()
-	faintStyle   = lipgloss.NewStyle().Foreground(lipgloss.AdaptiveColor{Light: "242", Dark: "238"})
-	keywordStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("14"))
-	numberStyle  = lipgloss.NewStyle().Foreground(lipgloss.Color("9"))
-	stringStyle  = lipgloss.NewStyle().Foreground(lipgloss.Color("10"))
-	timeStyle    = lipgloss.NewStyle().Foreground(lipgloss.Color("11"))
+	"github.com/charmbracelet/vhs/style"
 )
 
 func (c Command) Highlight(faint bool) string {
 	var (
-		optionsStyle = timeStyle
-		argsStyle    = numberStyle
+		optionsStyle = style.Time
+		argsStyle    = style.Number
 	)
 
 	if faint {
 		if c.Options != "" {
-			return faintStyle.Render(fmt.Sprintf("%s %s %s", c.Type, c.Options, c.Args))
+			return style.Faint.Render(fmt.Sprintf("%s %s %s", c.Type, c.Options, c.Args))
 		} else {
-			return faintStyle.Render(fmt.Sprintf("%s %s", c.Type, c.Args))
+			return style.Faint.Render(fmt.Sprintf("%s %s", c.Type, c.Args))
 		}
 	}
 
 	switch c.Type {
 	case SET:
-		optionsStyle = keywordStyle
+		optionsStyle = style.Keyword
 		if isNumber(c.Args) {
-			argsStyle = numberStyle
+			argsStyle = style.Number
 		} else if isTime(c.Args) {
-			argsStyle = timeStyle
+			argsStyle = style.Time
 		} else {
-			argsStyle = stringStyle
+			argsStyle = style.String
 		}
 	case OUTPUT:
-		optionsStyle = noStyle
-		argsStyle = stringStyle
+		optionsStyle = style.None
+		argsStyle = style.String
 	case CTRL:
-		argsStyle = commandStyle
+		argsStyle = style.Command
 	case SLEEP:
-		argsStyle = timeStyle
+		argsStyle = style.Time
 	case TYPE:
-		optionsStyle = timeStyle
-		argsStyle = stringStyle
+		optionsStyle = style.Time
+		argsStyle = style.String
 	case HIDE, SHOW:
-		return faintStyle.Render(c.Type.String())
+		return style.Faint.Render(c.Type.String())
 	}
 
 	var s strings.Builder
-	s.WriteString(commandStyle.Render(c.Type.String()) + " ")
+	s.WriteString(style.Command.Render(c.Type.String()) + " ")
 	if c.Options != "" {
 		s.WriteString(optionsStyle.Render(c.Options) + " ")
 	}
