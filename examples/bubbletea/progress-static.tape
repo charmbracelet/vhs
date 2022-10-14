@@ -1,16 +1,20 @@
 Output progress-static.gif
 
 Hide
-Type "go build -o progress-static ." Enter
-Type "clear" Enter
+Type "go build -o progress-static ."
+Enter
+Type "clear"
+Enter
 Show
 
-Type "./progress-static" Enter
-Sleep 1s
+Type "./progress-static"
+Enter
+Sleep 1
 
-Sleep 5s
+Sleep 5
 
 Hide
 Ctrl+C
-Type "rm progress-static" Enter
+Type "rm progress-static"
+Enter
 Show

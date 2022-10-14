@@ -8,4 +8,4 @@ Set Width 1000
 # Quickly comment out a command you don't need.
 # Type "Hello, world!"
 
-Sleep 1s
+Sleep 1

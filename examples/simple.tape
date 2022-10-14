@@ -3,7 +3,7 @@ Output ./renders/simple.ascii
 
 Set FontSize 42
 Type "echo 'Hello'"
-Sleep 500ms
+Sleep .5
 Space 4
 Enter
-Sleep 1s
+Sleep 1

@@ -5,16 +5,10 @@ Set FontSize 10
 
 Type "Super Mushroom!!!"
 
-Sleep 1s
-
+Sleep 1
 Set FontSize 20
-
-Sleep 1s
-
+Sleep 1
 Set FontSize 30
-
-Sleep 1s
-
+Sleep 1
 Set FontSize 40
-
-Sleep 1s
+Sleep 1

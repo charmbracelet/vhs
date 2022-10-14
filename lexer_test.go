@@ -11,14 +11,16 @@ Set FontSize 42
 Set Padding 5em
 Type "echo 'Hello, world!'"
 Enter
-Type@100ms "echo 'Hello, world!'"
+Type@.1 "echo 'Hello, world!'"
 Left 3
-Sleep 1s
+Sleep 1
 Right@100ms 3
 Sleep 500ms
 Ctrl+C
 Enter
-Sleep 2s`
+Sleep .1
+Sleep 100ms
+Sleep 2`
 
 	tests := []struct {
 		expectedType    TokenType
@@ -38,14 +40,12 @@ Sleep 2s`
 		{ENTER, "Enter"},
 		{TYPE, "Type"},
 		{AT, "@"},
-		{NUMBER, "100"},
-		{MILLISECONDS, "ms"},
+		{NUMBER, ".1"},
 		{STRING, "echo 'Hello, world!'"},
 		{LEFT, "Left"},
 		{NUMBER, "3"},
 		{SLEEP, "Sleep"},
 		{NUMBER, "1"},
-		{SECONDS, "s"},
 		{RIGHT, "Right"},
 		{AT, "@"},
 		{NUMBER, "100"},
@@ -59,8 +59,12 @@ Sleep 2s`
 		{STRING, "C"},
 		{ENTER, "Enter"},
 		{SLEEP, "Sleep"},
+		{NUMBER, ".1"},
+		{SLEEP, "Sleep"},
+		{NUMBER, "100"},
+		{MILLISECONDS, "ms"},
+		{SLEEP, "Sleep"},
 		{NUMBER, "2"},
-		{SECONDS, "s"},
 	}
 
 	l := NewLexer(input)

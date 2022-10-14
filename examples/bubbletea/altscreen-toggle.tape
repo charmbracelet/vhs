@@ -1,16 +1,20 @@
 Output altscreen-toggle.gif
 
 Hide
-Type "go build -o altscreen-toggle ." Enter
-Type "clear" Enter
+Type "go build -o altscreen-toggle ."
+Enter
+Type "clear"
+Enter
 Show
 
-Type "./altscreen-toggle" Enter@1s
-Space@2s 4
+Type "./altscreen-toggle"
+Enter@1
+Space@2 4
 
 Type "q"
-Sleep 2s
+Sleep 2
 
 Hide
-Type "rm ./altscreen-toggle" Enter
+Type "rm ./altscreen-toggle"
+Enter
 Show

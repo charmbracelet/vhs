@@ -1,25 +1,29 @@
 Output exec.gif
 
 Hide
-Type "go build -o exec ." Enter
-Type "clear" Enter
+Type "go build -o exec ."
+Enter
+Type "clear"
+Enter
 Show
 
-Type "EDITOR=nano ./exec" Enter
-Sleep 1s
+Type "EDITOR=nano ./exec"
+Enter
+Sleep 1
 
-Type@1s "aaaa"
-Sleep 2s
+Type@1 "aaaa"
+Sleep 2
 
-Type@1s "e"
+Type@1 "e"
 Type "Hello, EDITOR!"
-Sleep 2s
+Sleep 2
 Ctrl+X
-Sleep 1s
+Sleep 1
 Type "n"
-Sleep 2s
+Sleep 2
 
 Hide
 Type "q"
-Type "rm exec" Enter
+Type "rm exec"
+Enter
 Show

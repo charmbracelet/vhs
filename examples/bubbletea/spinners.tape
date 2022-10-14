@@ -1,18 +1,22 @@
 Output spinners.gif
 
 Hide
-Type "go build -o spinners ." Enter
-Type "clear" Enter
+Type "go build -o spinners ."
+Enter
+Type "clear"
+Enter
 Show
 
-Type "./spinners" Enter
-Sleep 1s
+Type "./spinners"
+Enter
+Sleep 1
 
-Sleep 3s
-Right@2s 5
-Sleep 1s
+Sleep 3
+Right@2 5
+Sleep 1
 
 Hide
 Ctrl+C
-Type "rm spinners" Enter
+Type "rm spinners"
+Enter
 Show

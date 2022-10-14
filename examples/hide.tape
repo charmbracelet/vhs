@@ -9,4 +9,4 @@ Type "You won't see this being typed." Ctrl+C
 Show
 Type "You will see this being typed."
 
-Sleep 2s
+Sleep 2

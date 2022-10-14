@@ -6,11 +6,16 @@ Set Width 2200
 Set Height 400
 
 Hide
-Type irb Enter
-Type "require 'cli/ui'" Enter
-Type "CLI::UI::StdoutRouter.enable" Enter
+Type irb
+Enter
+Type "require 'cli/ui'"
+Enter
+Type "CLI::UI::StdoutRouter.enable"
+Enter
 Ctrl+L
 Show
 
-Type "CLI::UI::Spinner.spin('Spinning...') { sleep 3 }" Sleep 500ms Enter
-Sleep 5s
+Type "CLI::UI::Spinner.spin('Spinning...') { sleep 3 }"
+Sleep .5
+Enter
+Sleep 5

@@ -4,15 +4,15 @@ Output glow.ascii
 Set Width 1600
 Set Height 1040
 
-Sleep 1s
+Sleep 1
 
 Type glow
 
-Sleep 100ms
+Sleep .1
 
 Enter
 
-Sleep 1s
+Sleep 1
 
 Hide
 Tab
@@ -21,7 +21,7 @@ Enter
 Down 2
 Show
 
-Sleep 500ms
+Sleep .5
 
 Down 20
 
@@ -31,27 +31,27 @@ Type l
 Down 5
 Show
 
-Sleep 1s
-Up@400ms 5
+Sleep 1
+Up@.4 5
 
 Hide
 Type "/ulysses"
 Enter
 Show
 
-Sleep 500ms
+Sleep .5
 
-Down@200ms 20
+Down@.2 20
 
 Hide
 Escape
 Type "/"
 Show
 
-Sleep 500ms
+Sleep .5
 
-Type@500ms todo
-Sleep 1s
+Type@.5 todo
+Sleep 1
 
 Hide
 Escape
@@ -59,9 +59,9 @@ Type "/ulysses"
 Enter
 Show
 
-Sleep 500ms
+Sleep .5
 
-Type@750ms "????"
+Type@.75 "????"
 
 Hide
 Escape
@@ -72,9 +72,9 @@ Ctrl+A
 Right 4
 Show
 
-Sleep 1s
-Type@250ms "Tasty "
-Sleep 1s
+Sleep 1
+Type@.25 "Tasty "
+Sleep 1
 
 Hide
 Escape
@@ -83,9 +83,9 @@ Type "m"
 Ctrl+U
 Show
 
-Sleep 1s
-Type@150ms "Your new internet thing"
-Sleep 3s
+Sleep 1
+Type@.15 "Your new internet thing"
+Sleep 3
 
 Hide
 Ctrl+C

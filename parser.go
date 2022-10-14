@@ -95,7 +95,7 @@ func (p *Parser) parseRepeat() string {
 
 // parseTime parses a time argument.
 //
-// i.e. <number>(s|ms)
+// i.e. <number>[ms]
 //
 func (p *Parser) parseTime() string {
 	var t string
@@ -107,13 +107,12 @@ func (p *Parser) parseTime() string {
 		p.errors = append(p.errors, NewError(p.cur, "Expected time after "+p.cur.Literal))
 	}
 
-	// Allow TypingSpeed to have bare units (e.g. 10ms, 5s)
-
-	if p.peek.Type == SECONDS || p.peek.Type == MILLISECONDS {
-		t += p.peek.Literal
+	// Allow TypingSpeed to have bare units (e.g. 50ms, 100ms)
+	if p.peek.Type == MILLISECONDS {
+		t += "ms"
 		p.nextToken()
 	} else {
-		t += "ms"
+		t += "s"
 	}
 
 	return t
@@ -191,7 +190,7 @@ func (p *Parser) parseSet() Command {
 	//
 	// Allow TypingSpeed to have bare units (e.g. 10ms, 5s)
 	//
-	if p.peek.Type == EM || p.peek.Type == PX || p.peek.Type == PERCENT || p.peek.Type == MILLISECONDS || p.peek.Type == SECONDS {
+	if p.peek.Type == EM || p.peek.Type == PX || p.peek.Type == PERCENT || p.peek.Type == MILLISECONDS {
 		cmd.Args += p.peek.Literal
 		p.nextToken()
 	}

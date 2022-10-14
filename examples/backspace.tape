@@ -4,4 +4,4 @@ Set Height 225
 
 Type@25ms "Delete anything..."
 Backspace 18
-Sleep 1s
+Sleep 1

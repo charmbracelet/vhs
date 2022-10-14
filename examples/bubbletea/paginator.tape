@@ -3,19 +3,23 @@ Set FontSize 12
 Set Padding 3em
 
 Hide
-Type "go build -o paginator ." Enter
-Type "clear" Enter
+Type "go build -o paginator ."
+Enter
+Type "clear"
+Enter
 Show
 
-Type "./paginator" Enter
-Sleep 1s
+Type "./paginator"
+Enter
+Sleep 1
 
-Right@500ms 10
-Sleep 2s
-Left@500ms 10
-Sleep 2s
+Right@.5 10
+Sleep 2
+Left@.5 10
+Sleep 2
 
 Hide
 Ctrl+C
-Type "rm paginator" Enter
+Type "rm paginator"
+Enter
 Show
