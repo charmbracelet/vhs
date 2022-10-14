@@ -16,8 +16,8 @@ Write terminal GIFs as code for integration testing and demoing your CLI tools.
 Code a GIF using simple commands saved to a text file:
 
 ```elixir
-# Render the Output to a file named demo.gif in the renders folder
-Output ./renders/demo.gif
+# Render the output GIF to demo.gif
+Output demo.gif
 
 # Set up a 1200x600 frame with 42px font size.
 Set FontSize 42
