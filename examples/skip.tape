@@ -1,10 +1,10 @@
 Output ./renders/skip.gif
 
-Stop
+Hide
 Type@0 "export HIDDEN=wow"
 Enter
 Ctrl+L
-Start
+Show
 
 Type "echo $HIDDEN"
 Enter
