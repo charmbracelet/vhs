@@ -1,4 +1,4 @@
-Output ./renders/set-padding.gif
+Output ./renders/settings/padding.gif
 Set FontSize 32
 Set Height 250
 Set Padding 1em

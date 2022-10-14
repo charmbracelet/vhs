@@ -1,4 +1,4 @@
-Output ./renders/set-theme.gif
+Output ./renders/settings/theme.gif
 Set FontSize 42
 Set Height 225
 

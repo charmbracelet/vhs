@@ -1,4 +1,4 @@
-Output ./renders/backspace.gif
+Output ./renders/commands/backspace.gif
 Set FontSize 42
 Set Height 225
 

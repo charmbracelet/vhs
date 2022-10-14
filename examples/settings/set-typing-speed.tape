@@ -1,4 +1,4 @@
-Output ./renders/set-typing-speed.gif
+Output ./renders/settings/typing-speed.gif
 Set Height 400
 Set FontSize 32
 

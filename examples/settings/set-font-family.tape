@@ -1,4 +1,4 @@
-Output ./renders/set-font-family.gif
+Output ./renders/settings/font-family.gif
 Set FontSize 42
 Set Height 225
 

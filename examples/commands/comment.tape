@@ -1,4 +1,4 @@
-Output ./renders/comment.gif
+Output ./renders/commands/comment.gif
 Set Height 500
 Set Width 1000
 
