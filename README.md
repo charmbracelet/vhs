@@ -15,21 +15,31 @@ Write terminal GIFs as code for integration testing and demoing your CLI tools.
 
 Code a GIF using simple commands saved to a text file:
 
-```
+```elixir
 Output ./renders/demo.gif
+
 Set FontSize 42
 Set Height 600
 Set Width 1200
 
 Type "Welcome to VHS!"
-Sleep 500ms Ctrl+C Sleep 500ms
-Type "VHS let's you write terminal GIFs as code."
-Sleep 500ms Ctrl+C Sleep 500ms
-Type "Let's take it for a spin."
-Sleep 500ms Ctrl+C Sleep 500ms
+Sleep 500
+Ctrl+C
+Sleep 500
 
-Type "gum spin -s line -- sleep 3" Enter
-Sleep 5s
+Type "VHS let's you write terminal GIFs as code."
+Sleep 500
+Ctrl+C
+Sleep 500
+
+Type "Let's take it for a spin."
+Sleep 500
+Ctrl+C
+Sleep 500
+
+Type "gum spin -s line -- sleep 5"
+Enter
+Sleep 5000
 ```
 
 After we save these commands to a file called `demo.tape`,
@@ -96,10 +106,10 @@ The `Sleep` command allows you to continue capturing frames without interacting 
 This is useful when you need to wait on something to complete while including it in the recording like a spinner or loading state.
 The command takes a time argument with optional units (`s` or `ms`) by default the units are in `ms`.
 
-```
-Sleep 2s
-Sleep 500ms
-Sleep 2000
+```elixir
+Sleep 500  # Sleep 500ms
+Sleep 2000 # Sleep 2s
+Sleep 2000 # Sleep 2000ms
 ```
 
 ### Type
@@ -108,7 +118,7 @@ The `Type` command allows you to type in the terminal and emulate key presses.
 This is useful for typing commands or interacting with the terminal.
 The command takes a string argument with the characters to type.
 
-```
+```elixir
 Type "Whatever you want"
 ```
 
@@ -120,7 +130,7 @@ The `Output` command allows you to specify the location and file format
 of the render. You can specify more than one output in a tape file which
 will render them to the respective locations.
 
-```
+```elixir
 Output out.gif
 Output out.mp4
 Output out.webm
@@ -133,7 +143,7 @@ Output frames/frame-%05d.png
 
 Press the backspace key with the `Backspace` command.
 
-```
+```elixir
 Backspace 18
 ```
 
@@ -143,7 +153,7 @@ Backspace 18
 
 Press a control sequence with the `Ctrl` command.
 
-```
+```elixir
 Ctrl+R
 ```
 
@@ -153,7 +163,7 @@ Ctrl+R
 
 Press the enter key with the `Enter` command.
 
-```
+```elixir
 Enter 2
 ```
 
@@ -163,7 +173,7 @@ Enter 2
 
 Press any of the arrow keys with the `Up`, `Down`, `Left`, `Right` commands.
 
-```
+```elixir
 Up 2
 Down 3
 Left 10
@@ -176,7 +186,7 @@ Right 10
 
 Press the tab key with the `Tab` command.
 
-```
+```elixir
 Tab@500ms 2
 ```
 
@@ -186,7 +196,7 @@ Tab@500ms 2
 
 Press the space bar with the `Space` command.
 
-```
+```elixir
 Space 10
 ```
 
@@ -198,7 +208,7 @@ Space 10
 
 Set the font size with the `Set FontSize <Number>` command.
 
-```
+```elixir
 Set FontSize 10
 Set FontSize 20
 Set FontSize 30
@@ -211,7 +221,7 @@ Set FontSize 40
 
 Set the font family with the `Set FontFamily "<Font>"` command
 
-```
+```elixir
 Set FontFamily "Fira Code"
 Set FontFamily "Menlo"
 Set FontFamily "Monaco"
@@ -225,7 +235,7 @@ Set FontFamily "SF Mono"
 
 Set the height of the terminal with the `Set Height` command.
 
-```
+```elixir
 Set Height 600
 Set Height 1000
 ```
@@ -234,7 +244,7 @@ Set Height 1000
 
 Set the width of the terminal with the `Set Width` command.
 
-```
+```elixir
 Set Width 1200
 Set Width 2000
 ```
@@ -243,7 +253,7 @@ Set Width 2000
 
 Set the spacing between letters (tracking) with the `Set LetterSpacing` Command.
 
-```
+```elixir
 Set LetterSpacing 1.2
 Set LetterSpacing 2.4
 Set LetterSpacing 3.6
@@ -253,7 +263,7 @@ Set LetterSpacing 3.6
 
 #### Set Line Height
 
-```
+```elixir
 Set LineHeight 1.4
 Set LineHeight 1.6
 Set LineHeight 1.8
@@ -265,7 +275,7 @@ Set the spacing between lines with the `Set LineHeight` Command.
 
 #### Set Typing Speed
 
-```
+```elixir
 Set TypingSpeed 100ms
 Set TypingSpeed 1s
 ```
@@ -275,7 +285,7 @@ Set the typing speed of time per key press. For example, a typing speed of
 
 This setting can also be overridden per command with the `@<time>` syntax.
 
-```
+```elixir
 Set TypingSpeed 100ms
 Type "100ms delay per character"
 Type@500ms "500ms delay per character"
@@ -288,7 +298,7 @@ Type@500ms "500ms delay per character"
 Set the theme of the terminal with the `Set Theme` command.
 The theme value should be a JSON string with the base 16 colors and foreground + background.
 
-```
+```elixir
 Set Theme { "name": "Whimsy", "black": "#535178", "red": "#ef6487", "green": "#5eca89", "yellow": "#fdd877", "blue": "#65aef7", "purple": "#aa7ff0", "cyan": "#43c1be", "white": "#ffffff", "brightBlack": "#535178", "brightRed": "#ef6487", "brightGreen": "#5eca89", "brightYellow": "#fdd877", "brightBlue": "#65aef7", "brightPurple": "#aa7ff0", "brightCyan": "#43c1be", "brightWhite": "#ffffff", "background": "#29283b", "foreground": "#b3b0d6", "selectionBackground": "#3d3c58", "cursorColor": "#b3b0d6" }
 Set Theme { "name": "wilmersdorf", "black": "#34373e", "red": "#e06383", "green": "#7ebebd", "yellow": "#cccccc", "blue": "#a6c1e0", "purple": "#e1c1ee", "cyan": "#5b94ab", "white": "#ababab", "brightBlack": "#434750", "brightRed": "#fa7193", "brightGreen": "#8fd7d6", "brightYellow": "#d1dfff", "brightBlue": "#b2cff0", "brightPurple": "#efccfd", "brightCyan": "#69abc5", "brightWhite": "#d3d3d3", "background": "#282b33", "foreground": "#c6c6c6", "selectionBackground": "#1f2024", "cursorColor": "#7ebebd" }
 Set Theme { "name": "Wombat", "black": "#000000", "red": "#ff615a", "green": "#b1e969", "yellow": "#ebd99c", "blue": "#5da9f6", "purple": "#e86aff", "cyan": "#82fff7", "white": "#dedacf", "brightBlack": "#313131", "brightRed": "#f58c80", "brightGreen": "#ddf88f", "brightYellow": "#eee5b2", "brightBlue": "#a5c7ff", "brightPurple": "#ddaaff", "brightCyan": "#b7fff9", "brightWhite": "#ffffff", "background": "#171717", "foreground": "#dedacf", "selectionBackground": "#453b39", "cursorColor": "#bbbbbb" }
@@ -303,7 +313,7 @@ Set Theme { "name": "Abernathy", "black": "#000000", "red": "#cd0000", "green": 
 
 Set the padding of the terminal frame with the `Set Padding` command.
 
-```
+```elixir
 Set Padding 1em
 Set Padding 2em
 Set Padding 3em
@@ -317,7 +327,7 @@ Set Padding 5em
 
 Set the rate at which VHS captures frames with the `Set Framerate` command.
 
-```
+```elixir
 Set Framerate 60
 ```
 
@@ -326,7 +336,7 @@ Set Framerate 60
 The `Hide` command allows you to specify that the following commands should not
 be shown in the output.
 
-```
+```elixir
 Hide
 ```
 
@@ -336,7 +346,7 @@ The `Show` command allows you to specify that the following commands should
 be shown in the output. Since this is the default case, the show command will
 usually be seen with the `Hide` command.
 
-```
+```elixir
 Hide
 Type "You won't see this being typed."
 Show
