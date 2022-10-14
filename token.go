@@ -12,43 +12,52 @@ type Token struct {
 }
 
 const (
-	AT           = "@"
-	EQUAL        = "="
-	PLUS         = "+"
-	PERCENT      = "%"
-	SLASH        = "/"
-	DOT          = "."
-	DASH         = "-"
-	PX           = "PX"
-	EM           = "EM"
-	EOF          = "EOF"
-	ILLEGAL      = "ILLEGAL"
-	SPACE        = "SPACE"
-	BACKSPACE    = "BACKSPACE"
-	CTRL         = "CTRL"
-	ENTER        = "ENTER"
-	NUMBER       = "NUMBER"
-	SET          = "SET"
-	SETTING      = "SETTING"
-	SLEEP        = "SLEEP"
-	STRING       = "STRING"
-	JSON         = "JSON"
-	TYPE         = "TYPE"
-	DOWN         = "DOWN"
-	LEFT         = "LEFT"
-	RIGHT        = "RIGHT"
-	UP           = "UP"
-	TAB          = "TAB"
-	ESCAPE       = "ESCAPE"
-	BEGIN        = "BEGIN"
-	END          = "END"
-	HIDE         = "HIDE"
-	SHOW         = "SHOW"
-	OUTPUT       = "OUTPUT"
-	MILLISECONDS = "MILLISECONDS"
-	SECONDS      = "SECONDS"
-	MINUTES      = "MINUTES"
-	COMMENT      = "COMMENT"
+	AT             = "@"
+	EQUAL          = "="
+	PLUS           = "+"
+	PERCENT        = "%"
+	SLASH          = "/"
+	DOT            = "."
+	DASH           = "-"
+	PX             = "PX"
+	EM             = "EM"
+	EOF            = "EOF"
+	ILLEGAL        = "ILLEGAL"
+	SPACE          = "SPACE"
+	BACKSPACE      = "BACKSPACE"
+	CTRL           = "CTRL"
+	ENTER          = "ENTER"
+	NUMBER         = "NUMBER"
+	SET            = "SET"
+	SLEEP          = "SLEEP"
+	STRING         = "STRING"
+	JSON           = "JSON"
+	TYPE           = "TYPE"
+	DOWN           = "DOWN"
+	LEFT           = "LEFT"
+	RIGHT          = "RIGHT"
+	UP             = "UP"
+	TAB            = "TAB"
+	ESCAPE         = "ESCAPE"
+	BEGIN          = "BEGIN"
+	END            = "END"
+	HIDE           = "HIDE"
+	SHOW           = "SHOW"
+	OUTPUT         = "OUTPUT"
+	MILLISECONDS   = "MILLISECONDS"
+	SECONDS        = "SECONDS"
+	MINUTES        = "MINUTES"
+	COMMENT        = "COMMENT"
+	FONT_FAMILY    = "FONT_FAMILY"
+	FONT_SIZE      = "FONT_SIZE"
+	FRAMERATE      = "FRAMERATE"
+	HEIGHT         = "HEIGHT"
+	WIDTH          = "WIDTH"
+	LETTER_SPACING = "LETTER_SPACING"
+	LINE_HEIGHT    = "LINE_HEIGHT"
+	TYPING_SPEED   = "TYPING_SPEED"
+	PADDING        = "PADDING"
+	THEME          = "THEME"
 )
 
 var keywords = map[string]TokenType{
@@ -75,16 +84,27 @@ var keywords = map[string]TokenType{
 	"Hide":          HIDE,
 	"Show":          SHOW,
 	"Output":        OUTPUT,
-	"FontFamily":    SETTING,
-	"FontSize":      SETTING,
-	"Framerate":     SETTING,
-	"Height":        SETTING,
-	"LetterSpacing": SETTING,
-	"LineHeight":    SETTING,
-	"TypingSpeed":   SETTING,
-	"Padding":       SETTING,
-	"Theme":         SETTING,
-	"Width":         SETTING,
+	"FontFamily":    FONT_FAMILY,
+	"FontSize":      FONT_SIZE,
+	"Framerate":     FRAMERATE,
+	"Height":        HEIGHT,
+	"LetterSpacing": LETTER_SPACING,
+	"LineHeight":    LINE_HEIGHT,
+	"TypingSpeed":   TYPING_SPEED,
+	"Padding":       PADDING,
+	"Theme":         THEME,
+	"Width":         WIDTH,
+}
+
+func IsSetting(t TokenType) bool {
+	switch t {
+	case FONT_FAMILY, FONT_SIZE, LETTER_SPACING, LINE_HEIGHT,
+		FRAMERATE, TYPING_SPEED, THEME,
+		HEIGHT, WIDTH, PADDING:
+		return true
+	default:
+		return false
+	}
 }
 
 // LookupIdentifier returns whether the identifier is a keyword.

@@ -175,23 +175,36 @@ func (p *Parser) parseOutput() Command {
 func (p *Parser) parseSet() Command {
 	cmd := Command{Type: SET}
 
-	if p.peek.Type == SETTING {
+	if IsSetting(p.peek.Type) {
 		cmd.Options = p.peek.Literal
 	} else {
 		p.errors = append(p.errors, NewError(p.peek, "Unknown setting: "+p.peek.Literal))
 	}
 	p.nextToken()
 
-	cmd.Args = p.peek.Literal
-	p.nextToken()
-
-	// Allow Padding to have bare units (e.g. 10px, 5em, 10%)
-	// Set Padding 5em
-	//
-	// Allow TypingSpeed to have bare units (e.g. 10ms)
-	//
-	if p.peek.Type == EM || p.peek.Type == PX || p.peek.Type == PERCENT || p.peek.Type == MILLISECONDS || p.peek.Type == SECONDS {
-		cmd.Args += p.peek.Literal
+	switch p.cur.Type {
+	case TYPING_SPEED:
+		cmd.Args = p.peek.Literal
+		p.nextToken()
+		// Allow TypingSpeed to have bare units (e.g. 10ms)
+		// Set TypingSpeed 10ms
+		if p.peek.Type == MILLISECONDS || p.peek.Type == SECONDS {
+			cmd.Args += p.peek.Literal
+			p.nextToken()
+		} else if cmd.Options == "TypingSpeed" {
+			cmd.Args += "s"
+		}
+	case PADDING:
+		cmd.Args = p.peek.Literal
+		p.nextToken()
+		// Allow Padding to have bare units (e.g. 10px, 5em, 10%)
+		// Set Padding 5em
+		if p.peek.Type == EM || p.peek.Type == PX || p.peek.Type == PERCENT {
+			cmd.Args += p.peek.Literal
+			p.nextToken()
+		}
+	default:
+		cmd.Args = p.peek.Literal
 		p.nextToken()
 	}
 
