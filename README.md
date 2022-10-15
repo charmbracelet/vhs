@@ -25,24 +25,26 @@ Set Width 1200
 Set Height 600
 
 Type "Welcome to VHS!"
-Sleep 500ms
+Sleep 1
 Ctrl+C
-Sleep 500ms
+Sleep 1
 
 Type "VHS let's you write terminal GIFs as code."
-Sleep 500ms
+Sleep 1
 Ctrl+C
-Sleep 500ms
+Sleep 1
 
 Type "Let's take it for a spin."
-Sleep 500ms
+Sleep 1
 Ctrl+C
-Sleep 500ms
+Sleep 1
 
 Type "gum spin -s line -- sleep 5"
 Enter
 
-Sleep 5s
+# Note: VHS will not wait for the running command to finish. Use the sleep
+# command to instruct VHS to continue recording.
+Sleep 5
 ```
 
 After we save these commands to a file called `demo.tape`,
@@ -74,7 +76,7 @@ Key commands take an optional `@time` and repeat `count`.
 For example, the following presses the `Left` key 5 times with a 0.5 second delay between each keystroke.
 
 ```elixir
-Left@.5 5
+Left@500ms 5
 ```
 
 * [`Backspace`](#backspace)
@@ -111,8 +113,10 @@ complete while including it in the recording like a spinner or loading state.
 The command takes a number argument in seconds.
 
 ```elixir
-Sleep .5 # 500ms
-Sleep 2  # 2s
+Sleep 0.5   # 500ms
+Sleep 2     # 2s
+Sleep 100ms # 100ms
+Sleep 1s    # 1s
 ```
 
 ### Type
@@ -190,7 +194,7 @@ Right 10
 Press the tab key with the `Tab` command.
 
 ```elixir
-Tab@.5 2
+Tab@500ms 2
 ```
 
 <img alt="" src="./renders/commands/tab.gif" width="600" />
@@ -279,9 +283,8 @@ Set the spacing between lines with the `Set LineHeight` Command.
 #### Set Typing Speed
 
 ```elixir
-Set TypingSpeed .1  # 100ms
-Set TypingSpeed 0.5 # 500ms
-Set TypingSpeed 1   # 1s
+Set TypingSpeed 500ms # 500ms
+Set TypingSpeed 1s    # 1s
 ```
 
 Set the typing speed of seconds per key press. For example, a typing speed of
@@ -290,9 +293,9 @@ Set the typing speed of seconds per key press. For example, a typing speed of
 This setting can also be overridden per command with the `@<time>` syntax.
 
 ```elixir
-Set TypingSpeed .1
+Set TypingSpeed 0.1
 Type "100ms delay per character"
-Type@.5 "500ms delay per character"
+Type@500ms "500ms delay per character"
 ```
 
 <img alt="" src="./renders/settings/typing-speed.gif" width="600" />
