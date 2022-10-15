@@ -14,9 +14,6 @@ import (
 	"github.com/charmbracelet/vhs/style"
 )
 
-//go:embed demo.tape
-var demoTape []byte
-
 func main() {
 	ensureInstalled("ffmpeg", "ttyd", "bash")
 
@@ -29,11 +26,11 @@ func main() {
 
 	switch command {
 	case "help", "--help", "-h":
-		Help()
+		vhs.Help()
 	case "version", "--version", "-v":
 		PrintVersion()
 	case "man", "manual":
-		Manual()
+		vhs.Manual()
 	case "new":
 		err = New(os.Args[2:])
 	case "parse":
@@ -48,45 +45,17 @@ func main() {
 	}
 }
 
-//go:embed help.txt
-var help []byte
-
-func Help() {
-	fmt.Println(string(help))
-}
-
-//go:embed manual.txt
-var manual []byte
-
-func Manual() {
-	fmt.Println(string(manual))
-}
-
-var Version string
-
-func PrintVersion() {
-	if Version == "" {
-		if info, ok := debug.ReadBuildInfo(); ok && info.Main.Sum != "" {
-			Version = info.Main.Version
-		} else {
-			Version = "unknown (built from source)"
-		}
-	}
-	version := fmt.Sprintf("VHS version %s", Version)
-	fmt.Println(version)
-}
-
 func Run(args []string) error {
 	var b []byte
 	var err error
 	if len(args) >= 1 {
 		b, err = os.ReadFile(args[0])
 		if err != nil {
-			Help()
+			vhs.Help()
 		}
 	} else {
 		if !hasStdin() {
-			Help()
+			vhs.Help()
 			return nil
 		}
 		b, err = io.ReadAll(os.Stdin)
@@ -162,11 +131,25 @@ func New(args []string) error {
 		return err
 	}
 
-	f.Write(demoTape)
+	f.Write(vhs.DemoTape)
 
 	fmt.Println("Created " + fileName)
 
 	return nil
+}
+
+var Version string
+
+func PrintVersion() {
+	if Version == "" {
+		if info, ok := debug.ReadBuildInfo(); ok && info.Main.Sum != "" {
+			Version = info.Main.Version
+		} else {
+			Version = "unknown (built from source)"
+		}
+	}
+	version := fmt.Sprintf("VHS version %s", Version)
+	fmt.Println(version)
 }
 
 func ensureInstalled(programs ...string) {

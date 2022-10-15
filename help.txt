@@ -2,7 +2,7 @@ Usage:
   vhs < file.tape
   vhs file.tape
 
-Terminal GIFs as code
+Terminal GIFs as code.
 
 Flags:
   -h, --help       Show help
