@@ -44,6 +44,8 @@ There are several types of commands in the *Cassette* language, such as:
 * Down
 * Left
 * Right
+* Hide
+* Show
 
 **Output**
 
@@ -143,7 +145,7 @@ The Down command instructs VHS to press the Down arrow key. The command accepts
 an optional speed and optional repeat count.
 
 ```haskell
-Down[@<time> [repeat]
+Down[@<time>] [repeat]
 ```
 
 **Left**
@@ -165,3 +167,21 @@ accepts an optional speed and optional repeat count.
 Right[@<time>] [repeat]
 ```
 
+**Hide**
+
+The Hide command instructs VHS to skip the subsequent commands from the
+recording.
+
+```haskell
+Hide
+```
+
+**Show**
+
+The Show command instructs VHS to record the subsequent commands and include
+them in the recording. Since this is the default state, the Show command is
+typically used with the Hide command to skip commands from the recording.
+
+```haskell
+Show
+```

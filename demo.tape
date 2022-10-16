@@ -43,30 +43,41 @@
 # Render the output GIF to demo.gif
 Output ./renders/demo.gif
 
-# Set up a 1200x600 frame with 42px font size.
-Set FontSize 42
+# Set up a 1200x600 frame with 46px font size.
+Set FontSize 46
 Set Height 600
 Set Width 1200
 
-Hide
 Type "Welcome to VHS!"
+Sleep 1
 Ctrl+C
-Show
-
 Sleep 1
 
-Type "VHS let's you write terminal GIFs as code."
-Sleep .5
-Ctrl+C
-Sleep .5
+Type "A tool for writing GIFs as code."
+Sleep 1
+Left 14
+Sleep 0.5
+Type " terminal"
+Sleep 1
+Ctrl+E
+Sleep 1
+Ctrl+U
+Sleep 1
 
-Type "Let's take it for a spin."
-Sleep .5
-Ctrl+C
-Sleep .5
-
-Type "gum spin -s line -- sleep 5"
+Type 'echo "Demo your CLIs and TUIs."'
+Sleep 1
 Enter
-Sleep 5
+Sleep 1
+
+Type "gum spin -s line -- sleep 2.5"
+Sleep 1
+Enter
+
+Sleep 4
+
+Type "clear"
+Sleep 0.5
+Enter
+Sleep 1
 
 # vhs < demo.tape

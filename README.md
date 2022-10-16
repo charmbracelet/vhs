@@ -19,8 +19,8 @@ Code a GIF using simple commands saved to a text file:
 # Render the output GIF to demo.gif
 Output demo.gif
 
-# Set up a 1200x600 frame with 42px font size.
-Set FontSize 42
+# Set up a 1200x600 frame with 46px font size.
+Set FontSize 46
 Set Width 1200
 Set Height 600
 
@@ -29,22 +29,35 @@ Sleep 1
 Ctrl+C
 Sleep 1
 
-Type "VHS let's you write terminal GIFs as code."
+Type "A tool for writing GIFs as code."
 Sleep 1
-Ctrl+C
+Left 14 # place cursor before GIFs
+Sleep 0.5
+Space
+Type "Terminal"
+Sleep 1
+Ctrl+E # go to end
+Sleep 1
+Ctrl+U # clear line
 Sleep 1
 
-Type "Let's take it for a spin."
+Type 'echo "Demo your CLIs and TUIs"'
 Sleep 1
-Ctrl+C
+Enter
 Sleep 1
 
-Type "gum spin -s line -- sleep 5"
+# Execute gum spin
+Type "gum spin -s line -- sleep 2.5"
+Sleep 1
 Enter
 
-# Note: VHS will not wait for the running command to finish. Use the sleep
-# command to instruct VHS to continue recording.
+# Note: VHS will not wait for the running command to finish.
+# Use the sleep command to instruct VHS to continue recording.
 Sleep 5
+
+Type "clear"
+Enter
+Sleep 1
 ```
 
 After we save these commands to a file called `demo.tape`,
@@ -73,7 +86,8 @@ ssh vhs.charm.sh < demo.tape > demo.gif
 ### Keys
 
 Key commands take an optional `@time` and repeat `count`.
-For example, the following presses the `Left` key 5 times with a 0.5 second delay between each keystroke.
+For example, the following presses the `Left` key 5 times with a 500
+millisecond delay between each keystroke.
 
 ```elixir
 Left@500ms 5
@@ -92,7 +106,8 @@ Left@500ms 5
 
 ### Settings
 
-The `Set` command allows you to change aspects of the terminal, such as the font settings, window dimensions, and output GIF location.
+The `Set` command allows you to change aspects of the terminal, such as the
+font settings, window dimensions, and output GIF location.
 
 * [`Set FontSize <Number>`](#set-font-size)
 * [`Set FontFamily <String>`](#set-font-family)
@@ -258,7 +273,8 @@ Set Width 2000
 
 #### Set Letter Spacing
 
-Set the spacing between letters (tracking) with the `Set LetterSpacing` Command.
+Set the spacing between letters (tracking) with the `Set LetterSpacing`
+Command.
 
 ```elixir
 Set LetterSpacing 1.2
@@ -302,8 +318,8 @@ Type@500ms "500ms delay per character"
 
 #### Set Theme
 
-Set the theme of the terminal with the `Set Theme` command.
-The theme value should be a JSON string with the base 16 colors and foreground + background.
+Set the theme of the terminal with the `Set Theme` command. The theme value
+should be a JSON string with the base 16 colors and foreground + background.
 
 ```elixir
 Set Theme { "name": "Whimsy", "black": "#535178", "red": "#ef6487", "green": "#5eca89", "yellow": "#fdd877", "blue": "#65aef7", "purple": "#aa7ff0", "cyan": "#43c1be", "white": "#ffffff", "brightBlack": "#535178", "brightRed": "#ef6487", "brightGreen": "#5eca89", "brightYellow": "#fdd877", "brightBlue": "#65aef7", "brightPurple": "#aa7ff0", "brightCyan": "#43c1be", "brightWhite": "#ffffff", "background": "#29283b", "foreground": "#b3b0d6", "selectionBackground": "#3d3c58", "cursorColor": "#b3b0d6" }
@@ -379,6 +395,12 @@ We’d love to hear your thoughts on this project. Feel free to drop us a note!
 
 Part of [Charm](https://charm.sh).
 
-<a href="https://charm.sh/"><img alt="The Charm logo" src="https://stuff.charm.sh/charm-badge.jpg" width="400" /></a>
+<a href="https://charm.sh/">
+  <img
+    alt="The Charm logo"
+    width="400"
+    src="https://stuff.charm.sh/charm-badge.jpg"
+  />
+</a>
 
 Charm热爱开源 • Charm loves open source
