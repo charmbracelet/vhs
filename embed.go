@@ -13,15 +13,17 @@ var DemoTape []byte
 //go:embed help.txt
 var HelpText []byte
 
-func Help() {
+func PrintHelp() {
 	fmt.Println(string(HelpText))
 }
 
-//go:embed manual.md
+//go:embed vhs.1.md
 var ManualText []byte
 
-func Manual() {
-	renderer, err := glamour.NewTermRenderer(glamour.WithAutoStyle())
+func PrintManual() {
+	renderer, err := glamour.NewTermRenderer(
+		glamour.WithStyles(GlamourTheme),
+	)
 	if err != nil {
 		fmt.Println(string(ManualText))
 	}

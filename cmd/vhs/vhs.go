@@ -26,11 +26,11 @@ func main() {
 
 	switch command {
 	case "help", "--help", "-h":
-		vhs.Help()
+		vhs.PrintHelp()
 	case "version", "--version", "-v":
 		PrintVersion()
 	case "man", "manual":
-		vhs.Manual()
+		vhs.PrintManual()
 	case "new":
 		err = New(os.Args[2:])
 	case "parse":
@@ -51,11 +51,11 @@ func Run(args []string) error {
 	if len(args) >= 1 {
 		b, err = os.ReadFile(args[0])
 		if err != nil {
-			vhs.Help()
+			vhs.PrintHelp()
 		}
 	} else {
 		if !hasStdin() {
-			vhs.Help()
+			vhs.PrintHelp()
 			return nil
 		}
 		b, err = io.ReadAll(os.Stdin)

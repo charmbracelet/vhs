@@ -10,6 +10,8 @@ package vhs
 
 import (
 	"encoding/json"
+
+	"github.com/charmbracelet/glamour/ansi"
 )
 
 // Theme is a terminal theme for xterm.js
@@ -68,4 +70,37 @@ var DefaultTheme = Theme{
 	BrightCyan:    "#00e6e7",
 	White:         "#bfbfbf",
 	BrightWhite:   "#e6e6e6",
+}
+
+// GlamourTheme is the theme for printing out the manual page
+// $ vhs man
+var GlamourTheme = ansi.StyleConfig{
+	Document: ansi.StyleBlock{
+		StylePrimitive: ansi.StylePrimitive{
+			Color:       stringPtr(DefaultTheme.BrightWhite),
+			BlockPrefix: "\n",
+			BlockSuffix: "\n",
+		},
+		Margin: uintPtr(2),
+	},
+	Heading: ansi.StyleBlock{
+		StylePrimitive: ansi.StylePrimitive{
+			BlockSuffix: "\n",
+			Color:       stringPtr("#5B56E0"),
+			Bold:        boolPtr(true),
+		},
+	},
+	Item:     ansi.StylePrimitive{Prefix: "· "},
+	Emph:     ansi.StylePrimitive{Color: stringPtr(DefaultTheme.BrightBlack)},
+	Strong:   ansi.StylePrimitive{Bold: boolPtr(true)},
+	Link:     ansi.StylePrimitive{Color: stringPtr(DefaultTheme.BrightGreen), Underline: boolPtr(true)},
+	LinkText: ansi.StylePrimitive{Color: stringPtr(DefaultTheme.BrightMagenta)},
+	Code:     ansi.StyleBlock{StylePrimitive: ansi.StylePrimitive{Color: stringPtr(DefaultTheme.BrightMagenta)}},
+}
+
+func boolPtr(b bool) *bool       { return &b }
+func stringPtr(s string) *string { return &s }
+func uintPtr(u uint) *uint       { return &u }
+func color(c string) ansi.StylePrimitive {
+	return ansi.StylePrimitive{Color: &c}
 }
