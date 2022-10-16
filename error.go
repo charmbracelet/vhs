@@ -24,9 +24,9 @@ func (e ParserError) String() string {
 }
 
 func Underline(n int) string {
-	return style.Red.Render(strings.Repeat("^", n))
+	return style.Error.Render(strings.Repeat("^", n))
 }
 
 func LineNumber(line int) string {
-	return style.Gray.Render(fmt.Sprintf(" %2d │ ", line))
+	return style.LineNumber.Render(fmt.Sprintf(" %2d │ ", line))
 }

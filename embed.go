@@ -23,6 +23,7 @@ var ManualText []byte
 func PrintManual() {
 	renderer, err := glamour.NewTermRenderer(
 		glamour.WithStyles(GlamourTheme),
+		glamour.WithWordWrap(0),
 	)
 	if err != nil {
 		fmt.Println(string(ManualText))

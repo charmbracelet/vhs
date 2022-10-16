@@ -12,6 +12,7 @@ import (
 	"encoding/json"
 
 	"github.com/charmbracelet/glamour/ansi"
+	"github.com/charmbracelet/vhs/style"
 )
 
 // Theme is a terminal theme for xterm.js
@@ -52,24 +53,24 @@ func (t Theme) String() string {
 //
 // Taken from https://github.com/meowgorithm/dotfiles.
 var DefaultTheme = Theme{
-	Background:    "#171717",
-	Foreground:    "#dddddd",
-	Black:         "#282a2e",
-	BrightBlack:   "#4d4d4d",
-	Red:           "#c73b1d",
-	BrightRed:     "#e82100",
-	Green:         "#00a800",
-	BrightGreen:   "#00db00",
-	Yellow:        "#acaf15",
-	BrightYellow:  "#e5e900",
-	Blue:          "#3854FC",
-	BrightBlue:    "#566BF9",
-	Magenta:       "#d533ce",
-	BrightMagenta: "#e83ae9",
-	Cyan:          "#2cbac9",
-	BrightCyan:    "#00e6e7",
-	White:         "#bfbfbf",
-	BrightWhite:   "#e6e6e6",
+	Background:    style.Background,
+	Foreground:    style.Foreground,
+	Black:         style.Black,
+	BrightBlack:   style.BrightBlack,
+	Red:           style.Red,
+	BrightRed:     style.BrightRed,
+	Green:         style.Green,
+	BrightGreen:   style.BrightGreen,
+	Yellow:        style.Yellow,
+	BrightYellow:  style.BrightYellow,
+	Blue:          style.Blue,
+	BrightBlue:    style.BrightBlue,
+	Magenta:       style.Magenta,
+	BrightMagenta: style.BrightMagenta,
+	Cyan:          style.Cyan,
+	BrightCyan:    style.BrightCyan,
+	White:         style.White,
+	BrightWhite:   style.BrightWhite,
 }
 
 // GlamourTheme is the theme for printing out the manual page
@@ -77,7 +78,7 @@ var DefaultTheme = Theme{
 var GlamourTheme = ansi.StyleConfig{
 	Document: ansi.StyleBlock{
 		StylePrimitive: ansi.StylePrimitive{
-			Color:       stringPtr(DefaultTheme.BrightWhite),
+			Color:       stringPtr(style.BrightWhite),
 			BlockPrefix: "\n",
 			BlockSuffix: "\n",
 		},
@@ -86,16 +87,16 @@ var GlamourTheme = ansi.StyleConfig{
 	Heading: ansi.StyleBlock{
 		StylePrimitive: ansi.StylePrimitive{
 			BlockSuffix: "\n",
-			Color:       stringPtr("#5B56E0"),
+			Color:       stringPtr(style.Indigo),
 			Bold:        boolPtr(true),
 		},
 	},
 	Item:     ansi.StylePrimitive{Prefix: "· "},
-	Emph:     ansi.StylePrimitive{Color: stringPtr(DefaultTheme.BrightBlack)},
+	Emph:     ansi.StylePrimitive{Color: stringPtr(style.BrightBlack)},
 	Strong:   ansi.StylePrimitive{Bold: boolPtr(true)},
-	Link:     ansi.StylePrimitive{Color: stringPtr(DefaultTheme.BrightGreen), Underline: boolPtr(true)},
-	LinkText: ansi.StylePrimitive{Color: stringPtr(DefaultTheme.BrightMagenta)},
-	Code:     ansi.StyleBlock{StylePrimitive: ansi.StylePrimitive{Color: stringPtr(DefaultTheme.BrightMagenta)}},
+	Link:     ansi.StylePrimitive{Color: stringPtr(style.BrightGreen), Underline: boolPtr(true)},
+	LinkText: ansi.StylePrimitive{Color: stringPtr(style.BrightMagenta)},
+	Code:     ansi.StyleBlock{StylePrimitive: ansi.StylePrimitive{Color: stringPtr(style.BrightMagenta)}},
 }
 
 func boolPtr(b bool) *bool       { return &b }
