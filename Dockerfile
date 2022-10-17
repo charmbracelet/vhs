@@ -1,6 +1,6 @@
 FROM golang:1.19.2-alpine
 WORKDIR /src/vhs
-RUN apk add ffmpeg ttyd chromium bash
+RUN apk add ffmpeg ttyd chromium bash ttf-dejavu
 COPY go.mod go.sum ./
 RUN go mod download && go mod verify
 COPY . .
