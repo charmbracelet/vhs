@@ -144,7 +144,7 @@ The command takes a string argument with the characters to type.
 Type "Whatever you want"
 ```
 
-<img alt="Type" src="./renders/commands/type.gif" width="600" />
+<img alt="Type" src="./examples/commands/type.gif" width="600" />
 
 ### Output
 
@@ -169,7 +169,7 @@ Press the backspace key with the `Backspace` command.
 Backspace 18
 ```
 
-<img alt="Press Backspace" src="./renders/commands/backspace.gif" width="600" />
+<img alt="Press Backspace" src="./examples/commands/backspace.gif" width="600" />
 
 #### Ctrl
 
@@ -179,7 +179,7 @@ Press a control sequence with the `Ctrl` command.
 Ctrl+R
 ```
 
-<img alt="" src="./renders/commands/ctrl.gif" width="600" />
+<img alt="" src="./examples/commands/ctrl.gif" width="600" />
 
 #### Enter
 
@@ -189,7 +189,7 @@ Press the enter key with the `Enter` command.
 Enter 2
 ```
 
-<img alt="" src="./renders/commands/enter.gif" width="600" />
+<img alt="" src="./examples/commands/enter.gif" width="600" />
 
 #### Arrow Keys
 
@@ -202,7 +202,7 @@ Left 10
 Right 10
 ```
 
-<img alt="" src="./renders/commands/arrow.gif" width="600" />
+<img alt="" src="./examples/commands/arrow.gif" width="600" />
 
 #### Tab
 
@@ -212,7 +212,7 @@ Press the tab key with the `Tab` command.
 Tab@500ms 2
 ```
 
-<img alt="" src="./renders/commands/tab.gif" width="600" />
+<img alt="" src="./examples/commands/tab.gif" width="600" />
 
 #### Space
 
@@ -222,7 +222,7 @@ Press the space bar with the `Space` command.
 Space 10
 ```
 
-<img alt="" src="./renders/commands/space.gif" width="600" />
+<img alt="" src="./examples/commands/space.gif" width="600" />
 
 ### Settings
 
@@ -237,7 +237,7 @@ Set FontSize 30
 Set FontSize 40
 ```
 
-<img alt="" src="./renders/settings/font-size.gif" width="600" />
+<img alt="" src="./examples/settings/font-size.gif" width="600" />
 
 #### Set Font Family
 
@@ -251,7 +251,7 @@ Set FontFamily "Monoflow"
 Set FontFamily "SF Mono"
 ```
 
-<img alt="" src="./renders/settings/font-family.gif" width="600" />
+<img alt="" src="./examples/settings/font-family.gif" width="600" />
 
 #### Set Height
 
@@ -282,7 +282,7 @@ Set LetterSpacing 2.4
 Set LetterSpacing 3.6
 ```
 
-<img alt="" src="./renders/settings/letter-spacing.gif" width="600" />
+<img alt="" src="./examples/settings/letter-spacing.gif" width="600" />
 
 #### Set Line Height
 
@@ -294,7 +294,7 @@ Set LineHeight 1.8
 
 Set the spacing between lines with the `Set LineHeight` Command.
 
-<img alt="" src="./renders/settings/line-height.gif" width="600" />
+<img alt="" src="./examples/settings/line-height.gif" width="600" />
 
 #### Set Typing Speed
 
@@ -314,7 +314,7 @@ Type "100ms delay per character"
 Type@500ms "500ms delay per character"
 ```
 
-<img alt="" src="./renders/settings/typing-speed.gif" width="600" />
+<img alt="" src="./examples/settings/typing-speed.gif" width="600" />
 
 #### Set Theme
 
@@ -329,7 +329,7 @@ Set Theme { "name": "Wryan", "black": "#333333", "red": "#8c4665", "green": "#28
 Set Theme { "name": "Abernathy", "black": "#000000", "red": "#cd0000", "green": "#00cd00", "yellow": "#cdcd00", "blue": "#1093f5", "purple": "#cd00cd", "cyan": "#00cdcd", "white": "#faebd7", "brightBlack": "#404040", "brightRed": "#ff0000", "brightGreen": "#00ff00", "brightYellow": "#ffff00", "brightBlue": "#11b5f6", "brightPurple": "#ff00ff", "brightCyan": "#00ffff", "brightWhite": "#ffffff", "background": "#111416", "foreground": "#eeeeec", "selectionBackground": "#eeeeec", "cursorColor": "#bbbbbb" }
 ```
 
-<img alt="" src="./renders/settings/theme.gif" width="600" />
+<img alt="" src="./examples/settings/theme.gif" width="600" />
 
 
 #### Set Padding
@@ -344,7 +344,7 @@ Set Padding 4em
 Set Padding 5em
 ```
 
-<img alt="" src="./renders/settings/padding.gif" width="600" />
+<img alt="" src="./examples/settings/padding.gif" width="600" />
 
 #### Set Framerate
 
@@ -376,7 +376,7 @@ Show
 Type "You will see this being typed."
 ```
 
-<img alt="Hide Show" src="./renders/commands/hide.gif" width="600" />
+<img alt="Hide Show" src="./examples/commands/hide.gif" width="600" />
 
 
 ## Feedback
