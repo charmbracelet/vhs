@@ -5,6 +5,8 @@
 Example of recording a demo of [Gum](https://github.com/charmbracelet/gum)
 with VHS.
 
+#### Gum File
+
 <img alt="gum file demo with VHS" src="./gum/file.gif" width="600" />
 
 ```
@@ -25,8 +27,7 @@ Up@500ms 2
 Sleep 2s
 ```
 
-<br />
-<br />
+#### Gum Pager
 
 <img alt="gum pager demo with VHS" src="./gum/pager.gif" width="600" />
 
@@ -49,9 +50,7 @@ Down@25ms 20
 Sleep 3s
 ```
 
-<br />
-<br />
-
+#### Gum Table
 
 <img alt="gum table demo with VHS" src="./gum/table.gif" width="600" />
 
@@ -83,6 +82,8 @@ Examples recorded with VHS for Bubble Tea.
 Example of recording a demo of [Glow](https://github.com/charmbracelet/glow)
 with VHS.
 
+#### Glow Simple
+
 <img alt="Simple glow demo with VHS" src="./glow/glow-simple.gif" width="600" />
 
 ```
@@ -103,8 +104,7 @@ Type "q"
 Sleep 1s
 ```
 
-<br />
-<br />
+#### Glow
 
 <img alt="Glow demo with VHS" src="./glow/vhs-glow.gif" />
 
@@ -115,15 +115,15 @@ Output glow.ascii
 Set Width 1600
 Set Height 1040
 
-Sleep 1
+Sleep 1s
 
-Type glow
+Type "glow"
 
-Sleep .1
+Sleep 100ms
 
 Enter
 
-Sleep 1
+Sleep 1s
 
 Hide
 Tab
@@ -132,36 +132,36 @@ Enter
 Down 2
 Show
 
-Sleep .5
+Sleep 0.5s
 
 Down 20
 
 Hide
 Escape
-Type l
+Type "l"
 Down 5
 Show
 
-Sleep 1
-Up@.4 5
+Sleep 1s
+Up@400ms 5
 
 Hide
 Type "/ulysses"
 Enter
 Show
 
-Sleep .5
+Sleep 0.5s
 
-Down@.2 20
+Down@200ms 20
 
 Hide
 Escape
 Type "/"
 Show
 
-Sleep .5
+Sleep 0.5s
 
-Type@.5 todo
+Type@500ms "todo"
 Sleep 1
 
 Hide
@@ -170,9 +170,9 @@ Type "/ulysses"
 Enter
 Show
 
-Sleep .5
+Sleep 0.5s
 
-Type@.75 "????"
+Type@750ms "????"
 
 Hide
 Escape
@@ -183,9 +183,9 @@ Ctrl+A
 Right 4
 Show
 
-Sleep 1
-Type@.25 "Tasty "
-Sleep 1
+Sleep 1s
+Type@250ms "Tasty "
+Sleep 1s
 
 Hide
 Escape
@@ -194,10 +194,11 @@ Type "m"
 Ctrl+U
 Show
 
-Sleep 1
-Type@.15 "Your new internet thing"
-Sleep 3
+Sleep 1s
+Type@150ms "Your new internet thing"
+Sleep 3s
 
 Hide
 Ctrl+C
-Show```
+Show
+```
