@@ -1,14 +1,13 @@
-Output renders/jqp.gif
-Output renders/jqp.mp4
+Output jqp.gif
 Set Width 2400
 Set Height 1600
 
 Hide
 Type "curl https://dummyjson.com/products | jqp"
+Enter
+Sleep 1
 Show
 
-Sleep 1
-Enter
 Sleep 1
 
 Type@.2'[ .products[] | select(.category=="smartphones") ]'
