@@ -29,7 +29,7 @@ func StartTTY(port int) *exec.Cmd {
 		"-t", "disableResizeOverlay=true",
 		"-t", "cursorBlink=true",
 		"-t", "customGlyphs=true",
-		"bash",
+		"bash", "--login",
 	)
 	return cmd
 }
