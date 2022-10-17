@@ -2,9 +2,12 @@
 
 ### Glow
 
-<img alt="Glow demo with VHS" src="./glow/vhs-glow.gif" width="600" />
+Example of recording a demo of [Glow](https://github.com/charmbracelet/glow)
+with VHS.
 
-```elixir
+<img alt="Glow demo with VHS" src="./glow/vhs-glow.gif" />
+
+```
 Output vhs-glow.gif
 Output glow.ascii
 
