@@ -41,7 +41,7 @@
 
 
 # Render the output GIF to demo.gif
-Output ./renders/demo.gif
+Output ./examples/demo.gif
 
 # Set up a 1200x600 frame with 46px font size.
 Set FontSize 46

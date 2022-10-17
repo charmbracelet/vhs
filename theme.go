@@ -78,7 +78,6 @@ var DefaultTheme = Theme{
 var GlamourTheme = ansi.StyleConfig{
 	Document: ansi.StyleBlock{
 		StylePrimitive: ansi.StylePrimitive{
-			Color:       stringPtr(style.BrightWhite),
 			BlockPrefix: "\n",
 			BlockSuffix: "\n",
 		},
@@ -87,16 +86,16 @@ var GlamourTheme = ansi.StyleConfig{
 	Heading: ansi.StyleBlock{
 		StylePrimitive: ansi.StylePrimitive{
 			BlockSuffix: "\n",
-			Color:       stringPtr(style.Indigo),
+			Color:       stringPtr("99"),
 			Bold:        boolPtr(true),
 		},
 	},
 	Item:     ansi.StylePrimitive{Prefix: "· "},
 	Emph:     ansi.StylePrimitive{Color: stringPtr(style.BrightBlack)},
 	Strong:   ansi.StylePrimitive{Bold: boolPtr(true)},
-	Link:     ansi.StylePrimitive{Color: stringPtr(style.BrightGreen), Underline: boolPtr(true)},
-	LinkText: ansi.StylePrimitive{Color: stringPtr(style.BrightMagenta)},
-	Code:     ansi.StyleBlock{StylePrimitive: ansi.StylePrimitive{Color: stringPtr(style.BrightMagenta)}},
+	Link:     ansi.StylePrimitive{Color: stringPtr("42"), Underline: boolPtr(true)},
+	LinkText: ansi.StylePrimitive{Color: stringPtr("207")},
+	Code:     ansi.StyleBlock{StylePrimitive: ansi.StylePrimitive{Color: stringPtr("204")}},
 }
 
 func boolPtr(b bool) *bool       { return &b }
