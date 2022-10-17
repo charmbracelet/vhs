@@ -70,6 +70,18 @@ Enter
 Sleep 3s
 ```
 
+### GitHub CLI
+
+Examples recorded with VHS for the GitHub CLI (`gh`):
+
+#### Issues
+
+<img alt="Simple gh issue demo" src="./gh-cli/gh-issue.gif" width="600" />
+
+#### Pull Requests
+
+<img alt="Simple gh pr demo" src="./gh-cli/gh-pr.gif" width="600" />
+
 ### Bubble Tea
 
 Examples recorded with VHS for Bubble Tea.
