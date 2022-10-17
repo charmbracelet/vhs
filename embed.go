@@ -7,17 +7,17 @@ import (
 	"github.com/charmbracelet/glamour"
 )
 
-//go:embed demo.tape
+//go:embed examples/demo.tape
 var DemoTape []byte
 
-//go:embed help.txt
+//go:embed docs/help.txt
 var HelpText []byte
 
 func PrintHelp() {
 	fmt.Println(string(HelpText))
 }
 
-//go:embed vhs.1.md
+//go:embed docs/vhs.1.md
 var ManualText []byte
 
 func PrintManual() {

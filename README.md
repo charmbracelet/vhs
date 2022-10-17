@@ -11,7 +11,7 @@
 
 Write terminal GIFs as code for integration testing and demoing your CLI tools.
 
-<img alt="Display of demo.gif" src="./renders/demo.gif" width="600" />
+<img alt="Display of demo.gif" src="./examples/demo.gif" width="600" />
 
 Code a GIF using simple commands saved to a text file:
 

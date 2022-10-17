@@ -3,4 +3,4 @@ make:
 	go install -ldflags "-s -w -X=main.Version=$(REV)" cmd/vhs/vhs.go
 
 man:
-	pandoc --standalone --to man vhs.1.md -o vhs.1
+	pandoc --standalone --to man docs/vhs.1.md -o docs/vhs.1
