@@ -10,5 +10,5 @@ Type "Normal"
 Ctrl+C
 Set TypingSpeed .5
 Type "Slow"
-Ctrl+c
+Ctrl+C
 Sleep 3
