@@ -98,7 +98,7 @@ func (vhs *VHS) Setup() {
 	vhs.Page.MustEval(fmt.Sprintf("() => term.setOption('theme', %s)", vhs.Options.Theme.String()))
 	vhs.Page.MustElement(".xterm").MustEval(fmt.Sprintf("() => this.style.padding = '%s'", vhs.Options.Padding))
 
-	vhs.Page.MustElement("textarea").MustInput(fmt.Sprintf(` set +o history; PS1="%s"; clear`, vhs.Options.Prompt)).MustType(input.Enter)
+	vhs.Page.MustElement("textarea").MustInput(fmt.Sprintf(` set +o history; export PS1="%s";`, vhs.Options.Prompt)).MustType(input.Enter)
 	vhs.Page.MustElement("body").MustEval("() => this.style.overflow = 'hidden'")
 	vhs.Page.MustElement("#terminal-container").MustEval("() => this.style.overflow = 'hidden'")
 	vhs.Page.MustElement(".xterm-viewport").MustEval("() => this.style.overflow = 'hidden'")
