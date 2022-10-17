@@ -16,14 +16,9 @@ jobs:
         uses: ./
         id: vhs
         with:
-          tape: 'new.tape'
-      - name: Comment
-        uses: actions/github-script@v6
+          tape: 'examples/demo.tape'
+      - name: Upload
+        uses: actions/upload-artifact@v3
         with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '<img src="data:image/gif;base64, ${{ steps.vhs.outputs.gif }}" width="600" />'
-            })
+          name: output
+          path: examples/demo.gif
