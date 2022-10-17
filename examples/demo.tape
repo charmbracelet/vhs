@@ -49,35 +49,35 @@ Set Height 600
 Set Width 1200
 
 Type "Welcome to VHS!"
-Sleep 1
+Sleep 1s
 Ctrl+C
-Sleep 1
+Sleep 1s
 
 Type "A tool for writing GIFs as code."
-Sleep 1
+Sleep 1s
 Left 14
-Sleep 0.5
+Sleep 0.5s
 Type " terminal"
-Sleep 1
+Sleep 1s
 Ctrl+E
-Sleep 1
+Sleep 1s
 Ctrl+U
-Sleep 1
+Sleep 1s
 
 Type 'echo "Demo your CLIs and TUIs."'
-Sleep 1
+Sleep 1s
 Enter
-Sleep 1
+Sleep 1s
 
 Type "gum spin -s line -- sleep 2.5"
-Sleep 1
+Sleep 1s
 Enter
 
-Sleep 4
+Sleep 4s
 
 Type "clear"
-Sleep 0.5
+Sleep 0.5s
 Enter
-Sleep 1
+Sleep 1s
 
 # vhs < demo.tape
