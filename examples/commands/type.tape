@@ -1,4 +1,4 @@
-Output ./renders/commands/type.gif
+Output examples/commands/type.gif
 Set FontSize 42
 Set Height 225
 

@@ -1,4 +1,4 @@
-Output ./renders/commands/tab.gif
+Output examples/commands/tab.gif
 Set FontSize 42
 Set Height 300
 

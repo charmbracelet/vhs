@@ -1,4 +1,4 @@
-Output ./renders/commands/space.gif
+Output examples/commands/space.gif
 Set FontSize 42
 Set Height 225
 

@@ -1,4 +1,4 @@
-Output ./renders/commands/ctrl.gif
+Output examples/commands/ctrl.gif
 Set FontSize 42
 Set Height 225
 

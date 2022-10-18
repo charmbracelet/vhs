@@ -1,4 +1,4 @@
-Output ./renders/commands/skip.gif
+Output examples/commands/skip.gif
 
 Hide
 Type@0 "export HIDDEN=wow"

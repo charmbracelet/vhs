@@ -1,4 +1,4 @@
-Output ./renders/commands/hide.gif
+Output examples/commands/hide.gif
 
 Set TypingSpeed 100ms
 Set FontSize 42
