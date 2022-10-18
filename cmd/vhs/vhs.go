@@ -46,24 +46,28 @@ func main() {
 }
 
 func Run(args []string) error {
-	var b []byte
-	var err error
-	if len(args) >= 1 {
-		b, err = os.ReadFile(args[0])
+	if len(args) < 1 && !hasStdin() {
+		vhs.PrintHelp()
+		return errors.New("no input provided")
+	}
+
+	if hasStdin() {
+		in, _ := io.ReadAll(os.Stdin)
+		return vhs.Evaluate(string(in), os.Stdout, "")
+	}
+
+	for _, file := range args {
+		fmt.Println(style.File.Render("File: " + file))
+		f, err := os.ReadFile(file)
 		if err != nil {
-			vhs.PrintHelp()
+			return err
 		}
-	} else {
-		if !hasStdin() {
-			vhs.PrintHelp()
-			return nil
+		err = vhs.Evaluate(string(f), os.Stdout, "")
+		if err != nil {
+			return err
 		}
-		b, err = io.ReadAll(os.Stdin)
 	}
-	if err != nil {
-		return err
-	}
-	return vhs.Evaluate(string(b), os.Stdout, "")
+	return nil
 }
 
 func hasStdin() bool {
@@ -85,6 +89,7 @@ func Parse(args []string) error {
 	valid := true
 
 	for _, file := range args {
+
 		b, err := os.ReadFile(file)
 		if err != nil {
 			continue

@@ -1,4 +1,4 @@
-Output ./renders/settings/line-height.gif
+Output examples/settings/line-height.gif
 Set Height 400
 Set FontSize 32
 

@@ -1,4 +1,4 @@
-Output ./renders/settings/font-size.gif
+Output examples/settings/font-size.gif
 Set Height 225
 
 Set FontSize 10

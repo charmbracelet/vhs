@@ -33,6 +33,8 @@ var Time = lipgloss.NewStyle().Foreground(lipgloss.Color("11"))
 var LineNumber = lipgloss.NewStyle().Foreground(lipgloss.Color("8"))
 var Error = lipgloss.NewStyle().Foreground(lipgloss.Color("1"))
 
+var File = lipgloss.NewStyle().Foreground(lipgloss.Color("8"))
+
 var ErrorFile = lipgloss.NewStyle().
 	Border(lipgloss.NormalBorder()).
 	BorderForeground(lipgloss.Color("8")).
