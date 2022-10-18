@@ -7,7 +7,7 @@ Output all.webm
 
 # Settings:
 Set FontSize 22
-Set FontFamily "SF Mono"
+Set FontFamily "DejaVu Sans Mono"
 Set Height 600
 Set Width 1200
 Set LetterSpacing 1

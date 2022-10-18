@@ -107,7 +107,7 @@ func TestLexTapeFile(t *testing.T) {
 		{NUMBER, "22"},
 		{SET, "Set"},
 		{FONT_FAMILY, "FontFamily"},
-		{STRING, "SF Mono"},
+		{STRING, "DejaVu Sans Mono"},
 		{SET, "Set"},
 		{HEIGHT, "Height"},
 		{NUMBER, "600"},

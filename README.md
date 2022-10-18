@@ -248,7 +248,7 @@ Set FontFamily "Fira Code"
 Set FontFamily "Menlo"
 Set FontFamily "Monaco"
 Set FontFamily "Monoflow"
-Set FontFamily "SF Mono"
+Set FontFamily "DejaVu Sans Mono"
 ```
 
 <img alt="" src="./examples/settings/font-family.gif" width="600" />

@@ -4,7 +4,7 @@
 //
 // xterm.js is used for rendering the terminal and can be adjusted using the Set command.
 //
-// Set FontFamily SF Mono
+// Set FontFamily "DejaVu Sans Mono"
 // Set FontSize 12
 // Set Padding 1em
 package vhs

@@ -88,9 +88,8 @@ func (vhs *VHS) Setup() {
 
 	// Let's wait until we can access the window.term variable
 	vhs.Page = vhs.Page.MustWait("() => window.term != undefined")
-	vhs.Page.MustEval("term.fit")
 
-	// Fit the terminal into the window
+	// Set Prompt
 	vhs.Page.MustElement("textarea").
 		MustInput(fmt.Sprintf(` set +o history; export PS1="%s"; clear;`, vhs.Options.Prompt)).
 		MustType(input.Enter)
@@ -105,6 +104,9 @@ func (vhs *VHS) Setup() {
 	vhs.Page.MustElement("body").MustEval("() => this.style.overflow = 'hidden'")
 	vhs.Page.MustElement("#terminal-container").MustEval("() => this.style.overflow = 'hidden'")
 	vhs.Page.MustElement(".xterm-viewport").MustEval("() => this.style.overflow = 'hidden'")
+
+	// Fit the terminal into the window
+	vhs.Page.MustEval("term.fit")
 
 	_ = os.MkdirAll(filepath.Dir(vhs.Options.Video.Input), os.ModePerm)
 }

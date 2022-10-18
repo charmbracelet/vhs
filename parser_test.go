@@ -105,7 +105,7 @@ func TestParseTapeFile(t *testing.T) {
 		{Type: OUTPUT, Options: ".mp4", Args: "all.mp4"},
 		{Type: OUTPUT, Options: ".webm", Args: "all.webm"},
 		{Type: SET, Options: "FontSize", Args: "22"},
-		{Type: SET, Options: "FontFamily", Args: "SF Mono"},
+		{Type: SET, Options: "FontFamily", Args: "DejaVu Sans Mono"},
 		{Type: SET, Options: "Height", Args: "600"},
 		{Type: SET, Options: "Width", Args: "1200"},
 		{Type: SET, Options: "LetterSpacing", Args: "1"},
