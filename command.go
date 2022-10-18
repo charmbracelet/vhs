@@ -150,6 +150,10 @@ func ExecuteSleep(c Command, v *VHS) {
 
 // ExecuteType types the argument string on the running instance of vhs.
 func ExecuteType(c Command, v *VHS) {
+	delay, err := time.ParseDuration(c.Options)
+	if err != nil {
+		delay = v.Options.TypingSpeed
+	}
 	for _, r := range c.Args {
 		k, ok := keymap[r]
 		if ok {
@@ -157,10 +161,6 @@ func ExecuteType(c Command, v *VHS) {
 		} else {
 			_ = v.Page.MustElement("textarea").Input(string(r))
 			v.Page.MustWaitIdle()
-		}
-		delay, err := time.ParseDuration(c.Options)
-		if err != nil {
-			delay = v.Options.TypingSpeed
 		}
 		time.Sleep(delay)
 	}
@@ -207,13 +207,13 @@ func ExecuteSet(c Command, v *VHS) {
 func ApplyFontSize(c Command, v *VHS) {
 	fontSize, _ := strconv.Atoi(c.Args)
 	v.Options.FontSize = fontSize
-	_, _ = v.Page.Eval(fmt.Sprintf("term.setOption('fontSize', '%d')", fontSize))
+	_, _ = v.Page.Eval(fmt.Sprintf("term.options.fontSize = %d", fontSize))
 }
 
 // ApplyFontFamily applies the font family on the vhs.
 func ApplyFontFamily(c Command, v *VHS) {
 	v.Options.FontFamily = c.Args
-	_, _ = v.Page.Eval(fmt.Sprintf("term.setOption('fontFamily', '%s')", c.Args))
+	_, _ = v.Page.Eval(fmt.Sprintf("term.options.fontFamily = '%s'", c.Args))
 }
 
 // ApplyHeight applies the height on the vhs.
@@ -232,14 +232,14 @@ func ApplyWidth(c Command, v *VHS) {
 func ApplyLetterSpacing(c Command, v *VHS) {
 	letterSpacing, _ := strconv.ParseFloat(c.Args, 64)
 	v.Options.LetterSpacing = letterSpacing
-	_, _ = v.Page.Eval(fmt.Sprintf("term.setOption('letterSpacing', '%f')", letterSpacing))
+	_, _ = v.Page.Eval(fmt.Sprintf("term.options.letterSpacing = %f", letterSpacing))
 }
 
 // ApplyLineHeight applies the line height on the vhs.
 func ApplyLineHeight(c Command, v *VHS) {
 	lineHeight, _ := strconv.ParseFloat(c.Args, 64)
 	v.Options.LineHeight = lineHeight
-	_, _ = v.Page.Eval(fmt.Sprintf("term.setOption('lineHeight', '%f')", lineHeight))
+	_, _ = v.Page.Eval(fmt.Sprintf("term.options.lineHeight = %f", lineHeight))
 }
 
 // ApplyTheme applies the theme on the vhs.
@@ -250,7 +250,7 @@ func ApplyTheme(c Command, v *VHS) {
 		v.Options.Theme = DefaultTheme
 		return
 	}
-	_, _ = v.Page.Eval(fmt.Sprintf("term.setOption('theme', %s)", c.Args))
+	_, _ = v.Page.Eval(fmt.Sprintf("term.options.theme = %s", c.Args))
 }
 
 // ApplyTypingSpeed applies the default typing speed on the vhs.
@@ -265,7 +265,7 @@ func ApplyTypingSpeed(c Command, v *VHS) {
 // ApplyPadding applies the padding on the vhs.
 func ApplyPadding(c Command, v *VHS) {
 	v.Options.Padding = c.Args
-	_, _ = v.Page.MustElement(".xterm").Eval(fmt.Sprintf(`this.style.padding = '%s'`, c.Args))
+	// _, _ = v.Page.MustElement(".xterm").Eval(fmt.Sprintf(`this.style.padding = '%s'`, c.Args))
 }
 
 // ApplyFramerate applies the framerate on the vhs.

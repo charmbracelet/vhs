@@ -21,6 +21,8 @@ import (
 type Theme struct {
 	Background    string `json:"background"`
 	Foreground    string `json:"foreground"`
+	Cursor        string `json:"cursor"`
+	CursorAccent  string `json:"cursorAccent"`
 	Black         string `json:"black"`
 	BrightBlack   string `json:"brightBlack"`
 	Red           string `json:"red"`
@@ -55,6 +57,8 @@ func (t Theme) String() string {
 var DefaultTheme = Theme{
 	Background:    style.Background,
 	Foreground:    style.Foreground,
+	Cursor:        style.Foreground,
+	CursorAccent:  style.Background,
 	Black:         style.Black,
 	BrightBlack:   style.BrightBlack,
 	Red:           style.Red,

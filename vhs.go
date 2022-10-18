@@ -49,10 +49,10 @@ func DefaultVHSOptions() VHSOptions {
 		Width:         1200,
 		Padding:       "5em",
 		Prompt:        "\\[\\e[38;2;90;86;224m\\]> \\[\\e[0m\\]",
-		FontFamily:    "DejaVuSansMono Nerd Font Mono,DejaVu Sans Mono,Menlo,Bitstream Vera Sans Mono,Inconsolata,Roboto Mono,Hack,Consolas,ui-monospace,monospace",
+		FontFamily:    "DejaVu Sans Mono,Menlo,Bitstream Vera Sans Mono,Inconsolata,Roboto Mono,Hack,Consolas,ui-monospace,monospace",
 		FontSize:      22,
 		LetterSpacing: 1.0,
-		LineHeight:    1.2,
+		LineHeight:    1.0,
 		TypingSpeed:   100 * time.Millisecond,
 		Theme:         DefaultTheme,
 		Video:         DefaultVideoOptions,
@@ -88,22 +88,23 @@ func (vhs *VHS) Setup() {
 
 	// Let's wait until we can access the window.term variable
 	vhs.Page = vhs.Page.MustWait("() => window.term != undefined")
+	vhs.Page.MustEval("term.fit")
+
+	// Fit the terminal into the window
+	vhs.Page.MustElement("textarea").
+		MustInput(fmt.Sprintf(` set +o history; export PS1="%s"; clear;`, vhs.Options.Prompt)).
+		MustType(input.Enter)
 
 	// Apply options to the terminal
 	// By this point the setting commands have been executed, so the `opts` struct is up to date.
-	vhs.Page.MustEval(fmt.Sprintf("() => term.setOption('fontSize', '%d')", vhs.Options.FontSize))
-	vhs.Page.MustEval(fmt.Sprintf("() => term.setOption('fontFamily', '%s')", vhs.Options.FontFamily))
-	vhs.Page.MustEval(fmt.Sprintf("() => term.setOption('letterSpacing', '%f')", vhs.Options.LetterSpacing))
-	vhs.Page.MustEval(fmt.Sprintf("() => term.setOption('lineHeight', '%f')", vhs.Options.LineHeight))
-	vhs.Page.MustEval(fmt.Sprintf("() => term.setOption('theme', %s)", vhs.Options.Theme.String()))
-	vhs.Page.MustElement(".xterm").MustEval(fmt.Sprintf("() => this.style.padding = '%s'", vhs.Options.Padding))
+	vhs.Page.MustEval(fmt.Sprintf("() => { term.options = { fontSize: %d, fontFamily: '%s', letterSpacing: %f, lineHeight: %f, theme: %s } }",
+		vhs.Options.FontSize, vhs.Options.FontFamily, vhs.Options.LetterSpacing,
+		vhs.Options.LineHeight, vhs.Options.Theme.String()))
 
-	vhs.Page.MustElement("textarea").MustInput(fmt.Sprintf(` set +o history; export PS1="%s"; clear;`, vhs.Options.Prompt)).MustType(input.Enter)
+	vhs.Page.MustElement(".xterm").MustEval(fmt.Sprintf("() => this.style.padding = '%s'", vhs.Options.Padding))
 	vhs.Page.MustElement("body").MustEval("() => this.style.overflow = 'hidden'")
 	vhs.Page.MustElement("#terminal-container").MustEval("() => this.style.overflow = 'hidden'")
 	vhs.Page.MustElement(".xterm-viewport").MustEval("() => this.style.overflow = 'hidden'")
-
-	vhs.Page.MustEval("window.term.fit")
 
 	_ = os.MkdirAll(filepath.Dir(vhs.Options.Video.Input), os.ModePerm)
 }
