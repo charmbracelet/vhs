@@ -2,6 +2,8 @@ Output examples/commands/backspace.gif
 Set FontSize 42
 Set Height 225
 
-Type@25ms "Delete anything..."
+Hide
+Type@1ms "Delete anything..."
+Show
 Backspace 18
 Sleep 1
