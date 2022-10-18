@@ -1,2 +1,2 @@
 #!/bin/sh -l
-vhs "$1"
+ls "$1" | xargs -n 1 vhs

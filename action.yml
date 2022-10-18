@@ -1,12 +1,12 @@
 name: 'VHS'
 description: 'Run VHS to render terminal videos'
 inputs:
-  tape:
-    description: 'tape file'
+  path:
+    description: 'tape file path'
     required: true
     default: 'vhs.tape'
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
-    - ${{ inputs.tape }}
+    - ${{ inputs.path }}
