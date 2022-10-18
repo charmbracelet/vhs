@@ -265,7 +265,7 @@ func ExecuteSetTypingSpeed(c Command, v *VHS) {
 // ExecuteSetPadding applies the padding on the vhs.
 func ExecuteSetPadding(c Command, v *VHS) {
 	v.Options.Padding = c.Args
-	_, _ = v.Page.MustElement(".xterm").Eval(fmt.Sprintf(`this.style.padding = '%s'`, c.Args))
+	_, _ = v.Page.MustElement(".xterm").Eval(fmt.Sprintf(`() => this.style.padding = '%s'`, c.Args))
 }
 
 // ExecuteSetFramerate applies the framerate on the vhs.
