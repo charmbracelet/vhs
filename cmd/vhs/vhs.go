@@ -51,21 +51,23 @@ func Run(args []string) error {
 		return errors.New("no input provided")
 	}
 
+	if len(args) > 1 {
+		return errors.New("expects 1 file")
+	}
+
 	if hasStdin() {
 		in, _ := io.ReadAll(os.Stdin)
 		return vhs.Evaluate(string(in), os.Stdout, "")
 	}
 
-	for _, file := range args {
-		fmt.Println(style.File.Render("File: " + file))
-		f, err := os.ReadFile(file)
-		if err != nil {
-			return err
-		}
-		err = vhs.Evaluate(string(f), os.Stdout, "")
-		if err != nil {
-			return err
-		}
+	fmt.Println(style.File.Render("File: " + args[0]))
+	f, err := os.ReadFile(args[0])
+	if err != nil {
+		return err
+	}
+	err = vhs.Evaluate(string(f), os.Stdout, "")
+	if err != nil {
+		return err
 	}
 	return nil
 }
