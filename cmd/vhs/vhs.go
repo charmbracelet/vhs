@@ -60,11 +60,11 @@ func Run(args []string) error {
 		return vhs.Evaluate(string(in), os.Stdout, "")
 	}
 
-	fmt.Println(style.File.Render("File: " + args[0]))
 	f, err := os.ReadFile(args[0])
 	if err != nil {
 		return err
 	}
+	fmt.Println(style.File.Render("File: " + args[0]))
 	err = vhs.Evaluate(string(f), os.Stdout, "")
 	if err != nil {
 		return err
