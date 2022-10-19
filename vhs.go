@@ -51,7 +51,7 @@ func DefaultVHSOptions() VHSOptions {
 		Prompt:        "\\[\\e[38;2;90;86;224m\\]> \\[\\e[0m\\]",
 		FontFamily:    "JetBrains Mono,DejaVu Sans Mono,Menlo,Bitstream Vera Sans Mono,Inconsolata,Roboto Mono,Hack,Consolas,ui-monospace,monospace",
 		FontSize:      22,
-		LetterSpacing: 1.0,
+		LetterSpacing: 0,
 		LineHeight:    1.0,
 		TypingSpeed:   100 * time.Millisecond,
 		Theme:         DefaultTheme,
