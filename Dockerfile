@@ -13,7 +13,6 @@ RUN apk add \
     font-hack font-hack-nerd \
     font-ibm-plex-mono-nerd \
     font-inconsolata font-inconsolata-nerd \
-    font-inconsolata font-inconsolata-nerd \
     font-jetbrains-mono font-jetbrains-mono-nerd \
     font-liberation font-liberation-mono-nerd \
     font-noto \
