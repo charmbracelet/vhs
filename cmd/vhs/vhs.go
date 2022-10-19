@@ -7,19 +7,24 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"regexp"
 	"runtime/debug"
 	"strings"
 
 	"github.com/charmbracelet/vhs"
 	"github.com/charmbracelet/vhs/style"
+	version "github.com/hashicorp/go-version"
 )
 
+var ttydMinVersion = version.Must(version.NewVersion("1.7.2"))
+
+// main runs the VHS command line interface and handles the argument parsing.
 func main() {
-	ensureInstalled("ffmpeg", "ttyd", "bash")
+	ensurDependencies()
 
 	var err error
-
 	var command string
+
 	if len(os.Args) > 1 {
 		command = os.Args[1]
 	}
@@ -45,6 +50,7 @@ func main() {
 	}
 }
 
+// Run runs a given tape file and generates its outputs.
 func Run(args []string) error {
 	if len(args) < 1 && !hasStdin() {
 		vhs.PrintHelp()
@@ -72,6 +78,7 @@ func Run(args []string) error {
 	return nil
 }
 
+// hasStdin returns whether stdin has been piped in.
 func hasStdin() bool {
 	stat, err := os.Stdin.Stat()
 	if err != nil {
@@ -83,6 +90,11 @@ func hasStdin() bool {
 	return true
 }
 
+// Parse takes a glob file path and parses all the files to ensure they are
+// valid without running them.
+//
+// This allows CI to ensure all tape files are valid with the given version
+// of VHS.
 func Parse(args []string) error {
 	if len(args) < 1 {
 		return errors.New("parse expects at least one file")
@@ -126,6 +138,8 @@ func Parse(args []string) error {
 
 const extension = ".tape"
 
+// New creates a new tape file with example tape file contents and
+// documentation. Contents are copied from by demo.tape.
 func New(args []string) error {
 	if len(args) != 1 {
 		return errors.New("new expects a file name to create")
@@ -145,8 +159,11 @@ func New(args []string) error {
 	return nil
 }
 
+// Version stores the build version of VHS at the time of packages through -ldflags
+//   go build -ldflags "-s -w -X=main.Version=$(VERSION)" cmd/vhs/vhs.go -o vhs
 var Version string
 
+// PrintVersion prints the version of VHS.
 func PrintVersion() {
 	if Version == "" {
 		if info, ok := debug.ReadBuildInfo(); ok && info.Main.Sum != "" {
@@ -159,19 +176,50 @@ func PrintVersion() {
 	fmt.Println(version)
 }
 
-func ensureInstalled(programs ...string) {
-	var missing bool
+var versionRegex = regexp.MustCompile(`\d+\.\d+\.\d+`)
 
-	for _, p := range programs {
-		_, err := exec.LookPath(p)
-		if err != nil {
-			fmt.Printf("%s is not installed.\n", p)
-			missing = true
-		}
+// getVersion returns the parsed version of a program
+func getVersion(program string) *version.Version {
+	cmd := exec.Command(program, "--version")
+	out, err := cmd.Output()
+	if err != nil {
+		return nil
+	}
+	programVersion, _ := version.NewVersion(versionRegex.FindString(string(out)))
+	return programVersion
+}
+
+// ensureDependencies ensures that all dependencies are correctly installed
+// and versioned before continuing
+func ensurDependencies() {
+	var shouldExit bool
+
+	_, ffmpegErr := exec.LookPath("ffmpeg")
+	if ffmpegErr != nil {
+		fmt.Println("ffmpeg is not installed.")
+		fmt.Println("Install it from: http://ffmpeg.org")
+		shouldExit = true
+	}
+	_, ttydErr := exec.LookPath("ttyd")
+	if ttydErr != nil {
+		fmt.Println("ttyd is not installed.")
+		fmt.Println("Install it from: https://github.com/tsl0922/ttyd")
+		shouldExit = true
+	}
+	_, bashErr := exec.LookPath("bash")
+	if bashErr != nil {
+		fmt.Println("bash is not installed.")
+		shouldExit = true
 	}
 
-	if missing {
-		fmt.Println("Required programs are missing, install and add them to your PATH.")
+	if shouldExit {
+		os.Exit(1)
+	}
+
+	ttydVersion := getVersion("ttyd")
+	if ttydVersion == nil || ttydVersion.LessThan(ttydMinVersion) {
+		fmt.Printf("ttyd version (%s) is out of date, VHS requires %s\n", ttydVersion, ttydMinVersion)
+		fmt.Println("Install the latest version from: https://github.com/tsl0922/ttyd")
 		os.Exit(1)
 	}
 }

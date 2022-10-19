@@ -13,6 +13,7 @@ var DemoTape []byte
 //go:embed docs/help.txt
 var HelpText []byte
 
+// PrintHelp prints the embedded help text.
 func PrintHelp() {
 	fmt.Println(string(HelpText))
 }
@@ -20,6 +21,7 @@ func PrintHelp() {
 //go:embed docs/vhs.1.md
 var ManualText []byte
 
+// PrintManual prints the markdown version of the manual with glamour.
 func PrintManual() {
 	renderer, err := glamour.NewTermRenderer(
 		glamour.WithStyles(GlamourTheme),

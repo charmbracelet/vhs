@@ -36,7 +36,11 @@ var CommandTypes = []CommandType{
 
 // String returns the string representation of the command.
 func (c CommandType) String() string {
-	return strings.Title(strings.ToLower(string(c)))
+	if len(c) < 1 {
+		return ""
+	}
+	s := string(c)
+	return string(s[0]) + strings.ToLower(s[1:])
 }
 
 // CommandFunc is a function that executes a command on a running
