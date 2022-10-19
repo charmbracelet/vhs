@@ -11,7 +11,7 @@
 
 Write terminal GIFs as code for integration testing and demoing your CLI tools.
 
-<img alt="Display of demo.gif" src="./examples/welcome.gif" width="600" />
+<img alt="Display of welcome.gif" src="./examples/welcome.gif" width="600" />
 
 The above example is generated from VHS ([View Tape](./examples/welcome.tape)).
 
@@ -65,6 +65,8 @@ All done! You should see a new file called `demo.gif` (or whatever you named
 the `Output`) in the directory.
 
 More examples are in the [`examples/`](https://github.com/charmbracelet/vhs/tree/main/examples) folder.
+
+<img alt="Display of demo.gif" src="./examples/demo.gif" width="600" />
 
 ## Installation
 
