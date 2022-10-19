@@ -11,9 +11,9 @@
 
 Write terminal GIFs as code for integration testing and demoing your CLI tools.
 
-<img alt="Display of demo.gif" src="./examples/demo.gif" width="600" />
+<img alt="Display of demo.gif" src="./examples/welcome.gif" width="600" />
 
-The above example is generated from VHS ([View Tape](./examples/demo.tape)).
+The above example is generated from VHS ([View Tape](./examples/welcome.tape)).
 
 ## Tutorial
 

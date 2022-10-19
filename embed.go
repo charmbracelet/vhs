@@ -7,7 +7,7 @@ import (
 	"github.com/charmbracelet/glamour"
 )
 
-//go:embed examples/demo.tape
+//go:embed examples/tutorial.tape
 var DemoTape []byte
 
 //go:embed docs/help.txt
