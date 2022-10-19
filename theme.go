@@ -105,6 +105,3 @@ var GlamourTheme = ansi.StyleConfig{
 func boolPtr(b bool) *bool       { return &b }
 func stringPtr(s string) *string { return &s }
 func uintPtr(u uint) *uint       { return &u }
-func color(c string) ansi.StylePrimitive {
-	return ansi.StylePrimitive{Color: &c}
-}
