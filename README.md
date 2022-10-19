@@ -13,62 +13,99 @@ Write terminal GIFs as code for integration testing and demoing your CLI tools.
 
 <img alt="Display of demo.gif" src="./examples/demo.gif" width="600" />
 
-Code a GIF using simple commands saved to a text file:
+The above example is generate from VHS ([View GIF Code](./examples/demo.tape)).
+
+## Tutorial
+
+1. Install VHS ([Instructions](#installation))
+
+2. Create a new `.tape` file
+
+```sh
+vhs new demo.tape
+```
+
+3. Open the `demo.tape` file with your favorite `$EDITOR`
+
+```sh
+vim demo.tape
+```
+
+4. Write some commands to perform
+
+[View Documentation](#commands)
 
 ```elixir
 # Render the output GIF to demo.gif
 Output demo.gif
 
-# Set up a 1200x600 frame with 46px font size.
-Set FontSize 46
+# Set up a 1200x600 terminal with 32px font size.
+Set FontSize 32
 Set Width 1200
 Set Height 600
 
-Type "Welcome to VHS!"
-Sleep 1
-Ctrl+C
-Sleep 1
+# Type a command in the terminal.
+Type "echo 'Welcome to VHS!'"
 
-Type "A tool for writing GIFs as code."
-Sleep 1
-Left 14 # place cursor before GIFs
-Sleep 0.5
-Space
-Type "Terminal"
-Sleep 1
-Ctrl+E # go to end
-Sleep 1
-Ctrl+U # clear line
-Sleep 1
+# Pause for dramatic effect...
+Sleep 500ms
 
-Type 'echo "Demo your CLIs and TUIs"'
-Sleep 1
-Enter
-Sleep 1
-
-# Execute gum spin
-Type "gum spin -s line -- sleep 2.5"
-Sleep 1
+# Run the command by pressing enter.
 Enter
 
-# Note: VHS will not wait for the running command to finish.
-# Use the sleep command to instruct VHS to continue recording.
-Sleep 5
-
-Type "clear"
-Enter
-Sleep 1
+# Admire the output for a bit.
+Sleep 5s
 ```
 
-After we save these commands to a file called `demo.tape`,
-we can render the GIF using the `vhs` binary:
+4. Save and exit the file
+
+5. Run VHS to generate the output (`demo.gif`)
 
 ```sh
 vhs < demo.tape
 ```
 
-Reach out to [vt100@charm.sh](mailto:vt100@charm.sh) to set up a VHS rendering
-server with an `ssh` interface for your team to avoid any local setup.
+## Installation
+
+Use a package manager:
+
+```sh
+# macOS or Linux
+brew install vhs ffmpeg
+
+# Arch Linux (btw)
+yay -S vhs ttyd ffmpeg
+
+# Nix
+nix-env -iA nixpkgs.vhs nixpkgs.ttyd nixpkgs.ffmpeg
+```
+
+Or, use docker:
+
+```sh
+docker run ghcr.io/charmbracelet/vhs <cassette>.tape
+```
+
+Or, download it:
+
+* [Packages][releases] are available in Debian and RPM formats
+* [Binaries][releases] are available for Linux, macOS, and Windows
+
+Or, just install it with `go`:
+
+```sh
+go install github.com/charmbracelet/gum@latest
+```
+
+> Note: You will also need [`ttyd`](https://github.com/tsl0922/ttyd) and [`ffmpeg`](https://ffmpeg.org) installed on your machine.
+
+[releases]: https://github.com/charmbracelet/gum/releases
+
+## Teams
+
+If you are a team using VHS, reach out to [vt100@charm.sh](mailto:vt100@charm.sh)
+to set up a VHS rendering server with an `ssh` interface to avoid any local
+setup for your team.
 
 ```sh
 ssh vhs.charm.sh < demo.tape > demo.gif
