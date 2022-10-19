@@ -70,11 +70,14 @@ More examples are in the [`examples/`](https://github.com/charmbracelet/vhs/tree
 
 ## Installation
 
+> **Note**
+> VHS requires [`ttyd`](https://github.com/tsl0922/ttyd) and [`ffmpeg`](https://ffmpeg.org) to be installed.
+
 Use a package manager:
 
 ```sh
 # macOS or Linux
-brew install vhs ffmpeg
+brew install vhs ttyd ffmpeg
 
 # Arch Linux (btw)
 yay -S vhs ttyd ffmpeg
@@ -99,8 +102,6 @@ Or, just install it with `go`:
 ```sh
 go install github.com/charmbracelet/gum@latest
 ```
-
-> Note: You will also need [`ttyd`](https://github.com/tsl0922/ttyd) and [`ffmpeg`](https://ffmpeg.org) installed on your machine.
 
 [releases]: https://github.com/charmbracelet/gum/releases
 
