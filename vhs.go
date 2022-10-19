@@ -53,7 +53,7 @@ func DefaultVHSOptions() VHSOptions {
 		FontSize:      22,
 		LetterSpacing: 0,
 		LineHeight:    1.0,
-		TypingSpeed:   100 * time.Millisecond,
+		TypingSpeed:   75 * time.Millisecond,
 		Theme:         DefaultTheme,
 		Video:         DefaultVideoOptions,
 	}
@@ -113,6 +113,7 @@ func (vhs *VHS) Setup() {
 
 func (vhs *VHS) Cleanup() {
 	// Tear down the processes we started.
+	vhs.PauseRecording()
 	vhs.browser.MustClose()
 	_ = vhs.tty.Process.Kill()
 

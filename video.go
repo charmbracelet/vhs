@@ -42,7 +42,7 @@ type VideoOptions struct {
 // to a GIF, which are used if they are not overridden.
 var DefaultVideoOptions = VideoOptions{
 	CleanupFrames: true,
-	Framerate:     50,
+	Framerate:     60,
 	Input:         randomDir() + "/" + defaultFrameFileFormat,
 	MaxColors:     256,
 	Output:        VideoOutputs{GIF: "out.gif", WebM: "", MP4: ""},
