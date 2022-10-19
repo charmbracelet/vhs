@@ -17,23 +17,20 @@ The above example is generate from VHS ([View GIF Code](./examples/demo.tape)).
 
 ## Tutorial
 
-1. Install VHS ([Instructions](#installation))
-
-2. Create a new `.tape` file
+[Install VHS](#installation) and create a new `.tape` file.
 
 ```sh
 vhs new demo.tape
 ```
 
-3. Open the `demo.tape` file with your favorite `$EDITOR`
+Open the `.tape` file with your favorite `$EDITOR`
 
 ```sh
 vim demo.tape
 ```
 
-4. Write some commands to perform
-
-[View Documentation](#commands)
+In the file, write commands to perform on the terminal.
+[View Documentation](#commands) for a list of all commands.
 
 ```elixir
 # Render the output GIF to demo.gif
@@ -57,13 +54,17 @@ Enter
 Sleep 5s
 ```
 
-4. Save and exit the file
-
-5. Run VHS to generate the output (`demo.gif`)
+Once you've written the commands to perform, save and exit the file. And, run
+the VHS tool on the file.
 
 ```sh
 vhs < demo.tape
 ```
+
+All done! You should see a new file called `demo.gif` (or whatever you named
+the `Output`) in the directory.
+
+More examples are in the [`examples/`](https://github.com/charmbracelet/vhs/tree/main/examples) folder.
 
 ## Installation
 
