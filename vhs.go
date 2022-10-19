@@ -84,7 +84,7 @@ func New() VHS {
 }
 
 func (vhs *VHS) Setup() {
-	vhs.Page = vhs.Page.MustSetViewport(vhs.Options.Width, vhs.Options.Height, 1, false)
+	vhs.Page = vhs.Page.MustSetViewport(vhs.Options.Width, vhs.Options.Height, 0, false)
 
 	// Let's wait until we can access the window.term variable
 	vhs.Page = vhs.Page.MustWait("() => window.term != undefined")
