@@ -1,9 +1,8 @@
 # VHS
 
 <p>
-  <img src="https://user-images.githubusercontent.com/42545625/194411047-c6caf59c-4faf-4c55-9739-fb30383890e6.png#gh-dark-mode-only" width="400" />
-  <img src="https://user-images.githubusercontent.com/42545625/194411052-93919096-8d05-4cf5-97dc-6f15984b052a.png#gh-light-mode-only" width="400" />
-  <br><br>
+  <img src="https://stuff.charm.sh/vhs/logo-3.png" width="500" />
+  <br>
   <a href="https://github.com/charmbracelet/vhs/releases"><img src="https://img.shields.io/github/release/charmbracelet/vhs.svg" alt="Latest Release"></a>
   <a href="https://pkg.go.dev/github.com/charmbracelet/vhs?tab=doc"><img src="https://godoc.org/github.com/golang/gddo?status.svg" alt="Go Docs"></a>
   <a href="https://github.com/charmbracelet/vhs/actions"><img src="https://github.com/charmbracelet/vhs/workflows/build/badge.svg" alt="Build Status"></a>
@@ -100,10 +99,10 @@ Or, download it:
 Or, just install it with `go`:
 
 ```sh
-go install github.com/charmbracelet/gum@latest
+go install github.com/charmbracelet/vhs@latest
 ```
 
-[releases]: https://github.com/charmbracelet/gum/releases
+[releases]: https://github.com/charmbracelet/vhs/releases
 
 ## Teams
 

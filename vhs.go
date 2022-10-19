@@ -147,11 +147,9 @@ func (vhs *VHS) Record() {
 			counter++
 			if vhs.Page != nil {
 				screenshot, err := vhs.Page.Screenshot(false, &proto.PageCaptureScreenshot{})
-				if err != nil {
-					time.Sleep(time.Second / time.Duration(vhs.Options.Framerate))
-					continue
+				if err == nil {
+					_ = os.WriteFile(fmt.Sprintf(vhs.Options.Video.Input, counter), screenshot, 0644)
 				}
-				_ = os.WriteFile(fmt.Sprintf(vhs.Options.Video.Input, counter), screenshot, 0644)
 			}
 			time.Sleep(time.Second / time.Duration(vhs.Options.Framerate))
 		}
