@@ -2,13 +2,15 @@ Output examples/settings/typing-speed.gif
 Set Height 400
 Set FontSize 32
 
-Set TypingSpeed .025
-Type "Fast"
+Set TypingSpeed 25ms
+Type "Bunny"
 Ctrl+C
-Set TypingSpeed .1
-Type "Normal"
+Set TypingSpeed 50ms
+Type "Human"
 Ctrl+C
-Set TypingSpeed .5
-Type "Slow"
+Set TypingSpeed 100ms
+Type "Tortoise"
 Ctrl+C
-Sleep 3
+Type@250ms "Sloth"
+Ctrl+C
+Sleep 1
