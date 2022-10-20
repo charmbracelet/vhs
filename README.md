@@ -1,7 +1,8 @@
 # VHS
 
 <p>
-  <img src="https://stuff.charm.sh/vhs/logo-3.png" width="500" />
+  <img src="https://user-images.githubusercontent.com/42545625/197049037-b38fea25-a885-4945-825e-d29842c5e44b.png#gh-dark-mode-only" width="500" />
+  <img src="https://user-images.githubusercontent.com/42545625/197049039-83498ce6-d01d-4a08-8794-64770606ca8e.png#gh-light-mode-only" width="500" />
   <br>
   <a href="https://github.com/charmbracelet/vhs/releases"><img src="https://img.shields.io/github/release/charmbracelet/vhs.svg" alt="Latest Release"></a>
   <a href="https://pkg.go.dev/github.com/charmbracelet/vhs?tab=doc"><img src="https://godoc.org/github.com/golang/gddo?status.svg" alt="Go Docs"></a>
