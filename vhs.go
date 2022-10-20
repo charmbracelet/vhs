@@ -140,6 +140,9 @@ func (vhs *VHS) Cleanup() {
 // Record begins the goroutine which captures images from the xterm.js canvases
 func (vhs *VHS) Record() {
 	vhs.ResumeRecording()
+
+	interval := time.Second / time.Duration(vhs.Options.Video.Framerate)
+
 	go func() {
 		counter := 0
 		for {
@@ -148,11 +151,18 @@ func (vhs *VHS) Record() {
 			}
 			if vhs.Page != nil {
 				counter++
+				start := time.Now()
 				text, textErr := vhs.TextCanvas.CanvasToImage("image/png", 0.92)
 				cursor, cursorErr := vhs.CursorCanvas.CanvasToImage("image/png", 0.92)
 				if textErr == nil && cursorErr == nil {
 					_ = os.WriteFile(vhs.Options.Video.Input+fmt.Sprintf(textFrameFormat, counter), text, 0644)
 					_ = os.WriteFile(vhs.Options.Video.Input+fmt.Sprintf(cursorFrameFormat, counter), cursor, 0644)
+				}
+				elapsed := time.Since(start)
+				if elapsed >= interval {
+					continue
+				} else {
+					time.Sleep(interval - elapsed)
 				}
 			}
 		}
