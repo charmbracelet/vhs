@@ -1,6 +1,6 @@
 # Render the output GIF to demo.gif
 Output examples/welcome.gif
-Output examples/frames/welcome-%05d.png
+Output examples/frames/
 
 # Set up a 1200x600 frame with 46px font size.
 Set FontSize 46

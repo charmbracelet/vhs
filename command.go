@@ -187,7 +187,7 @@ var Settings = map[string]CommandFunc{
 	"FontFamily":    ExecuteSetFontFamily,
 	"FontSize":      ExecuteSetFontSize,
 	"Framerate":     ExecuteSetFramerate,
-	"Height":        ExecuteApplyHeight,
+	"Height":        ExecuteSetHeight,
 	"LetterSpacing": ExecuteSetLetterSpacing,
 	"LineHeight":    ExecuteSetLineHeight,
 	"Padding":       ExecuteSetPadding,
@@ -215,14 +215,13 @@ func ExecuteSetFontFamily(c Command, v *VHS) {
 	_, _ = v.Page.Eval(fmt.Sprintf("() => term.options.fontFamily = '%s'", c.Args))
 }
 
-// ExecuteApplyHeight applies the height on the vhs.
-func ExecuteApplyHeight(c Command, v *VHS) {
-	v.Options.Height, _ = strconv.Atoi(c.Args)
+// ExecuteSetHeight applies the height on the vhs.
+func ExecuteSetHeight(c Command, v *VHS) {
+	v.Options.Video.Height, _ = strconv.Atoi(c.Args)
 }
 
 // ExecuteSetWidth applies the width on the vhs.
 func ExecuteSetWidth(c Command, v *VHS) {
-	v.Options.Width, _ = strconv.Atoi(c.Args)
 	v.Options.Video.Width, _ = strconv.Atoi(c.Args)
 }
 
@@ -250,6 +249,7 @@ func ExecuteSetTheme(c Command, v *VHS) {
 		return
 	}
 	_, _ = v.Page.Eval(fmt.Sprintf("() => term.options.theme = %s", c.Args))
+	v.Options.Video.BackgroundColor = v.Options.Theme.Background
 }
 
 // ExecuteSetTypingSpeed applies the default typing speed on the vhs.
@@ -264,8 +264,7 @@ func ExecuteSetTypingSpeed(c Command, v *VHS) {
 
 // ExecuteSetPadding applies the padding on the vhs.
 func ExecuteSetPadding(c Command, v *VHS) {
-	v.Options.Padding = c.Args
-	_, _ = v.Page.MustElement(".xterm").Eval(fmt.Sprintf(`() => this.style.padding = '%s'`, c.Args))
+	v.Options.Video.Padding, _ = strconv.Atoi(c.Args)
 }
 
 // ExecuteSetFramerate applies the framerate on the vhs.
