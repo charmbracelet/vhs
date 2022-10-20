@@ -40,7 +40,7 @@
 #   Show                            Show the subsequent commands in the output
 
 Output examples/demo.gif
-Output examples/frames/frame-%05d.png
+Output examples/frames/
 
 Set FontSize 32
 Set Width 1200
@@ -52,4 +52,4 @@ Sleep 500ms
 
 Enter
 
-Sleep 5s
+Sleep 2s
