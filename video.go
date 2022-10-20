@@ -13,7 +13,8 @@ import (
 	"os/exec"
 )
 
-const defaultFrameFileFormat = "frame-%s-%05d.png"
+const textFrameFormat = "frame-text-%05d.png"
+const cursorFrameFormat = "frame-cursor-%05d.png"
 
 // randomDir returns a random temporary directory to be used for storing frames
 // from screenshots of the terminal.
@@ -54,7 +55,7 @@ var DefaultVideoOptions = VideoOptions{
 	Width:           1200,
 	Height:          600,
 	Padding:         72,
-	BackgroundColor: "#171717",
+	BackgroundColor: DefaultTheme.Background,
 }
 
 // MakeGIF takes a list of images (as frames) and converts them to a GIF.
@@ -68,9 +69,9 @@ func MakeGIF(opts VideoOptions) *exec.Cmd {
 	return exec.Command(
 		"ffmpeg", "-y",
 		"-framerate", fmt.Sprint(opts.Framerate),
-		"-i", opts.Input+"frame-text-%05d.png",
+		"-i", opts.Input+textFrameFormat,
 		"-framerate", fmt.Sprint(opts.Framerate),
-		"-i", opts.Input+"frame-cursor-%05d.png",
+		"-i", opts.Input+cursorFrameFormat,
 		"-filter_complex",
 		fmt.Sprintf(`[0][1]overlay[merged];[merged]scale=%d:%d[scaled];[scaled]pad=width=%d:height=%d:x=%d:y=%d[padded];[padded]fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s[bordered];[bordered]split[a][b];[a]palettegen=max_colors=256[p];[b][p]paletteuse[out]`,
 			opts.Width-2*opts.Padding, opts.Height-2*opts.Padding,

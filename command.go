@@ -269,5 +269,9 @@ func ExecuteSetPadding(c Command, v *VHS) {
 
 // ExecuteSetFramerate applies the framerate on the vhs.
 func ExecuteSetFramerate(c Command, v *VHS) {
-	v.Options.Framerate, _ = strconv.ParseFloat(c.Args, 64)
+	framerate, err := strconv.ParseInt(c.Args, 10, 0)
+	if err != nil {
+		return
+	}
+	v.Options.Video.Framerate = int(framerate)
 }
