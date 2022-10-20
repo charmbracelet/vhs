@@ -4,24 +4,24 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"sync"
 	"time"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/launcher"
-	"github.com/go-rod/rod/lib/proto"
 )
 
 // VHS is the object that controls the setup.
 type VHS struct {
-	Options   *VHSOptions
-	Page      *rod.Page
-	browser   *rod.Browser
-	mutex     *sync.Mutex
-	recording bool
-	tty       *exec.Cmd
+	Options      *VHSOptions
+	Page         *rod.Page
+	browser      *rod.Browser
+	TextCanvas   *rod.Element
+	CursorCanvas *rod.Element
+	mutex        *sync.Mutex
+	recording    bool
+	tty          *exec.Cmd
 }
 
 // VHSOptions is the set of options for the setup.
@@ -89,6 +89,10 @@ func (vhs *VHS) Setup() {
 	// Let's wait until we can access the window.term variable
 	vhs.Page = vhs.Page.MustWait("() => window.term != undefined")
 
+	// Find xterm canvas for recording
+	vhs.TextCanvas, _ = vhs.Page.Element("canvas.xterm-text-layer")
+	vhs.CursorCanvas, _ = vhs.Page.Element("canvas.xterm-cursor-layer")
+
 	// Set Prompt
 	vhs.Page.MustElement("textarea").
 		MustInput(fmt.Sprintf(` set +o history; export PS1="%s"; clear;`, vhs.Options.Prompt)).
@@ -108,9 +112,8 @@ func (vhs *VHS) Setup() {
 	// Fit the terminal into the window
 	vhs.Page.MustEval("term.fit")
 
-	framesPath := filepath.Dir(vhs.Options.Video.Input)
-	_ = os.RemoveAll(framesPath)
-	_ = os.MkdirAll(framesPath, os.ModePerm)
+	_ = os.RemoveAll(vhs.Options.Video.Input)
+	_ = os.MkdirAll(vhs.Options.Video.Input, os.ModePerm)
 }
 
 func (vhs *VHS) Cleanup() {
@@ -129,7 +132,11 @@ func (vhs *VHS) Cleanup() {
 		if cmd == nil {
 			continue
 		}
-		_ = cmd.Run()
+		out, err := cmd.CombinedOutput()
+		if err != nil {
+			fmt.Println(string(out))
+		}
+
 	}
 
 	// Cleanup frames if we successfully made the GIF.
@@ -146,11 +153,13 @@ func (vhs *VHS) Record() {
 			if !vhs.recording {
 				continue
 			}
-			counter++
 			if vhs.Page != nil {
-				screenshot, err := vhs.Page.Screenshot(false, &proto.PageCaptureScreenshot{})
-				if err == nil {
-					_ = os.WriteFile(fmt.Sprintf(vhs.Options.Video.Input, counter), screenshot, 0644)
+				counter++
+				text, textErr := vhs.TextCanvas.CanvasToImage("image/png", 0.92)
+				cursor, cursorErr := vhs.CursorCanvas.CanvasToImage("image/png", 0.92)
+				if textErr == nil && cursorErr == nil {
+					_ = os.WriteFile(vhs.Options.Video.Input+fmt.Sprintf(defaultFrameFileFormat, "text", counter), text, 0644)
+					_ = os.WriteFile(vhs.Options.Video.Input+fmt.Sprintf(defaultFrameFileFormat, "cursor", counter), cursor, 0644)
 				}
 			}
 		}

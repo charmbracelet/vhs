@@ -13,15 +13,17 @@ import (
 	"os/exec"
 )
 
-const defaultFrameFileFormat = "frame-%05d.png"
+const defaultFrameFileFormat = "frame-%s-%05d.png"
 
 // randomDir returns a random temporary directory to be used for storing frames
 // from screenshots of the terminal.
 func randomDir() string {
 	tmp, _ := os.MkdirTemp(os.TempDir(), "vhs")
-	return tmp
+	return tmp + "/"
 }
 
+// VideoOutputs is a mapping from file type to file path for all video outputs
+// of VHS.
 type VideoOutputs struct {
 	GIF  string
 	WebM string
@@ -42,8 +44,8 @@ type VideoOptions struct {
 // to a GIF, which are used if they are not overridden.
 var DefaultVideoOptions = VideoOptions{
 	CleanupFrames: true,
-	Framerate:     60,
-	Input:         randomDir() + "/" + defaultFrameFileFormat,
+	Framerate:     50,
+	Input:         randomDir(),
 	MaxColors:     256,
 	Output:        VideoOutputs{GIF: "out.gif", WebM: "", MP4: ""},
 	Width:         1200,
@@ -57,17 +59,16 @@ func MakeGIF(opts VideoOptions) *exec.Cmd {
 
 	fmt.Println("Creating GIF...")
 
-	flags := fmt.Sprintf(
-		"fps=%d,scale=%d:-1:flags=%s,split[s0][s1];[s0]palettegen=max_colors=%d[p];[s1][p]paletteuse",
-		opts.Framerate,
-		opts.Width,
-		"lanczos",
-		opts.MaxColors,
-	)
 	return exec.Command(
-		"ffmpeg", "-y", "-i", opts.Input,
+		"ffmpeg", "-y",
 		"-framerate", fmt.Sprint(opts.Framerate),
-		"-vf", flags, opts.Output.GIF,
+		"-i", opts.Input+"frame-text-%05d.png",
+		"-framerate", fmt.Sprint(opts.Framerate),
+		"-i", opts.Input+"frame-cursor-%05d.png",
+		"-filter_complex",
+		"[0][1]overlay[merged];[merged]scale=1000:-1[scaled];[scaled]split[s0][s1];[s0]palettegen=max_colors=256[p];[s1][p]paletteuse[out]",
+		"-map", "[out]",
+		opts.Output.GIF,
 	)
 }
 

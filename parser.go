@@ -161,7 +161,13 @@ func (p *Parser) parseOutput() Command {
 		p.errors = append(p.errors, NewError(p.peek, "Expected file path"))
 	}
 
-	cmd.Options = filepath.Ext(p.peek.Literal)
+	ext := filepath.Ext(p.peek.Literal)
+	if ext != "" {
+		cmd.Options = ext
+	} else {
+		cmd.Options = ".png"
+	}
+
 	cmd.Args = p.peek.Literal
 	p.nextToken()
 	return cmd
