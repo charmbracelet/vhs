@@ -105,6 +105,10 @@ func ExecuteNoop(c Command, v *VHS) {}
 // the ArrowDown key press.
 func ExecuteKey(k input.Key) CommandFunc {
 	return func(c Command, v *VHS) {
+		typingSpeed, err := time.ParseDuration(c.Options)
+		if err == nil {
+			v.browser.SlowMotion(typingSpeed)
+		}
 		repeat, err := strconv.Atoi(c.Args)
 		if err != nil {
 			repeat = 1
@@ -112,6 +116,7 @@ func ExecuteKey(k input.Key) CommandFunc {
 		for i := 0; i < repeat; i++ {
 			_ = v.Page.Keyboard.Type(k)
 		}
+		v.browser.SlowMotion(v.Options.TypingSpeed)
 	}
 }
 
