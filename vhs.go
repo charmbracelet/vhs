@@ -53,7 +53,7 @@ func DefaultVHSOptions() VHSOptions {
 		FontSize:      22,
 		LetterSpacing: 0,
 		LineHeight:    1.0,
-		TypingSpeed:   75 * time.Millisecond,
+		TypingSpeed:   50 * time.Millisecond,
 		Theme:         DefaultTheme,
 		Video:         DefaultVideoOptions,
 	}
@@ -65,11 +65,11 @@ func New() VHS {
 	tty := StartTTY(port)
 	go tty.Run() //nolint:errcheck
 
+	opts := DefaultVHSOptions()
 	path, _ := launcher.LookPath()
 	u := launcher.New().Bin(path).MustLaunch()
-	browser := rod.New().ControlURL(u).MustConnect()
+	browser := rod.New().ControlURL(u).MustConnect().SlowMotion(opts.TypingSpeed)
 	page := browser.MustPage(fmt.Sprintf("http://localhost:%d", port))
-	opts := DefaultVHSOptions()
 
 	mu := &sync.Mutex{}
 
@@ -142,17 +142,16 @@ func (vhs *VHS) Record() {
 		counter := 0
 		for {
 			if !vhs.recording {
-				time.Sleep(time.Second / time.Duration(vhs.Options.Framerate))
 				continue
 			}
 			counter++
+			fmt.Printf("%d ", counter)
 			if vhs.Page != nil {
 				screenshot, err := vhs.Page.Screenshot(false, &proto.PageCaptureScreenshot{})
 				if err == nil {
 					_ = os.WriteFile(fmt.Sprintf(vhs.Options.Video.Input, counter), screenshot, 0644)
 				}
 			}
-			time.Sleep(time.Second / time.Duration(vhs.Options.Framerate))
 		}
 	}()
 }

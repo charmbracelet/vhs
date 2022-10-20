@@ -40,6 +40,7 @@
 #   Show                            Show the subsequent commands in the output
 
 Output examples/demo.gif
+Output examples/frames/frame-%05d.png
 
 Set FontSize 32
 Set Width 1200

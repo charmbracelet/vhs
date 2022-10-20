@@ -109,13 +109,8 @@ func ExecuteKey(k input.Key) CommandFunc {
 		if err != nil {
 			repeat = 1
 		}
-		delay, err := time.ParseDuration(c.Options)
-		if err != nil {
-			delay = v.Options.TypingSpeed
-		}
 		for i := 0; i < repeat; i++ {
 			_ = v.Page.Keyboard.Type(k)
-			time.Sleep(delay)
 		}
 	}
 }
@@ -154,9 +149,9 @@ func ExecuteSleep(c Command, v *VHS) {
 
 // ExecuteType types the argument string on the running instance of vhs.
 func ExecuteType(c Command, v *VHS) {
-	delay, err := time.ParseDuration(c.Options)
-	if err != nil {
-		delay = v.Options.TypingSpeed
+	typingSpeed, err := time.ParseDuration(c.Options)
+	if err == nil {
+		v.browser.SlowMotion(typingSpeed)
 	}
 	for _, r := range c.Args {
 		k, ok := keymap[r]
@@ -166,8 +161,8 @@ func ExecuteType(c Command, v *VHS) {
 			_ = v.Page.MustElement("textarea").Input(string(r))
 			v.Page.MustWaitIdle()
 		}
-		time.Sleep(delay)
 	}
+	v.browser.SlowMotion(v.Options.TypingSpeed)
 }
 
 // ExecuteOutput applies the output on the vhs videos.
@@ -264,6 +259,7 @@ func ExecuteSetTypingSpeed(c Command, v *VHS) {
 		return
 	}
 	v.Options.TypingSpeed = typingSpeed
+	v.browser.SlowMotion(typingSpeed)
 }
 
 // ExecuteSetPadding applies the padding on the vhs.
