@@ -108,7 +108,9 @@ func (vhs *VHS) Setup() {
 	// Fit the terminal into the window
 	vhs.Page.MustEval("term.fit")
 
-	_ = os.MkdirAll(filepath.Dir(vhs.Options.Video.Input), os.ModePerm)
+	framesPath := filepath.Dir(vhs.Options.Video.Input)
+	_ = os.RemoveAll(framesPath)
+	_ = os.MkdirAll(framesPath, os.ModePerm)
 }
 
 func (vhs *VHS) Cleanup() {
@@ -145,7 +147,6 @@ func (vhs *VHS) Record() {
 				continue
 			}
 			counter++
-			fmt.Printf("%d ", counter)
 			if vhs.Page != nil {
 				screenshot, err := vhs.Page.Screenshot(false, &proto.PageCaptureScreenshot{})
 				if err == nil {
