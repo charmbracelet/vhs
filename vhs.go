@@ -26,15 +26,11 @@ type VHS struct {
 
 // VHSOptions is the set of options for the setup.
 type VHSOptions struct {
-	Framerate     float64
-	Height        int
-	Padding       int
-	Prompt        string
-	Width         int
 	FontFamily    string
 	FontSize      int
 	LetterSpacing float64
 	LineHeight    float64
+	Prompt        string
 	TypingSpeed   time.Duration
 	Theme         Theme
 	Test          TestOptions
@@ -44,10 +40,6 @@ type VHSOptions struct {
 // DefaultVHSOptions returns the default set of options to use for the setup function.
 func DefaultVHSOptions() VHSOptions {
 	return VHSOptions{
-		Framerate:     60,
-		Height:        600,
-		Width:         1200,
-		Padding:       60,
 		Prompt:        "\\[\\e[38;2;90;86;224m\\]> \\[\\e[0m\\]",
 		FontFamily:    "JetBrains Mono,DejaVu Sans Mono,Menlo,Bitstream Vera Sans Mono,Inconsolata,Roboto Mono,Hack,Consolas,ui-monospace,monospace",
 		FontSize:      22,
@@ -85,16 +77,16 @@ func New() VHS {
 
 func (vhs *VHS) Setup() {
 	// Set Viewport to the correct size, accounting for the padding that will be
-	// during the render.
-	width := vhs.Options.Video.Width
-	height := vhs.Options.Video.Height
+	// added during the render.
 	padding := vhs.Options.Video.Padding
-	vhs.Page = vhs.Page.MustSetViewport(width-2*padding, height-2*padding, 0, false)
+	width := vhs.Options.Video.Width - 2*padding
+	height := vhs.Options.Video.Height - 2*padding
+	vhs.Page = vhs.Page.MustSetViewport(width, height, 0, false)
 
-	// Let's wait until we can access the window.term variable
+	// Let's wait until we can access the window.term variable.
 	vhs.Page = vhs.Page.MustWait("() => window.term != undefined")
 
-	// Find xterm canvas for recording
+	// Find xterm.js canvases for the text and cursor layer for recording.
 	vhs.TextCanvas, _ = vhs.Page.Element("canvas.xterm-text-layer")
 	vhs.CursorCanvas, _ = vhs.Page.Element("canvas.xterm-cursor-layer")
 
@@ -159,8 +151,8 @@ func (vhs *VHS) Record() {
 				text, textErr := vhs.TextCanvas.CanvasToImage("image/png", 0.92)
 				cursor, cursorErr := vhs.CursorCanvas.CanvasToImage("image/png", 0.92)
 				if textErr == nil && cursorErr == nil {
-					_ = os.WriteFile(vhs.Options.Video.Input+fmt.Sprintf(defaultFrameFileFormat, "text", counter), text, 0644)
-					_ = os.WriteFile(vhs.Options.Video.Input+fmt.Sprintf(defaultFrameFileFormat, "cursor", counter), cursor, 0644)
+					_ = os.WriteFile(vhs.Options.Video.Input+fmt.Sprintf(textFrameFormat, counter), text, 0644)
+					_ = os.WriteFile(vhs.Options.Video.Input+fmt.Sprintf(cursorFrameFormat, counter), cursor, 0644)
 				}
 			}
 		}
