@@ -32,23 +32,29 @@ type VideoOutputs struct {
 
 // Options is the set of options for converting frames to a GIF.
 type VideoOptions struct {
-	CleanupFrames bool
-	Framerate     int
-	Input         string
-	MaxColors     int
-	Output        VideoOutputs
-	Width         int
+	CleanupFrames   bool
+	Framerate       int
+	Input           string
+	MaxColors       int
+	Output          VideoOutputs
+	Width           int
+	Height          int
+	Padding         int
+	BackgroundColor string
 }
 
 // DefaultVideoOptions is the set of default options for converting frames
 // to a GIF, which are used if they are not overridden.
 var DefaultVideoOptions = VideoOptions{
-	CleanupFrames: true,
-	Framerate:     50,
-	Input:         randomDir(),
-	MaxColors:     256,
-	Output:        VideoOutputs{GIF: "out.gif", WebM: "", MP4: ""},
-	Width:         1200,
+	CleanupFrames:   true,
+	Framerate:       50,
+	Input:           randomDir(),
+	MaxColors:       256,
+	Output:          VideoOutputs{GIF: "out.gif", WebM: "", MP4: ""},
+	Width:           1200,
+	Height:          600,
+	Padding:         72,
+	BackgroundColor: "#171717",
 }
 
 // MakeGIF takes a list of images (as frames) and converts them to a GIF.
@@ -66,7 +72,12 @@ func MakeGIF(opts VideoOptions) *exec.Cmd {
 		"-framerate", fmt.Sprint(opts.Framerate),
 		"-i", opts.Input+"frame-cursor-%05d.png",
 		"-filter_complex",
-		"[0][1]overlay[merged];[merged]scale=1000:-1[scaled];[scaled]split[s0][s1];[s0]palettegen=max_colors=256[p];[s1][p]paletteuse[out]",
+		fmt.Sprintf(`[0][1]overlay[merged];[merged]scale=%d:%d[scaled];[scaled]pad=width=%d:height=%d:x=%d:y=%d[padded];[padded]fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s[bordered];[bordered]split[a][b];[a]palettegen=max_colors=256[p];[b][p]paletteuse[out]`,
+			opts.Width-2*opts.Padding, opts.Height-2*opts.Padding,
+			opts.Width, opts.Height,
+			opts.Padding, opts.Padding, opts.Padding, opts.Padding, opts.Padding, opts.Padding,
+			opts.BackgroundColor,
+		),
 		"-map", "[out]",
 		opts.Output.GIF,
 	)

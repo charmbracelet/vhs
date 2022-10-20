@@ -28,7 +28,7 @@ type VHS struct {
 type VHSOptions struct {
 	Framerate     float64
 	Height        int
-	Padding       string
+	Padding       int
 	Prompt        string
 	Width         int
 	FontFamily    string
@@ -47,7 +47,7 @@ func DefaultVHSOptions() VHSOptions {
 		Framerate:     60,
 		Height:        600,
 		Width:         1200,
-		Padding:       "5em",
+		Padding:       60,
 		Prompt:        "\\[\\e[38;2;90;86;224m\\]> \\[\\e[0m\\]",
 		FontFamily:    "JetBrains Mono,DejaVu Sans Mono,Menlo,Bitstream Vera Sans Mono,Inconsolata,Roboto Mono,Hack,Consolas,ui-monospace,monospace",
 		FontSize:      22,
@@ -84,7 +84,12 @@ func New() VHS {
 }
 
 func (vhs *VHS) Setup() {
-	vhs.Page = vhs.Page.MustSetViewport(vhs.Options.Width, vhs.Options.Height, 0, false)
+	// Set Viewport to the correct size, accounting for the padding that will be
+	// during the render.
+	width := vhs.Options.Video.Width
+	height := vhs.Options.Video.Height
+	padding := vhs.Options.Video.Padding
+	vhs.Page = vhs.Page.MustSetViewport(width-2*padding, height-2*padding, 0, false)
 
 	// Let's wait until we can access the window.term variable
 	vhs.Page = vhs.Page.MustWait("() => window.term != undefined")
@@ -103,11 +108,6 @@ func (vhs *VHS) Setup() {
 	vhs.Page.MustEval(fmt.Sprintf("() => { term.options = { fontSize: %d, fontFamily: '%s', letterSpacing: %f, lineHeight: %f, theme: %s } }",
 		vhs.Options.FontSize, vhs.Options.FontFamily, vhs.Options.LetterSpacing,
 		vhs.Options.LineHeight, vhs.Options.Theme.String()))
-
-	vhs.Page.MustElement(".xterm").MustEval(fmt.Sprintf("() => this.style.padding = '%s'", vhs.Options.Padding))
-	vhs.Page.MustElement("body").MustEval("() => this.style.overflow = 'hidden'")
-	vhs.Page.MustElement("#terminal-container").MustEval("() => this.style.overflow = 'hidden'")
-	vhs.Page.MustElement(".xterm-viewport").MustEval("() => this.style.overflow = 'hidden'")
 
 	// Fit the terminal into the window
 	vhs.Page.MustEval("term.fit")
@@ -145,6 +145,7 @@ func (vhs *VHS) Cleanup() {
 	}
 }
 
+// Record begins the goroutine which captures images from the xterm.js canvases
 func (vhs *VHS) Record() {
 	vhs.ResumeRecording()
 	go func() {
@@ -166,6 +167,7 @@ func (vhs *VHS) Record() {
 	}()
 }
 
+// ResumeRecording indicates to VHS that the recording should be resumed.
 func (vhs *VHS) ResumeRecording() {
 	vhs.mutex.Lock()
 	defer vhs.mutex.Unlock()
@@ -173,6 +175,7 @@ func (vhs *VHS) ResumeRecording() {
 	vhs.recording = true
 }
 
+// PauseRecording indicates to VHS that the recording should be paused.
 func (vhs *VHS) PauseRecording() {
 	vhs.mutex.Lock()
 	defer vhs.mutex.Unlock()
