@@ -8,13 +8,12 @@ Enter
 Show
 
 Type "./altscreen-toggle"
-Enter@1
-Space@2 4
+Enter@0.5
+Space@1 4
 
 Type "q"
-Sleep 2
+Sleep 1
 
 Hide
 Type "rm ./altscreen-toggle"
 Enter
-Show

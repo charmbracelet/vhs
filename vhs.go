@@ -109,8 +109,15 @@ func (vhs *VHS) Setup() {
 }
 
 func (vhs *VHS) Cleanup() {
-	// Tear down the processes we started.
 	vhs.PauseRecording()
+
+	// Give some time for any commands executed (such as `rm`) to finish.
+	//
+	// If a user runs a long running command, they must sleep for the required time
+	// to finish.
+	time.Sleep(100 * time.Millisecond)
+
+	// Tear down the processes we started.
 	vhs.browser.MustClose()
 	_ = vhs.tty.Process.Kill()
 
