@@ -1,6 +1,5 @@
 Output examples/commands/hide.gif
 
-Set TypingSpeed 100ms
 Set FontSize 42
 Set Height 300
 

@@ -1,17 +1,13 @@
 Output examples/settings/font-family.gif
+Output examples/frames/
 Set FontSize 42
 Set Height 225
+Set FontFamily "Monoflow"
 
 Type "One moment please..."
 
-Sleep 1
-Set FontFamily "JetBrains Mono"
-Sleep 1
-Set FontFamily "Menlo"
-Sleep 1
+Sleep 0.5s
+
 Set FontFamily "Monaco"
-Sleep 1
-Set FontFamily "Monoflow"
-Sleep 1
-Set FontFamily "SF Mono"
-Sleep 1
+
+Sleep 0.5s

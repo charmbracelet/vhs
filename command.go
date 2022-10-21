@@ -212,6 +212,12 @@ func ExecuteSetFontSize(c Command, v *VHS) {
 	fontSize, _ := strconv.Atoi(c.Args)
 	v.Options.FontSize = fontSize
 	_, _ = v.Page.Eval(fmt.Sprintf("() => term.options.fontSize = %d", fontSize))
+
+	// When changing the font size only the canvas dimensions change which are
+	// scaled back during the render to fit the aspect ration and dimensions.
+	//
+	// We need to call term.fit to ensure that everything is resized properly.
+	_, _ = v.Page.Eval("term.fit")
 }
 
 // ExecuteSetFontFamily applies the font family on the vhs.

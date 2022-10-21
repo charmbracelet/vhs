@@ -26,34 +26,38 @@
 
 
 
+
+
 ────────────────────────────────────────────────────────────────────────────────
-
- -  Glow
-
-   9 local │ 0 stashed │ 0 news
-
- │ CarrotCake.md
- │ 15 minutes ago
-
-   StewedPeaches.md
-   15 minutes ago
-
-   notes/Currywurst.md
-   15 minutes ago
-
-   notes/Käsewurst.md
-   15 minutes ago
-
-   notes/Spätzle.md
-   15 minutes ago
-
-   notes/Weißwurst.md
-   15 minutes ago
+> glow
 
 
-   ••
 
-   tab section • h/l ←/→ page • / find • s stash • …
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ────────────────────────────────────────────────────────────────────────────────
 
@@ -62,23 +66,25 @@
    9 local │ 14 stashed │ 3 news
 
  │ CarrotCake.md
- │ 15 minutes ago
+ │ 2 days ago
 
    StewedPeaches.md
-   15 minutes ago
+   2 days ago
 
    notes/Currywurst.md
-   15 minutes ago
+   2 days ago
 
    notes/Käsewurst.md
-   15 minutes ago
+   2 days ago
 
    notes/Spätzle.md
-   15 minutes ago
+   2 days ago
 
    notes/Weißwurst.md
-   15 minutes ago
+   2 days ago
 
+   to-do/Okonomiyaki.md
+   2 days ago
 
    ••
 
@@ -88,8 +94,8 @@
 
    Carrot Cake
 
-  Carrot cake is delicious. And, it takes only 20 minutes
-  to make!
+  Carrot cake is delicious. And, it takes only 20 minutes to
+  make!
 
   Here is the recipe:
 
@@ -112,13 +118,15 @@
 
 
 
- Glow  CarrotCake.md                            100%  ? Help
+
+
+
 ────────────────────────────────────────────────────────────────────────────────
 
    Carrot Cake
 
-  Carrot cake is delicious. And, it takes only 20 minutes
-  to make!
+  Carrot cake is delicious. And, it takes only 20 minutes to
+  make!
 
   Here is the recipe:
 
@@ -141,7 +149,40 @@
 
 
 
- Glow  CarrotCake.md                            100%  ? Help
+
+
+ Glow  CarrotCake.md                              100%  ? Help
+────────────────────────────────────────────────────────────────────────────────
+
+   Carrot Cake
+
+  Carrot cake is delicious. And, it takes only 20 minutes to
+  make!
+
+  Here is the recipe:
+
+  • Carrots
+  • Cake
+
+  Tada!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ Glow  CarrotCake.md                              100%  ? Help
 ────────────────────────────────────────────────────────────────────────────────
 
     Glow
@@ -149,56 +190,60 @@
    9 local │ 14 stashed │ 3 news
 
  │ CarrotCake.md
- │ 15 minutes ago
+ │ 2 days ago
 
    StewedPeaches.md
-   15 minutes ago
+   2 days ago
 
    notes/Currywurst.md
-   15 minutes ago
+   2 days ago
 
    notes/Käsewurst.md
-   15 minutes ago
+   2 days ago
 
    notes/Spätzle.md
-   15 minutes ago
+   2 days ago
 
    notes/Weißwurst.md
-   15 minutes ago
+   2 days ago
 
+   to-do/Okonomiyaki.md
+   2 days ago
 
    ••
 
    tab section • h/l ←/→ page • / find • s stash • …
 
 ────────────────────────────────────────────────────────────────────────────────
-
-    Glow
-
-   9 local │ 14 stashed │ 3 news
-
- │ CarrotCake.md
- │ 15 minutes ago
-
-   StewedPeaches.md
-   15 minutes ago
-
-   notes/Currywurst.md
-   15 minutes ago
-
-   notes/Käsewurst.md
-   15 minutes ago
-
-   notes/Spätzle.md
-   15 minutes ago
-
-   notes/Weißwurst.md
-   15 minutes ago
+> glow
 
 
-   ••
 
-   tab section • h/l ←/→ page • / find • s stash • …
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ────────────────────────────────────────────────────────────────────────────────
 > glow
@@ -208,33 +253,6 @@
 >
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-────────────────────────────────────────────────────────────────────────────────
-> glow
-
-  Thanks for using Glow!
-
->
 
 
 

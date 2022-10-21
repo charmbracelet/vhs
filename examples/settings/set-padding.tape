@@ -1,4 +1,5 @@
 Output examples/settings/padding.gif
+Output examples/frames/
 Set FontSize 32
 Set Height 250
 Set Padding 1em

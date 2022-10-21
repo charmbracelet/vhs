@@ -2,7 +2,7 @@ Output glow-simple.ascii
 Output glow-simple.gif
 
 Set Width 1000
-Set Height 1000
+Set Height 1050
 
 Type "glow"
 Enter

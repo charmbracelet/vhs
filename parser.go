@@ -1,6 +1,9 @@
 package vhs
 
-import "path/filepath"
+import (
+	"path/filepath"
+	"strings"
+)
 
 // Parser is the structure that manages the parsing of tokens.
 type Parser struct {
@@ -158,7 +161,8 @@ func (p *Parser) parseOutput() Command {
 	cmd := Command{Type: OUTPUT}
 
 	if p.peek.Type != STRING {
-		p.errors = append(p.errors, NewError(p.peek, "Expected file path"))
+		p.errors = append(p.errors, NewError(p.cur, "Expected file path after output"))
+		return cmd
 	}
 
 	ext := filepath.Ext(p.peek.Literal)
@@ -166,6 +170,9 @@ func (p *Parser) parseOutput() Command {
 		cmd.Options = ext
 	} else {
 		cmd.Options = ".png"
+		if !strings.HasSuffix(p.peek.Literal, "/") {
+			p.errors = append(p.errors, NewError(p.peek, "Expected folder with trailing slash"))
+		}
 	}
 
 	cmd.Args = p.peek.Literal
