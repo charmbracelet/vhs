@@ -89,6 +89,13 @@ Examples recorded with VHS for Bubble Tea.
 * [GIFS Renders](https://github.com/charmbracelet/bubbletea/tree/master/examples)
 * [Tape Files](./bubbletea)
 
+### jqp
+
+Example of recording a demo of [`jqp`](https://github.com/noahgorstein/jqp)
+with VHS.
+
+<img alt="Simple jqp demo with VHS" src="./jqp/jqp.gif" width="600" />
+
 ### Glow
 
 Example of recording a demo of [Glow](https://github.com/charmbracelet/glow)
