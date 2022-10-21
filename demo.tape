@@ -42,7 +42,7 @@
 Output examples/demo.gif
 Output examples/frames/
 
-Set FontSize 32
+Set FontSize 46
 Set Width 1200
 Set Height 600
 

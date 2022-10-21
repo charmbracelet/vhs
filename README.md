@@ -36,8 +36,8 @@ View [Documentation](#commands) for a list of all the possible commands.
 # Render the output GIF to demo.gif
 Output demo.gif
 
-# Set up a 1200x600 terminal with 32px font size.
-Set FontSize 32
+# Set up a 1200x600 terminal with 46px font size.
+Set FontSize 46
 Set Width 1200
 Set Height 600
 
