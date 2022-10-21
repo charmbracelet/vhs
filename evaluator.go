@@ -45,7 +45,20 @@ func Evaluate(tape string, w io.Writer, outputFile string) error {
 	defer v.Cleanup()
 
 	for _, cmd := range cmds[offset:] {
-		fmt.Fprintln(w, cmd.Highlight(!v.recording || cmd.Type == SHOW || cmd.Type == HIDE))
+		// FIXME: When changing the FontFamily, FontSize, LineHeight, Padding
+		// The xterm.js canvas changes dimensions and causes FFMPEG to not work
+		// correctly (specifically) with palettegen.
+		// It will be possible to change settings on the fly in the future, but it is currently not
+		// as it does not result in a proper render of the GIF as the frame sequence
+		// will change dimensions. This is fixable.
+		//
+		// TODO: Remove if isSetting statement.
+		isSetting := cmd.Type == SET && !(cmd.Options == "Theme" || cmd.Options == "TypingSpeed")
+		if isSetting {
+			fmt.Fprintln(w, cmd.Highlight(true))
+			continue
+		}
+		fmt.Fprintln(w, cmd.Highlight(!v.recording || cmd.Type == SHOW || cmd.Type == HIDE || isSetting))
 		cmd.Execute(&v)
 	}
 
