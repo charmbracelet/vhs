@@ -142,11 +142,13 @@ func (vhs *VHS) Record() {
 	vhs.ResumeRecording()
 
 	interval := time.Second / time.Duration(vhs.Options.Video.Framerate)
+	time.Sleep(interval)
 
 	go func() {
 		counter := 0
 		for {
 			if !vhs.recording {
+				time.Sleep(interval)
 				continue
 			}
 			if vhs.Page != nil {

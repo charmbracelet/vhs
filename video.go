@@ -73,7 +73,7 @@ func MakeGIF(opts VideoOptions) *exec.Cmd {
 		"-r", fmt.Sprint(opts.Framerate),
 		"-i", opts.Input+cursorFrameFormat,
 		"-filter_complex",
-		fmt.Sprintf(`[0][1]overlay[merged];[merged]scale=%d:%d[scaled];[scaled]pad=%d:%d:(ow-iw)/2:(oh-ih)/2:%s[padded];[padded]fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s[bordered];[bordered]split[a][b];[a]palettegen=max_colors=256[p];[b][p]paletteuse[out]`,
+		fmt.Sprintf(`[0][1]overlay[merged];[merged]scale=%d:%d:force_original_aspect_ratio=1[scaled];[scaled]pad=%d:%d:(ow-iw)/2:(oh-ih)/2:%s[padded];[padded]fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s[bordered];[bordered]split[a][b];[a]palettegen=max_colors=256[p];[b][p]paletteuse[out]`,
 			opts.Width-2*opts.Padding, opts.Height-2*opts.Padding,
 			opts.Width, opts.Height,
 			opts.BackgroundColor,

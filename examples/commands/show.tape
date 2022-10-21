@@ -1,4 +1,4 @@
-Output examples/commands/skip.gif
+Output examples/commands/show.gif
 
 Hide
 Type "export HIDDEN=wow"
