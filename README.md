@@ -168,7 +168,7 @@ will be ignored.
 * [`Set LineHeight <Float>`](#set-line-height)
 * [`Set TypingSpeed <Time>`](#set-typing-speed)
 * [`Set Theme <String>`](#set-theme)
-* [`Set Padding <Number>[em|px]`](#set-padding)
+* [`Set Padding <Number>`](#set-padding)
 * [`Set Framerate <Number>`](#set-framerate)
 
 ### Sleep
@@ -284,7 +284,6 @@ Set the font size with the `Set FontSize <Number>` command.
 ```elixir
 Set FontSize 10
 Set FontSize 20
-Set FontSize 30
 Set FontSize 40
 ```
 
@@ -299,11 +298,7 @@ Set FontSize 40
 Set the font family with the `Set FontFamily "<Font>"` command
 
 ```elixir
-Set FontFamily "Fira Code"
-Set FontFamily "Menlo"
-Set FontFamily "Monaco"
 Set FontFamily "Monoflow"
-Set FontFamily "DejaVu Sans Mono"
 ```
 
 <img alt="" src="./examples/settings/font-family.gif" width="600" />
@@ -332,22 +327,18 @@ Set the spacing between letters (tracking) with the `Set LetterSpacing`
 Command.
 
 ```elixir
-Set LetterSpacing 1.2
-Set LetterSpacing 2.4
-Set LetterSpacing 3.6
+Set LetterSpacing 20
 ```
 
 <img alt="" src="./examples/settings/letter-spacing.gif" width="600" />
 
 #### Set Line Height
 
+Set the spacing between lines with the `Set LineHeight` Command.
+
 ```elixir
-Set LineHeight 1.4
-Set LineHeight 1.6
 Set LineHeight 1.8
 ```
-
-Set the spacing between lines with the `Set LineHeight` Command.
 
 <img alt="" src="./examples/settings/line-height.gif" width="600" />
 
@@ -378,10 +369,6 @@ should be a JSON string with the base 16 colors and foreground + background.
 
 ```elixir
 Set Theme { "name": "Whimsy", "black": "#535178", "red": "#ef6487", "green": "#5eca89", "yellow": "#fdd877", "blue": "#65aef7", "purple": "#aa7ff0", "cyan": "#43c1be", "white": "#ffffff", "brightBlack": "#535178", "brightRed": "#ef6487", "brightGreen": "#5eca89", "brightYellow": "#fdd877", "brightBlue": "#65aef7", "brightPurple": "#aa7ff0", "brightCyan": "#43c1be", "brightWhite": "#ffffff", "background": "#29283b", "foreground": "#b3b0d6", "selectionBackground": "#3d3c58", "cursorColor": "#b3b0d6" }
-Set Theme { "name": "wilmersdorf", "black": "#34373e", "red": "#e06383", "green": "#7ebebd", "yellow": "#cccccc", "blue": "#a6c1e0", "purple": "#e1c1ee", "cyan": "#5b94ab", "white": "#ababab", "brightBlack": "#434750", "brightRed": "#fa7193", "brightGreen": "#8fd7d6", "brightYellow": "#d1dfff", "brightBlue": "#b2cff0", "brightPurple": "#efccfd", "brightCyan": "#69abc5", "brightWhite": "#d3d3d3", "background": "#282b33", "foreground": "#c6c6c6", "selectionBackground": "#1f2024", "cursorColor": "#7ebebd" }
-Set Theme { "name": "Wombat", "black": "#000000", "red": "#ff615a", "green": "#b1e969", "yellow": "#ebd99c", "blue": "#5da9f6", "purple": "#e86aff", "cyan": "#82fff7", "white": "#dedacf", "brightBlack": "#313131", "brightRed": "#f58c80", "brightGreen": "#ddf88f", "brightYellow": "#eee5b2", "brightBlue": "#a5c7ff", "brightPurple": "#ddaaff", "brightCyan": "#b7fff9", "brightWhite": "#ffffff", "background": "#171717", "foreground": "#dedacf", "selectionBackground": "#453b39", "cursorColor": "#171717" }
-Set Theme { "name": "Wryan", "black": "#333333", "red": "#8c4665", "green": "#287373", "yellow": "#7c7c99", "blue": "#395573", "purple": "#5e468c", "cyan": "#31658c", "white": "#899ca1", "brightBlack": "#3d3d3d", "brightRed": "#bf4d80", "brightGreen": "#53a6a6", "brightYellow": "#9e9ecb", "brightBlue": "#477ab3", "brightPurple": "#7e62b3", "brightCyan": "#6096bf", "brightWhite": "#c0c0c0", "background": "#101010", "foreground": "#999993", "selectionBackground": "#4d4d4d", "cursorColor": "#9e9ecb" }
-Set Theme { "name": "Abernathy", "black": "#000000", "red": "#cd0000", "green": "#00cd00", "yellow": "#cdcd00", "blue": "#1093f5", "purple": "#cd00cd", "cyan": "#00cdcd", "white": "#faebd7", "brightBlack": "#404040", "brightRed": "#ff0000", "brightGreen": "#00ff00", "brightYellow": "#ffff00", "brightBlue": "#11b5f6", "brightPurple": "#ff00ff", "brightCyan": "#00ffff", "brightWhite": "#ffffff", "background": "#111416", "foreground": "#eeeeec", "selectionBackground": "#eeeeec", "cursorColor": "#bbbbbb" }
 ```
 
 <img alt="" src="./examples/settings/theme.gif" width="600" />
@@ -389,14 +376,11 @@ Set Theme { "name": "Abernathy", "black": "#000000", "red": "#cd0000", "green": 
 
 #### Set Padding
 
-Set the padding of the terminal frame with the `Set Padding` command.
+Set the padding (in pixels) of the terminal frame with the `Set Padding`
+command.
 
 ```elixir
-Set Padding 1em
-Set Padding 2em
-Set Padding 3em
-Set Padding 4em
-Set Padding 5em
+Set Padding 0
 ```
 
 <img alt="" src="./examples/settings/padding.gif" width="600" />

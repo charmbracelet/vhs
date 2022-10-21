@@ -1,6 +1,6 @@
 Output pager.gif
 
-Set Padding 2em
+Set Padding 32
 Set FontSize 16
 Set Height 600
 

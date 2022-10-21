@@ -34,7 +34,7 @@ Sleep 2s
 ```
 Output pager.gif
 
-Set Padding 2em
+Set Padding 20
 Set FontSize 16
 Set Height 600
 

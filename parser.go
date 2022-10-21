@@ -207,15 +207,6 @@ func (p *Parser) parseSet() Command {
 		} else if cmd.Options == "TypingSpeed" {
 			cmd.Args += "s"
 		}
-	case PADDING:
-		cmd.Args = p.peek.Literal
-		p.nextToken()
-		// Allow Padding to have bare units (e.g. 10px, 5em, 10%)
-		// Set Padding 5em
-		if p.peek.Type == EM || p.peek.Type == PX || p.peek.Type == PERCENT {
-			cmd.Args += p.peek.Literal
-			p.nextToken()
-		}
 	default:
 		cmd.Args = p.peek.Literal
 		p.nextToken()

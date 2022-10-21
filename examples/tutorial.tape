@@ -13,7 +13,7 @@
 #   Set LetterSpacing <Float>       Set the font letter spacing (tracking)
 #   Set LineHeight <Float>          Set the font line height
 #   Set Theme <String>              Set the theme of the terminal (JSON)
-#   Set Padding <Number>[em|px]     Set the padding of the terminal
+#   Set Padding <Number>            Set the padding of the terminal
 #   Set Framerate <Number>          Set the framerate of the recording
 #
 # Sleep:

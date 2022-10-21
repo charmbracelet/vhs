@@ -1,6 +1,6 @@
 Output paginator.gif
 Set FontSize 12
-Set Padding 3em
+Set Padding 36
 
 Hide
 Type "go build -o paginator ."

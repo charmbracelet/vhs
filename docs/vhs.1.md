@@ -63,7 +63,7 @@ The following is a list of all possible setting commands in VHS:
 * Set `LineHeight` &lt;float&gt;
 * Set `TypingSpeed` &lt;time&gt;
 * Set `Theme` &lt;json&gt;
-* Set `Padding` &lt;number&gt;&lt;em|px&gt;
+* Set `Padding` &lt;number&gt;
 * Set `Framerate` &lt;number&gt;
 
 BUGS
