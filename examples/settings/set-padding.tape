@@ -1,15 +1,7 @@
 Output examples/settings/padding.gif
-Output examples/frames/
 Set FontSize 32
-Set Height 250
-Set Padding 1em
+Set Height 150
+Set Padding 0
 
-Sleep 1
-Set Padding 2em
-Sleep 1
-Set Padding 3em
-Sleep 1
-Set Padding 4em
-Sleep 1
-Set Padding 5em
+Type "I'm on the edge!"
 Sleep 1

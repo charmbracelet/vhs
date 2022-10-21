@@ -53,7 +53,7 @@ func Evaluate(tape string, w io.Writer, outputFile string) error {
 		// will change dimensions. This is fixable.
 		//
 		// TODO: Remove if isSetting statement.
-		isSetting := cmd.Type == SET && !(cmd.Options == "Theme" || cmd.Options == "TypingSpeed")
+		isSetting := cmd.Type == SET && cmd.Options != "TypingSpeed"
 		if isSetting {
 			fmt.Fprintln(w, cmd.Highlight(true))
 			continue

@@ -156,6 +156,10 @@ Left@500ms 5
 The `Set` command allows you to change aspects of the terminal, such as the
 font settings, window dimensions, and output GIF location.
 
+Setting commands must be set at the top of the tape file. Any setting (except
+`TypingSpeed`) command that is set after a non-setting or non-output command
+will be ignored.
+
 * [`Set FontSize <Number>`](#set-font-size)
 * [`Set FontFamily <String>`](#set-font-family)
 * [`Set Height <Number>`](#set-height)
@@ -284,7 +288,11 @@ Set FontSize 30
 Set FontSize 40
 ```
 
-<img alt="" src="./examples/settings/font-size.gif" width="600" />
+<img alt="" src="./examples/settings/font-size-10.gif" width="600" />
+
+<img alt="" src="./examples/settings/font-size-20.gif" width="600" />
+
+<img alt="" src="./examples/settings/font-size-40.gif" width="600" />
 
 #### Set Font Family
 
