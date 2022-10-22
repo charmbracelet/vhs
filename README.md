@@ -11,7 +11,7 @@
 
 Write terminal GIFs as code for integration testing and demoing your CLI tools.
 
-<img alt="Display of welcome.gif" src="./examples/welcome.gif" width="600" />
+<img alt="Display of welcome.gif" src="https://stuff.charm.sh/vhs/examples/welcome.gif" width="600" />
 
 The above example is generated from VHS ([View Tape](./examples/welcome.tape)).
 
@@ -66,7 +66,7 @@ the `Output`) in the directory.
 
 More examples are in the [`examples/`](https://github.com/charmbracelet/vhs/tree/main/examples) folder.
 
-<img alt="Display of demo.gif" src="./examples/demo.gif" width="600" />
+<img alt="Display of demo.gif" src="https://stuff.charm.sh/vhs/examples/demo.gif" width="600" />
 
 ## Installation
 
@@ -195,7 +195,7 @@ The command takes a string argument with the characters to type.
 Type "Whatever you want"
 ```
 
-<img alt="Type" src="./examples/commands/type.gif" width="600" />
+<img alt="Example of using the Type command in VHS" src="https://stuff.charm.sh/vhs/examples/type.gif" width="600" />
 
 ### Output
 
@@ -220,7 +220,7 @@ Press the backspace key with the `Backspace` command.
 Backspace 18
 ```
 
-<img alt="Press Backspace" src="./examples/commands/backspace.gif" width="600" />
+<img alt="Example of pressing the Backspace key 18 times" src="https://stuff.charm.sh/vhs/examples/backspace.gif" width="600" />
 
 #### Ctrl
 
@@ -230,7 +230,7 @@ Press a control sequence with the `Ctrl` command.
 Ctrl+R
 ```
 
-<img alt="" src="./examples/commands/ctrl.gif" width="600" />
+<img alt="Example of pressing the Ctrl+R key to reverse search" src="https://stuff.charm.sh/vhs/examples/ctrl.gif" width="600" />
 
 #### Enter
 
@@ -240,7 +240,7 @@ Press the enter key with the `Enter` command.
 Enter 2
 ```
 
-<img alt="" src="./examples/commands/enter.gif" width="600" />
+<img alt="Example of pressing the Enter key twice" src="https://stuff.charm.sh/vhs/examples/enter.gif" width="600" />
 
 #### Arrow Keys
 
@@ -253,7 +253,7 @@ Left 10
 Right 10
 ```
 
-<img alt="" src="./examples/commands/arrow.gif" width="600" />
+<img alt="Example of pressing the arrow keys to navigate text" src="https://stuff.charm.sh/vhs/examples/arrow.gif" width="600" />
 
 #### Tab
 
@@ -263,7 +263,7 @@ Press the tab key with the `Tab` command.
 Tab@500ms 2
 ```
 
-<img alt="" src="./examples/commands/tab.gif" width="600" />
+<img alt="Example of pressing the tab key twice for autocomplete" src="https://stuff.charm.sh/vhs/examples/tab.gif" width="600" />
 
 #### Space
 
@@ -273,7 +273,7 @@ Press the space bar with the `Space` command.
 Space 10
 ```
 
-<img alt="" src="./examples/commands/space.gif" width="600" />
+<img alt="Example of pressing the space key" src="https://stuff.charm.sh/vhs/examples/space.gif" width="600" />
 
 ### Settings
 
@@ -287,11 +287,11 @@ Set FontSize 20
 Set FontSize 40
 ```
 
-<img alt="" src="./examples/settings/font-size-10.gif" width="600" />
+<img alt="Example of setting the font size to 10 pixels" src="https://stuff.charm.sh/vhs/examples/font-size-10.gif" width="600" />
 
-<img alt="" src="./examples/settings/font-size-20.gif" width="600" />
+<img alt="Example of setting the font size to 20 pixels" src="https://stuff.charm.sh/vhs/examples/font-size-20.gif" width="600" />
 
-<img alt="" src="./examples/settings/font-size-40.gif" width="600" />
+<img alt="Example of setting the font size to 40 pixels" src="https://stuff.charm.sh/vhs/examples/font-size-40.gif" width="600" />
 
 #### Set Font Family
 
@@ -301,7 +301,7 @@ Set the font family with the `Set FontFamily "<Font>"` command
 Set FontFamily "Monoflow"
 ```
 
-<img alt="" src="./examples/settings/font-family.gif" width="600" />
+<img alt="Example of changing the font family to Monoflow" src="https://stuff.charm.sh/vhs/examples/font-family.gif" width="600" />
 
 #### Set Height
 
@@ -330,7 +330,7 @@ Command.
 Set LetterSpacing 20
 ```
 
-<img alt="" src="./examples/settings/letter-spacing.gif" width="600" />
+<img alt="Example of changing the letter spacing to 20 pixels between characters" src="https://stuff.charm.sh/vhs/examples/letter-spacing.gif" width="600" />
 
 #### Set Line Height
 
@@ -340,7 +340,7 @@ Set the spacing between lines with the `Set LineHeight` Command.
 Set LineHeight 1.8
 ```
 
-<img alt="" src="./examples/settings/line-height.gif" width="600" />
+<img alt="Example of changing the line height to 1.8" src="https://stuff.charm.sh/vhs/examples/line-height.gif" width="600" />
 
 #### Set Typing Speed
 
@@ -360,7 +360,7 @@ Type "100ms delay per character"
 Type@500ms "500ms delay per character"
 ```
 
-<img alt="" src="./examples/settings/typing-speed.gif" width="600" />
+<img alt="Example of changing the typing speed to type different words" src="https://stuff.charm.sh/vhs/examples/typing-speed.gif" width="600" />
 
 #### Set Theme
 
@@ -371,7 +371,7 @@ should be a JSON string with the base 16 colors and foreground + background.
 Set Theme { "name": "Whimsy", "black": "#535178", "red": "#ef6487", "green": "#5eca89", "yellow": "#fdd877", "blue": "#65aef7", "purple": "#aa7ff0", "cyan": "#43c1be", "white": "#ffffff", "brightBlack": "#535178", "brightRed": "#ef6487", "brightGreen": "#5eca89", "brightYellow": "#fdd877", "brightBlue": "#65aef7", "brightPurple": "#aa7ff0", "brightCyan": "#43c1be", "brightWhite": "#ffffff", "background": "#29283b", "foreground": "#b3b0d6", "selectionBackground": "#3d3c58", "cursorColor": "#b3b0d6" }
 ```
 
-<img alt="" src="./examples/settings/theme.gif" width="600" />
+<img alt="Example of changing the theme to Whimsy" src="https://stuff.charm.sh/vhs/examples/theme.gif" width="600" />
 
 
 #### Set Padding
@@ -383,7 +383,7 @@ command.
 Set Padding 0
 ```
 
-<img alt="" src="./examples/settings/padding.gif" width="600" />
+<img alt="Example of setting padding to 0" src="https://stuff.charm.sh/vhs/examples/padding.gif" width="600" />
 
 #### Set Framerate
 
@@ -402,6 +402,29 @@ be shown in the output.
 Hide
 ```
 
+This command can be helpful for doing any setup and clean up required to record
+a GIF, such as building the latest version of a binary and removing the binary
+once the demo is recorded.
+
+```elixir
+Output example.gif
+
+# Setup
+Hide
+Type "go build -o example . && clear"
+Enter
+Show
+
+# Recording...
+Type 'Running ./example'
+...
+Enter
+
+# Cleanup
+Hide
+Type 'rm example'
+```
+
 ### Show
 
 The `Show` command allows you to specify that the following commands should
@@ -415,7 +438,7 @@ Show
 Type "You will see this being typed."
 ```
 
-<img alt="Hide Show" src="./examples/commands/hide.gif" width="600" />
+<img alt="Example of typing something while hidden" src="https://stuff.charm.sh/vhs/examples/hide.gif" width="600" />
 
 
 ## Feedback
