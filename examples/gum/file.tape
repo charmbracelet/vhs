@@ -1,15 +1,15 @@
 Output file.gif
 
 Type "gum file ./src"
-Sleep 1s
+Sleep 0.5s
 Enter
-Sleep 2s
-Down@500ms 4
-Up@500ms 1
-Sleep 1s
+Sleep 0.5s
+Down@250ms 4
+Up@250ms 1
+Sleep 0.5s
 Enter
+Sleep 0.5s
+Down@250ms 4
+Sleep 0.5s
+Up@250ms 2
 Sleep 1s
-Down@500ms 4
-Sleep 1s
-Up@500ms 2
-Sleep 2s

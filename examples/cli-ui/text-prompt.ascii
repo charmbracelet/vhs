@@ -5,16 +5,28 @@ irb(main):003:0>
 
 
 
-────────────────────────────────────────────────────────────────────────────────
-irb(main):003:1' CLI::UI.ask('Is CLI UI Awesome?', default: 'It is great!')
-
-
-
-
-
 
 ────────────────────────────────────────────────────────────────────────────────
-irb(main):003:1' CLI::UI.ask('Is CLI UI Awesome?', default: 'It is great!')
+irb(main):003:0> CLI::UI.ask('Is CLI UI Awesome?', default: 'It is great!')
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+irb(main):003:0> CLI::UI.ask('Is CLI UI Awesome?', default: 'It is great!')
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+irb(main):003:0> CLI::UI.ask('Is CLI UI Awesome?', default: 'It is great!')
+
 
 
 
@@ -29,10 +41,12 @@ irb(main):003:0> CLI::UI.ask('Is CLI UI Awesome?', default: 'It is great!')
 
 
 
+
 ────────────────────────────────────────────────────────────────────────────────
 irb(main):003:0> CLI::UI.ask('Is CLI UI Awesome?', default: 'It is great!')
 ? Is CLI UI Awesome? (empty = It is great!)
->
+> I love it!
+
 
 
 
@@ -45,10 +59,12 @@ irb(main):003:0> CLI::UI.ask('Is CLI UI Awesome?', default: 'It is great!')
 
 
 
+
 ────────────────────────────────────────────────────────────────────────────────
 irb(main):003:0> CLI::UI.ask('Is CLI UI Awesome?', default: 'It is great!')
 ? Is CLI UI Awesome? (empty = It is great!)
 > I love it!
+=> "I love it!"
 
 
 
@@ -60,13 +76,6 @@ irb(main):003:0> CLI::UI.ask('Is CLI UI Awesome?', default: 'It is great!')
 => "I love it!"
 irb(main):004:0>
 
-
-────────────────────────────────────────────────────────────────────────────────
-irb(main):003:0> CLI::UI.ask('Is CLI UI Awesome?', default: 'It is great!')
-? Is CLI UI Awesome? (empty = It is great!)
-> I love it!
-=> "I love it!"
-irb(main):004:0>
 
 
 ────────────────────────────────────────────────────────────────────────────────

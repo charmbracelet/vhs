@@ -5,12 +5,12 @@ Set FontSize 16
 Set Height 600
 
 Type "gum pager < ~/src/gum/README.md --border normal"
-Sleep 1s
+Sleep 0.5s
 Enter
+Sleep 1s
+Down@15ms 40
+Sleep 0.5s
+Up@15ms 30
+Sleep 0.5s
+Down@15ms 20
 Sleep 2s
-Down@25ms 40
-Sleep 1s
-Up@25ms 30
-Sleep 1s
-Down@25ms 20
-Sleep 3s

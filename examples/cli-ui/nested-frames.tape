@@ -6,7 +6,7 @@ Set Width 2000
 Set Height 750
 
 Hide
-Type irb
+Type "irb --noautocomplete"
 Enter
 Type "require 'cli/ui'"
 Enter

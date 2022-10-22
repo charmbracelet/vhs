@@ -1,0 +1,13 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    cli-ui (1.5.1)
+
+PLATFORMS
+  arm64-darwin-21
+
+DEPENDENCIES
+  cli-ui
+
+BUNDLED WITH
+   2.3.7
