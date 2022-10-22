@@ -16,7 +16,7 @@ jobs:
         uses: ./
         id: vhs
         with:
-          path: 'examples/demo.tape'
+          path: 'demo.tape'
       - name: Upload
         uses: actions/upload-artifact@v3
         with:
