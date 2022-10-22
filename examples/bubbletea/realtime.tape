@@ -9,9 +9,9 @@ Show
 
 Type "./realtime"
 Enter
-Sleep 1
+Sleep 0.5
 
-Sleep 4
+Sleep 2
 Space # Exit
 Sleep 1
 
@@ -19,4 +19,3 @@ Hide
 Ctrl+C
 Type "rm realtime"
 Enter
-Show

@@ -10,33 +10,32 @@ Show
 
 Type "./split-editors"
 Enter
-Sleep 2
+Sleep 1
 
 Type "Hello, there!"
-Sleep 1
+Sleep 0.5
 Tab
-Sleep 1
+Sleep 0.5
 Type "Hi!"
-Sleep 1
+Sleep 0.5
 Enter
 Type "How are you?"
-Sleep 1
+Sleep 0.5
 Tab
-Sleep 1
+Sleep 0.5
 Ctrl+U
-Sleep 1
+Sleep 0.5
 Type "I'm good! Thanks for asking :)"
 Sleep .5
 Enter
-Sleep 1
+Sleep 0.5
 Ctrl+N
-Sleep 1
-Tab@.5 2
+Sleep 0.5
+Tab@250ms 2
 Type "Hello, world!"
-Sleep 2
+Sleep 1
 
 Hide
 Escape
 Type "rm split-editors"
 Enter
-Show

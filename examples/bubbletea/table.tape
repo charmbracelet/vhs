@@ -9,15 +9,14 @@ Show
 
 Type "./table"
 Enter
-Sleep 1
+Sleep 0.5
 
-Down@.5 4
+Down@250ms 4
 Sleep 1
 Enter
-Sleep 2
+Sleep 1
 
 Hide
 Ctrl+C
 Type "rm table"
 Enter
-Show

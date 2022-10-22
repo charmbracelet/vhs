@@ -9,12 +9,10 @@ Show
 
 Type "./sequence"
 Enter
-Sleep 1
 
-Sleep 2
+Sleep 3
 
 Hide
 Ctrl+C
 Type "rm sequence"
 Enter
-Show

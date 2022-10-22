@@ -9,10 +9,9 @@ Show
 
 Type "./http"
 Enter
-Sleep 3
+Sleep 2
 
 Hide
 Ctrl+C
 Type "rm http"
 Enter
-Show

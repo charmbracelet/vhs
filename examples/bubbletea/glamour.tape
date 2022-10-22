@@ -15,7 +15,7 @@ Sleep 1
 
 Down@10ms 25
 
-Sleep 2
+Sleep 1
 
 Hide
 Type "q"

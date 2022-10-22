@@ -10,12 +10,11 @@ Show
 
 Type "./pager"
 Enter
-Sleep 1
+Sleep 0.5
 
-Down@.05 20
+Down@25ms 20
 
 Hide
 Type "q"
 Type "rm pager"
 Enter
-Show

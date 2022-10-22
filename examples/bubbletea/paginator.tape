@@ -13,13 +13,12 @@ Type "./paginator"
 Enter
 Sleep 1
 
-Right@.5 10
-Sleep 2
-Left@.5 10
-Sleep 2
+Right@250ms 10
+Sleep 1
+Left@250ms 10
+Sleep 1
 
 Hide
 Ctrl+C
 Type "rm paginator"
 Enter
-Show

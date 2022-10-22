@@ -8,12 +8,11 @@ Enter
 Show
 
 Type "./fullscreen"
+Sleep 0.5
 Enter
-Sleep 1
 
-Sleep 7
+Sleep 4
 
 Hide
 Type "rm fullscreen"
 Enter
-Show

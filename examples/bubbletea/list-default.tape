@@ -10,25 +10,24 @@ Show
 
 Type "./list-default"
 Enter
-Sleep 1
+Sleep 0.5
 
-Down@.5 3
-Right@.5 3
+Down@250ms 3
+Right@250ms 3
 
 Type "/"
-Sleep 1
+Sleep 0.5
 
 Type "nutel"
 Enter
-Sleep 1
+Sleep 0.5
 Type "?"
-Sleep 1
+Sleep 0.5
 Type "?"
-Sleep 1
-Escape@.5 2
+Sleep 0.5
+Escape@250ms 2
 
 Hide
 Ctrl+C
 Type "rm list-default"
 Enter
-Show

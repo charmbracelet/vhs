@@ -9,17 +9,16 @@ Show
 
 Type "./views"
 Enter
-Sleep 1
-Tab@2 4
-Sleep 1
+Sleep 0.5
+Tab@1 4
+Sleep 0.5
 Type "n"
 Tab
+Sleep 0.5
+Type@250ms "nnnn"
 Sleep 1
-Type@.5 "nnnn"
-Sleep 2
 
 Hide
 Ctrl+C
 Type "rm views"
 Enter
-Show

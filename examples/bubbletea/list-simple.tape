@@ -10,14 +10,13 @@ Show
 
 Type "./list-simple"
 Enter
-Sleep 1
+Sleep 0.5
 
-Down@.5 3
+Down@250ms 3
 Enter
-Sleep 2
+Sleep 1
 
 Hide
 Ctrl+C
 Type "rm list-simple"
 Enter
-Show

@@ -9,7 +9,7 @@ Show
 
 Type "./package-manager"
 Enter
-Sleep 1
+Sleep 0.5
 
 Sleep 10
 

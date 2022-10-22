@@ -9,17 +9,16 @@ Show
 
 Type "./credit-card"
 Enter
-Sleep 1
+Sleep 0.5
 
 Type "1234 5678 9012 3456"
-Sleep .5 Tab Sleep .5
+Sleep .3 Tab Sleep .3
 Type "12/34"
-Sleep .5 Tab Sleep .5
+Sleep .3 Tab Sleep .3
 Type "123"
-Sleep 2
+Sleep 1
 
 Hide
 Ctrl+C
 Type "rm credit-card"
 Enter
-Show

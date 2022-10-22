@@ -8,8 +8,9 @@ Enter
 Show
 
 Type "./altscreen-toggle"
-Enter@0.5
-Space@1 4
+Enter
+Sleep 0.5
+Space@0.5 4
 
 Type "q"
 Sleep 1

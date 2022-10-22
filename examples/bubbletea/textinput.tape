@@ -9,16 +9,15 @@ Show
 
 Type "./textinput"
 Enter
-Sleep 1
+Sleep 0.5
 
 Type "Ponyta"
+Sleep 0.5
+Left@100ms 2
+Type "(lalala)"
 Sleep 1
-Left@.2 2
-Type@.2 "(lalala)"
-Sleep 2
 
 Hide
 Ctrl+C
 Type "rm textinput"
 Enter
-Show

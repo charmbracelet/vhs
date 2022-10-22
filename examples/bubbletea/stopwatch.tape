@@ -9,17 +9,17 @@ Show
 
 Type "./stopwatch"
 Enter
-Sleep 1
+Sleep 0.5
 
-Sleep 2
-Type "s"
 Sleep 1
+Type "s"
+Sleep 0.5
 Type "r"
-Sleep 1
+Sleep 0.5
 Type "s"
-Sleep 3
+Sleep 2
 Type "q"
-Sleep 1
+Sleep 0.5
 
 Hide
 Ctrl+C

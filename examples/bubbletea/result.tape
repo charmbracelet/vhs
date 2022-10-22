@@ -9,15 +9,14 @@ Show
 
 Type "./result"
 Enter
-Sleep 1
+Sleep 0.5
 
-Down@.5 2
-Up@.5 2
+Down@250ms 2
+Up@250ms 2
 Enter
-Sleep 2
+Sleep 1
 
 Hide
 Ctrl+C
 Type "rm result"
 Enter
-Show

@@ -134,11 +134,13 @@ func ExecuteCtrl(c Command, v *VHS) {
 
 // ExecuteHide is a CommandFunc that starts or stops the recording of the vhs.
 func ExecuteHide(c Command, v *VHS) {
+	v.browser.SlowMotion(0)
 	v.PauseRecording()
 }
 
 // ExecuteShow is a CommandFunc that resumes the recording of the vhs.
 func ExecuteShow(c Command, v *VHS) {
+	v.browser.SlowMotion(v.Options.TypingSpeed)
 	v.ResumeRecording()
 }
 

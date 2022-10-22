@@ -70,7 +70,7 @@ func New() VHS {
 		Page:      page,
 		browser:   browser,
 		tty:       tty,
-		recording: false,
+		recording: true,
 		mutex:     mu,
 	}
 }
@@ -146,16 +146,13 @@ func (vhs *VHS) Cleanup() {
 
 // Record begins the goroutine which captures images from the xterm.js canvases
 func (vhs *VHS) Record() {
-	vhs.ResumeRecording()
-
 	interval := time.Second / time.Duration(vhs.Options.Video.Framerate)
 	time.Sleep(interval)
-
 	go func() {
 		counter := 0
 		for {
 			if !vhs.recording {
-				time.Sleep(interval)
+				time.Sleep(2 * interval)
 				continue
 			}
 			if vhs.Page != nil {

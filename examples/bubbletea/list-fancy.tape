@@ -10,20 +10,19 @@ Show
 
 Type "./list-fancy"
 Enter
-Sleep 1
+Sleep 0.5
 
-Down@.5 3
+Down@250ms 3
 Enter
-Sleep 1
+Sleep 0.5
 Type "x"
-Sleep 1
+Sleep 0.5
 Type "?"
-Sleep 1
-Type@.25 "aaaa"
-Type@.25 "xxxx"
+Sleep 0.5
+Type@150ms "aaaa"
+Type@150ms "xxxx"
 
 Hide
 Ctrl+C
 Type "rm list-fancy"
 Enter
-Show

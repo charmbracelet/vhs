@@ -9,14 +9,13 @@ Show
 
 Type "./spinner"
 Enter
-Sleep 1
+Sleep 0.5
 
-Sleep 5
+Sleep 3
 Type "q"
-Sleep 1
+Sleep 0.5
 
 Hide
 Ctrl+C
 Type "rm spinner"
 Enter
-Show

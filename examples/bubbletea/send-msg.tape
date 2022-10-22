@@ -9,14 +9,11 @@ Show
 
 Type "./send-msg"
 Enter
-Sleep 1
-
-Sleep 5
+Sleep 3
 Space
-Sleep 2
+Sleep 1
 
 Hide
 Ctrl+C
 Type "rm send-msg"
 Enter
-Show

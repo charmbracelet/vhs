@@ -9,11 +9,11 @@ Show
 
 Type "./chat"
 Enter
-Sleep 1
+Sleep 0.5
 Type "Hello, Chat Room" Sleep .25
 Enter
-Sleep 1
-Type@.2 "!!!" Sleep .25
+Sleep 0.5
+Type "!!!" Sleep .25
 Enter
 Sleep 1
 
@@ -21,4 +21,3 @@ Hide
 Ctrl+C
 Type "rm chat"
 Enter
-Show

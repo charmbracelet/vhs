@@ -9,13 +9,13 @@ Show
 
 Type "./textarea"
 Enter
-Sleep 1
+Sleep 0.5
 
 Type "Makin' my way downtown"
-Sleep .5
+Sleep 250ms
 Enter
 Type "Walking fast, faces pass"
-Sleep .5
+Sleep 250ms
 Enter
 Type "And I'm homebound"
 Sleep 1
@@ -25,4 +25,3 @@ Sleep 1
 Hide
 Type "rm textarea"
 Enter
-Show

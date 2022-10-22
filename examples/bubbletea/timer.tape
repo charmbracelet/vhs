@@ -8,17 +8,15 @@ Enter
 Show
 
 Type "./timer"
+Sleep 0.5
 Enter
-Sleep 1
-
+Sleep 0.5
+Type "s"
+Sleep 0.5
+Type "s"
 Sleep 2
-Type "s"
-Sleep 1
-Type "s"
-Sleep 4
 
 Hide
 Ctrl+C
 Type "rm timer"
 Enter
-Show

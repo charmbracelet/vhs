@@ -1,9 +1,7 @@
 Output pipe.gif
 
 Hide
-Type "go build -o pipe ."
-Enter
-Type "clear"
+Type "go build -o pipe . && clear"
 Enter
 Show
 
@@ -12,7 +10,7 @@ Enter
 Sleep 1
 
 Type ", world!"
-Sleep 1
+Sleep 0.5
 Enter
 Sleep 1
 
@@ -20,4 +18,3 @@ Hide
 Ctrl+C
 Type "rm pipe"
 Enter
-Show

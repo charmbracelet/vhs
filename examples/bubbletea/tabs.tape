@@ -9,14 +9,13 @@ Show
 
 Type "./tabs"
 Enter
-Sleep 1
+Sleep 0.5
 
-Right@1 5
-Left@1 5
-Sleep 2
+Right@0.5 5
+Left@0.5 5
+Sleep 1
 
 Hide
 Ctrl+C
 Type "rm tabs"
 Enter
-Show

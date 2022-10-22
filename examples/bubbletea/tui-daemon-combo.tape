@@ -9,9 +9,9 @@ Show
 
 Type "./tui-daemon-combo"
 Enter
-Sleep 1
+Sleep 0.5
 
-Sleep 5
+Sleep 3
 Space
 Sleep 1
 
@@ -19,4 +19,3 @@ Hide
 Ctrl+C
 Type "rm tui-daemon-combo"
 Enter
-Show

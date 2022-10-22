@@ -9,13 +9,12 @@ Show
 
 Type "./debounce"
 Enter
-Sleep 1
+Sleep 0.5
 
-Space@.5 10
-Sleep 2
+Space@250ms 10
+Sleep 1
 
 Hide
 Ctrl+C
 Type "rm debounce"
 Enter
-Show

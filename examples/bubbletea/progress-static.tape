@@ -9,7 +9,6 @@ Show
 
 Type "./progress-static"
 Enter
-Sleep 1
 
 Sleep 5
 
@@ -17,4 +16,3 @@ Hide
 Ctrl+C
 Type "rm progress-static"
 Enter
-Show

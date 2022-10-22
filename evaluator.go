@@ -7,7 +7,9 @@ import (
 	"strings"
 )
 
-func Evaluate(tape string, w io.Writer, outputFile string) error {
+// Evaluate takes as input a tape string, an output writer, and an output file
+// and evaluates all the commands within the tape string and produces a GIF.
+func Evaluate(tape string, out io.Writer, outputFile string) error {
 	l := NewLexer(tape)
 	p := NewParser(l)
 
@@ -16,23 +18,22 @@ func Evaluate(tape string, w io.Writer, outputFile string) error {
 	if len(errs) != 0 {
 		lines := strings.Split(tape, "\n")
 		for _, err := range errs {
-			fmt.Fprint(w, LineNumber(err.Token.Line))
-			fmt.Fprintln(w, lines[err.Token.Line-1])
-			fmt.Fprint(w, strings.Repeat(" ", err.Token.Column+5))
-			fmt.Fprintln(w, Underline(len(err.Token.Literal)), err.Msg)
-			fmt.Fprintln(w)
+			fmt.Fprint(out, LineNumber(err.Token.Line))
+			fmt.Fprintln(out, lines[err.Token.Line-1])
+			fmt.Fprint(out, strings.Repeat(" ", err.Token.Column+5))
+			fmt.Fprintln(out, Underline(len(err.Token.Literal)), err.Msg)
+			fmt.Fprintln(out)
 		}
 		return errors.New("parse error")
 	}
 
-	// Start VHS
-
 	v := New()
 
+	// Run Output and Set commands as they only modify options on the VHS instance.
 	var offset int
 	for i, cmd := range cmds {
 		if cmd.Type == SET || cmd.Type == OUTPUT {
-			fmt.Fprintln(w, cmd.Highlight(false))
+			fmt.Fprintln(out, cmd.Highlight(false))
 			cmd.Execute(&v)
 		} else {
 			offset = i
@@ -40,8 +41,26 @@ func Evaluate(tape string, w io.Writer, outputFile string) error {
 		}
 	}
 
+	// Setup the terminal session so we can start executing commands.
 	v.Setup()
+
+	// If the first command (after Settings and Outputs) is a Hide command, we can
+	// begin executing the commands before we start recording to avoid capturing
+	// any unwanted frames.
+	if cmds[offset].Type == HIDE {
+		for i, cmd := range cmds[offset:] {
+			if cmd.Type == SHOW {
+				offset += i
+				break
+			}
+			fmt.Fprintln(out, cmd.Highlight(true))
+			cmd.Execute(&v)
+		}
+	}
+
+	// Begin recording frames as we are now in a recording state.
 	v.Record()
+
 	defer v.Cleanup()
 
 	for _, cmd := range cmds[offset:] {
@@ -55,10 +74,10 @@ func Evaluate(tape string, w io.Writer, outputFile string) error {
 		// TODO: Remove if isSetting statement.
 		isSetting := cmd.Type == SET && cmd.Options != "TypingSpeed"
 		if isSetting {
-			fmt.Fprintln(w, cmd.Highlight(true))
+			fmt.Fprintln(out, cmd.Highlight(true))
 			continue
 		}
-		fmt.Fprintln(w, cmd.Highlight(!v.recording || cmd.Type == SHOW || cmd.Type == HIDE || isSetting))
+		fmt.Fprintln(out, cmd.Highlight(!v.recording || cmd.Type == SHOW || cmd.Type == HIDE || isSetting))
 		cmd.Execute(&v)
 	}
 
