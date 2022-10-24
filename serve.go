@@ -19,7 +19,7 @@ import (
 )
 
 const (
-	host      = "localhost"
+	host      = "0.0.0.0"
 	port      = 1976
 	maxNumber = 1000000000
 	timeout   = 30 * time.Second
