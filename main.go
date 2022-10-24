@@ -33,7 +33,7 @@ var (
 		Short: "Run a given tape file and generates its outputs.",
 		Args:  cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			err := ensurDependencies()
+			err := ensureDependencies()
 			if err != nil {
 				return err
 			}
@@ -142,6 +142,7 @@ func init() {
 	rootCmd.AddCommand(
 		newCmd,
 		validateCmd,
+		manCmd,
 		serveCmd,
 	)
 	rootCmd.CompletionOptions.HiddenDefaultCmd = true
@@ -175,7 +176,7 @@ func getVersion(program string) *version.Version {
 
 // ensureDependencies ensures that all dependencies are correctly installed
 // and versioned before continuing
-func ensurDependencies() error {
+func ensureDependencies() error {
 	_, ffmpegErr := exec.LookPath("ffmpeg")
 	if ffmpegErr != nil {
 		return fmt.Errorf("ffmpeg is not installed. Install it from: http://ffmpeg.org.")
