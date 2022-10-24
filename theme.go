@@ -5,7 +5,7 @@
 // It can be changed through the Set command.
 //
 // Set Theme {"background": "#171717"}
-package vhs
+package main
 
 import (
 	"encoding/json"

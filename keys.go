@@ -9,7 +9,7 @@
 //
 // Hello, world!
 // { shift(input.KeyH), input.KeyE, ..., input.KeyD, shift(input.Digit1) }
-package vhs
+package main
 
 import (
 	"github.com/go-rod/rod/lib/input"

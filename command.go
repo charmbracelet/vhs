@@ -1,4 +1,4 @@
-package vhs
+package main
 
 import (
 	"encoding/json"

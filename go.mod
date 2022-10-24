@@ -14,7 +14,10 @@ require (
 	github.com/aymanbagabas/go-osc52 v1.2.1 // indirect
 	github.com/dlclark/regexp2 v1.7.0 // indirect
 	github.com/hashicorp/go-version v1.6.0
+	github.com/muesli/mango-cobra v1.2.0
+	github.com/muesli/roff v0.1.0
 	github.com/rivo/uniseg v0.4.2 // indirect
+	github.com/spf13/cobra v1.6.0
 	github.com/ysmood/gson v0.7.2 // indirect
 	golang.org/x/net v0.0.0-20221014081412-f15817d10f9b // indirect
 	golang.org/x/sys v0.0.0-20221013171732-95e765b1cc43 // indirect

@@ -1,4 +1,4 @@
-package vhs
+package main
 
 // Type represents a token's type.
 type TokenType string
