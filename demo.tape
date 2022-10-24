@@ -15,6 +15,7 @@
 #   Set Theme <String>              Set the theme of the terminal (JSON)
 #   Set Padding <Number>[em|px]     Set the padding of the terminal
 #   Set Framerate <Number>          Set the framerate of the recording
+#   Set PlaybackSpeed <Float>       Set the playback speed of the recording
 #
 # Sleep:
 #   Sleep <time>                    Sleep for a set amount of <time> in seconds
