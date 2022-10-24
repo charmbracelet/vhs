@@ -80,7 +80,7 @@ func MakeGIF(opts VideoOptions) *exec.Cmd {
 	return exec.Command(
 		"ffmpeg", "-y",
 		"-r", fmt.Sprint(opts.Framerate),
-		"-i", fmt.Sprint(opts.Input+textFrameFormat),
+		"-i", opts.Input+textFrameFormat,
 		"-r", fmt.Sprint(opts.Framerate),
 		"-i", opts.Input+cursorFrameFormat,
 		"-filter_complex",
@@ -107,13 +107,24 @@ func MakeWebM(opts VideoOptions) *exec.Cmd {
 
 	//nolint:gosec
 	return exec.Command(
-		"ffmpeg", "-y", "-i", opts.Input,
-		"-framerate", fmt.Sprint(opts.Framerate),
+		"ffmpeg", "-y",
+		"-r", fmt.Sprint(opts.Framerate),
+		"-i", opts.Input+textFrameFormat,
+		"-r", fmt.Sprint(opts.Framerate),
+		"-i", opts.Input+cursorFrameFormat,
+		"-filter_complex",
+		fmt.Sprintf(`[0][1]overlay,scale=%d:%d:force_original_aspect_ratio=1,fps=%d,setpts=PTS/%f,pad=%d:%d:(ow-iw)/2:(oh-ih)/2:%s,fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s`,
+			opts.Width-2*opts.Padding, opts.Height-2*opts.Padding,
+			opts.Framerate, opts.PlaybackSpeed,
+			opts.Width, opts.Height,
+			opts.BackgroundColor,
+			opts.Padding, opts.Padding, opts.Padding, opts.Padding,
+			opts.BackgroundColor,
+		),
 		"-pix_fmt", "yuv420p",
 		"-an",
 		"-crf", "30",
 		"-b:v", "0",
-		"-filter:v", fmt.Sprintf("scale=%d:-1", opts.Width),
 		opts.Output.WebM,
 	)
 }
@@ -128,13 +139,24 @@ func MakeMP4(opts VideoOptions) *exec.Cmd {
 
 	//nolint:gosec
 	return exec.Command(
-		"ffmpeg", "-y", "-i", opts.Input,
-		"-framerate", fmt.Sprint(opts.Framerate),
+		"ffmpeg", "-y",
+		"-r", fmt.Sprint(opts.Framerate),
+		"-i", opts.Input+textFrameFormat,
+		"-r", fmt.Sprint(opts.Framerate),
+		"-i", opts.Input+cursorFrameFormat,
+		"-filter_complex",
+		fmt.Sprintf(`[0][1]overlay,scale=%d:%d:force_original_aspect_ratio=1,fps=%d,setpts=PTS/%f,pad=%d:%d:(ow-iw)/2:(oh-ih)/2:%s,fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s`,
+			opts.Width-2*opts.Padding, opts.Height-2*opts.Padding,
+			opts.Framerate, opts.PlaybackSpeed,
+			opts.Width, opts.Height,
+			opts.BackgroundColor,
+			opts.Padding, opts.Padding, opts.Padding, opts.Padding,
+			opts.BackgroundColor,
+		),
 		"-vcodec", "libx264",
 		"-pix_fmt", "yuv420p",
 		"-an",
 		"-crf", "20",
-		"-filter:v", fmt.Sprintf("scale=%d:-1", opts.Width),
 		opts.Output.MP4,
 	)
 }

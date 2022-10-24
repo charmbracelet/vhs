@@ -41,7 +41,8 @@
 #   Show                            Show the subsequent commands in the output
 
 Output examples/demo.gif
-Output examples/frames/
+Output examples/demo.webm
+Output examples/demo.mp4
 
 Set FontSize 46
 Set Width 1200
