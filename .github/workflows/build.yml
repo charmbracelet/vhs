@@ -1,25 +1,12 @@
 name: build
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+on: [push, pull_request]
 
 jobs:
-
   build:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
+    uses: charmbracelet/meta/.github/workflows/build.yml@main
 
-    - name: Set up Go
-      uses: actions/setup-go@v3
-      with:
-        go-version: 1.18
-
-    - name: Build
-      run: go build -v ./...
-
-    - name: Test
-      run: go test -v ./...
+  snapshot:
+    uses: charmbracelet/meta/.github/workflows/snapshot.yml@main
+    secrets:
+      goreleaser_key: ${{ secrets.GORELEASER_KEY }}
