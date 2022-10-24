@@ -169,7 +169,8 @@ will be ignored.
 * [`Set TypingSpeed <Time>`](#set-typing-speed)
 * [`Set Theme <String>`](#set-theme)
 * [`Set Padding <Number>`](#set-padding)
-* [`Set Framerate <Number>`](#set-framerate)
+* [`Set Framerate <Float>`](#set-framerate)
+* [`Set PlaybackSpeed <Number>`](#set-playback-speed)
 
 ### Sleep
 
@@ -391,6 +392,16 @@ Set the rate at which VHS captures frames with the `Set Framerate` command.
 
 ```elixir
 Set Framerate 60
+```
+
+#### Set Playback Speed
+
+Set the playback speed of the final render.
+
+```elixir
+Set PlaybackSpeed 0.5 # Make output 2 times slower
+Set PlaybackSpeed 1.0 # Keep output at normal speed (default)
+Set PlaybackSpeed 2.0 # Make output 2 times faster
 ```
 
 ### Hide
