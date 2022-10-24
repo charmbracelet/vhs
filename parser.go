@@ -99,7 +99,6 @@ func (p *Parser) parseRepeat() string {
 // parseTime parses a time argument.
 //
 // <number>[ms]
-//
 func (p *Parser) parseTime() string {
 	var t string
 
@@ -125,7 +124,6 @@ func (p *Parser) parseTime() string {
 // A control command takes a character to type while the modifier is held down.
 //
 // Ctrl+<character>
-//
 func (p *Parser) parseCtrl() Command {
 	if p.peek.Type == PLUS {
 		p.nextToken()
@@ -144,7 +142,6 @@ func (p *Parser) parseCtrl() Command {
 // A keypress command takes an optional typing speed and optional count.
 //
 // Key[@<time>] [count]
-//
 func (p *Parser) parseKeypress(ct TokenType) Command {
 	cmd := Command{Type: CommandType(ct)}
 	cmd.Options = p.parseSpeed()
@@ -156,7 +153,6 @@ func (p *Parser) parseKeypress(ct TokenType) Command {
 // An output command takes a file path to which to output.
 //
 // Output <path>
-//
 func (p *Parser) parseOutput() Command {
 	cmd := Command{Type: OUTPUT}
 
@@ -184,7 +180,6 @@ func (p *Parser) parseOutput() Command {
 // A set command takes a setting name and a value.
 //
 // Set <setting> <value>
-//
 func (p *Parser) parseSet() Command {
 	cmd := Command{Type: SET}
 
@@ -219,7 +214,6 @@ func (p *Parser) parseSet() Command {
 // A sleep command takes a time for how long to sleep.
 //
 // Sleep <time>
-//
 func (p *Parser) parseSleep() Command {
 	cmd := Command{Type: SLEEP}
 	cmd.Args = p.parseTime()
@@ -230,7 +224,6 @@ func (p *Parser) parseSleep() Command {
 //
 // Hide
 // ...
-//
 func (p *Parser) parseHide() Command {
 	cmd := Command{Type: HIDE}
 	return cmd
@@ -240,7 +233,6 @@ func (p *Parser) parseHide() Command {
 //
 // ...
 // Show
-//
 func (p *Parser) parseShow() Command {
 	cmd := Command{Type: SHOW}
 	return cmd
@@ -250,7 +242,6 @@ func (p *Parser) parseShow() Command {
 // A type command takes a string to type.
 //
 // Type "string"
-//
 func (p *Parser) parseType() Command {
 	cmd := Command{Type: TYPE}
 
