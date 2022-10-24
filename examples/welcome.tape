@@ -29,7 +29,19 @@ Sleep 0.5s
 Enter
 Sleep 0.5s
 
-Type "gum spin -s line -- sleep 2.5"
+Type "Let's take it for a spin"
+Left 5
+
+Sleep 0.5s
+Ctrl+U
+Sleep 0.5s
+Type "gum"
+
+Sleep 0.5s
+Ctrl+E
+Sleep 0.5s
+
+Type " -s line -- sleep 2.5"
 Sleep 0.5s
 Enter
 
@@ -38,4 +50,3 @@ Sleep 3s
 Type "clear"
 Sleep 0.5s
 Enter
-Sleep 1s
