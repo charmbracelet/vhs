@@ -7,7 +7,7 @@
 // Set FontFamily "DejaVu Sans Mono"
 // Set FontSize 12
 // Set Padding 50
-package vhs
+package main
 
 import (
 	"fmt"

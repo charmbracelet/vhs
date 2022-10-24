@@ -1,4 +1,4 @@
-package vhs
+package main
 
 import (
 	_ "embed"

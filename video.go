@@ -6,7 +6,7 @@
 // which can be configured through the Set command.
 //
 // Set MaxColors 256
-package vhs
+package main
 
 import (
 	"fmt"
