@@ -147,7 +147,7 @@ func init() {
 	)
 	rootCmd.CompletionOptions.HiddenDefaultCmd = true
 
-	if len(CommitSHA) >= 7 {
+	if len(CommitSHA) >= 7 { //nolint:gomnd
 		vt := rootCmd.VersionTemplate()
 		rootCmd.SetVersionTemplate(vt[:len(vt)-1] + " (" + CommitSHA[0:7] + ")\n")
 	}
@@ -179,15 +179,15 @@ func getVersion(program string) *version.Version {
 func ensureDependencies() error {
 	_, ffmpegErr := exec.LookPath("ffmpeg")
 	if ffmpegErr != nil {
-		return fmt.Errorf("ffmpeg is not installed. Install it from: http://ffmpeg.org.")
+		return fmt.Errorf("ffmpeg is not installed. Install it from: http://ffmpeg.org")
 	}
 	_, ttydErr := exec.LookPath("ttyd")
 	if ttydErr != nil {
-		return fmt.Errorf("ttyd is not installed. Install it from: https://github.com/tsl0922/ttyd.")
+		return fmt.Errorf("ttyd is not installed. Install it from: https://github.com/tsl0922/ttyd")
 	}
 	_, bashErr := exec.LookPath("bash")
 	if bashErr != nil {
-		return fmt.Errorf("bash is not installed.")
+		return fmt.Errorf("bash is not installed")
 	}
 
 	ttydVersion := getVersion("ttyd")
