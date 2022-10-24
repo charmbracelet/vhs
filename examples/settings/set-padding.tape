@@ -3,5 +3,5 @@ Set FontSize 32
 Set Height 150
 Set Padding 0
 
-Type "I'm on the edge!"
+Type "I'm so edgy!"
 Sleep 1

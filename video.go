@@ -36,6 +36,7 @@ type VideoOutputs struct {
 type VideoOptions struct {
 	CleanupFrames   bool
 	Framerate       int
+	PlaybackSpeed   float64
 	Input           string
 	MaxColors       int
 	Output          VideoOutputs
@@ -46,10 +47,11 @@ type VideoOptions struct {
 }
 
 const defaultFramerate = 50
-const defaultMaxColors = 256
-const defaultWidth = 1200
 const defaultHeight = 600
+const defaultMaxColors = 256
 const defaultPadding = 72
+const defaultPlaybackSpeed = 1.0
+const defaultWidth = 1200
 
 // DefaultVideoOptions is the set of default options for converting frames
 // to a GIF, which are used if they are not overridden.
@@ -62,6 +64,7 @@ var DefaultVideoOptions = VideoOptions{
 	Width:           defaultWidth,
 	Height:          defaultHeight,
 	Padding:         defaultPadding,
+	PlaybackSpeed:   defaultPlaybackSpeed,
 	BackgroundColor: DefaultTheme.Background,
 }
 
@@ -81,8 +84,9 @@ func MakeGIF(opts VideoOptions) *exec.Cmd {
 		"-r", fmt.Sprint(opts.Framerate),
 		"-i", opts.Input+cursorFrameFormat,
 		"-filter_complex",
-		fmt.Sprintf(`[0][1]overlay[merged];[merged]scale=%d:%d:force_original_aspect_ratio=1[scaled];[scaled]pad=%d:%d:(ow-iw)/2:(oh-ih)/2:%s[padded];[padded]fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s[bordered];[bordered]split[a][b];[a]palettegen=max_colors=256[p];[b][p]paletteuse[out]`,
+		fmt.Sprintf(`[0][1]overlay[merged];[merged]scale=%d:%d:force_original_aspect_ratio=1[scaled];[scaled]fps=%d,setpts=PTS/%f[speed];[speed]pad=%d:%d:(ow-iw)/2:(oh-ih)/2:%s[padded];[padded]fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s[bordered];[bordered]split[a][b];[a]palettegen=max_colors=256[p];[b][p]paletteuse[out]`,
 			opts.Width-2*opts.Padding, opts.Height-2*opts.Padding,
+			opts.Framerate, opts.PlaybackSpeed,
 			opts.Width, opts.Height,
 			opts.BackgroundColor,
 			opts.Padding, opts.Padding, opts.Padding, opts.Padding,
