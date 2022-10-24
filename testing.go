@@ -19,7 +19,7 @@ func DefaultTestOptions() TestOptions {
 	}
 }
 
-// var separator = strings.Repeat("─", 80)
+// Alternatively, `var separator = strings.Repeat("─", 80)`.
 const separator = "────────────────────────────────────────────────────────────────────────────────"
 
 var (
@@ -31,7 +31,7 @@ var (
 func (v *VHS) SaveOutput() {
 	// Create output file (once)
 	once.Do(func() {
-		err := os.MkdirAll(filepath.Dir(v.Options.Test.Output), 0770)
+		err := os.MkdirAll(filepath.Dir(v.Options.Test.Output), os.ModePerm)
 		if err != nil {
 			file, _ = os.CreateTemp(os.TempDir(), "vhs-*.txt")
 			return

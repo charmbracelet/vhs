@@ -8,6 +8,9 @@ import (
 	"github.com/charmbracelet/vhs/style"
 )
 
+// Highlight syntax highlights a command for prettier printing.
+// It takes an argument whether or not to print the command in a faint style to
+// represent hidden commands.
 func (c Command) Highlight(faint bool) string {
 	var (
 		optionsStyle = style.Time
@@ -17,9 +20,8 @@ func (c Command) Highlight(faint bool) string {
 	if faint {
 		if c.Options != "" {
 			return style.Faint.Render(fmt.Sprintf("%s %s %s", c.Type, c.Options, c.Args))
-		} else {
-			return style.Faint.Render(fmt.Sprintf("%s %s", c.Type, c.Args))
 		}
+		return style.Faint.Render(fmt.Sprintf("%s %s", c.Type, c.Args))
 	}
 
 	switch c.Type {

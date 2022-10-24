@@ -14,7 +14,7 @@ import (
 
 // VHS is the object that controls the setup.
 type VHS struct {
-	Options      *VHSOptions
+	Options      *Options
 	Page         *rod.Page
 	browser      *rod.Browser
 	TextCanvas   *rod.Element
@@ -24,8 +24,8 @@ type VHS struct {
 	tty          *exec.Cmd
 }
 
-// VHSOptions is the set of options for the setup.
-type VHSOptions struct {
+// Options is the set of options for the setup.
+type Options struct {
 	FontFamily    string
 	FontSize      int
 	LetterSpacing float64
@@ -37,15 +37,18 @@ type VHSOptions struct {
 	Video         VideoOptions
 }
 
+const defaultFontSize = 22
+const typingSpeed = 50 * time.Millisecond
+
 // DefaultVHSOptions returns the default set of options to use for the setup function.
-func DefaultVHSOptions() VHSOptions {
-	return VHSOptions{
+func DefaultVHSOptions() Options {
+	return Options{
 		Prompt:        "\\[\\e[38;2;90;86;224m\\]> \\[\\e[0m\\]",
 		FontFamily:    "JetBrains Mono,DejaVu Sans Mono,Menlo,Bitstream Vera Sans Mono,Inconsolata,Roboto Mono,Hack,Consolas,ui-monospace,monospace",
-		FontSize:      22,
+		FontSize:      defaultFontSize,
 		LetterSpacing: 0,
 		LineHeight:    1.0,
-		TypingSpeed:   50 * time.Millisecond,
+		TypingSpeed:   typingSpeed,
 		Theme:         DefaultTheme,
 		Video:         DefaultVideoOptions,
 	}
@@ -75,12 +78,14 @@ func New() VHS {
 	}
 }
 
+// Setup sets up the VHS instance and performs the necessary actions to reflect
+// the options that are default and set by the user.
 func (vhs *VHS) Setup() {
 	// Set Viewport to the correct size, accounting for the padding that will be
 	// added during the render.
 	padding := vhs.Options.Video.Padding
-	width := vhs.Options.Video.Width - 2*padding
-	height := vhs.Options.Video.Height - 2*padding
+	width := vhs.Options.Video.Width - padding - padding
+	height := vhs.Options.Video.Height - padding - padding
 	vhs.Page = vhs.Page.MustSetViewport(width, height, 0, false)
 
 	// Let's wait until we can access the window.term variable.
@@ -108,6 +113,12 @@ func (vhs *VHS) Setup() {
 	_ = os.MkdirAll(vhs.Options.Video.Input, os.ModePerm)
 }
 
+const cleanupWaitTime = 100 * time.Millisecond
+
+// Cleanup cleans up a VHS instance and terminates the go-rod browser and ttyd
+// processes.
+//
+// It also begins the rendering process of the frames into videos.
 func (vhs *VHS) Cleanup() {
 	vhs.PauseRecording()
 
@@ -115,7 +126,7 @@ func (vhs *VHS) Cleanup() {
 	//
 	// If a user runs a long running command, they must sleep for the required time
 	// to finish.
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(cleanupWaitTime)
 
 	// Tear down the processes we started.
 	vhs.browser.MustClose()
@@ -135,16 +146,17 @@ func (vhs *VHS) Cleanup() {
 		if err != nil {
 			fmt.Println(string(out))
 		}
-
 	}
 
 	// Cleanup frames if we successfully made the GIF.
 	if vhs.Options.Video.CleanupFrames {
-		os.RemoveAll(vhs.Options.Video.Input)
+		_ = os.RemoveAll(vhs.Options.Video.Input)
 	}
 }
 
-// Record begins the goroutine which captures images from the xterm.js canvases
+const quality = 0.92
+
+// Record begins the goroutine which captures images from the xterm.js canvases.
 func (vhs *VHS) Record() {
 	interval := time.Second / time.Duration(vhs.Options.Video.Framerate)
 	time.Sleep(interval)
@@ -152,17 +164,17 @@ func (vhs *VHS) Record() {
 		counter := 0
 		for {
 			if !vhs.recording {
-				time.Sleep(2 * interval)
+				time.Sleep(interval + interval)
 				continue
 			}
 			if vhs.Page != nil {
 				counter++
 				start := time.Now()
-				text, textErr := vhs.TextCanvas.CanvasToImage("image/png", 0.92)
-				cursor, cursorErr := vhs.CursorCanvas.CanvasToImage("image/png", 0.92)
+				text, textErr := vhs.TextCanvas.CanvasToImage("image/png", quality)
+				cursor, cursorErr := vhs.CursorCanvas.CanvasToImage("image/png", quality)
 				if textErr == nil && cursorErr == nil {
-					_ = os.WriteFile(vhs.Options.Video.Input+fmt.Sprintf(textFrameFormat, counter), text, 0644)
-					_ = os.WriteFile(vhs.Options.Video.Input+fmt.Sprintf(cursorFrameFormat, counter), cursor, 0644)
+					_ = os.WriteFile(vhs.Options.Video.Input+fmt.Sprintf(textFrameFormat, counter), text, os.ModePerm)
+					_ = os.WriteFile(vhs.Options.Video.Input+fmt.Sprintf(cursorFrameFormat, counter), cursor, os.ModePerm)
 				}
 				elapsed := time.Since(start)
 				if elapsed >= interval {

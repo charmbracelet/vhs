@@ -1,5 +1,6 @@
-// video spawns the ffmpeg process to convert the frames, collected by go-rod's
-// screenshots into the input folder, to a GIF, WebM, MP4.
+// Package vhs video.go spawns the ffmpeg process to convert the frames,
+// collected by go-rod's  screenshots into the input folder, to a GIF, WebM,
+// MP4.
 //
 // MakeGIF takes several options to modify the behaviour of the ffmpeg process,
 // which can be configured through the Set command.
@@ -44,17 +45,23 @@ type VideoOptions struct {
 	BackgroundColor string
 }
 
+const defaultFramerate = 50
+const defaultMaxColors = 256
+const defaultWidth = 1200
+const defaultHeight = 600
+const defaultPadding = 72
+
 // DefaultVideoOptions is the set of default options for converting frames
 // to a GIF, which are used if they are not overridden.
 var DefaultVideoOptions = VideoOptions{
 	CleanupFrames:   true,
-	Framerate:       50,
+	Framerate:       defaultFramerate,
 	Input:           randomDir(),
-	MaxColors:       256,
+	MaxColors:       defaultMaxColors,
 	Output:          VideoOutputs{GIF: "out.gif", WebM: "", MP4: ""},
-	Width:           1200,
-	Height:          600,
-	Padding:         72,
+	Width:           defaultWidth,
+	Height:          defaultHeight,
+	Padding:         defaultPadding,
 	BackgroundColor: DefaultTheme.Background,
 }
 
@@ -66,6 +73,7 @@ func MakeGIF(opts VideoOptions) *exec.Cmd {
 
 	fmt.Println("Creating GIF...")
 
+	//nolint:gosec
 	return exec.Command(
 		"ffmpeg", "-y",
 		"-r", fmt.Sprint(opts.Framerate),
@@ -93,6 +101,7 @@ func MakeWebM(opts VideoOptions) *exec.Cmd {
 
 	fmt.Println("Creating WebM...")
 
+	//nolint:gosec
 	return exec.Command(
 		"ffmpeg", "-y", "-i", opts.Input,
 		"-framerate", fmt.Sprint(opts.Framerate),
@@ -113,6 +122,7 @@ func MakeMP4(opts VideoOptions) *exec.Cmd {
 
 	fmt.Println("Creating MP4...")
 
+	//nolint:gosec
 	return exec.Command(
 		"ffmpeg", "-y", "-i", opts.Input,
 		"-framerate", fmt.Sprint(opts.Framerate),
