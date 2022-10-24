@@ -1,11 +1,10 @@
-// theme contains the information about a terminal theme.
+// Package vhs theme.go contains the information about a terminal theme.
 // It stores the 16 base colors as well as the background and foreground colors
 // of the terminal theme.
 //
 // It can be changed through the Set command.
 //
 // Set Theme {"background": "#171717"}
-//
 package vhs
 
 import (
@@ -77,7 +76,9 @@ var DefaultTheme = Theme{
 	BrightWhite:   style.BrightWhite,
 }
 
-// GlamourTheme is the theme for printing out the manual page
+const margin = 2
+
+// GlamourTheme is the theme for printing out the manual page.
 // $ vhs man
 var GlamourTheme = ansi.StyleConfig{
 	Document: ansi.StyleBlock{
@@ -85,7 +86,7 @@ var GlamourTheme = ansi.StyleConfig{
 			BlockPrefix: "\n",
 			BlockSuffix: "\n",
 		},
-		Margin: uintPtr(2),
+		Margin: uintPtr(margin),
 	},
 	Heading: ansi.StyleBlock{
 		StylePrimitive: ansi.StylePrimitive{

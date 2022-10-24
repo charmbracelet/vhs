@@ -103,7 +103,6 @@ func Parse(args []string) error {
 	valid := true
 
 	for _, file := range args {
-
 		b, err := os.ReadFile(file)
 		if err != nil {
 			continue
@@ -121,7 +120,7 @@ func Parse(args []string) error {
 			for _, err := range errs {
 				fmt.Print(vhs.LineNumber(err.Token.Line))
 				fmt.Println(lines[err.Token.Line-1])
-				fmt.Print(strings.Repeat(" ", err.Token.Column+5))
+				fmt.Print(strings.Repeat(" ", err.Token.Column+vhs.ErrorColumnOffset))
 				fmt.Println(vhs.Underline(len(err.Token.Literal)), err.Msg)
 				fmt.Println()
 			}
@@ -152,7 +151,7 @@ func New(args []string) error {
 		return err
 	}
 
-	f.Write(vhs.DemoTape)
+	_, _ = f.Write(vhs.DemoTape)
 
 	fmt.Println("Created " + fileName)
 
@@ -160,7 +159,7 @@ func New(args []string) error {
 }
 
 // Version stores the build version of VHS at the time of packages through -ldflags
-//   go build -ldflags "-s -w -X=main.Version=$(VERSION)" cmd/vhs/vhs.go -o vhs
+// go build -ldflags "-s -w -X=main.Version=$(VERSION)" cmd/vhs/vhs.go -o vhs
 var Version string
 
 // PrintVersion prints the version of VHS.
@@ -178,7 +177,7 @@ func PrintVersion() {
 
 var versionRegex = regexp.MustCompile(`\d+\.\d+\.\d+`)
 
-// getVersion returns the parsed version of a program
+// getVersion returns the parsed version of a program.
 func getVersion(program string) *version.Version {
 	cmd := exec.Command(program, "--version")
 	out, err := cmd.Output()
@@ -190,7 +189,7 @@ func getVersion(program string) *version.Version {
 }
 
 // ensureDependencies ensures that all dependencies are correctly installed
-// and versioned before continuing
+// and versioned before continuing.
 func ensurDependencies() {
 	var shouldExit bool
 

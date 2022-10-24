@@ -11,6 +11,7 @@ type Token struct {
 	Column  int
 }
 
+//nolint:revive
 const (
 	AT             = "@"
 	EQUAL          = "="
@@ -96,6 +97,7 @@ var keywords = map[string]TokenType{
 	"Width":         WIDTH,
 }
 
+// IsSetting returns whether a token is a setting.
 func IsSetting(t TokenType) bool {
 	switch t {
 	case FONT_FAMILY, FONT_SIZE, LETTER_SPACING, LINE_HEIGHT,

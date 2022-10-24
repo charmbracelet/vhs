@@ -1,4 +1,4 @@
-// keys defines the key map for the Type command.
+// Package vhs keys.go defines the key map for the Type command.
 // The `keymap` map is used to convert runes from a string into the appropriate
 // go-rod input.
 //

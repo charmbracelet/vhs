@@ -18,12 +18,12 @@ linters:
     - exhaustive
     # - exhaustivestruct
     - goconst
-    - godot
+    # - godot
     - godox
     - gomnd
     - gomoddirectives
     - goprintffuncname
-    - ifshort
+    # - ifshort
     # - lll
     - misspell
     - nakedret
@@ -31,7 +31,7 @@ linters:
     - noctx
     - nolintlint
     - prealloc
-    - wrapcheck
+    # - wrapcheck
 
   # disable default linters, they are already enabled in .golangci.yml
   disable:

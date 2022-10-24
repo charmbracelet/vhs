@@ -238,17 +238,20 @@ func ExecuteSetWidth(c Command, v *VHS) {
 	v.Options.Video.Width, _ = strconv.Atoi(c.Args)
 }
 
+const bitSize = 64
+const base = 10
+
 // ExecuteSetLetterSpacing applies letter spacing (also known as tracking) on the
 // vhs.
 func ExecuteSetLetterSpacing(c Command, v *VHS) {
-	letterSpacing, _ := strconv.ParseFloat(c.Args, 64)
+	letterSpacing, _ := strconv.ParseFloat(c.Args, bitSize)
 	v.Options.LetterSpacing = letterSpacing
 	_, _ = v.Page.Eval(fmt.Sprintf("() => term.options.letterSpacing = %f", letterSpacing))
 }
 
 // ExecuteSetLineHeight applies the line height on the vhs.
 func ExecuteSetLineHeight(c Command, v *VHS) {
-	lineHeight, _ := strconv.ParseFloat(c.Args, 64)
+	lineHeight, _ := strconv.ParseFloat(c.Args, bitSize)
 	v.Options.LineHeight = lineHeight
 	_, _ = v.Page.Eval(fmt.Sprintf("() => term.options.lineHeight = %f", lineHeight))
 }
@@ -282,7 +285,7 @@ func ExecuteSetPadding(c Command, v *VHS) {
 
 // ExecuteSetFramerate applies the framerate on the vhs.
 func ExecuteSetFramerate(c Command, v *VHS) {
-	framerate, err := strconv.ParseInt(c.Args, 10, 0)
+	framerate, err := strconv.ParseInt(c.Args, base, 0)
 	if err != nil {
 		return
 	}

@@ -19,10 +19,10 @@ func NewLexer(input string) *Lexer {
 
 // readChar advances the lexer to the next character.
 func (l *Lexer) readChar() {
-	l.column += 1
+	l.column++
 	l.ch = l.peekChar()
 	l.pos = l.nextPos
-	l.nextPos += 1
+	l.nextPos++
 }
 
 // NextToken returns the next token in the input.
@@ -51,7 +51,7 @@ func (l *Lexer) NextToken() Token {
 		l.readChar()
 	case '{':
 		tok.Type = JSON
-		tok.Literal = "{" + l.readJson() + "}"
+		tok.Literal = "{" + l.readJSON() + "}"
 		l.readChar()
 	case '\'':
 		tok.Type = STRING
@@ -88,7 +88,7 @@ func (l *Lexer) newToken(tokenType TokenType, ch byte) Token {
 }
 
 // readComment reads a comment.
-// // Foo => Token(Foo)
+// // Foo => Token(Foo).
 func (l *Lexer) readComment() string {
 	pos := l.pos + 1
 	for {
@@ -103,7 +103,7 @@ func (l *Lexer) readComment() string {
 }
 
 // readString reads a string from the input.
-// "Foo" => Token(Foo)
+// "Foo" => Token(Foo).
 func (l *Lexer) readString(endChar byte) string {
 	pos := l.pos + 1
 	for {
@@ -115,9 +115,9 @@ func (l *Lexer) readString(endChar byte) string {
 	return l.input[pos:l.pos]
 }
 
-// readJson reads a JSON object from the input.
-// {"foo": "bar"} => Token({"foo": "bar"})
-func (l *Lexer) readJson() string {
+// readJSON reads a JSON object from the input.
+// {"foo": "bar"} => Token({"foo": "bar"}).
+func (l *Lexer) readJSON() string {
 	pos := l.pos + 1
 	for {
 		l.readChar()
@@ -129,7 +129,7 @@ func (l *Lexer) readJson() string {
 }
 
 // readNumber reads a number from the input.
-// 123 => Token(123)
+// 123 => Token(123).
 func (l *Lexer) readNumber() string {
 	pos := l.pos
 	for isDigit(l.ch) || isDot(l.ch) {
@@ -139,7 +139,7 @@ func (l *Lexer) readNumber() string {
 }
 
 // readIdentifier reads an identifier from the input.
-// Foo => Token(Foo)
+// Foo => Token(Foo).
 func (l *Lexer) readIdentifier() string {
 	pos := l.pos
 	for isLetter(l.ch) || isDot(l.ch) || isDash(l.ch) || isUnderscore(l.ch) || isSlash(l.ch) || isPercent(l.ch) || isDigit(l.ch) {
@@ -154,7 +154,7 @@ func (l *Lexer) readIdentifier() string {
 func (l *Lexer) skipWhitespace() {
 	for isWhitespace(l.ch) {
 		if isNewLine(l.ch) {
-			l.line += 1
+			l.line++
 			l.column = 0
 		}
 		l.readChar()

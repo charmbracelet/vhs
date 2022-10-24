@@ -19,8 +19,10 @@ import (
 )
 
 const (
-	host = "localhost"
-	port = 1976
+	host      = "localhost"
+	port      = 1976
+	maxNumber = 1000000000
+	timeout   = 30 * time.Second
 )
 
 func main() {
@@ -57,7 +59,8 @@ func main() {
 						return
 					}
 
-					rand := rand.Int63n(1000000000)
+					//nolint:gosec
+					rand := rand.Int63n(maxNumber)
 					tempFile := fmt.Sprintf("vhs-%d.gif", rand)
 
 					err = vhs.Evaluate(b.String(), s.Stderr(), tempFile)
@@ -67,7 +70,7 @@ func main() {
 
 					gif, _ := os.ReadFile(tempFile)
 					wish.Print(s, string(gif))
-					os.Remove(tempFile)
+					_ = os.Remove(tempFile)
 
 					h(s)
 				}
@@ -90,7 +93,7 @@ func main() {
 
 	<-done
 	log.Println("Stopping SSH server")
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer func() { cancel() }()
 	if err := s.Shutdown(ctx); err != nil {
 		log.Fatalln(err)
