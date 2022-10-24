@@ -1,11 +1,17 @@
 FROM tsl0922/ttyd:alpine as ttyd
-FROM golang:1.19.2-alpine
+FROM alpine:latest
 
+# Install latest ttyd
 COPY --from=ttyd /usr/bin/ttyd /usr/bin/ttyd
-WORKDIR /src/vhs
+
+# Install
+COPY vhs /usr/bin/
 
 # Install Fonts
-RUN apk add \
+RUN apk add --no-cache \
+    --repository=http://dl-cdn.alpinelinux.org/alpine/edge/main \
+    --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
+    --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
     font-adobe-source-code-pro font-source-code-pro-nerd \
     font-bitstream-vera-sans-mono-nerd \
     font-dejavu font-dejavu-sans-mono-nerd \
@@ -17,21 +23,12 @@ RUN apk add \
     font-liberation font-liberation-mono-nerd \
     font-noto \
     font-roboto-mono \
-    font-ubuntu font-ubuntu-mono-nerd \
-    --repository=http://dl-cdn.alpinelinux.org/alpine/edge/main \
-    --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
-    --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
-        
+    font-ubuntu font-ubuntu-mono-nerd
+
 # Install Dependencies
-RUN apk add ffmpeg chromium bash
+RUN apk add --no-cache ffmpeg chromium bash
 
-# Verify Go Dependencies
-COPY go.mod go.sum ./
-RUN go mod download && go mod verify
+# Expose port
+EXPOSE 1976
 
-# Source + Install
-COPY . .
-RUN go install cmd/vhs/vhs.go && \
-    go install cmd/serve/serve.go
-
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["/usr/bin/vhs"]
