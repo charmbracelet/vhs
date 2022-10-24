@@ -3,3 +3,7 @@
 captures/
 tmp/
 frames/
+manpages
+completions
+dist
+vhs

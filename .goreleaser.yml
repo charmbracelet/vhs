@@ -1,9 +1,9 @@
 includes:
   - from_url:
-      url: charmbracelet/meta/main/goreleaser.yaml
+      url: charmbracelet/meta/main/goreleaser-vhs.yaml
 
 variables:
-  main: "./cmd/vhs"
+  main: "."
   description: "A tool for recording terminal GIFs"
   github_url: "https://github.com/charmbracelet/vhs"
   maintainer: "Maas Lalani <maas@charm.sh>"
