@@ -197,6 +197,7 @@ var Settings = map[string]CommandFunc{
 	"Height":        ExecuteSetHeight,
 	"LetterSpacing": ExecuteSetLetterSpacing,
 	"LineHeight":    ExecuteSetLineHeight,
+	"PlaybackSpeed": ExecuteSetPlaybackSpeed,
 	"Padding":       ExecuteSetPadding,
 	"Theme":         ExecuteSetTheme,
 	"TypingSpeed":   ExecuteSetTypingSpeed,
@@ -290,4 +291,13 @@ func ExecuteSetFramerate(c Command, v *VHS) {
 		return
 	}
 	v.Options.Video.Framerate = int(framerate)
+}
+
+// ExecuteSetPlaybackSpeed applies the playback speed option on the vhs.
+func ExecuteSetPlaybackSpeed(c Command, v *VHS) {
+	playbackSpeed, err := strconv.ParseFloat(c.Args, bitSize)
+	if err != nil {
+		return
+	}
+	v.Options.Video.PlaybackSpeed = playbackSpeed
 }

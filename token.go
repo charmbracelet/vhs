@@ -52,6 +52,7 @@ const (
 	FONT_FAMILY    = "FONT_FAMILY"
 	FONT_SIZE      = "FONT_SIZE"
 	FRAMERATE      = "FRAMERATE"
+	PLAYBACK_SPEED = "PLAYBACK_SPEED"
 	HEIGHT         = "HEIGHT"
 	WIDTH          = "WIDTH"
 	LETTER_SPACING = "LETTER_SPACING"
@@ -91,6 +92,7 @@ var keywords = map[string]TokenType{
 	"Height":        HEIGHT,
 	"LetterSpacing": LETTER_SPACING,
 	"LineHeight":    LINE_HEIGHT,
+	"PlaybackSpeed": PLAYBACK_SPEED,
 	"TypingSpeed":   TYPING_SPEED,
 	"Padding":       PADDING,
 	"Theme":         THEME,
@@ -101,7 +103,7 @@ var keywords = map[string]TokenType{
 func IsSetting(t TokenType) bool {
 	switch t {
 	case FONT_FAMILY, FONT_SIZE, LETTER_SPACING, LINE_HEIGHT,
-		FRAMERATE, TYPING_SPEED, THEME,
+		FRAMERATE, TYPING_SPEED, THEME, PLAYBACK_SPEED,
 		HEIGHT, WIDTH, PADDING:
 		return true
 	default:
