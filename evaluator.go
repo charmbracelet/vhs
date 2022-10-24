@@ -15,7 +15,7 @@ func Evaluate(tape string, out io.Writer, outputFile string) error {
 
 	cmds := p.Parse()
 	errs := p.Errors()
-	if len(errs) != 0 {
+	if len(errs) != 0 || len(cmds) == 0 {
 		lines := strings.Split(tape, "\n")
 		for _, err := range errs {
 			fmt.Fprint(out, LineNumber(err.Token.Line))
