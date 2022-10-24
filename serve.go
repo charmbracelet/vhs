@@ -19,10 +19,13 @@ import (
 )
 
 const (
-	host      = "0.0.0.0"
-	port      = 1976
 	maxNumber = 1000000000
 	timeout   = 30 * time.Second
+)
+
+var (
+	host string
+	port int
 )
 
 var (
@@ -106,3 +109,8 @@ var (
 		},
 	}
 )
+
+func init() {
+	serveCmd.Flags().IntVarP(&port, "port", "p", 1976, "port to listen on")
+	serveCmd.Flags().StringVarP(&host, "host", "l", "0.0.0.0", "host to listen on")
+}
