@@ -385,16 +385,44 @@ Space 10
 
 <img alt="Example of pressing the space key" src="https://stuff.charm.sh/vhs/examples/space.gif" width="600" />
 
+### Sleep
+
+The `Sleep` command allows you to continue capturing frames without interacting
+with the terminal. This is useful when you need to wait on something to
+complete while including it in the recording like a spinner or loading state.
+The command takes a number argument in seconds.
+
+```elixir
+Sleep 0.5   # 500ms
+Sleep 2     # 2s
+Sleep 100ms # 100ms
+Sleep 1s    # 1s
+```
+
+### Show
+
+The `Show` command allows you to specify that the following commands should be
+un-hidden in the output. Since commands are shown by default, this command is
+really only useful after using the `Hide` command.
+
+```elixir
+Hide
+Type "You won't see this being typed."
+Show
+Type "You will see this being typed."
+```
+
+<img alt="Example of typing something while hidden" src="https://stuff.charm.sh/vhs/examples/hide.gif" width="600" />
+
 ### Hide
 
-The `Hide` command allows you to specify that the following commands should not
-be shown in the output.
+The `Hide` command allows you to exclude commands from the output.
 
 ```elixir
 Hide
 ```
 
-This command can be helpful for doing any setup and clean up required to record
+This command is helpful for performing any setup and cleanup required to record
 a GIF, such as building the latest version of a binary and removing the binary
 once the demo is recorded.
 
@@ -416,35 +444,6 @@ Enter
 Hide
 Type 'rm example'
 ```
-
-### Sleep
-
-The `Sleep` command allows you to continue capturing frames without interacting
-with the terminal. This is useful when you need to wait on something to
-complete while including it in the recording like a spinner or loading state.
-The command takes a number argument in seconds.
-
-```elixir
-Sleep 0.5   # 500ms
-Sleep 2     # 2s
-Sleep 100ms # 100ms
-Sleep 1s    # 1s
-```
-
-### Show
-
-The `Show` command allows you to specify that the following commands should
-be shown in the output. Since this is the default case, the show command will
-usually be seen with the `Hide` command.
-
-```elixir
-Hide
-Type "You won't see this being typed."
-Show
-Type "You will see this being typed."
-```
-
-<img alt="Example of typing something while hidden" src="https://stuff.charm.sh/vhs/examples/hide.gif" width="600" />
 
 ***
 
