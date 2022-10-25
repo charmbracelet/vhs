@@ -198,12 +198,20 @@ Sleep 1s    # 1s
 
 ### Type
 
-The `Type` command allows you to type in the terminal and emulate key presses.
-This is useful for typing commands or interacting with the terminal.
-The command takes a string argument with the characters to type.
+Use `Type` to emulate key presses. That is, you can use `Type` to script typing
+in a terminal. Type is handy for both entering commands and interacting with
+prompts and TUIs in the terminal. The command takes a string argument of the
+characters to type.
+
+You can set the standard typing speed with [`Set TypingSpeed`](#set-typing-speed)
+and override it in places with a `@time` argument.
 
 ```elixir
+# Type something
 Type "Whatever you want"
+
+# Type something really slowly!
+Type@500ms "Slow down there, partner."
 ```
 
 <img alt="Example of using the Type command in VHS" src="https://stuff.charm.sh/vhs/examples/type.gif" width="600" />
