@@ -13,7 +13,7 @@ Write terminal GIFs as code for integration testing and demoing your CLI tools.
 
 <img alt="Welcome to VHS" src="https://stuff.charm.sh/vhs/examples/neofetch_2.gif" width="600" />
 
-The above example is generated from VHS ([View Tape](./examples/neofetch/neofetch.tape)).
+The above example was generated with VHS ([view source](./examples/neofetch/neofetch.tape)).
 
 ## Tutorial
 
@@ -29,8 +29,9 @@ Open the `.tape` file with your favorite `$EDITOR`.
 vim demo.tape
 ```
 
-In the file, write [commands](#commands) to perform on the terminal.
-View [Documentation](#commands) for a list of all the possible commands.
+Tape files consist of a series of [commands](#commands). The commands are
+instructions for VHS to perform on its virtual terminal.  For a list of all
+possible commands see [the docs](#commands).
 
 ```elixir
 # Render the output GIF to demo.gif
@@ -54,8 +55,7 @@ Enter
 Sleep 5s
 ```
 
-Once you've written the commands to perform, save and exit the file. And, run
-the VHS tool on the file.
+Once you've finished, save the file and feed it into VHS.
 
 ```sh
 vhs < demo.tape
@@ -64,7 +64,7 @@ vhs < demo.tape
 All done! You should see a new file called `demo.gif` (or whatever you named
 the `Output`) in the directory.
 
-More examples are in the [`examples/`](https://github.com/charmbracelet/vhs/tree/main/examples) folder.
+More examples are in the [`examples/`](https://github.com/charmbracelet/vhs/tree/main/examples) directory.
 
 <img alt="A GIF produced by the VHS code above" src="https://stuff.charm.sh/vhs/examples/demo.gif" width="600" />
 
