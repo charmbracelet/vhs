@@ -160,17 +160,17 @@ Setting commands must be set at the top of the tape file. Any setting (except
 `TypingSpeed`) command that is set after a non-setting or non-output command
 will be ignored.
 
-* [`Set FontSize <Number>`](#set-font-size)
-* [`Set FontFamily <String>`](#set-font-family)
-* [`Set Height <Number>`](#set-height)
-* [`Set Width <Number>`](#set-width)
-* [`Set LetterSpacing <Float>`](#set-letter-spacing)
-* [`Set LineHeight <Float>`](#set-line-height)
-* [`Set TypingSpeed <Time>`](#set-typing-speed)
-* [`Set Theme <String>`](#set-theme)
-* [`Set Padding <Number>`](#set-padding)
-* [`Set Framerate <Float>`](#set-framerate)
-* [`Set PlaybackSpeed <Number>`](#set-playback-speed)
+* [`Set FontSize <number>`](#set-font-size)
+* [`Set FontFamily <string>`](#set-font-family)
+* [`Set Height <number>`](#set-height)
+* [`Set Width <number>`](#set-width)
+* [`Set LetterSpacing <float>`](#set-letter-spacing)
+* [`Set LineHeight <float>`](#set-line-height)
+* [`Set TypingSpeed <time>`](#set-typing-speed)
+* [`Set Theme <string>`](#set-theme)
+* [`Set Padding <number>`](#set-padding)
+* [`Set Framerate <float>`](#set-framerate)
+* [`Set PlaybackSpeed <float>`](#set-playback-speed)
 
 ### Sleep
 
@@ -280,7 +280,7 @@ Space 10
 
 #### Set Font Size
 
-Set the font size with the `Set FontSize <Number>` command.
+Set the font size with the `Set FontSize <number>` command.
 
 ```elixir
 Set FontSize 10
@@ -296,7 +296,7 @@ Set FontSize 40
 
 #### Set Font Family
 
-Set the font family with the `Set FontFamily "<Font>"` command
+Set the font family with the `Set FontFamily "<font>"` command
 
 ```elixir
 Set FontFamily "Monoflow"

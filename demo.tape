@@ -6,16 +6,16 @@
 #   Output <path>.webm              Create a WebM output at the given <path>
 #
 # Settings:
-#   Set FontSize <Number>           Set the font size of the terminal
-#   Set FontFamily <String>         Set the font family of the terminal
-#   Set Height <Number>             Set the height of the terminal
-#   Set Width <Number>              Set the width of the terminal
-#   Set LetterSpacing <Float>       Set the font letter spacing (tracking)
-#   Set LineHeight <Float>          Set the font line height
-#   Set Theme <String>              Set the theme of the terminal (JSON)
-#   Set Padding <Number>[em|px]     Set the padding of the terminal
-#   Set Framerate <Number>          Set the framerate of the recording
-#   Set PlaybackSpeed <Float>       Set the playback speed of the recording
+#   Set FontSize <number>           Set the font size of the terminal
+#   Set FontFamily <string>         Set the font family of the terminal
+#   Set Height <number>             Set the height of the terminal
+#   Set Width <number>              Set the width of the terminal
+#   Set LetterSpacing <float>       Set the font letter spacing (tracking)
+#   Set LineHeight <float>          Set the font line height
+#   Set Theme <string>              Set the theme of the terminal (JSON)
+#   Set Padding <number>            Set the padding of the terminal
+#   Set Framerate <number>          Set the framerate of the recording
+#   Set PlaybackSpeed <float>       Set the playback speed of the recording
 #
 # Sleep:
 #   Sleep <time>                    Sleep for a set amount of <time> in seconds
