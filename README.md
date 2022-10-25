@@ -34,10 +34,10 @@ instructions for VHS to perform on its virtual terminal.  For a list of all
 possible commands see [the docs](#commands).
 
 ```elixir
-# Render the output GIF to demo.gif
+# Where should we write the GIF?
 Output demo.gif
 
-# Set up a 1200x600 terminal with 46px font size.
+# Set up a 1200x600 terminal with 46px font.
 Set FontSize 46
 Set Width 1200
 Set Height 600
@@ -150,7 +150,7 @@ will render them to the respective locations.
 Output out.gif
 Output out.mp4
 Output out.webm
-Output frames/ # .png frames
+Output frames/ # a directory of frames as a PNG sequence
 ```
 
 ### Settings
