@@ -11,9 +11,9 @@
 
 Write terminal GIFs as code for integration testing and demoing your CLI tools.
 
-<img alt="Welcome to VHS" src="https://stuff.charm.sh/vhs/examples/welcome.gif" width="600" />
+<img alt="Welcome to VHS" src="https://stuff.charm.sh/vhs/examples/neofetch.gif" width="600" />
 
-The above example is generated from VHS ([View Tape](./examples/welcome.tape)).
+The above example is generated from VHS ([View Tape](./examples/neofetch/neofetch.tape)).
 
 ## Tutorial
 
