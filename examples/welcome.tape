@@ -1,9 +1,3 @@
-# Source code for the VHS welcome example.
-#
-# To run:
-#
-#     vhs < welcome.tape
-
 # Render the output GIF to demo.gif
 Output examples/welcome.gif
 Output examples/frames/

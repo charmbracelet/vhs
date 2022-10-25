@@ -1,3 +1,9 @@
+# Source code for the VHS neofetch example.
+#
+# To run:
+#
+#     vhs < neofetch.tape
+
 Output examples/neofetch/neofetch.gif
 
 Set TypingSpeed 75ms
