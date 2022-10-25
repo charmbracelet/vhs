@@ -106,11 +106,16 @@ go install github.com/charmbracelet/vhs@latest
 
 [releases]: https://github.com/charmbracelet/vhs/releases
 
-## Teams
+## Self Hosting
 
-If you are a team using VHS, reach out to [vt100@charm.sh](mailto:vt100@charm.sh)
-to set up a VHS rendering server with an `ssh` interface to avoid any local
-setup for your team.
+You can self host VHS by running:
+
+```sh
+vhs serve
+```
+
+Then, access VHS from any machine with `ssh` installed to avoid any local
+setup.
 
 ```sh
 ssh vhs.charm.sh < demo.tape > demo.gif
@@ -451,6 +456,24 @@ Type "You will see this being typed."
 
 <img alt="Example of typing something while hidden" src="https://stuff.charm.sh/vhs/examples/hide.gif" width="600" />
 
+## Testing
+
+VHS can be used for integration testing by outputting an `.txt` or `.ascii`
+file. This will result in a golden file that you can commit to your git repo
+and view diffs between previous and future runs.
+
+```elixir
+Output golden.ascii
+```
+
+You can also integrate VHS into your CI pipeline with the
+[VHS GitHub Action](https://github.com/charmbracelet/vhs-action)
+
+## Syntax Highlighting
+
+If your editor supports syntax highlighting from tree-sitter,
+you can syntax highlight `.tape` files with [Tree-sitter VHS Grammar](https://github.com/charmbracelet/tree-sitter-vhs).
+
 ## Feedback
 
 We’d love to hear your thoughts on this project. Feel free to drop us a note!
@@ -463,7 +486,7 @@ We’d love to hear your thoughts on this project. Feel free to drop us a note!
 
 [MIT](https://github.com/charmbracelet/vhs/raw/main/LICENSE)
 
----
+***
 
 Part of [Charm](https://charm.sh).
 
