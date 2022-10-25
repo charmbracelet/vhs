@@ -14,6 +14,7 @@ require (
 	github.com/aymanbagabas/go-osc52 v1.2.1 // indirect
 	github.com/dlclark/regexp2 v1.7.0 // indirect
 	github.com/hashicorp/go-version v1.6.0
+	github.com/mattn/go-isatty v0.0.16
 	github.com/muesli/mango-cobra v1.2.0
 	github.com/muesli/roff v0.1.0
 	github.com/rivo/uniseg v0.4.2 // indirect
