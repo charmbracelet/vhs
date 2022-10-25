@@ -170,11 +170,11 @@ func (vhs *VHS) Record() {
 			if vhs.Page != nil {
 				counter++
 				start := time.Now()
-				text, textErr := vhs.TextCanvas.CanvasToImage("image/png", quality)
 				cursor, cursorErr := vhs.CursorCanvas.CanvasToImage("image/png", quality)
+				text, textErr := vhs.TextCanvas.CanvasToImage("image/png", quality)
 				if textErr == nil && cursorErr == nil {
-					_ = os.WriteFile(vhs.Options.Video.Input+fmt.Sprintf(textFrameFormat, counter), text, os.ModePerm)
 					_ = os.WriteFile(vhs.Options.Video.Input+fmt.Sprintf(cursorFrameFormat, counter), cursor, os.ModePerm)
+					_ = os.WriteFile(vhs.Options.Video.Input+fmt.Sprintf(textFrameFormat, counter), text, os.ModePerm)
 				}
 				elapsed := time.Since(start)
 				if elapsed >= interval {
