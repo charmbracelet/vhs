@@ -125,20 +125,20 @@ setup.
 ssh vhs.charm.sh < demo.tape > demo.gif
 ```
 
-## Commands
+## VHS Command Reference
 
-For documentation on the command line, run:
+> **Note**
+> You can view all VHS documentation on the command line with `vhs manual`.
 
-```sh
-vhs manual
-```
+There are a few basic types of VHS commands:
 
-* [`Output <path>`](#output)
-* [`Set <Setting> Value`](#settings)
-* [`Type "<characters>"`](#type)
-* [`Sleep <time>`](#sleep)
-* [`Hide`](#hide)
-* [`Show`](#show)
+* [`Output <path>`](#output): specify file output
+* [`Set <Setting> Value`](#settings): set recording settings
+* [`Type "<characters>"`](#type): emulate typing
+* [`Keys "<characters>"`](#keys): press special keys
+* [`Sleep <time>`](#sleep): wait for a certain amount of time
+* [`Hide`](#hide): hide commands from output
+* [`Show`](#show): stop hiding commands from output
 
 ### Keys
 
@@ -472,6 +472,8 @@ Type "You will see this being typed."
 ```
 
 <img alt="Example of typing something while hidden" src="https://stuff.charm.sh/vhs/examples/hide.gif" width="600" />
+
+***
 
 ## Testing
 
