@@ -64,9 +64,9 @@ vhs < demo.tape
 All done! You should see a new file called `demo.gif` (or whatever you named
 the `Output`) in the directory.
 
-More examples are in the [`examples/`](https://github.com/charmbracelet/vhs/tree/main/examples) directory.
-
 <img alt="A GIF produced by the VHS code above" src="https://stuff.charm.sh/vhs/examples/demo.gif" width="600" />
+
+For more examples see the [`examples/`](https://github.com/charmbracelet/vhs/tree/main/examples) directory.
 
 ## Installation
 
