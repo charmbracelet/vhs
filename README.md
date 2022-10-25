@@ -31,7 +31,7 @@ vim demo.tape
 
 Tape files consist of a series of [commands](#commands). The commands are
 instructions for VHS to perform on its virtual terminal.  For a list of all
-possible commands see [the docs](#commands).
+possible commands see [the command reference](#vhs-command-reference).
 
 ```elixir
 # Where should we write the GIF?
