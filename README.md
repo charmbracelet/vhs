@@ -77,7 +77,8 @@ Use a package manager:
 
 ```sh
 # macOS or Linux
-brew install vhs ttyd ffmpeg
+brew install charmbracelet/tap/vhs ffmpeg
+brew install ttyd --HEAD
 
 # Arch Linux (btw)
 yay -S vhs ttyd ffmpeg
