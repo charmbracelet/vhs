@@ -287,6 +287,26 @@ Set PlaybackSpeed 1.0 # Keep output at normal speed (default)
 Set PlaybackSpeed 2.0 # Make output 2 times faster
 ```
 
+### Type
+
+Use `Type` to emulate key presses. That is, you can use `Type` to script typing
+in a terminal. Type is handy for both entering commands and interacting with
+prompts and TUIs in the terminal. The command takes a string argument of the
+characters to type.
+
+You can set the standard typing speed with [`Set TypingSpeed`](#set-typing-speed)
+and override it in places with a `@time` argument.
+
+```elixir
+# Type something
+Type "Whatever you want"
+
+# Type something really slowly!
+Type@500ms "Slow down there, partner."
+```
+
+<img alt="Example of using the Type command in VHS" src="https://stuff.charm.sh/vhs/examples/type.gif" width="600" />
+
 ### Keys
 
 Key commands take an optional `@time` and repeat `count`.
@@ -365,40 +385,6 @@ Space 10
 
 <img alt="Example of pressing the space key" src="https://stuff.charm.sh/vhs/examples/space.gif" width="600" />
 
-### Sleep
-
-The `Sleep` command allows you to continue capturing frames without interacting
-with the terminal. This is useful when you need to wait on something to
-complete while including it in the recording like a spinner or loading state.
-The command takes a number argument in seconds.
-
-```elixir
-Sleep 0.5   # 500ms
-Sleep 2     # 2s
-Sleep 100ms # 100ms
-Sleep 1s    # 1s
-```
-
-### Type
-
-Use `Type` to emulate key presses. That is, you can use `Type` to script typing
-in a terminal. Type is handy for both entering commands and interacting with
-prompts and TUIs in the terminal. The command takes a string argument of the
-characters to type.
-
-You can set the standard typing speed with [`Set TypingSpeed`](#set-typing-speed)
-and override it in places with a `@time` argument.
-
-```elixir
-# Type something
-Type "Whatever you want"
-
-# Type something really slowly!
-Type@500ms "Slow down there, partner."
-```
-
-<img alt="Example of using the Type command in VHS" src="https://stuff.charm.sh/vhs/examples/type.gif" width="600" />
-
 ### Hide
 
 The `Hide` command allows you to specify that the following commands should not
@@ -429,6 +415,20 @@ Enter
 # Cleanup
 Hide
 Type 'rm example'
+```
+
+### Sleep
+
+The `Sleep` command allows you to continue capturing frames without interacting
+with the terminal. This is useful when you need to wait on something to
+complete while including it in the recording like a spinner or loading state.
+The command takes a number argument in seconds.
+
+```elixir
+Sleep 0.5   # 500ms
+Sleep 2     # 2s
+Sleep 100ms # 100ms
+Sleep 1s    # 1s
 ```
 
 ### Show
