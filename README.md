@@ -162,145 +162,6 @@ Setting must be administered at the top of the tape file. Any setting (except
 `TypingSpeed`) applied after a non-setting or non-output command will be
 ignored.
 
-* [`Set FontSize <number>`](#set-font-size)
-* [`Set FontFamily <string>`](#set-font-family)
-* [`Set Height <number>`](#set-height)
-* [`Set Width <number>`](#set-width)
-* [`Set LetterSpacing <float>`](#set-letter-spacing)
-* [`Set LineHeight <float>`](#set-line-height)
-* [`Set TypingSpeed <time>`](#set-typing-speed)
-* [`Set Theme <string>`](#set-theme)
-* [`Set Padding <number>`](#set-padding)
-* [`Set Framerate <float>`](#set-framerate)
-* [`Set PlaybackSpeed <float>`](#set-playback-speed)
-
-### Keys
-
-Key commands take an optional `@time` and repeat `count`.
-For example, the following presses the `Left` key 5 times with a 500
-millisecond delay between each keystroke.
-
-```elixir
-Left@500ms 5
-```
-
-* [`Backspace`](#backspace)
-* [`Ctrl`](#ctrl)
-* [`Down`](#down)
-* [`Enter`](#enter)
-* [`Space`](#space)
-* [`Tab`](#tab)
-* [`Left`](#arrow-keys)
-* [`Right`](#arrow-keys)
-* [`Up`](#arrow-keys)
-* [`Down`](#arrow-keys)
-
-### Sleep
-
-The `Sleep` command allows you to continue capturing frames without interacting
-with the terminal. This is useful when you need to wait on something to
-complete while including it in the recording like a spinner or loading state.
-The command takes a number argument in seconds.
-
-```elixir
-Sleep 0.5   # 500ms
-Sleep 2     # 2s
-Sleep 100ms # 100ms
-Sleep 1s    # 1s
-```
-
-### Type
-
-Use `Type` to emulate key presses. That is, you can use `Type` to script typing
-in a terminal. Type is handy for both entering commands and interacting with
-prompts and TUIs in the terminal. The command takes a string argument of the
-characters to type.
-
-You can set the standard typing speed with [`Set TypingSpeed`](#set-typing-speed)
-and override it in places with a `@time` argument.
-
-```elixir
-# Type something
-Type "Whatever you want"
-
-# Type something really slowly!
-Type@500ms "Slow down there, partner."
-```
-
-<img alt="Example of using the Type command in VHS" src="https://stuff.charm.sh/vhs/examples/type.gif" width="600" />
-
-### Keys
-
-#### Backspace
-
-Press the backspace key with the `Backspace` command.
-
-```elixir
-Backspace 18
-```
-
-<img alt="Example of pressing the Backspace key 18 times" src="https://stuff.charm.sh/vhs/examples/backspace.gif" width="600" />
-
-#### Ctrl
-
-You can access the control modifier and send control sequences with the `Ctrl`
-command.
-
-```elixir
-Ctrl+R
-```
-
-<img alt="Example of pressing the Ctrl+R key to reverse search" src="https://stuff.charm.sh/vhs/examples/ctrl.gif" width="600" />
-
-#### Enter
-
-Press the enter key with the `Enter` command.
-
-```elixir
-Enter 2
-```
-
-<img alt="Example of pressing the Enter key twice" src="https://stuff.charm.sh/vhs/examples/enter.gif" width="600" />
-
-#### Arrow Keys
-
-Press any of the arrow keys with the `Up`, `Down`, `Left`, `Right` commands.
-
-```elixir
-Up 2
-Down 2
-Left
-Right
-Left
-Right
-Type "B"
-Type "A"
-```
-
-<img alt="Example of pressing the arrow keys to navigate text" src="https://stuff.charm.sh/vhs/examples/arrow.gif" width="600" />
-
-#### Tab
-
-Enter a tab with the `Tab` command.
-
-```elixir
-Tab@500ms 2
-```
-
-<img alt="Example of pressing the tab key twice for autocomplete" src="https://stuff.charm.sh/vhs/examples/tab.gif" width="600" />
-
-#### Space
-
-Press the space bar with the `Space` command.
-
-```elixir
-Space 10
-```
-
-<img alt="Example of pressing the space key" src="https://stuff.charm.sh/vhs/examples/space.gif" width="600" />
-
-### Settings
-
 #### Set Font Size
 
 Set the font size with the `Set FontSize <number>` command.
@@ -425,6 +286,118 @@ Set PlaybackSpeed 0.5 # Make output 2 times slower
 Set PlaybackSpeed 1.0 # Keep output at normal speed (default)
 Set PlaybackSpeed 2.0 # Make output 2 times faster
 ```
+
+### Keys
+
+Key commands take an optional `@time` and repeat `count`.
+For example, the following presses the `Left` key 5 times with a 500
+millisecond delay between each keystroke.
+
+```elixir
+Left@500ms 5
+```
+
+#### Backspace
+
+Press the backspace key with the `Backspace` command.
+
+```elixir
+Backspace 18
+```
+
+<img alt="Example of pressing the Backspace key 18 times" src="https://stuff.charm.sh/vhs/examples/backspace.gif" width="600" />
+
+#### Ctrl
+
+You can access the control modifier and send control sequences with the `Ctrl`
+command.
+
+```elixir
+Ctrl+R
+```
+
+<img alt="Example of pressing the Ctrl+R key to reverse search" src="https://stuff.charm.sh/vhs/examples/ctrl.gif" width="600" />
+
+#### Enter
+
+Press the enter key with the `Enter` command.
+
+```elixir
+Enter 2
+```
+
+<img alt="Example of pressing the Enter key twice" src="https://stuff.charm.sh/vhs/examples/enter.gif" width="600" />
+
+#### Arrow Keys
+
+Press any of the arrow keys with the `Up`, `Down`, `Left`, `Right` commands.
+
+```elixir
+Up 2
+Down 2
+Left
+Right
+Left
+Right
+Type "B"
+Type "A"
+```
+
+<img alt="Example of pressing the arrow keys to navigate text" src="https://stuff.charm.sh/vhs/examples/arrow.gif" width="600" />
+
+#### Tab
+
+Enter a tab with the `Tab` command.
+
+```elixir
+Tab@500ms 2
+```
+
+<img alt="Example of pressing the tab key twice for autocomplete" src="https://stuff.charm.sh/vhs/examples/tab.gif" width="600" />
+
+#### Space
+
+Press the space bar with the `Space` command.
+
+```elixir
+Space 10
+```
+
+<img alt="Example of pressing the space key" src="https://stuff.charm.sh/vhs/examples/space.gif" width="600" />
+
+### Sleep
+
+The `Sleep` command allows you to continue capturing frames without interacting
+with the terminal. This is useful when you need to wait on something to
+complete while including it in the recording like a spinner or loading state.
+The command takes a number argument in seconds.
+
+```elixir
+Sleep 0.5   # 500ms
+Sleep 2     # 2s
+Sleep 100ms # 100ms
+Sleep 1s    # 1s
+```
+
+### Type
+
+Use `Type` to emulate key presses. That is, you can use `Type` to script typing
+in a terminal. Type is handy for both entering commands and interacting with
+prompts and TUIs in the terminal. The command takes a string argument of the
+characters to type.
+
+You can set the standard typing speed with [`Set TypingSpeed`](#set-typing-speed)
+and override it in places with a `@time` argument.
+
+```elixir
+# Type something
+Type "Whatever you want"
+
+# Type something really slowly!
+Type@500ms "Slow down there, partner."
+```
+
+<img alt="Example of using the Type command in VHS" src="https://stuff.charm.sh/vhs/examples/type.gif" width="600" />
 
 ### Hide
 
