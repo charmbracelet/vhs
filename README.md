@@ -108,7 +108,11 @@ go install github.com/charmbracelet/vhs@latest
 
 ## Self Hosting
 
-You can self host VHS by running:
+When you self host VHS you can use it as though it were installed locally. VHS
+will have access to commands and applications on the host machine so you don't
+need to install them locally.
+
+To start the server run:
 
 ```sh
 vhs serve
