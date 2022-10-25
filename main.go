@@ -114,7 +114,7 @@ var (
 					for _, err := range errs {
 						fmt.Print(LineNumber(err.Token.Line))
 						fmt.Println(lines[err.Token.Line-1])
-						fmt.Print(strings.Repeat(" ", err.Token.Column+5))
+						fmt.Print(strings.Repeat(" ", err.Token.Column+ErrorColumnOffset))
 						fmt.Println(Underline(len(err.Token.Literal)), err.Msg)
 						fmt.Println()
 					}

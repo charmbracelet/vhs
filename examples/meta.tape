@@ -1,5 +1,5 @@
-Output examples/meta.gif
 Output examples/meta.webm
+Output examples/meta.mp4
 
 Set Width 1920
 Set Height 1080
