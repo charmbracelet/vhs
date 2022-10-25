@@ -29,7 +29,7 @@ var (
 	ttydMinVersion = version.Must(version.NewVersion("1.7.1"))
 
 	rootCmd = &cobra.Command{
-		Use:   "vhs [command]",
+		Use:   "vhs <file>",
 		Short: "Run a given tape file and generates its outputs.",
 		Args:  cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -66,7 +66,7 @@ var (
 	}
 
 	newCmd = &cobra.Command{
-		Use:   "new [name]",
+		Use:   "new <name>",
 		Short: "Create a new tape file with example tape file contents and documentation",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -89,7 +89,7 @@ var (
 	}
 
 	validateCmd = &cobra.Command{
-		Use:   "validate [file]",
+		Use:   "validate <file>...",
 		Short: "Validate a glob file path and parses all the files to ensure they are valid without running them.",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
