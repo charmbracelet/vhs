@@ -21,8 +21,9 @@ const extension = ".tape"
 var (
 	// Version stores the build version of VHS at the time of packaging through -ldflags
 	//
-	//	go build -ldflags "-s -w -X=main.Version=$(VERSION)" main.go
+	// go build -ldflags "-s -w -X=main.Version=$(VERSION)" main.go
 	Version string
+
 	// CommitSHA stores the commit SHA of VHS at the time of packaging through -ldflags
 	CommitSHA string
 
