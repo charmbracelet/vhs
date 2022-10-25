@@ -140,6 +140,40 @@ There are a few basic types of VHS commands:
 * [`Hide`](#hide): hide commands from output
 * [`Show`](#show): stop hiding commands from output
 
+### Output
+
+The `Output` command allows you to specify the location and file format
+of the render. You can specify more than one output in a tape file which
+will render them to the respective locations.
+
+```elixir
+Output out.gif
+Output out.mp4
+Output out.webm
+Output frames/ # .png frames
+```
+
+### Settings
+
+The `Set` command allows you to change global aspects of the terminal, such as
+the font settings, window dimensions, and GIF output location.
+
+Setting must be administered at the top of the tape file. Any setting (except
+`TypingSpeed`) applied after a non-setting or non-output command will be
+ignored.
+
+* [`Set FontSize <number>`](#set-font-size)
+* [`Set FontFamily <string>`](#set-font-family)
+* [`Set Height <number>`](#set-height)
+* [`Set Width <number>`](#set-width)
+* [`Set LetterSpacing <float>`](#set-letter-spacing)
+* [`Set LineHeight <float>`](#set-line-height)
+* [`Set TypingSpeed <time>`](#set-typing-speed)
+* [`Set Theme <string>`](#set-theme)
+* [`Set Padding <number>`](#set-padding)
+* [`Set Framerate <float>`](#set-framerate)
+* [`Set PlaybackSpeed <float>`](#set-playback-speed)
+
 ### Keys
 
 Key commands take an optional `@time` and repeat `count`.
@@ -160,27 +194,6 @@ Left@500ms 5
 * [`Right`](#arrow-keys)
 * [`Up`](#arrow-keys)
 * [`Down`](#arrow-keys)
-
-### Settings
-
-The `Set` command allows you to change aspects of the terminal, such as the
-font settings, window dimensions, and output GIF location.
-
-Setting commands must be set at the top of the tape file. Any setting (except
-`TypingSpeed`) command that is set after a non-setting or non-output command
-will be ignored.
-
-* [`Set FontSize <number>`](#set-font-size)
-* [`Set FontFamily <string>`](#set-font-family)
-* [`Set Height <number>`](#set-height)
-* [`Set Width <number>`](#set-width)
-* [`Set LetterSpacing <float>`](#set-letter-spacing)
-* [`Set LineHeight <float>`](#set-line-height)
-* [`Set TypingSpeed <time>`](#set-typing-speed)
-* [`Set Theme <string>`](#set-theme)
-* [`Set Padding <number>`](#set-padding)
-* [`Set Framerate <float>`](#set-framerate)
-* [`Set PlaybackSpeed <float>`](#set-playback-speed)
 
 ### Sleep
 
@@ -215,19 +228,6 @@ Type@500ms "Slow down there, partner."
 ```
 
 <img alt="Example of using the Type command in VHS" src="https://stuff.charm.sh/vhs/examples/type.gif" width="600" />
-
-### Output
-
-The `Output` command allows you to specify the location and file format
-of the render. You can specify more than one output in a tape file which
-will render them to the respective locations.
-
-```elixir
-Output out.gif
-Output out.mp4
-Output out.webm
-Output frames/ # .png frames
-```
 
 ### Keys
 
