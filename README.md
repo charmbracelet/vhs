@@ -87,7 +87,7 @@ yay -S vhs ttyd ffmpeg
 nix-env -iA nixpkgs.vhs nixpkgs.ttyd nixpkgs.ffmpeg
 ```
 
-Or, use docker:
+Or, use Docker to run VHS directly, dependencies included:
 
 ```sh
 docker run ghcr.io/charmbracelet/vhs <cassette>.tape
@@ -110,7 +110,7 @@ go install github.com/charmbracelet/vhs@latest
 
 When you self host VHS you can use it as though it were installed locally. VHS
 will have access to commands and applications on the host machine so you don't
-need to install them locally.
+need to install them on your machine.
 
 To start the server run:
 
