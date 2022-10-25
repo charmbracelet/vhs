@@ -243,7 +243,8 @@ Backspace 18
 
 #### Ctrl
 
-Press a control sequence with the `Ctrl` command.
+You can access the control modifier and send control sequences with the `Ctrl`
+command.
 
 ```elixir
 Ctrl+R
@@ -267,16 +268,20 @@ Press any of the arrow keys with the `Up`, `Down`, `Left`, `Right` commands.
 
 ```elixir
 Up 2
-Down 3
-Left 10
-Right 10
+Down 2
+Left
+Right
+Left
+Right
+Type "B"
+Type "A"
 ```
 
 <img alt="Example of pressing the arrow keys to navigate text" src="https://stuff.charm.sh/vhs/examples/arrow.gif" width="600" />
 
 #### Tab
 
-Press the tab key with the `Tab` command.
+Enter a tab with the `Tab` command.
 
 ```elixir
 Tab@500ms 2
