@@ -11,7 +11,7 @@
 
 Write terminal GIFs as code for integration testing and demoing your CLI tools.
 
-<img alt="Display of welcome.gif" src="https://stuff.charm.sh/vhs/examples/welcome.gif" width="600" />
+<img alt="Welcome to VHS" src="https://stuff.charm.sh/vhs/examples/welcome.gif" width="600" />
 
 The above example is generated from VHS ([View Tape](./examples/welcome.tape)).
 
@@ -66,7 +66,7 @@ the `Output`) in the directory.
 
 More examples are in the [`examples/`](https://github.com/charmbracelet/vhs/tree/main/examples) folder.
 
-<img alt="Display of demo.gif" src="https://stuff.charm.sh/vhs/examples/demo.gif" width="600" />
+<img alt="A GIF produced by the VHS code above" src="https://stuff.charm.sh/vhs/examples/demo.gif" width="600" />
 
 ## Installation
 
@@ -373,7 +373,6 @@ Set Theme { "name": "Whimsy", "black": "#535178", "red": "#ef6487", "green": "#5
 ```
 
 <img alt="Example of changing the theme to Whimsy" src="https://stuff.charm.sh/vhs/examples/theme.gif" width="600" />
-
 
 #### Set Padding
 
