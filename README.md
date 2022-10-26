@@ -106,11 +106,11 @@ go install github.com/charmbracelet/vhs@latest
 
 [releases]: https://github.com/charmbracelet/vhs/releases
 
-## Self Hosting
+## The VHS Server
 
-When you self host VHS you can access it as though it were installed locally.
-VHS will have access to commands and applications on the host so you don't need
-to install them on your machine.
+VHS has an SSH server built in! When you self host VHS you can access it as 
+though it were installed locally. VHS will have access to commands and
+applications on the host so you don't need to install them on your machine.
 
 To start the server run:
 
@@ -121,7 +121,7 @@ vhs serve
 Then, simply access VHS from any machine via `ssh`:
 
 ```sh
-ssh vhs.charm.sh < demo.tape > demo.gif
+ssh vhs.example.com < demo.tape > demo.gif
 ```
 
 ## VHS Command Reference
