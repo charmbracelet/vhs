@@ -108,7 +108,7 @@ go install github.com/charmbracelet/vhs@latest
 
 ## The VHS Server
 
-VHS has an SSH server built in! When you self host VHS you can access it as 
+VHS has an SSH server built in! When you self host VHS you can access it as
 though it were installed locally. VHS will have access to commands and
 applications on the host so you don't need to install them on your machine.
 
@@ -240,7 +240,7 @@ Set TypingSpeed 1s    # 1s
 Set the typing speed of seconds per key press. For example, a typing speed of
 `0.1` would result in a `0.1s` (`100ms`) delay between each character being typed.
 
-This setting can also be overridden per command with the `@<time>` syntax.
+This setting can also be overwritten per command with the `@<time>` syntax.
 
 ```elixir
 Set TypingSpeed 0.1
@@ -452,8 +452,8 @@ Type "You will see this being typed."
 ## Continuous Integration
 
 You can hook up VHS to your CI pipeline to keep your GIFs up-to-date with
-our custom GitHub action:
-* [VHS GitHub Action](https://github.com/charmbracelet/vhs-action)
+the official VHS GitHub Action:
+* [⚙️ charmbracelet/vhs-action](https://github.com/charmbracelet/vhs-action)
 
 VHS can also be used for integration testing. Use the `.txt` or `.ascii` output
 to generate golden files. Store these files in a git repository to ensure there
@@ -465,9 +465,11 @@ Output golden.ascii
 
 ## Syntax Highlighting
 
-There is a tree-sitter grammar for `.tape` files available for editors that
+There’s a tree-sitter grammar for `.tape` files available for editors that
 support syntax highlighting with tree-sitter:
-* [VHS Tree-sitter Grammar](https://github.com/charmbracelet/tree-sitter-vhs)
+* [🌳 charmbracelet/tree-sitter-vhs](https://github.com/charmbracelet/tree-sitter-vhs)
+
+It works great with Neovim, Emacs, and so on!
 
 ## Feedback
 
