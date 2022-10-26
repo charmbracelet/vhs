@@ -27,6 +27,8 @@ const (
 	SPACE          = "SPACE"
 	BACKSPACE      = "BACKSPACE"
 	CTRL           = "CTRL"
+	ALT            = "ALT"
+	SHIFT          = "SHIFT"
 	ENTER          = "ENTER"
 	NUMBER         = "NUMBER"
 	SET            = "SET"
@@ -75,6 +77,8 @@ var keywords = map[string]TokenType{
 	"Space":         SPACE,
 	"Backspace":     BACKSPACE,
 	"Ctrl":          CTRL,
+	"Alt":           ALT,
+	"Shift":         SHIFT,
 	"Down":          DOWN,
 	"Left":          LEFT,
 	"Right":         RIGHT,

@@ -120,18 +120,49 @@ func (p *Parser) parseTime() string {
 	return t
 }
 
+const maxModifiers = 2
+
 // parseCtrl parses a control command.
 // A control command takes a character to type while the modifier is held down.
 //
 // Ctrl+<character>
 func (p *Parser) parseCtrl() Command {
+	var alt, shift bool
+	var options string
+
 	if p.peek.Type == PLUS {
 		p.nextToken()
-		if p.peek.Type == STRING {
-			c := p.peek.Literal
+	}
+
+	i := 0
+	for i < maxModifiers {
+		if p.peek.Type == ALT {
+			alt = true
 			p.nextToken()
-			return Command{Type: CTRL, Args: c}
+		} else if p.peek.Type == SHIFT {
+			shift = true
+			p.nextToken()
 		}
+		if p.peek.Type == PLUS {
+			p.nextToken()
+		}
+		i++
+	}
+
+	if alt {
+		options = "Alt"
+	}
+
+	if shift {
+		if options != "" {
+			options += PLUS
+		}
+		options += "Shift"
+	}
+
+	if p.peek.Type == STRING {
+		p.nextToken()
+		return Command{Type: CTRL, Options: options, Args: p.cur.Literal}
 	}
 
 	p.errors = append(p.errors, NewError(p.cur, "Expected control character, got "+p.cur.Literal))

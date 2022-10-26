@@ -178,3 +178,36 @@ func TestParseTapeFile(t *testing.T) {
 	}
 
 }
+
+func TestCtrlAltShift(t *testing.T) {
+	input := `
+Ctrl+R
+Ctrl+Alt+L
+Ctrl+Alt+Shift+O
+Ctrl+Shift+Alt+O
+`
+
+	expected := []Command{
+		{Type: CTRL, Options: "", Args: "R"},
+		{Type: CTRL, Options: "Alt", Args: "L"},
+		{Type: CTRL, Options: "Alt+Shift", Args: "O"},
+		{Type: CTRL, Options: "Alt+Shift", Args: "O"},
+	}
+
+	l := NewLexer(input)
+	p := NewParser(l)
+
+	cmds := p.Parse()
+
+	for i, cmd := range cmds {
+		if cmd.Type != expected[i].Type {
+			t.Errorf("Expected command %d to be %s, got %s", i, expected[i].Type, cmd.Type)
+		}
+		if cmd.Args != expected[i].Args {
+			t.Errorf("Expected command %d to have args %s, got %s", i, expected[i].Args, cmd.Args)
+		}
+		if cmd.Options != expected[i].Options {
+			t.Errorf("Expected command %d to have options %s, got %s", i, expected[i].Options, cmd.Options)
+		}
+	}
+}
