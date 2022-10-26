@@ -449,23 +449,25 @@ Type "You will see this being typed."
 
 ***
 
-## Testing
+## Continuous Integration
 
-VHS can be used for integration testing by outputting an `.txt` or `.ascii`
-file. This will result in a golden file that you can commit to your git repo
-and view diffs between previous and future runs.
+You can hook up VHS to your CI pipeline to keep your GIFs up-to-date with
+our custom GitHub action:
+* [VHS GitHub Action](https://github.com/charmbracelet/vhs-action)
+
+VHS can also be used for integration testing. Use the `.txt` or `.ascii` output
+to generate golden files. Store these files in a git repository to ensure there
+are no diffs between runs of the tape file.
 
 ```elixir
 Output golden.ascii
 ```
 
-You can also integrate VHS into your CI pipeline with the
-[VHS GitHub Action](https://github.com/charmbracelet/vhs-action)
-
 ## Syntax Highlighting
 
-If your editor supports syntax highlighting from tree-sitter,
-you can syntax highlight `.tape` files with [Tree-sitter VHS Grammar](https://github.com/charmbracelet/tree-sitter-vhs).
+There is a tree-sitter grammar for `.tape` files available for editors that
+support syntax highlighting with tree-sitter:
+* [VHS Tree-sitter Grammar](https://github.com/charmbracelet/tree-sitter-vhs)
 
 ## Feedback
 
