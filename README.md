@@ -134,7 +134,9 @@ There are a few basic types of VHS commands:
 * [`Output <path>`](#output): specify file output
 * [`Set <Setting> Value`](#settings): set recording settings
 * [`Type "<characters>"`](#type): emulate typing
-* [`Backspace`](#backspace) [`Ctrl`](#ctrl) [`Enter`](#enter) [`Left`](#arrow-keys) [`Right`](#arrow-keys) [`Up`](#arrow-keys) [`Down`](#arrow-keys) [`Tab`](#tab) [`Space`](#tab): special keys
+* [`Left`](#arrow-keys) [`Right`](#arrow-keys) [`Up`](#arrow-keys) [`Down`](#arrow-keys): arrow keys
+* [`Backspace`](#backspace) [`Enter`](#enter) [`Tab`](#tab) [`Space`](#space): special keys
+* [`Ctrl+<char>`](#ctrl): press control + key
 * [`Sleep <time>`](#sleep): wait for a certain amount of time
 * [`Hide`](#hide): hide commands from output
 * [`Show`](#show): stop hiding commands from output
