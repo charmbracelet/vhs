@@ -97,7 +97,7 @@ func (vhs *VHS) Setup() {
 
 	// Set Prompt
 	vhs.Page.MustElement("textarea").
-		MustInput(fmt.Sprintf(` set +o history; export PS1="%s"; clear;`, vhs.Options.Prompt)).
+		MustInput(fmt.Sprintf(` set +o history; unset PROMPT_COMMAND; export PS1="%s"; clear;`, vhs.Options.Prompt)).
 		MustType(input.Enter)
 
 	// Apply options to the terminal
