@@ -398,21 +398,6 @@ Sleep 100ms # 100ms
 Sleep 1s    # 1s
 ```
 
-### Show
-
-The `Show` command allows you to specify that the following commands should be
-un-hidden in the output. Since commands are shown by default, this command is
-really only useful after using the `Hide` command.
-
-```elixir
-Hide
-Type "You won't see this being typed."
-Show
-Type "You will see this being typed."
-```
-
-<img alt="Example of typing something while hidden" src="https://stuff.charm.sh/vhs/examples/hide.gif" width="600" />
-
 ### Hide
 
 The `Hide` command allows you to exclude commands from the output.
@@ -443,6 +428,21 @@ Enter
 Hide
 Type 'rm example'
 ```
+
+### Show
+
+The `Show` command allows you to specify that the following commands should be
+un-hidden in the output. Since commands are shown by default, this command is
+really only useful after using the `Hide` command.
+
+```elixir
+Hide
+Type "You won't see this being typed."
+Show
+Type "You will see this being typed."
+```
+
+<img alt="Example of typing something while hidden" src="https://stuff.charm.sh/vhs/examples/hide.gif" width="600" />
 
 ***
 
