@@ -15,40 +15,40 @@ const Black = "#282a2e"
 const BrightBlack = "#4d4d4d"
 
 // Red is the default Red color of the theme.
-const Red = "#c73b1d"
+const Red = "#D74E6F"
 
 // BrightRed is the default BrightRed color of the theme.
-const BrightRed = "#e82100"
+const BrightRed = "#FE5F86"
 
 // Green is the default Green color of the theme.
-const Green = "#00a800"
+const Green = "#31BB71"
 
 // BrightGreen is the default BrightGreen color of the theme.
-const BrightGreen = "#00db00"
+const BrightGreen = "#00D787"
 
 // Yellow is the default Yellow color of the theme.
-const Yellow = "#acaf15"
+const Yellow = "#D3E561"
 
 // BrightYellow is the default BrightYellow color of the theme.
-const BrightYellow = "#e5e900"
+const BrightYellow = "#EBFF71"
 
 // Blue is the default Blue color of the theme.
-const Blue = "#3854FC"
+const Blue = "#8056FF"
 
 // BrightBlue is the default BrightBlue color of the theme.
-const BrightBlue = "#566BF9"
+const BrightBlue = "#9B79FF"
 
 // Magenta is the default Magenta color of the theme.
-const Magenta = "#d533ce"
+const Magenta = "#ED61D7"
 
 // BrightMagenta is the default BrightMagenta color of the theme.
-const BrightMagenta = "#e83ae9"
+const BrightMagenta = "#FF7AEA"
 
 // Cyan is the default Cyan color of the theme.
-const Cyan = "#2cbac9"
+const Cyan = "#04D7D7"
 
 // BrightCyan is the default BrightCyan color of the theme.
-const BrightCyan = "#00e6e7"
+const BrightCyan = "#00FEFE"
 
 // White is the default White color of the theme.
 const White = "#bfbfbf"
