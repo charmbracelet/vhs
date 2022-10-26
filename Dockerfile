@@ -1,6 +1,9 @@
 FROM tsl0922/ttyd:alpine as ttyd
 FROM alpine:latest
 
+# Create volume
+VOLUME /vhs
+
 # Install latest ttyd
 COPY --from=ttyd /usr/bin/ttyd /usr/bin/ttyd
 
