@@ -7,9 +7,9 @@
 Output examples/neofetch/neofetch.gif
 
 Set TypingSpeed 75ms
-Set FontSize 20
-Set Width 1200
-Set Height 600
+Set FontSize 22
+Set Width 1300
+Set Height 650
 
 Type "neofetch"
 
