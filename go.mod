@@ -17,6 +17,7 @@ require (
 	github.com/mattn/go-isatty v0.0.16
 	github.com/muesli/mango-cobra v1.2.0
 	github.com/muesli/roff v0.1.0
+	github.com/muesli/termenv v0.13.0
 	github.com/rivo/uniseg v0.4.2 // indirect
 	github.com/spf13/cobra v1.6.0
 	github.com/ysmood/gson v0.7.2 // indirect
