@@ -189,23 +189,25 @@ Set FontFamily "Monoflow"
 
 <img alt="Example of changing the font family to Monoflow" src="https://stuff.charm.sh/vhs/examples/font-family.gif" width="600" />
 
-#### Set Height
-
-Set the height of the terminal with the `Set Height` command.
-
-```elixir
-Set Height 600
-Set Height 1000
-```
-
 #### Set Width
 
 Set the width of the terminal with the `Set Width` command.
 
 ```elixir
-Set Width 1200
-Set Width 2000
+Set Width 300
 ```
+
+<img alt="Example of changing the width of the terminal" src="https://stuff.charm.sh/vhs/examples/width.gif" width="300" />
+
+#### Set Height
+
+Set the height of the terminal with the `Set Height` command.
+
+```elixir
+Set Height 1000
+```
+
+<img alt="Example of changing the height of the terminal" src="https://stuff.charm.sh/vhs/examples/height.gif" width="300" />
 
 #### Set Letter Spacing
 
@@ -310,12 +312,11 @@ Type@500ms "Slow down there, partner."
 
 ### Keys
 
-Key commands take an optional `@time` and repeat `count`.
-For example, the following presses the `Left` key 5 times with a 500
-millisecond delay between each keystroke.
+Key commands take an optional `@time` and optional repeat `count` for repeating
+the key press every interval of `<time>`.
 
-```elixir
-Left@500ms 5
+```
+Key[@<time>] [count]
 ```
 
 #### Backspace
