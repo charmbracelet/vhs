@@ -13,7 +13,7 @@ Write terminal GIFs as code for integration testing and demoing your CLI tools.
 
 <img alt="Welcome to VHS" src="https://stuff.charm.sh/vhs/examples/neofetch_2.gif" width="600" />
 
-The above example is generated from VHS ([View Tape](./examples/neofetch/neofetch.tape)).
+The above example was generated with VHS ([view source](./examples/neofetch/neofetch.tape)).
 
 ## Tutorial
 
@@ -29,14 +29,15 @@ Open the `.tape` file with your favorite `$EDITOR`.
 vim demo.tape
 ```
 
-In the file, write [commands](#commands) to perform on the terminal.
-View [Documentation](#commands) for a list of all the possible commands.
+Tape files consist of a series of [commands](#commands). The commands are
+instructions for VHS to perform on its virtual terminal.  For a list of all
+possible commands see [the command reference](#vhs-command-reference).
 
 ```elixir
-# Render the output GIF to demo.gif
+# Where should we write the GIF?
 Output demo.gif
 
-# Set up a 1200x600 terminal with 46px font size.
+# Set up a 1200x600 terminal with 46px font.
 Set FontSize 46
 Set Width 1200
 Set Height 600
@@ -54,8 +55,7 @@ Enter
 Sleep 5s
 ```
 
-Once you've written the commands to perform, save and exit the file. And, run
-the VHS tool on the file.
+Once you've finished, save the file and feed it into VHS.
 
 ```sh
 vhs < demo.tape
@@ -64,14 +64,14 @@ vhs < demo.tape
 All done! You should see a new file called `demo.gif` (or whatever you named
 the `Output`) in the directory.
 
-More examples are in the [`examples/`](https://github.com/charmbracelet/vhs/tree/main/examples) folder.
-
 <img alt="A GIF produced by the VHS code above" src="https://stuff.charm.sh/vhs/examples/demo.gif" width="600" />
+
+For more examples see the [`examples/`](https://github.com/charmbracelet/vhs/tree/main/examples) directory.
 
 ## Installation
 
 > **Note**
-> VHS requires [`ttyd`](https://github.com/tsl0922/ttyd) and [`ffmpeg`](https://ffmpeg.org) to be installed.
+> VHS requires [`ttyd`](https://github.com/tsl0922/ttyd) and [`ffmpeg`](https://ffmpeg.org) to be installed and available on your `PATH`.
 
 Use a package manager:
 
@@ -87,7 +87,7 @@ yay -S vhs ttyd ffmpeg
 nix-env -iA nixpkgs.vhs nixpkgs.ttyd nixpkgs.ffmpeg
 ```
 
-Or, use docker:
+Or, use Docker to run VHS directly, dependencies included:
 
 ```sh
 docker run ghcr.io/charmbracelet/vhs <cassette>.tape
@@ -106,103 +106,38 @@ go install github.com/charmbracelet/vhs@latest
 
 [releases]: https://github.com/charmbracelet/vhs/releases
 
-## Self Hosting
+## The VHS Server
 
-You can self host VHS by running:
+VHS has an SSH server built in! When you self host VHS you can access it as 
+though it were installed locally. VHS will have access to commands and
+applications on the host so you don't need to install them on your machine.
+
+To start the server run:
 
 ```sh
 vhs serve
 ```
 
-Then, access VHS from any machine with `ssh` installed to avoid any local
-setup.
+Then, simply access VHS from any machine via `ssh`:
 
 ```sh
-ssh vhs.charm.sh < demo.tape > demo.gif
+ssh vhs.example.com < demo.tape > demo.gif
 ```
 
-## Commands
+## VHS Command Reference
 
-For documentation on the command line, run:
+> **Note**
+> You can view all VHS documentation on the command line with `vhs manual`.
 
-```sh
-vhs manual
-```
+There are a few basic types of VHS commands:
 
-* [`Output <path>`](#output)
-* [`Set <Setting> Value`](#settings)
-* [`Type "<characters>"`](#type)
-* [`Sleep <time>`](#sleep)
-* [`Hide`](#hide)
-* [`Show`](#show)
-
-### Keys
-
-Key commands take an optional `@time` and repeat `count`.
-For example, the following presses the `Left` key 5 times with a 500
-millisecond delay between each keystroke.
-
-```elixir
-Left@500ms 5
-```
-
-* [`Backspace`](#backspace)
-* [`Ctrl`](#ctrl)
-* [`Down`](#down)
-* [`Enter`](#enter)
-* [`Space`](#space)
-* [`Tab`](#tab)
-* [`Left`](#arrow-keys)
-* [`Right`](#arrow-keys)
-* [`Up`](#arrow-keys)
-* [`Down`](#arrow-keys)
-
-### Settings
-
-The `Set` command allows you to change aspects of the terminal, such as the
-font settings, window dimensions, and output GIF location.
-
-Setting commands must be set at the top of the tape file. Any setting (except
-`TypingSpeed`) command that is set after a non-setting or non-output command
-will be ignored.
-
-* [`Set FontSize <number>`](#set-font-size)
-* [`Set FontFamily <string>`](#set-font-family)
-* [`Set Height <number>`](#set-height)
-* [`Set Width <number>`](#set-width)
-* [`Set LetterSpacing <float>`](#set-letter-spacing)
-* [`Set LineHeight <float>`](#set-line-height)
-* [`Set TypingSpeed <time>`](#set-typing-speed)
-* [`Set Theme <string>`](#set-theme)
-* [`Set Padding <number>`](#set-padding)
-* [`Set Framerate <float>`](#set-framerate)
-* [`Set PlaybackSpeed <float>`](#set-playback-speed)
-
-### Sleep
-
-The `Sleep` command allows you to continue capturing frames without interacting
-with the terminal. This is useful when you need to wait on something to
-complete while including it in the recording like a spinner or loading state.
-The command takes a number argument in seconds.
-
-```elixir
-Sleep 0.5   # 500ms
-Sleep 2     # 2s
-Sleep 100ms # 100ms
-Sleep 1s    # 1s
-```
-
-### Type
-
-The `Type` command allows you to type in the terminal and emulate key presses.
-This is useful for typing commands or interacting with the terminal.
-The command takes a string argument with the characters to type.
-
-```elixir
-Type "Whatever you want"
-```
-
-<img alt="Example of using the Type command in VHS" src="https://stuff.charm.sh/vhs/examples/type.gif" width="600" />
+* [`Output <path>`](#output): specify file output
+* [`Set <Setting> Value`](#settings): set recording settings
+* [`Type "<characters>"`](#type): emulate typing
+* [`Backspace`](#backspace) [`Ctrl`](#ctrl) [`Enter`](#enter) [`Left`](#arrow-keys) [`Right`](#arrow-keys) [`Up`](#arrow-keys) [`Down`](#arrow-keys) [`Tab`](#tab) [`Space`](#tab): special keys
+* [`Sleep <time>`](#sleep): wait for a certain amount of time
+* [`Hide`](#hide): hide commands from output
+* [`Show`](#show): stop hiding commands from output
 
 ### Output
 
@@ -214,75 +149,17 @@ will render them to the respective locations.
 Output out.gif
 Output out.mp4
 Output out.webm
-Output frames/ # .png frames
+Output frames/ # a directory of frames as a PNG sequence
 ```
-
-### Keys
-
-#### Backspace
-
-Press the backspace key with the `Backspace` command.
-
-```elixir
-Backspace 18
-```
-
-<img alt="Example of pressing the Backspace key 18 times" src="https://stuff.charm.sh/vhs/examples/backspace.gif" width="600" />
-
-#### Ctrl
-
-Press a control sequence with the `Ctrl` command.
-
-```elixir
-Ctrl+R
-```
-
-<img alt="Example of pressing the Ctrl+R key to reverse search" src="https://stuff.charm.sh/vhs/examples/ctrl.gif" width="600" />
-
-#### Enter
-
-Press the enter key with the `Enter` command.
-
-```elixir
-Enter 2
-```
-
-<img alt="Example of pressing the Enter key twice" src="https://stuff.charm.sh/vhs/examples/enter.gif" width="600" />
-
-#### Arrow Keys
-
-Press any of the arrow keys with the `Up`, `Down`, `Left`, `Right` commands.
-
-```elixir
-Up 2
-Down 3
-Left 10
-Right 10
-```
-
-<img alt="Example of pressing the arrow keys to navigate text" src="https://stuff.charm.sh/vhs/examples/arrow.gif" width="600" />
-
-#### Tab
-
-Press the tab key with the `Tab` command.
-
-```elixir
-Tab@500ms 2
-```
-
-<img alt="Example of pressing the tab key twice for autocomplete" src="https://stuff.charm.sh/vhs/examples/tab.gif" width="600" />
-
-#### Space
-
-Press the space bar with the `Space` command.
-
-```elixir
-Space 10
-```
-
-<img alt="Example of pressing the space key" src="https://stuff.charm.sh/vhs/examples/space.gif" width="600" />
 
 ### Settings
+
+The `Set` command allows you to change global aspects of the terminal, such as
+the font settings, window dimensions, and GIF output location.
+
+Setting must be administered at the top of the tape file. Any setting (except
+`TypingSpeed`) applied after a non-setting or non-output command will be
+ignored.
 
 #### Set Font Size
 
@@ -409,16 +286,127 @@ Set PlaybackSpeed 1.0 # Keep output at normal speed (default)
 Set PlaybackSpeed 2.0 # Make output 2 times faster
 ```
 
+### Type
+
+Use `Type` to emulate key presses. That is, you can use `Type` to script typing
+in a terminal. Type is handy for both entering commands and interacting with
+prompts and TUIs in the terminal. The command takes a string argument of the
+characters to type.
+
+You can set the standard typing speed with [`Set TypingSpeed`](#set-typing-speed)
+and override it in places with a `@time` argument.
+
+```elixir
+# Type something
+Type "Whatever you want"
+
+# Type something really slowly!
+Type@500ms "Slow down there, partner."
+```
+
+<img alt="Example of using the Type command in VHS" src="https://stuff.charm.sh/vhs/examples/type.gif" width="600" />
+
+### Keys
+
+Key commands take an optional `@time` and repeat `count`.
+For example, the following presses the `Left` key 5 times with a 500
+millisecond delay between each keystroke.
+
+```elixir
+Left@500ms 5
+```
+
+#### Backspace
+
+Press the backspace key with the `Backspace` command.
+
+```elixir
+Backspace 18
+```
+
+<img alt="Example of pressing the Backspace key 18 times" src="https://stuff.charm.sh/vhs/examples/backspace.gif" width="600" />
+
+#### Ctrl
+
+You can access the control modifier and send control sequences with the `Ctrl`
+command.
+
+```elixir
+Ctrl+R
+```
+
+<img alt="Example of pressing the Ctrl+R key to reverse search" src="https://stuff.charm.sh/vhs/examples/ctrl.gif" width="600" />
+
+#### Enter
+
+Press the enter key with the `Enter` command.
+
+```elixir
+Enter 2
+```
+
+<img alt="Example of pressing the Enter key twice" src="https://stuff.charm.sh/vhs/examples/enter.gif" width="600" />
+
+#### Arrow Keys
+
+Press any of the arrow keys with the `Up`, `Down`, `Left`, `Right` commands.
+
+```elixir
+Up 2
+Down 2
+Left
+Right
+Left
+Right
+Type "B"
+Type "A"
+```
+
+<img alt="Example of pressing the arrow keys to navigate text" src="https://stuff.charm.sh/vhs/examples/arrow.gif" width="600" />
+
+#### Tab
+
+Enter a tab with the `Tab` command.
+
+```elixir
+Tab@500ms 2
+```
+
+<img alt="Example of pressing the tab key twice for autocomplete" src="https://stuff.charm.sh/vhs/examples/tab.gif" width="600" />
+
+#### Space
+
+Press the space bar with the `Space` command.
+
+```elixir
+Space 10
+```
+
+<img alt="Example of pressing the space key" src="https://stuff.charm.sh/vhs/examples/space.gif" width="600" />
+
+### Sleep
+
+The `Sleep` command allows you to continue capturing frames without interacting
+with the terminal. This is useful when you need to wait on something to
+complete while including it in the recording like a spinner or loading state.
+The command takes a number argument in seconds.
+
+```elixir
+Sleep 0.5   # 500ms
+Sleep 2     # 2s
+Sleep 100ms # 100ms
+Sleep 1s    # 1s
+```
+
 ### Hide
 
-The `Hide` command allows you to specify that the following commands should not
-be shown in the output.
+The `Hide` command allows you to exclude commands from the output.
 
 ```elixir
 Hide
 ```
 
-This command can be helpful for doing any setup and clean up required to record
+This command is helpful for performing any setup and cleanup required to record
 a GIF, such as building the latest version of a binary and removing the binary
 once the demo is recorded.
 
@@ -443,9 +431,9 @@ Type 'rm example'
 
 ### Show
 
-The `Show` command allows you to specify that the following commands should
-be shown in the output. Since this is the default case, the show command will
-usually be seen with the `Hide` command.
+The `Show` command allows you to specify that the following commands should be
+un-hidden in the output. Since commands are shown by default, this command is
+really only useful after using the `Hide` command.
 
 ```elixir
 Hide
@@ -455,6 +443,8 @@ Type "You will see this being typed."
 ```
 
 <img alt="Example of typing something while hidden" src="https://stuff.charm.sh/vhs/examples/hide.gif" width="600" />
+
+***
 
 ## Testing
 
