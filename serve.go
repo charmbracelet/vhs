@@ -114,11 +114,8 @@ var (
 				gid, uid := cfg.GID, cfg.UID
 				if gid != 0 && uid != 0 {
 					log.Printf("Starting server with GID: %d, UID: %d", gid, uid)
-					if err := syscall.Setgid(gid); err != nil {
-						log.Fatalf("Setgid error: %s", err)
-					}
-					if err := syscall.Setuid(uid); err != nil {
-						log.Fatalf("Setuid error: %s", err)
+					if err := dropUserPrivileges(gid, uid); err != nil {
+						log.Fatalln(err)
 					}
 				}
 				if err = s.ListenAndServe(); err != nil {
