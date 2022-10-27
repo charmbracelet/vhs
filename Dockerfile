@@ -26,7 +26,8 @@ RUN apk add --no-cache \
     font-liberation font-liberation-mono-nerd \
     font-noto \
     font-roboto-mono \
-    font-ubuntu font-ubuntu-mono-nerd
+    font-ubuntu font-ubuntu-mono-nerd \
+    font-noto-emoji
 
 # Install Dependencies
 RUN apk add --no-cache ffmpeg chromium bash
