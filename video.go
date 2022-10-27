@@ -10,6 +10,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 )
@@ -20,8 +21,11 @@ const cursorFrameFormat = "frame-cursor-%05d.png"
 // randomDir returns a random temporary directory to be used for storing frames
 // from screenshots of the terminal.
 func randomDir() string {
-	tmp, _ := os.MkdirTemp(os.TempDir(), "vhs")
-	return tmp + "/"
+	tmp, err := os.MkdirTemp(os.TempDir(), "vhs")
+	if err != nil {
+		log.Printf("Error creating temporary directory: %v", err)
+	}
+	return tmp
 }
 
 // VideoOutputs is a mapping from file type to file path for all video outputs
