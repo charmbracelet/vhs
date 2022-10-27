@@ -102,6 +102,9 @@ gpgcheck=1
 gpgkey=https://repo.charm.sh/yum/gpg.key' | sudo tee /etc/yum.repos.d/charm.repo
 # Install ttyd from https://github.com/tsl0922/ttyd/releases
 sudo yum install vhs ffmpeg
+
+# Void Linux
+sudo xbps-install vhs
 ```
 
 Or, use Docker to run VHS directly, dependencies included:
