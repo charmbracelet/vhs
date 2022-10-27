@@ -10,8 +10,10 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 )
 
 const textFrameFormat = "frame-text-%05d.png"
@@ -20,8 +22,11 @@ const cursorFrameFormat = "frame-cursor-%05d.png"
 // randomDir returns a random temporary directory to be used for storing frames
 // from screenshots of the terminal.
 func randomDir() string {
-	tmp, _ := os.MkdirTemp(os.TempDir(), "vhs")
-	return tmp + "/"
+	tmp, err := os.MkdirTemp(os.TempDir(), "vhs")
+	if err != nil {
+		log.Printf("Error creating temporary directory: %v", err)
+	}
+	return tmp
 }
 
 // VideoOutputs is a mapping from file type to file path for all video outputs
@@ -55,17 +60,19 @@ const defaultWidth = 1200
 
 // DefaultVideoOptions is the set of default options for converting frames
 // to a GIF, which are used if they are not overridden.
-var DefaultVideoOptions = VideoOptions{
-	CleanupFrames:   true,
-	Framerate:       defaultFramerate,
-	Input:           randomDir(),
-	MaxColors:       defaultMaxColors,
-	Output:          VideoOutputs{GIF: "out.gif", WebM: "", MP4: ""},
-	Width:           defaultWidth,
-	Height:          defaultHeight,
-	Padding:         defaultPadding,
-	PlaybackSpeed:   defaultPlaybackSpeed,
-	BackgroundColor: DefaultTheme.Background,
+func DefaultVideoOptions() VideoOptions {
+	return VideoOptions{
+		CleanupFrames:   true,
+		Framerate:       defaultFramerate,
+		Input:           randomDir(),
+		MaxColors:       defaultMaxColors,
+		Output:          VideoOutputs{GIF: "out.gif", WebM: "", MP4: ""},
+		Width:           defaultWidth,
+		Height:          defaultHeight,
+		Padding:         defaultPadding,
+		PlaybackSpeed:   defaultPlaybackSpeed,
+		BackgroundColor: DefaultTheme.Background,
+	}
 }
 
 // MakeGIF takes a list of images (as frames) and converts them to a GIF.
@@ -80,9 +87,9 @@ func MakeGIF(opts VideoOptions) *exec.Cmd {
 	return exec.Command(
 		"ffmpeg", "-y",
 		"-r", fmt.Sprint(opts.Framerate),
-		"-i", opts.Input+textFrameFormat,
+		"-i", filepath.Join(opts.Input, textFrameFormat),
 		"-r", fmt.Sprint(opts.Framerate),
-		"-i", opts.Input+cursorFrameFormat,
+		"-i", filepath.Join(opts.Input, cursorFrameFormat),
 		"-filter_complex",
 		fmt.Sprintf(`[0][1]overlay[merged];[merged]scale=%d:%d:force_original_aspect_ratio=1[scaled];[scaled]fps=%d,setpts=PTS/%f[speed];[speed]pad=%d:%d:(ow-iw)/2:(oh-ih)/2:%s[padded];[padded]fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s[bordered];[bordered]split[a][b];[a]palettegen=max_colors=256[p];[b][p]paletteuse[out]`,
 			opts.Width-2*opts.Padding, opts.Height-2*opts.Padding,
@@ -109,9 +116,9 @@ func MakeWebM(opts VideoOptions) *exec.Cmd {
 	return exec.Command(
 		"ffmpeg", "-y",
 		"-r", fmt.Sprint(opts.Framerate),
-		"-i", opts.Input+textFrameFormat,
+		"-i", filepath.Join(opts.Input, textFrameFormat),
 		"-r", fmt.Sprint(opts.Framerate),
-		"-i", opts.Input+cursorFrameFormat,
+		"-i", filepath.Join(opts.Input, cursorFrameFormat),
 		"-filter_complex",
 		fmt.Sprintf(`[0][1]overlay,scale=%d:%d:force_original_aspect_ratio=1,fps=%d,setpts=PTS/%f,pad=%d:%d:(ow-iw)/2:(oh-ih)/2:%s,fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s`,
 			opts.Width-2*opts.Padding, opts.Height-2*opts.Padding,
@@ -141,9 +148,9 @@ func MakeMP4(opts VideoOptions) *exec.Cmd {
 	return exec.Command(
 		"ffmpeg", "-y",
 		"-r", fmt.Sprint(opts.Framerate),
-		"-i", opts.Input+textFrameFormat,
+		"-i", filepath.Join(opts.Input, textFrameFormat),
 		"-r", fmt.Sprint(opts.Framerate),
-		"-i", opts.Input+cursorFrameFormat,
+		"-i", filepath.Join(opts.Input, cursorFrameFormat),
 		"-filter_complex",
 		fmt.Sprintf(`[0][1]overlay,scale=%d:%d:force_original_aspect_ratio=1,fps=%d,setpts=PTS/%f,pad=%d:%d:(ow-iw)/2:(oh-ih)/2:%s,fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s`,
 			opts.Width-2*opts.Padding, opts.Height-2*opts.Padding,

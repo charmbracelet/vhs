@@ -7,9 +7,12 @@ import (
 	"strings"
 )
 
+// EvaluatorOption is a function that can be used to modify the VHS instance.
+type EvaluatorOption func(*VHS)
+
 // Evaluate takes as input a tape string, an output writer, and an output file
 // and evaluates all the commands within the tape string and produces a GIF.
-func Evaluate(tape string, out io.Writer, outputFile string) error {
+func Evaluate(tape string, out io.Writer, opts ...EvaluatorOption) error {
 	l := NewLexer(tape)
 	p := NewParser(l)
 
@@ -84,13 +87,13 @@ func Evaluate(tape string, out io.Writer, outputFile string) error {
 	// If running as an SSH server, the output file is a temporary file
 	// to use for the output.
 	//
-	// We need to do this before the GIF is created but after all of the settings
-	// and commands are executed.
+	// We need to set the GIF file path before it is created but after all of
+	// the settings and commands are executed. This is done in `serve.go`.
 	//
 	// Since the GIF creation is deferred, setting the output file here will
 	// achieve what we want.
-	if outputFile != "" {
-		v.Options.Video.Output.GIF = outputFile
+	for _, opt := range opts {
+		opt(&v)
 	}
 
 	return nil
