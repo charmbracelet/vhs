@@ -11,7 +11,6 @@ import (
 	"encoding/json"
 
 	"github.com/charmbracelet/glamour/ansi"
-	"github.com/charmbracelet/vhs/style"
 )
 
 // Theme is a terminal theme for xterm.js
@@ -54,26 +53,26 @@ func (t Theme) String() string {
 //
 // Taken from https://github.com/meowgorithm/dotfiles.
 var DefaultTheme = Theme{
-	Background:    style.Background,
-	Foreground:    style.Foreground,
-	Cursor:        style.Foreground,
-	CursorAccent:  style.Background,
-	Black:         style.Black,
-	BrightBlack:   style.BrightBlack,
-	Red:           style.Red,
-	BrightRed:     style.BrightRed,
-	Green:         style.Green,
-	BrightGreen:   style.BrightGreen,
-	Yellow:        style.Yellow,
-	BrightYellow:  style.BrightYellow,
-	Blue:          style.Blue,
-	BrightBlue:    style.BrightBlue,
-	Magenta:       style.Magenta,
-	BrightMagenta: style.BrightMagenta,
-	Cyan:          style.Cyan,
-	BrightCyan:    style.BrightCyan,
-	White:         style.White,
-	BrightWhite:   style.BrightWhite,
+	Background:    Background,
+	Foreground:    Foreground,
+	Cursor:        Foreground,
+	CursorAccent:  Background,
+	Black:         Black,
+	BrightBlack:   BrightBlack,
+	Red:           Red,
+	BrightRed:     BrightRed,
+	Green:         Green,
+	BrightGreen:   BrightGreen,
+	Yellow:        Yellow,
+	BrightYellow:  BrightYellow,
+	Blue:          Blue,
+	BrightBlue:    BrightBlue,
+	Magenta:       Magenta,
+	BrightMagenta: BrightMagenta,
+	Cyan:          Cyan,
+	BrightCyan:    BrightCyan,
+	White:         White,
+	BrightWhite:   BrightWhite,
 }
 
 const margin = 2
@@ -96,7 +95,7 @@ var GlamourTheme = ansi.StyleConfig{
 		},
 	},
 	Item:     ansi.StylePrimitive{Prefix: "· "},
-	Emph:     ansi.StylePrimitive{Color: stringPtr(style.BrightBlack)},
+	Emph:     ansi.StylePrimitive{Color: stringPtr(BrightBlack)},
 	Strong:   ansi.StylePrimitive{Bold: boolPtr(true)},
 	Link:     ansi.StylePrimitive{Color: stringPtr("42"), Underline: boolPtr(true)},
 	LinkText: ansi.StylePrimitive{Color: stringPtr("207")},

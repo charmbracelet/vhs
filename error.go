@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"strings"
-
-	"github.com/charmbracelet/vhs/style"
 )
 
 // ParserError represents an error with parsing a tape file.
@@ -35,10 +33,10 @@ func (e ParserError) String() string {
 // Underline returns a string of ^ characters which helps underline the problematic token
 // in a ParserError.
 func Underline(n int) string {
-	return style.Error.Render(strings.Repeat("^", n))
+	return ErrorStyle.Render(strings.Repeat("^", n))
 }
 
 // LineNumber returns a formatted version of the given line number.
 func LineNumber(line int) string {
-	return style.LineNumber.Render(fmt.Sprintf(" %2d │ ", line))
+	return LineNumberStyle.Render(fmt.Sprintf(" %2d │ ", line))
 }

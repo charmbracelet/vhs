@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
-
-	"github.com/charmbracelet/vhs/style"
 )
 
 // Highlight syntax highlights a command for prettier printing.
@@ -13,43 +11,43 @@ import (
 // represent hidden commands.
 func (c Command) Highlight(faint bool) string {
 	var (
-		optionsStyle = style.Time
-		argsStyle    = style.Number
+		optionsStyle = TimeStyle
+		argsStyle    = NumberStyle
 	)
 
 	if faint {
 		if c.Options != "" {
-			return style.Faint.Render(fmt.Sprintf("%s %s %s", c.Type, c.Options, c.Args))
+			return FaintStyle.Render(fmt.Sprintf("%s %s %s", c.Type, c.Options, c.Args))
 		}
-		return style.Faint.Render(fmt.Sprintf("%s %s", c.Type, c.Args))
+		return FaintStyle.Render(fmt.Sprintf("%s %s", c.Type, c.Args))
 	}
 
 	switch c.Type {
 	case SET:
-		optionsStyle = style.Keyword
+		optionsStyle = KeywordStyle
 		if isNumber(c.Args) {
-			argsStyle = style.Number
+			argsStyle = NumberStyle
 		} else if isTime(c.Args) {
-			argsStyle = style.Time
+			argsStyle = TimeStyle
 		} else {
-			argsStyle = style.String
+			argsStyle = StringStyle
 		}
 	case OUTPUT:
-		optionsStyle = style.None
-		argsStyle = style.String
+		optionsStyle = NoneStyle
+		argsStyle = StringStyle
 	case CTRL:
-		argsStyle = style.Command
+		argsStyle = CommandStyle
 	case SLEEP:
-		argsStyle = style.Time
+		argsStyle = TimeStyle
 	case TYPE:
-		optionsStyle = style.Time
-		argsStyle = style.String
+		optionsStyle = TimeStyle
+		argsStyle = StringStyle
 	case HIDE, SHOW:
-		return style.Faint.Render(c.Type.String())
+		return FaintStyle.Render(c.Type.String())
 	}
 
 	var s strings.Builder
-	s.WriteString(style.Command.Render(c.Type.String()) + " ")
+	s.WriteString(CommandStyle.Render(c.Type.String()) + " ")
 	if c.Options != "" {
 		s.WriteString(optionsStyle.Render(c.Options) + " ")
 	}
