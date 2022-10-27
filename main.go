@@ -57,7 +57,7 @@ var (
 				return errors.New("no input provided")
 			}
 
-			err = Evaluate(string(input), os.Stdout, "")
+			err = Evaluate(string(input), os.Stdout)
 			if err != nil {
 				return err
 			}

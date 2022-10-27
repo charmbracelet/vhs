@@ -72,7 +72,12 @@ var (
 							rand := rand.Int63n(maxNumber)
 							tempFile := fmt.Sprintf("vhs-%d.gif", rand)
 
-							err = Evaluate(b.String(), s.Stderr(), tempFile)
+							err = Evaluate(b.String(), s.Stderr(), func(v *VHS) {
+								v.Options.Video.Output.GIF = tempFile
+								// Disable generating MP4 & WebM.
+								v.Options.Video.Output.MP4 = ""
+								v.Options.Video.Output.WebM = ""
+							})
 							if err != nil {
 								_ = s.Exit(1)
 							}
