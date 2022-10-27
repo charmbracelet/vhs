@@ -29,7 +29,7 @@ Open the `.tape` file with your favorite `$EDITOR`.
 vim demo.tape
 ```
 
-Tape files consist of a series of [commands](#commands). The commands are
+Tape files consist of a series of [commands](#vhs-command-reference). The commands are
 instructions for VHS to perform on its virtual terminal.  For a list of all
 possible commands see [the command reference](#vhs-command-reference).
 
