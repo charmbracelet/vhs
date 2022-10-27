@@ -453,7 +453,8 @@ Type "You will see this being typed."
 
 You can hook up VHS to your CI pipeline to keep your GIFs up-to-date with
 the official VHS GitHub Action:
-* [⚙️ charmbracelet/vhs-action](https://github.com/charmbracelet/vhs-action)
+
+> [⚙️ charmbracelet/vhs-action](https://github.com/charmbracelet/vhs-action)
 
 VHS can also be used for integration testing. Use the `.txt` or `.ascii` output
 to generate golden files. Store these files in a git repository to ensure there
@@ -467,7 +468,8 @@ Output golden.ascii
 
 There’s a tree-sitter grammar for `.tape` files available for editors that
 support syntax highlighting with tree-sitter:
-* [🌳 charmbracelet/tree-sitter-vhs](https://github.com/charmbracelet/tree-sitter-vhs)
+
+> [🌳 charmbracelet/tree-sitter-vhs](https://github.com/charmbracelet/tree-sitter-vhs)
 
 It works great with Neovim, Emacs, and so on!
 
