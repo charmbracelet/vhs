@@ -50,7 +50,7 @@ func DefaultVHSOptions() Options {
 		LineHeight:    1.0,
 		TypingSpeed:   typingSpeed,
 		Theme:         DefaultTheme,
-		Video:         DefaultVideoOptions,
+		Video:         DefaultVideoOptions(),
 	}
 }
 

@@ -59,17 +59,19 @@ const defaultWidth = 1200
 
 // DefaultVideoOptions is the set of default options for converting frames
 // to a GIF, which are used if they are not overridden.
-var DefaultVideoOptions = VideoOptions{
-	CleanupFrames:   true,
-	Framerate:       defaultFramerate,
-	Input:           randomDir(),
-	MaxColors:       defaultMaxColors,
-	Output:          VideoOutputs{GIF: "out.gif", WebM: "", MP4: ""},
-	Width:           defaultWidth,
-	Height:          defaultHeight,
-	Padding:         defaultPadding,
-	PlaybackSpeed:   defaultPlaybackSpeed,
-	BackgroundColor: DefaultTheme.Background,
+func DefaultVideoOptions() VideoOptions {
+	return VideoOptions{
+		CleanupFrames:   true,
+		Framerate:       defaultFramerate,
+		Input:           randomDir(),
+		MaxColors:       defaultMaxColors,
+		Output:          VideoOutputs{GIF: "out.gif", WebM: "", MP4: ""},
+		Width:           defaultWidth,
+		Height:          defaultHeight,
+		Padding:         defaultPadding,
+		PlaybackSpeed:   defaultPlaybackSpeed,
+		BackgroundColor: DefaultTheme.Background,
+	}
 }
 
 // MakeGIF takes a list of images (as frames) and converts them to a GIF.
