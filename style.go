@@ -44,5 +44,5 @@ var (
 			BorderForeground(lipgloss.Color("8")).
 			Foreground(lipgloss.Color("1")).
 			Padding(0, 1).
-			Width(defaultWidth)
+			Width(defaultColumns)
 )
