@@ -13,6 +13,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 )
 
 const textFrameFormat = "frame-text-%05d.png"
@@ -86,9 +87,9 @@ func MakeGIF(opts VideoOptions) *exec.Cmd {
 	return exec.Command(
 		"ffmpeg", "-y",
 		"-r", fmt.Sprint(opts.Framerate),
-		"-i", opts.Input+textFrameFormat,
+		"-i", filepath.Join(opts.Input, textFrameFormat),
 		"-r", fmt.Sprint(opts.Framerate),
-		"-i", opts.Input+cursorFrameFormat,
+		"-i", filepath.Join(opts.Input, cursorFrameFormat),
 		"-filter_complex",
 		fmt.Sprintf(`[0][1]overlay[merged];[merged]scale=%d:%d:force_original_aspect_ratio=1[scaled];[scaled]fps=%d,setpts=PTS/%f[speed];[speed]pad=%d:%d:(ow-iw)/2:(oh-ih)/2:%s[padded];[padded]fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s[bordered];[bordered]split[a][b];[a]palettegen=max_colors=256[p];[b][p]paletteuse[out]`,
 			opts.Width-2*opts.Padding, opts.Height-2*opts.Padding,
@@ -115,9 +116,9 @@ func MakeWebM(opts VideoOptions) *exec.Cmd {
 	return exec.Command(
 		"ffmpeg", "-y",
 		"-r", fmt.Sprint(opts.Framerate),
-		"-i", opts.Input+textFrameFormat,
+		"-i", filepath.Join(opts.Input, textFrameFormat),
 		"-r", fmt.Sprint(opts.Framerate),
-		"-i", opts.Input+cursorFrameFormat,
+		"-i", filepath.Join(opts.Input, cursorFrameFormat),
 		"-filter_complex",
 		fmt.Sprintf(`[0][1]overlay,scale=%d:%d:force_original_aspect_ratio=1,fps=%d,setpts=PTS/%f,pad=%d:%d:(ow-iw)/2:(oh-ih)/2:%s,fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s`,
 			opts.Width-2*opts.Padding, opts.Height-2*opts.Padding,
@@ -147,9 +148,9 @@ func MakeMP4(opts VideoOptions) *exec.Cmd {
 	return exec.Command(
 		"ffmpeg", "-y",
 		"-r", fmt.Sprint(opts.Framerate),
-		"-i", opts.Input+textFrameFormat,
+		"-i", filepath.Join(opts.Input, textFrameFormat),
 		"-r", fmt.Sprint(opts.Framerate),
-		"-i", opts.Input+cursorFrameFormat,
+		"-i", filepath.Join(opts.Input, cursorFrameFormat),
 		"-filter_complex",
 		fmt.Sprintf(`[0][1]overlay,scale=%d:%d:force_original_aspect_ratio=1,fps=%d,setpts=PTS/%f,pad=%d:%d:(ow-iw)/2:(oh-ih)/2:%s,fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s`,
 			opts.Width-2*opts.Padding, opts.Height-2*opts.Padding,
