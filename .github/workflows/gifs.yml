@@ -3,7 +3,7 @@ name: comment
 on:
   pull_request:
     paths:
-      - '**/*.tape'
+      - 'examples/**/*.tape'
 
 jobs:
   matrix:
@@ -17,7 +17,7 @@ jobs:
           list-files: json
           filters: |
             tape:
-              - added|modified: '**/*.tape'
+              - added|modified: 'examples/**/*.tape'
       - id: set-matrix
         run: |
           # Here we assume the gif output is going to be the same as the tape file path
@@ -34,22 +34,40 @@ jobs:
       - uses: charmbracelet/vhs-action@v1
         with:
           path: ${{ matrix.path }}
-      - run: |
-          ls
-          tree
       - uses: devicons/public-upload-to-imgur@v2.2.2
         id: imgur_step
         with:
           path: './${{ matrix.out }}'
           client_id: ${{ secrets.IMGUR_CLIENT_ID }}
-      - uses: github-actions-up-and-running/pr-comment@v1.0.1
-        if: success()
-        env:
-          IMG_URL: ${{ fromJSON(steps.imgur_step.outputs.imgur_urls)[0] }}
-          MESSAGE: |
-            VHS tape file ([`${{ matrix.path }}`](${{ matrix.path }})) has changed.
-            
-            <img src="{0}" width="600px" />
+      - uses: actions/github-script@v6
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          message: ${{ format(env.MESSAGE, env.IMG_URL) }}
+          # This snippet is public-domain, taken from
+          # https://github.com/oprypin/nightly.link/blob/master/.github/workflows/pr-comment.yml
+          script: |
+            async function upsertComment(owner, repo, issue_number, purpose, body) {
+              const {data: comments} = await github.rest.issues.listComments(
+                {owner, repo, issue_number});
+              const marker = `<!-- bot: ${purpose} -->`;
+              body = marker + "\n" + body;
+              const existing = comments.filter((c) => c.body.includes(marker));
+              if (existing.length > 0) {
+                const last = existing[existing.length - 1];
+                core.info(`Updating comment ${last.id}`);
+                await github.rest.issues.updateComment({
+                  owner, repo,
+                  body,
+                  comment_id: last.id,
+                });
+              } else {
+                core.info(`Creating a comment in issue / PR #${issue_number}`);
+                await github.rest.issues.createComment({issue_number, body, owner, repo});
+              }
+            }
+
+            const {owner, repo} = context.repo;
+            const issue_number = context.issue.number;
+
+            const body = "VHS tape file ([`${{ matrix.path }}`](${{ matrix.path }})) has changed.\n\n" +
+            `<img src="${{ fromJSON(steps.imgur_step.outputs.imgur_urls)[0] }}" width="600px" />`;
+            core.info("Review thread message body:", body);
+            await upsertComment(owner, repo, issue_number, "gif-commenter ${{ matrix.path }}", body);
