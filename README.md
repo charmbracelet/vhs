@@ -81,7 +81,7 @@ brew install charmbracelet/tap/vhs ffmpeg
 brew install ttyd --HEAD
 
 # Arch Linux (btw)
-yay -S vhs ttyd ffmpeg
+yay -S vhs-bin ttyd ffmpeg
 
 # Nix
 nix-env -iA nixpkgs.vhs nixpkgs.ttyd nixpkgs.ffmpeg
