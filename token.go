@@ -43,6 +43,7 @@ const (
 	BEGIN          = "BEGIN"
 	END            = "END"
 	HIDE           = "HIDE"
+	REQUIRE        = "REQUIRE"
 	SHOW           = "SHOW"
 	OUTPUT         = "OUTPUT"
 	MILLISECONDS   = "MILLISECONDS"
@@ -84,6 +85,7 @@ var keywords = map[string]TokenType{
 	"Begin":         BEGIN,
 	"End":           END,
 	"Hide":          HIDE,
+	"Require":       REQUIRE,
 	"Show":          SHOW,
 	"Output":        OUTPUT,
 	"FontFamily":    FONT_FAMILY,

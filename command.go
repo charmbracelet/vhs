@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"os/exec"
 	"strconv"
 	"strings"
 	"time"
@@ -28,6 +29,7 @@ var CommandTypes = []CommandType{
 	SLEEP,
 	SPACE,
 	HIDE,
+	REQUIRE,
 	SHOW,
 	TAB,
 	TYPE,
@@ -59,6 +61,7 @@ var CommandFuncs = map[CommandType]CommandFunc{
 	TAB:       ExecuteKey(input.Tab),
 	ESCAPE:    ExecuteKey(input.Escape),
 	HIDE:      ExecuteHide,
+	REQUIRE:   ExecuteRequire,
 	SHOW:      ExecuteShow,
 	SET:       ExecuteSet,
 	OUTPUT:    ExecuteOutput,
@@ -136,6 +139,15 @@ func ExecuteCtrl(c Command, v *VHS) {
 func ExecuteHide(c Command, v *VHS) {
 	v.browser.SlowMotion(0)
 	v.PauseRecording()
+}
+
+// ExecuteRequire is a CommandFunc that checks if all the binaries mentioned in the
+// Require command are present. If not, it exits with a non-zero error.
+func ExecuteRequire(c Command, v *VHS) {
+	_, err := exec.LookPath(c.Args)
+	if err != nil {
+		v.Errors = append(v.Errors, err)
+	}
 }
 
 // ExecuteShow is a CommandFunc that resumes the recording of the vhs.

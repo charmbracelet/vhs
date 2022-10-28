@@ -58,6 +58,8 @@ func (p *Parser) parseCommand() Command {
 		return p.parseCtrl()
 	case HIDE:
 		return p.parseHide()
+	case REQUIRE:
+		return p.parseRequire()
 	case SHOW:
 		return p.parseShow()
 	default:
@@ -226,6 +228,23 @@ func (p *Parser) parseSleep() Command {
 // ...
 func (p *Parser) parseHide() Command {
 	cmd := Command{Type: HIDE}
+	return cmd
+}
+
+// parseRequire parses a Require command.
+//
+// ...
+// Require
+func (p *Parser) parseRequire() Command {
+	cmd := Command{Type: REQUIRE}
+
+	if p.peek.Type != STRING {
+		p.errors = append(p.errors, NewError(p.peek, p.cur.Literal+" expects one string"))
+	}
+
+	cmd.Args = p.peek.Literal
+	p.nextToken()
+
 	return cmd
 }
 

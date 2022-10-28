@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"os"
 	"strings"
 )
 
@@ -38,7 +39,7 @@ func Evaluate(tape string, out io.Writer, opts ...EvaluatorOption) error {
 	// Run Output and Set commands as they only modify options on the VHS instance.
 	var offset int
 	for i, cmd := range cmds {
-		if cmd.Type == SET || cmd.Type == OUTPUT {
+		if cmd.Type == SET || cmd.Type == OUTPUT || cmd.Type == REQUIRE {
 			fmt.Fprintln(out, cmd.Highlight(false))
 			cmd.Execute(&v)
 		} else {
@@ -47,9 +48,16 @@ func Evaluate(tape string, out io.Writer, opts ...EvaluatorOption) error {
 		}
 	}
 
-	h, w, padding := v.Options.Video.Height, v.Options.Video.Width, v.Options.Video.Padding
-	if h < 2*padding || w < 2*padding {
-		return fmt.Errorf("height and width must be greater than %d", 2*padding)
+	video := v.Options.Video
+	if video.Height < 2*video.Padding || video.Width < 2*video.Padding {
+		v.Errors = append(v.Errors, fmt.Errorf("height and width must be greater than %d", 2*video.Padding))
+	}
+
+	if len(v.Errors) > 0 {
+		for _, err := range v.Errors {
+			fmt.Fprintln(out, ErrorStyle.Render(err.Error()))
+		}
+		os.Exit(1)
 	}
 
 	// Setup the terminal session so we can start executing commands.
@@ -81,6 +89,12 @@ func Evaluate(tape string, out io.Writer, opts ...EvaluatorOption) error {
 	}()
 
 	for _, cmd := range cmds[offset:] {
+
+		// Require commands are already run at this stage
+		if cmd.Type == REQUIRE {
+			continue
+		}
+
 		// When changing the FontFamily, FontSize, LineHeight, Padding
 		// The xterm.js canvas changes dimensions and causes FFMPEG to not work
 		// correctly (specifically) with palettegen.
