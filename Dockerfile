@@ -41,7 +41,7 @@ RUN useradd -u 1976 -U -s /bin/false vhs
 COPY vhs /usr/bin/
 
 ENV VHS_PORT "1976"
-ENV VHS_HOST ""
+ENV VHS_HOST "0.0.0.0"
 ENV VHS_KEY "/vhs/vhs"
 ENV VHS_GID "1976"
 ENV VHS_UID "1976"

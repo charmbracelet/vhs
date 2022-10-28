@@ -27,7 +27,7 @@ const (
 
 type config struct {
 	Port               int    `env:"PORT" envDefault:"1976"`
-	Host               string `env:"HOST" envDefault:""`
+	Host               string `env:"HOST" envDefault:"localhost"`
 	Key                string `env:"KEY" envDefault:""`
 	GID                int    `env:"GID" envDefault:"0"`
 	UID                int    `env:"UID" envDefault:"0"`
