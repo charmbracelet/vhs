@@ -48,5 +48,7 @@ Enter
 Sleep 3s
 
 Type "clear"
+
 Sleep 0.5s
+
 Enter
