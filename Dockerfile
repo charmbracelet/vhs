@@ -34,4 +34,6 @@ RUN apk add --no-cache ffmpeg chromium bash
 # Expose port
 EXPOSE 1976
 
+WORKDIR /vhs
+
 ENTRYPOINT ["/usr/bin/vhs"]

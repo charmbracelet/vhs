@@ -107,7 +107,7 @@ sudo yum install vhs ffmpeg
 Or, use Docker to run VHS directly, dependencies included:
 
 ```sh
-docker run ghcr.io/charmbracelet/vhs <cassette>.tape
+docker run --rm -v $PWD:/vhs ghcr.io/charmbracelet/vhs <cassette>.tape
 ```
 
 Or, download it:
