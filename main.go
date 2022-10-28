@@ -34,7 +34,6 @@ var (
 		Args:          cobra.MaximumNArgs(1),
 		SilenceUsage:  true,
 		SilenceErrors: true, // we print our own errors
-
 		RunE: func(cmd *cobra.Command, args []string) error {
 			err := ensureDependencies()
 			if err != nil {
@@ -65,6 +64,23 @@ var (
 				return err
 			}
 			return nil
+		},
+	}
+
+	markdown  bool
+	themesCmd = &cobra.Command{
+		Use:   "themes",
+		Short: "List all the available themes, one per line",
+		Args:  cobra.NoArgs,
+		Run: func(cmd *cobra.Command, args []string) {
+			var prefix, suffix string
+			if markdown {
+				fmt.Fprintf(cmd.OutOrStdout(), "# Themes\n\n")
+				prefix, suffix = "* `", "`"
+			}
+			for _, theme := range sortedThemeNames() {
+				fmt.Fprintf(cmd.OutOrStdout(), "%s%s%s\n", prefix, theme, suffix)
+			}
 		},
 	}
 
@@ -142,8 +158,11 @@ func main() {
 }
 
 func init() {
+	themesCmd.Flags().BoolVar(&markdown, "markdown", false, "output as markdown")
+	_ = themesCmd.Flags().MarkHidden("markdown")
 	rootCmd.AddCommand(
 		newCmd,
+		themesCmd,
 		validateCmd,
 		manCmd,
 		serveCmd,

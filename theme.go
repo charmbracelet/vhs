@@ -5,6 +5,7 @@
 // It can be changed through the Set command.
 //
 // Set Theme {"background": "#171717"}
+// Set Theme "Catppuccin Mocha"
 package main
 
 import (
@@ -16,9 +17,12 @@ import (
 // Theme is a terminal theme for xterm.js
 // It is used for marshalling between the xterm.js readable json format and a
 // valid go struct.
+// https://xtermjs.org/docs/api/terminal/interfaces/itheme/
 type Theme struct {
+	Name          string `json:"name"`
 	Background    string `json:"background"`
 	Foreground    string `json:"foreground"`
+	Selection     string `json:"selection"`
 	Cursor        string `json:"cursor"`
 	CursorAccent  string `json:"cursorAccent"`
 	Black         string `json:"black"`
