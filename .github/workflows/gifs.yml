@@ -1,4 +1,4 @@
-name: gif pr commenter
+name: comment
 
 on:
   pull_request:
@@ -47,9 +47,9 @@ jobs:
         env:
           IMG_URL: ${{ fromJSON(steps.imgur_step.outputs.imgur_urls)[0] }}
           MESSAGE: |
-            `${{ matrix.path }}` has changed.
-
-            ![VHS GIf]({0})
+            VHS tape file ([`${{ matrix.path }}`](${{ matrix.path }})) has changed.
+            
+            <img src="{0}" width="600px" />
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           message: ${{ format(env.MESSAGE, env.IMG_URL) }}
