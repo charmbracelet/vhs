@@ -17,6 +17,7 @@ import (
 // VHS is the object that controls the setup.
 type VHS struct {
 	Options      *Options
+	Errors       []error
 	Page         *rod.Page
 	browser      *rod.Browser
 	TextCanvas   *rod.Element
