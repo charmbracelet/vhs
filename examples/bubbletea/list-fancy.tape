@@ -1,4 +1,4 @@
-Output list-fancy.gif
+Output examples/bubbletea/list-fancy.gif
 Set FontSize 14
 
 Hide

@@ -1,4 +1,4 @@
-Output status-widget.gif
+Output examples/cli-ui/status-widget.gif
 
 Set FontSize 32
 

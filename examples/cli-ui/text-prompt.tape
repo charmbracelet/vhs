@@ -1,5 +1,5 @@
-Output text-prompt.ascii
-Output text-prompt.gif
+Output examples/cli-ui/text-prompt.ascii
+Output examples/cli-ui/text-prompt.gif
 
 Set FontSize 32
 

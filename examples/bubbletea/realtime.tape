@@ -1,4 +1,4 @@
-Output realtime.gif
+Output examples/bubbletea/realtime.gif
 
 Hide
 Type "go build -o realtime ."

@@ -1,4 +1,4 @@
-Output table.gif
+Output examples/bubbletea/table.gif
 
 Hide
 Type "go build -o table ."

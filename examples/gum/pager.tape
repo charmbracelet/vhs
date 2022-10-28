@@ -1,4 +1,4 @@
-Output pager.gif
+Output examples/gum/pager.gif
 
 Set Padding 32
 Set FontSize 16

@@ -1,4 +1,4 @@
-Output pager.gif
+Output examples/bubbletea/pager.gif
 Set FontSize 16
 
 Hide

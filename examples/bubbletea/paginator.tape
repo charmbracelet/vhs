@@ -1,4 +1,4 @@
-Output paginator.gif
+Output examples/bubbletea/paginator.gif
 Set FontSize 12
 Set Padding 36
 

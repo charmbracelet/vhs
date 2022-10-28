@@ -1,4 +1,4 @@
-Output result.gif
+Output examples/bubbletea/result.gif
 
 Hide
 Type "go build -o result ."

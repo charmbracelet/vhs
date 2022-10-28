@@ -1,4 +1,4 @@
-Output progress-animated.gif
+Output examples/bubbletea/progress-animated.gif
 
 Hide
 Type "go build -o progress-animated ."

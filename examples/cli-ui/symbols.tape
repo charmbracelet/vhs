@@ -1,4 +1,4 @@
-Output symbols.gif
+Output examples/cli-ui/symbols.gif
 
 Set FontSize 32
 

@@ -1,4 +1,4 @@
-Output table.gif
+Output examples/gum/table.gif
 
 Type "gum table < superhero.csv -w 2,12,5,6,6,8,4,20 --height 10"
 Enter

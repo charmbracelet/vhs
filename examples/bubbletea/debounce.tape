@@ -1,4 +1,4 @@
-Output debounce.gif
+Output examples/bubbletea/debounce.gif
 
 Hide
 Type "go build -o debounce ."

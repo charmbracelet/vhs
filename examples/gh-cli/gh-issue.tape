@@ -1,4 +1,4 @@
-Output gh-issue.gif
+Output examples/gh-cli/gh-issue.gif
 
 Type "gh issue list"
 Sleep 500ms

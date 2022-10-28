@@ -1,4 +1,4 @@
-Output file.gif
+Output examples/gum/file.gif
 
 Type "gum file ./src"
 Sleep 0.5s

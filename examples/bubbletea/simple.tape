@@ -1,4 +1,4 @@
-Output simple.gif
+Output examples/bubbletea/simple.gif
 
 Hide
 Type "go build -o simple ."

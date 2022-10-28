@@ -1,4 +1,4 @@
-Output list-default.gif
+Output examples/bubbletea/list-default.gif
 Set FontSize 16
 
 Hide

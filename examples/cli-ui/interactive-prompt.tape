@@ -1,4 +1,4 @@
-Output interactive-prompt.gif
+Output examples/cli-ui/interactive-prompt.gif
 
 Set FontSize 32
 

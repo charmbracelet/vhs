@@ -1,4 +1,4 @@
-Output send-msg.gif
+Output examples/bubbletea/send-msg.gif
 
 Hide
 Type "go build -o send-msg ."

@@ -1,4 +1,4 @@
-Output textarea.gif
+Output examples/bubbletea/textarea.gif
 
 Hide
 Type "go build -o textarea ."

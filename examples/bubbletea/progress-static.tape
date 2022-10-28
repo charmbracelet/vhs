@@ -1,4 +1,4 @@
-Output progress-static.gif
+Output examples/bubbletea/progress-static.gif
 
 Hide
 Type "go build -o progress-static ."

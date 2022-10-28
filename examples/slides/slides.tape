@@ -1,4 +1,4 @@
-Output slides.gif
+Output examples/slides/slides.gif
 Set FontSize 32
 Set Padding 0
 Set Framerate 1

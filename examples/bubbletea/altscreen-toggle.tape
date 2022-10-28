@@ -1,4 +1,4 @@
-Output altscreen-toggle.gif
+Output examples/bubbletea/altscreen-toggle.gif
 
 Hide
 Type "go build -o altscreen-toggle ."

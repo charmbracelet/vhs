@@ -1,4 +1,4 @@
-Output tui-daemon-combo.gif
+Output examples/bubbletea/tui-daemon-combo.gif
 
 Hide
 Type "go build -o tui-daemon-combo ."

@@ -1,4 +1,4 @@
-Output stopwatch.gif
+Output examples/bubbletea/stopwatch.gif
 
 Hide
 Type "go build -o stopwatch ."

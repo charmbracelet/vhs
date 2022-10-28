@@ -1,4 +1,4 @@
-Output gh-pr.gif
+Output examples/gh-cli/gh-pr.gif
 
 Type "gh pr list --state all"
 Sleep 500ms

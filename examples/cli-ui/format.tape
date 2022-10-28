@@ -1,4 +1,4 @@
-Output format.gif
+Output examples/cli-ui/format.gif
 
 Set FontSize 32
 

@@ -1,4 +1,4 @@
-Output glamour.gif
+Output examples/bubbletea/glamour.gif
 Set Height 750
 Set FontSize 16
 

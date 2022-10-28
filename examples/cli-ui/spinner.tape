@@ -1,4 +1,4 @@
-Output spinner.gif
+Output examples/cli-ui/spinner.gif
 
 Set FontSize 32
 

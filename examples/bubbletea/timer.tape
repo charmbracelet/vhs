@@ -1,4 +1,4 @@
-Output timer.gif
+Output examples/bubbletea/timer.gif
 
 Hide
 Type "go build -o timer ."

@@ -1,4 +1,4 @@
-Output exec.gif
+Output examples/bubbletea/exec.gif
 
 Hide
 Type "go build -o exec ."

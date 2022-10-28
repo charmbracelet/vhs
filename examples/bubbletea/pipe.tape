@@ -1,4 +1,4 @@
-Output pipe.gif
+Output examples/bubbletea/pipe.gif
 
 Hide
 Type "go build -o pipe . && clear"

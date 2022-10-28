@@ -1,4 +1,4 @@
-Output list-simple.gif
+Output examples/bubbletea/list-simple.gif
 Set FontSize 18
 
 Hide

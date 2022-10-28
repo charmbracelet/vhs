@@ -1,4 +1,4 @@
-Output help.gif
+Output examples/bubbletea/help.gif
 
 Hide
 Type "go build -o help ."

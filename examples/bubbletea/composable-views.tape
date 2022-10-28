@@ -1,4 +1,4 @@
-Output composable-views.gif
+Output examples/bubbletea/composable-views.gif
 
 Hide
 Type "go build -o views ."

@@ -1,4 +1,4 @@
-Output textinput.gif
+Output examples/bubbletea/textinput.gif
 
 Hide
 Type "go build -o textinput ."

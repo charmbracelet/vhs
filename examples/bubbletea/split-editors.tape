@@ -1,4 +1,4 @@
-Output split-editors.gif
+Output examples/bubbletea/split-editors.gif
 Set FontSize 16
 
 Hide

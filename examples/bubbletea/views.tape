@@ -1,4 +1,4 @@
-Output views.gif
+Output examples/bubbletea/views.gif
 
 Hide
 Type "go build -o views ."

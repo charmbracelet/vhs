@@ -1,4 +1,4 @@
-Output package-manager.gif
+Output examples/bubbletea/package-manager.gif
 
 Hide
 Type "go build -o package-manager ."

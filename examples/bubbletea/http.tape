@@ -1,4 +1,4 @@
-Output http.gif
+Output examples/bubbletea/http.gif
 
 Hide
 Type "go build -o http ."

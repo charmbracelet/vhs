@@ -1,4 +1,4 @@
-Output sequence.gif
+Output examples/bubbletea/sequence.gif
 
 Hide
 Type "go build -o sequence ."

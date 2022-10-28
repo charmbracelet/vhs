@@ -1,4 +1,4 @@
-Output fullscreen.gif
+Output examples/bubbletea/fullscreen.gif
 
 Hide
 Type "go build -o fullscreen ."

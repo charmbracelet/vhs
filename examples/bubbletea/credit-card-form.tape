@@ -1,4 +1,4 @@
-Output credit-card-form.gif
+Output examples/bubbletea/credit-card-form.gif
 
 Hide
 Type "go build -o credit-card ."

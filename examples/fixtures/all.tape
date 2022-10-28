@@ -1,9 +1,9 @@
 # All Commands
 
 # Output:
-Output all.gif
-Output all.mp4
-Output all.webm
+Output examples/fixtures/all.gif
+Output examples/fixtures/all.mp4
+Output examples/fixtures/all.webm
 
 # Settings:
 Set FontSize 22

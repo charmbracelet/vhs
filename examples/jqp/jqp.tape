@@ -1,4 +1,4 @@
-Output jqp.gif
+Output examples/jqp/jqp.gif
 Set Width 2400
 Set Height 1600
 

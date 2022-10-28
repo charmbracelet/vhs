@@ -1,4 +1,4 @@
-Output chat.gif
+Output examples/bubbletea/chat.gif
 
 Hide
 Type "go build -o chat ."

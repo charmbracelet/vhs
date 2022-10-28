@@ -1,4 +1,4 @@
-Output tabs.gif
+Output examples/bubbletea/tabs.gif
 
 Hide
 Type "go build -o tabs ."

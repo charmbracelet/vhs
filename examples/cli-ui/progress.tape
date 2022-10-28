@@ -1,4 +1,4 @@
-Output progress.gif
+Output examples/cli-ui/progress.gif
 
 Set FontSize 32
 

@@ -1,4 +1,4 @@
-Output nested-frames.gif
+Output examples/cli-ui/nested-frames.gif
 
 Set FontSize 32
 

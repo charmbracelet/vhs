@@ -1,4 +1,4 @@
-Output spinners.gif
+Output examples/bubbletea/spinners.gif
 
 Hide
 Type "go build -o spinners ."
