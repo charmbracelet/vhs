@@ -95,7 +95,6 @@ Sleep Bar`
 
 func TestParseTapeFile(t *testing.T) {
 	input, err := os.ReadFile("examples/fixtures/all.tape")
-
 	if err != nil {
 		t.Fatal("could not read fixture file")
 	}
@@ -111,6 +110,7 @@ func TestParseTapeFile(t *testing.T) {
 		{Type: SET, Options: "LetterSpacing", Args: "1"},
 		{Type: SET, Options: "LineHeight", Args: "1.2"},
 		{Type: SET, Options: "Theme", Args: "{ \"name\": \"Whimsy\", \"black\": \"#535178\", \"red\": \"#ef6487\", \"green\": \"#5eca89\", \"yellow\": \"#fdd877\", \"blue\": \"#65aef7\", \"purple\": \"#aa7ff0\", \"cyan\": \"#43c1be\", \"white\": \"#ffffff\", \"brightBlack\": \"#535178\", \"brightRed\": \"#ef6487\", \"brightGreen\": \"#5eca89\", \"brightYellow\": \"#fdd877\", \"brightBlue\": \"#65aef7\", \"brightPurple\": \"#aa7ff0\", \"brightCyan\": \"#43c1be\", \"brightWhite\": \"#ffffff\", \"background\": \"#29283b\", \"foreground\": \"#b3b0d6\", \"selectionBackground\": \"#3d3c58\", \"cursorColor\": \"#b3b0d6\" }"},
+		{Type: SET, Options: "Theme", Args: "Catppuccin Mocha"},
 		{Type: SET, Options: "Padding", Args: "50"},
 		{Type: SET, Options: "Framerate", Args: "60"},
 		{Type: SET, Options: "PlaybackSpeed", Args: "2"},
@@ -176,5 +176,4 @@ func TestParseTapeFile(t *testing.T) {
 			t.Errorf("Expected command %d to have options %s, got %s", i, expected[i].Options, cmd.Options)
 		}
 	}
-
 }

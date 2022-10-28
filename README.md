@@ -308,10 +308,18 @@ Set the theme of the terminal with the `Set Theme` command. The theme value
 should be a JSON string with the base 16 colors and foreground + background.
 
 ```elixir
-Set Theme { "name": "Whimsy", "black": "#535178", "red": "#ef6487", "green": "#5eca89", "yellow": "#fdd877", "blue": "#65aef7", "purple": "#aa7ff0", "cyan": "#43c1be", "white": "#ffffff", "brightBlack": "#535178", "brightRed": "#ef6487", "brightGreen": "#5eca89", "brightYellow": "#fdd877", "brightBlue": "#65aef7", "brightPurple": "#aa7ff0", "brightCyan": "#43c1be", "brightWhite": "#ffffff", "background": "#29283b", "foreground": "#b3b0d6", "selectionBackground": "#3d3c58", "cursorColor": "#b3b0d6" }
+Set Theme { "name": "Whimsy", "black": "#535178", "red": "#ef6487", "green": "#5eca89", "yellow": "#fdd877", "blue": "#65aef7", "magenta": "#aa7ff0", "cyan": "#43c1be", "white": "#ffffff", "brightBlack": "#535178", "brightRed": "#ef6487", "brightGreen": "#5eca89", "brightYellow": "#fdd877", "brightBlue": "#65aef7", "brightMagenta": "#aa7ff0", "brightCyan": "#43c1be", "brightWhite": "#ffffff", "background": "#29283b", "foreground": "#b3b0d6", "selection": "#3d3c58", "cursor": "#b3b0d6" }
 ```
 
 <img alt="Example of changing the theme to Whimsy" src="https://stuff.charm.sh/vhs/examples/theme.gif" width="600" />
+
+You can also set themes by name:
+
+```elixir
+Set Theme "Catppuccin Frappe"
+```
+
+See the full list by running `vhs themes`, or in [THEMES.md](./THEMES.md).
 
 #### Set Padding
 
