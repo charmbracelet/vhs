@@ -3,7 +3,7 @@
 
 package main
 
-// Windows doesn't support UID and GID, so we need to skip this test.
+// Windows doesn't support UID and GID, so we need to skip this.
 func dropUserPrivileges(gid int, uid int) error {
 	return nil
 }
