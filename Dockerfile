@@ -29,6 +29,8 @@ RUN apk add --no-cache \
 # Expose port
 EXPOSE 1976
 
+WORKDIR /vhs
+
 # Install Dependencies
 RUN apk add --no-cache ffmpeg chromium bash shadow
 
