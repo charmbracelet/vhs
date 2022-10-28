@@ -26,11 +26,12 @@ const (
 )
 
 type config struct {
-	Port int    `env:"VHS_PORT" envDefault:"1976"`
-	Host string `env:"VHS_HOST" envDefault:""`
-	Key  string `env:"VHS_KEY" envDefault:""`
-	GID  int    `env:"VHS_GID" envDefault:"0"`
-	UID  int    `env:"VHS_UID" envDefault:"0"`
+	Port               int    `env:"PORT" envDefault:"1976"`
+	Host               string `env:"HOST" envDefault:""`
+	Key                string `env:"KEY" envDefault:""`
+	GID                int    `env:"GID" envDefault:"0"`
+	UID                int    `env:"UID" envDefault:"0"`
+	AuthorizedKeysPath string `env:"AUTHORIZED_KEYS_PATH"`
 }
 
 var serveCmd = &cobra.Command{
@@ -38,7 +39,9 @@ var serveCmd = &cobra.Command{
 	Short: "Start the VHS SSH server",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var cfg config
-		if err := env.Parse(&cfg); err != nil {
+		if err := env.Parse(&cfg, env.Options{
+			Prefix: "VHS_",
+		}); err != nil {
 			return err
 		}
 		key := cfg.Key
@@ -48,6 +51,12 @@ var serveCmd = &cobra.Command{
 		s, err := wish.NewServer(
 			wish.WithAddress(fmt.Sprintf("%s:%d", cfg.Host, cfg.Port)),
 			wish.WithHostKeyPath(key),
+			func(s *ssh.Server) error {
+				if cfg.AuthorizedKeysPath == "" {
+					return nil
+				}
+				return wish.WithAuthorizedKeys(cfg.AuthorizedKeysPath)(s)
+			},
 			wish.WithMiddleware(
 				func(h ssh.Handler) ssh.Handler {
 					return func(s ssh.Session) {
