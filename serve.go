@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"math/rand"
+	"net"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -118,8 +119,12 @@ var serveCmd = &cobra.Command{
 
 		done := make(chan os.Signal, 1)
 		signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
-		log.Printf("Starting SSH server on %s:%d", cfg.Host, cfg.Port)
+		log.Printf("Starting SSH server on %s", addr)
 		go func() {
+			ls, err := net.Listen("tcp", addr)
+			if err != nil {
+				log.Fatalf("Failed to listen on %s: %v", addr, err)
+			}
 			gid, uid := cfg.GID, cfg.UID
 			if gid != 0 && uid != 0 {
 				log.Printf("Starting server with GID: %d, UID: %d", gid, uid)
@@ -127,7 +132,7 @@ var serveCmd = &cobra.Command{
 					log.Fatalln(err)
 				}
 			}
-			if err = s.ListenAndServe(); err != nil {
+			if err = s.Serve(ls); err != nil {
 				log.Fatalln(err)
 			}
 		}()
