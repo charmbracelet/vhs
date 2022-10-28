@@ -132,32 +132,24 @@ VHS has an SSH server built in! When you self host VHS you can access it as
 though it were installed locally. VHS will have access to commands and
 applications on the host so you don't need to install them on your machine.
 
-<details>
-<summary>Server Configuration</summary>
-
-You can customize the VHS server by setting the following environment variables:
-
-| Environment                | Description                        | Default             |
-| -------------------------- | ---------------------------------- | ------------------- |
-| `VHS_PORT`                 | The port to listen on.             | `1976`              |
-| `VHS_HOST`                 | The host to listen on.             | `localhost`         |
-| `VHS_GID`                  | Group ID to run the server as.     | Current user's GID  |
-| `VHS_UID`                  | User ID to run the server as.      | Current user's UID  |
-| `VHS_KEY_PATH`             | The path to the SSH key to use     | `.ssh/vhs_ed25519`  |
-| `VHS_AUTHORIZED_KEYS_PATH` | The path to authorized keys files  | Empty               |
-
-> **Warning**:
-> An empty `VHS_AUTHORIZED_KEYS_PATH` means that your server is publically
-> accessible. Change this to `~/.ssh/authorized_keys` or another path to ensure
-> that your server is properly authenticated.
-
-</details>
-
 To start the server run:
 
 ```sh
 vhs serve
 ```
+
+<details>
+<summary>Configuration Options</summary>
+
+* `VHS_PORT`: The port to listen on (`1976`)
+* `VHS_HOST`: The host to listen on (`localhost`)
+* `VHS_GID`: The Group ID to run the server as (current user's GID)
+* `VHS_UID`: The User ID to run the server as (current user's UID)
+* `VHS_KEY_PATH`: The path to the SSH key to use (`.ssh/vhs_ed25519`)
+* `VHS_AUTHORIZED_KEYS_PATH`: The path to the authorized keys file (empty, publicly accessible)
+
+</details>
+
 
 Then, simply access VHS from a different machine via `ssh`:
 
