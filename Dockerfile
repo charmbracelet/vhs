@@ -7,9 +7,6 @@ VOLUME /vhs
 # Install latest ttyd
 COPY --from=ttyd /usr/bin/ttyd /usr/bin/ttyd
 
-# Install
-COPY vhs /usr/bin/
-
 # Install Fonts
 RUN apk add --no-cache \
     --repository=http://dl-cdn.alpinelinux.org/alpine/edge/main \
@@ -26,14 +23,27 @@ RUN apk add --no-cache \
     font-liberation font-liberation-mono-nerd \
     font-noto \
     font-roboto-mono \
-    font-ubuntu font-ubuntu-mono-nerd
-
-# Install Dependencies
-RUN apk add --no-cache ffmpeg chromium bash
+    font-ubuntu font-ubuntu-mono-nerd \
+    font-noto-emoji
 
 # Expose port
 EXPOSE 1976
 
 WORKDIR /vhs
+
+# Install Dependencies
+RUN apk add --no-cache ffmpeg chromium bash shadow
+
+# Create user
+RUN useradd -u 1976 -U -s /bin/false vhs
+
+# Install
+COPY vhs /usr/bin/
+
+ENV VHS_PORT "1976"
+ENV VHS_HOST ""
+ENV VHS_KEY "/vhs/vhs"
+ENV VHS_GID "1976"
+ENV VHS_UID "1976"
 
 ENTRYPOINT ["/usr/bin/vhs"]

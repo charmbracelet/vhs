@@ -78,9 +78,38 @@ Examples recorded with VHS for the GitHub CLI (`gh`):
 
 <img alt="Simple gh issue demo" src="./gh-cli/gh-issue.gif" width="600" />
 
+
+```
+Output gh-issue.gif
+
+Type "gh issue list"
+Sleep 500ms
+Enter 1
+Sleep 4s
+
+Ctrl+L
+Sleep 500ms
+
+Type "gh issue view 19"
+Sleep 500ms
+Enter
+
+Sleep 5s
+```
+
 #### Pull Requests
 
 <img alt="Simple gh pr demo" src="./gh-cli/gh-pr.gif" width="600" />
+
+```
+Output gh-pr.gif
+
+Type "gh pr list --state all"
+Sleep 500ms
+Enter
+
+Sleep 5s
+```
 
 ### Bubble Tea
 

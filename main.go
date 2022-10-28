@@ -11,7 +11,6 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github.com/charmbracelet/vhs/style"
 	version "github.com/hashicorp/go-version"
 	"github.com/spf13/cobra"
 )
@@ -47,7 +46,7 @@ var (
 				if err != nil {
 					return err
 				}
-				fmt.Println(style.File.Render("File: " + args[0]))
+				fmt.Println(FileStyle.Render("File: " + args[0]))
 			}
 
 			input, err := io.ReadAll(in)
@@ -58,7 +57,7 @@ var (
 				return errors.New("no input provided")
 			}
 
-			err = Evaluate(string(input), os.Stdout, "")
+			err = Evaluate(string(input), os.Stdout)
 			if err != nil {
 				return err
 			}
@@ -111,7 +110,7 @@ var (
 
 				if len(errs) != 0 {
 					lines := strings.Split(string(b), "\n")
-					fmt.Println(style.ErrorFile.Render(file))
+					fmt.Println(ErrorFileStyle.Render(file))
 					for _, err := range errs {
 						fmt.Print(LineNumber(err.Token.Line))
 						fmt.Println(lines[err.Token.Line-1])

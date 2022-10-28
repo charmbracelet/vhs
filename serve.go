@@ -9,9 +9,11 @@ import (
 	"math/rand"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 	"time"
 
+	"github.com/caarlos0/env/v6"
 	"github.com/charmbracelet/wish"
 	"github.com/charmbracelet/wish/logging"
 	"github.com/gliderlabs/ssh"
@@ -19,25 +21,34 @@ import (
 )
 
 const (
-	defaultPort = 1976
-	defaultHost = "0.0.0.0"
-	maxNumber   = 1000000000
-	timeout     = 30 * time.Second
+	maxNumber = 1000000000
+	timeout   = 30 * time.Second
 )
 
-var (
-	host string
-	port int
-)
+type config struct {
+	Port int    `env:"VHS_PORT" envDefault:"1976"`
+	Host string `env:"VHS_HOST" envDefault:""`
+	Key  string `env:"VHS_KEY" envDefault:""`
+	GID  int    `env:"VHS_GID" envDefault:"0"`
+	UID  int    `env:"VHS_UID" envDefault:"0"`
+}
 
 var (
 	serveCmd = &cobra.Command{
 		Use:   "serve",
 		Short: "Start the VHS SSH server",
 		RunE: func(cmd *cobra.Command, args []string) error {
+			var cfg config
+			if err := env.Parse(&cfg); err != nil {
+				return err
+			}
+			key := cfg.Key
+			if key == "" {
+				key = filepath.Join(".ssh", "vhs_ed25519")
+			}
 			s, err := wish.NewServer(
-				wish.WithAddress(fmt.Sprintf("%s:%d", host, port)),
-				wish.WithHostKeyPath(".ssh/term_info_ed25519"),
+				wish.WithAddress(fmt.Sprintf("%s:%d", cfg.Host, cfg.Port)),
+				wish.WithHostKeyPath(key),
 				wish.WithMiddleware(
 					func(h ssh.Handler) ssh.Handler {
 						return func(s ssh.Session) {
@@ -70,9 +81,14 @@ var (
 
 							//nolint:gosec
 							rand := rand.Int63n(maxNumber)
-							tempFile := fmt.Sprintf("vhs-%d.gif", rand)
+							tempFile := filepath.Join(os.TempDir(), fmt.Sprintf("vhs-%d.gif", rand))
 
-							err = Evaluate(b.String(), s.Stderr(), tempFile)
+							err = Evaluate(b.String(), s.Stderr(), func(v *VHS) {
+								v.Options.Video.Output.GIF = tempFile
+								// Disable generating MP4 & WebM.
+								v.Options.Video.Output.MP4 = ""
+								v.Options.Video.Output.WebM = ""
+							})
 							if err != nil {
 								_ = s.Exit(1)
 							}
@@ -93,8 +109,15 @@ var (
 
 			done := make(chan os.Signal, 1)
 			signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
-			log.Printf("Starting SSH server on %s:%d", host, port)
+			log.Printf("Starting SSH server on %s:%d", cfg.Host, cfg.Port)
 			go func() {
+				gid, uid := cfg.GID, cfg.UID
+				if gid != 0 && uid != 0 {
+					log.Printf("Starting server with GID: %d, UID: %d", gid, uid)
+					if err := dropUserPrivileges(gid, uid); err != nil {
+						log.Fatalln(err)
+					}
+				}
 				if err = s.ListenAndServe(); err != nil {
 					log.Fatalln(err)
 				}
@@ -111,8 +134,3 @@ var (
 		},
 	}
 )
-
-func init() {
-	serveCmd.Flags().IntVarP(&port, "port", "p", defaultPort, "port to listen on")
-	serveCmd.Flags().StringVarP(&host, "host", "l", defaultHost, "host to listen on")
-}

@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"sync"
 	"time"
 
@@ -50,7 +52,7 @@ func DefaultVHSOptions() Options {
 		LineHeight:    1.0,
 		TypingSpeed:   typingSpeed,
 		Theme:         DefaultTheme,
-		Video:         DefaultVideoOptions,
+		Video:         DefaultVideoOptions(),
 	}
 }
 
@@ -173,8 +175,22 @@ func (vhs *VHS) Record() {
 				cursor, cursorErr := vhs.CursorCanvas.CanvasToImage("image/png", quality)
 				text, textErr := vhs.TextCanvas.CanvasToImage("image/png", quality)
 				if textErr == nil && cursorErr == nil {
-					_ = os.WriteFile(vhs.Options.Video.Input+fmt.Sprintf(cursorFrameFormat, counter), cursor, os.ModePerm)
-					_ = os.WriteFile(vhs.Options.Video.Input+fmt.Sprintf(textFrameFormat, counter), text, os.ModePerm)
+					if err := os.WriteFile(
+						filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(cursorFrameFormat, counter)),
+						cursor,
+						os.ModePerm,
+					); err != nil {
+						log.Printf("error writing cursor frame: %v", err)
+					}
+					if err := os.WriteFile(
+						filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(textFrameFormat, counter)),
+						text,
+						os.ModePerm,
+					); err != nil {
+						log.Printf("error writing text frame: %v", err)
+					}
+				} else {
+					log.Printf("error: %v, %v", textErr, cursorErr)
 				}
 				elapsed := time.Since(start)
 				if elapsed >= interval {

@@ -1,8 +1,8 @@
 # VHS
 
 <p>
-  <img src="https://user-images.githubusercontent.com/42545625/197049037-b38fea25-a885-4945-825e-d29842c5e44b.png#gh-dark-mode-only" width="500" />
-  <img src="https://user-images.githubusercontent.com/42545625/197049039-83498ce6-d01d-4a08-8794-64770606ca8e.png#gh-light-mode-only" width="500" />
+  <img src="https://user-images.githubusercontent.com/42545625/198402537-12ca2f6c-0779-4eb8-a67c-8db9cb3df13c.png#gh-dark-mode-only" width="500" />
+  <img src="https://user-images.githubusercontent.com/42545625/198402542-a305f669-a05a-4d91-b18b-ca76e72b655a.png#gh-light-mode-only" width="500" />
   <br>
   <a href="https://github.com/charmbracelet/vhs/releases"><img src="https://img.shields.io/github/release/charmbracelet/vhs.svg" alt="Latest Release"></a>
   <a href="https://pkg.go.dev/github.com/charmbracelet/vhs?tab=doc"><img src="https://godoc.org/github.com/golang/gddo?status.svg" alt="Go Docs"></a>
@@ -102,6 +102,9 @@ gpgcheck=1
 gpgkey=https://repo.charm.sh/yum/gpg.key' | sudo tee /etc/yum.repos.d/charm.repo
 # Install ttyd from https://github.com/tsl0922/ttyd/releases
 sudo yum install vhs ffmpeg
+
+# Void Linux
+sudo xbps-install vhs
 ```
 
 Or, use Docker to run VHS directly, dependencies included:

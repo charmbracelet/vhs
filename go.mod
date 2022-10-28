@@ -12,6 +12,7 @@ require (
 
 require (
 	github.com/aymanbagabas/go-osc52 v1.2.1 // indirect
+	github.com/caarlos0/env/v6 v6.10.1
 	github.com/dlclark/regexp2 v1.7.0 // indirect
 	github.com/hashicorp/go-version v1.6.0
 	github.com/mattn/go-isatty v0.0.16

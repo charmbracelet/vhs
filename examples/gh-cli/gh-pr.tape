@@ -4,4 +4,4 @@ Type "gh pr list --state all"
 Sleep 500ms
 Enter
 
-Sleep 2s
+Sleep 5s
