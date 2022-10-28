@@ -143,7 +143,7 @@ var serveCmd = &cobra.Command{
 
 func ensureAuthorizedKeysFile(path string) error {
 	if _, err := os.Stat(path); errors.Is(err, fs.ErrNotExist) {
-		if err := os.MkdirAll(filepath.Dir(path), 0o644); err != nil {
+		if err := os.MkdirAll(filepath.Dir(path), 0o775); err != nil {
 			return fmt.Errorf("could not create %s: %w", path, err)
 		}
 		if err := os.WriteFile(path, nil, 0o600); err != nil {
