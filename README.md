@@ -132,15 +132,24 @@ VHS has an SSH server built in! When you self host VHS you can access it as
 though it were installed locally. VHS will have access to commands and
 applications on the host so you don't need to install them on your machine.
 
-Ensure you've set `~/.ssh/authorized_keys` with the public keys to which
-you want grant SSH access. You can change the file VHS looks at by setting
-`VHS_AUTHORIZED_KEYS_PATH` in your environment.
-
 To start the server run:
 
 ```sh
 vhs serve
 ```
+
+<details>
+<summary>Configuration Options</summary>
+
+* `VHS_PORT`: The port to listen on (`1976`)
+* `VHS_HOST`: The host to listen on (`localhost`)
+* `VHS_GID`: The Group ID to run the server as (current user's GID)
+* `VHS_UID`: The User ID to run the server as (current user's UID)
+* `VHS_KEY_PATH`: The path to the SSH key to use (`.ssh/vhs_ed25519`)
+* `VHS_AUTHORIZED_KEYS_PATH`: The path to the authorized keys file (empty, publicly accessible)
+
+</details>
+
 
 Then, simply access VHS from a different machine via `ssh`:
 
