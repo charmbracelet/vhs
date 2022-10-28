@@ -16,8 +16,10 @@ import (
 	"path/filepath"
 )
 
-const textFrameFormat = "frame-text-%05d.png"
-const cursorFrameFormat = "frame-cursor-%05d.png"
+const (
+	textFrameFormat   = "frame-text-%05d.png"
+	cursorFrameFormat = "frame-cursor-%05d.png"
+)
 
 // randomDir returns a random temporary directory to be used for storing frames
 // from screenshots of the terminal.
@@ -34,6 +36,7 @@ func randomDir() string {
 type VideoOutputs struct {
 	GIF  string
 	WebM string
+	WebP string
 	MP4  string
 }
 
@@ -51,12 +54,14 @@ type VideoOptions struct {
 	BackgroundColor string
 }
 
-const defaultFramerate = 50
-const defaultHeight = 600
-const defaultMaxColors = 256
-const defaultPadding = 72
-const defaultPlaybackSpeed = 1.0
-const defaultWidth = 1200
+const (
+	defaultFramerate     = 50
+	defaultHeight        = 600
+	defaultMaxColors     = 256
+	defaultPadding       = 72
+	defaultPlaybackSpeed = 1.0
+	defaultWidth         = 1200
+)
 
 // DefaultVideoOptions is the set of default options for converting frames
 // to a GIF, which are used if they are not overridden.
@@ -66,7 +71,7 @@ func DefaultVideoOptions() VideoOptions {
 		Framerate:       defaultFramerate,
 		Input:           randomDir(),
 		MaxColors:       defaultMaxColors,
-		Output:          VideoOutputs{GIF: "out.gif", WebM: "", MP4: ""},
+		Output:          VideoOutputs{GIF: "out.gif", WebM: "", WebP: "", MP4: ""},
 		Width:           defaultWidth,
 		Height:          defaultHeight,
 		Padding:         defaultPadding,
@@ -133,6 +138,40 @@ func MakeWebM(opts VideoOptions) *exec.Cmd {
 		"-crf", "30",
 		"-b:v", "0",
 		opts.Output.WebM,
+	)
+}
+
+// MakeWebP takes a list of images (as frames) and converts them to a WebP.
+func MakeWebP(opts VideoOptions) *exec.Cmd {
+	if opts.Output.WebP == "" {
+		return nil
+	}
+
+	fmt.Println("Creating WebP...")
+
+	//nolint:gosec
+	return exec.Command(
+		"ffmpeg", "-y",
+		"-r", fmt.Sprint(opts.Framerate),
+		"-i", filepath.Join(opts.Input, textFrameFormat),
+		"-r", fmt.Sprint(opts.Framerate),
+		"-i", filepath.Join(opts.Input, cursorFrameFormat),
+		"-filter_complex",
+		fmt.Sprintf(`[0][1]overlay,scale=%d:%d:force_original_aspect_ratio=1,fps=%d,setpts=PTS/%f,pad=%d:%d:(ow-iw)/2:(oh-ih)/2:%s,fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s`,
+			opts.Width-2*opts.Padding, opts.Height-2*opts.Padding,
+			opts.Framerate, opts.PlaybackSpeed,
+			opts.Width, opts.Height,
+			opts.BackgroundColor,
+			opts.Padding, opts.Padding, opts.Padding, opts.Padding,
+			opts.BackgroundColor,
+		),
+		"-vcodec", "libwebp",
+		"-pix_fmt", "yuv420p",
+		"-an",
+		"-crf", "30",
+		"-b:v", "0",
+		opts.Output.WebP,
+		// TODO: loop
 	)
 }
 

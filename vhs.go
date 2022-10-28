@@ -39,8 +39,10 @@ type Options struct {
 	Video         VideoOptions
 }
 
-const defaultFontSize = 22
-const typingSpeed = 50 * time.Millisecond
+const (
+	defaultFontSize = 22
+	typingSpeed     = 50 * time.Millisecond
+)
 
 // DefaultVHSOptions returns the default set of options to use for the setup function.
 func DefaultVHSOptions() Options {
@@ -139,6 +141,7 @@ func (vhs *VHS) Cleanup() {
 	cmds = append(cmds, MakeGIF(vhs.Options.Video))
 	cmds = append(cmds, MakeMP4(vhs.Options.Video))
 	cmds = append(cmds, MakeWebM(vhs.Options.Video))
+	cmds = append(cmds, MakeWebP(vhs.Options.Video))
 
 	for _, cmd := range cmds {
 		if cmd == nil {

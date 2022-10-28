@@ -4,6 +4,7 @@
 Output all.gif
 Output all.mp4
 Output all.webm
+Output all.webp
 
 # Settings:
 Set FontSize 22

@@ -4,6 +4,7 @@
 #   Output <path>.gif               Create a GIF output at the given <path>
 #   Output <path>.mp4               Create an MP4 output at the given <path>
 #   Output <path>.webm              Create a WebM output at the given <path>
+#   Output <path>.webp              Create a WebP output at the given <path>
 #
 # Settings:
 #   Set FontSize <number>           Set the font size of the terminal

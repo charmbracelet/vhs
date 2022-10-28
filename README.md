@@ -184,6 +184,7 @@ will render them to the respective locations.
 Output out.gif
 Output out.mp4
 Output out.webm
+Output out.webp
 Output frames/ # a directory of frames as a PNG sequence
 ```
 

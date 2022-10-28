@@ -99,6 +99,7 @@ var serveCmd = &cobra.Command{
 							// Disable generating MP4 & WebM.
 							v.Options.Video.Output.MP4 = ""
 							v.Options.Video.Output.WebM = ""
+							v.Options.Video.Output.WebP = ""
 						})
 						if err != nil {
 							_ = s.Exit(1)

@@ -100,6 +100,8 @@ func TestLexTapeFile(t *testing.T) {
 		{STRING, "all.mp4"},
 		{OUTPUT, "Output"},
 		{STRING, "all.webm"},
+		{OUTPUT, "Output"},
+		{STRING, "all.webp"},
 		{COMMENT, " Settings:"},
 		{SET, "Set"},
 		{FONT_SIZE, "FontSize"},

@@ -184,6 +184,8 @@ func ExecuteOutput(c Command, v *VHS) {
 		v.Options.Video.CleanupFrames = false
 	case ".webm":
 		v.Options.Video.Output.WebM = c.Args
+	case ".webp":
+		v.Options.Video.Output.WebP = c.Args
 	default:
 		v.Options.Video.Output.GIF = c.Args
 	}
@@ -239,8 +241,10 @@ func ExecuteSetWidth(c Command, v *VHS) {
 	v.Options.Video.Width, _ = strconv.Atoi(c.Args)
 }
 
-const bitSize = 64
-const base = 10
+const (
+	bitSize = 64
+	base    = 10
+)
 
 // ExecuteSetLetterSpacing applies letter spacing (also known as tracking) on the
 // vhs.
