@@ -27,7 +27,7 @@ const (
 
 type config struct {
 	Port               int    `env:"PORT" envDefault:"1976"`
-	Host               string `env:"HOST" envDefault:""`
+	Host               string `env:"HOST" envDefault:"localhost"`
 	Key                string `env:"KEY" envDefault:""`
 	GID                int    `env:"GID" envDefault:"0"`
 	UID                int    `env:"UID" envDefault:"0"`
@@ -48,8 +48,9 @@ var serveCmd = &cobra.Command{
 		if key == "" {
 			key = filepath.Join(".ssh", "vhs_ed25519")
 		}
+		addr := fmt.Sprintf("%s:%d", cfg.Host, cfg.Port)
 		s, err := wish.NewServer(
-			wish.WithAddress(fmt.Sprintf("%s:%d", cfg.Host, cfg.Port)),
+			wish.WithAddress(addr),
 			wish.WithHostKeyPath(key),
 			func(s *ssh.Server) error {
 				if cfg.AuthorizedKeysPath == "" {
