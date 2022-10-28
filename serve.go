@@ -26,12 +26,11 @@ const (
 )
 
 type config struct {
-	Port int    `env:"PORT" envDefault:"1976"`
-	Host string `env:"HOST" envDefault:""`
-	Key  string `env:"KEY" envDefault:""`
-	GID  int    `env:"GID" envDefault:"0"`
-	UID  int    `env:"UID" envDefault:"0"`
-
+	Port               int    `env:"PORT" envDefault:"1976"`
+	Host               string `env:"HOST" envDefault:""`
+	Key                string `env:"KEY" envDefault:""`
+	GID                int    `env:"GID" envDefault:"0"`
+	UID                int    `env:"UID" envDefault:"0"`
 	AuthorizedKeysPath string `env:"AUTHORIZED_KEYS_PATH"`
 }
 
