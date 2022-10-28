@@ -3,10 +3,8 @@ package main
 import (
 	"bytes"
 	"context"
-	"errors"
 	"fmt"
 	"io"
-	"io/fs"
 	"log"
 	"math/rand"
 	"os"
@@ -28,13 +26,13 @@ const (
 )
 
 type config struct {
-	Port int    `env:"VHS_PORT" envDefault:"1976"`
-	Host string `env:"VHS_HOST" envDefault:""`
-	Key  string `env:"VHS_KEY" envDefault:""`
-	GID  int    `env:"VHS_GID" envDefault:"0"`
-	UID  int    `env:"VHS_UID" envDefault:"0"`
+	Port int    `env:"PORT" envDefault:"1976"`
+	Host string `env:"HOST" envDefault:""`
+	Key  string `env:"KEY" envDefault:""`
+	GID  int    `env:"GID" envDefault:"0"`
+	UID  int    `env:"UID" envDefault:"0"`
 
-	AuthorizedKeysPath string `env:"VHS_AUTHORIZED_KEYS_PATH" envDefault:"${HOME}/.ssh/authorized_keys" envExpand:"true"`
+	AuthorizedKeysPath string `env:"AUTHORIZED_KEYS_PATH"`
 }
 
 var serveCmd = &cobra.Command{
@@ -42,20 +40,24 @@ var serveCmd = &cobra.Command{
 	Short: "Start the VHS SSH server",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var cfg config
-		if err := env.Parse(&cfg); err != nil {
+		if err := env.Parse(&cfg, env.Options{
+			Prefix: "VHS_",
+		}); err != nil {
 			return err
 		}
 		key := cfg.Key
 		if key == "" {
 			key = filepath.Join(".ssh", "vhs_ed25519")
 		}
-		if err := ensureAuthorizedKeysFile(cfg.AuthorizedKeysPath); err != nil {
-			return err
-		}
 		s, err := wish.NewServer(
 			wish.WithAddress(fmt.Sprintf("%s:%d", cfg.Host, cfg.Port)),
 			wish.WithHostKeyPath(key),
-			wish.WithAuthorizedKeys(cfg.AuthorizedKeysPath),
+			func(s *ssh.Server) error {
+				if cfg.AuthorizedKeysPath == "" {
+					return nil
+				}
+				return wish.WithAuthorizedKeys(cfg.AuthorizedKeysPath)(s)
+			},
 			wish.WithMiddleware(
 				func(h ssh.Handler) ssh.Handler {
 					return func(s ssh.Session) {
@@ -139,16 +141,4 @@ var serveCmd = &cobra.Command{
 		}
 		return nil
 	},
-}
-
-func ensureAuthorizedKeysFile(path string) error {
-	if _, err := os.Stat(path); errors.Is(err, fs.ErrNotExist) {
-		if err := os.MkdirAll(filepath.Dir(path), 0o775); err != nil {
-			return fmt.Errorf("could not create %s: %w", path, err)
-		}
-		if err := os.WriteFile(path, nil, 0o600); err != nil {
-			return fmt.Errorf("could not create %s: %w", path, err)
-		}
-	}
-	return nil
 }
