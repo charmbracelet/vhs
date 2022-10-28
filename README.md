@@ -84,7 +84,7 @@ brew install ttyd --HEAD
 yay -S vhs-bin ttyd ffmpeg
 
 # Nix
-nix-env -iA nixpkgs.vhs nixpkgs.ttyd nixpkgs.ffmpeg
+nix-env -iA nixpkgs.vhs
 
 # Debian/Ubuntu
 sudo mkdir -p /etc/apt/keyrings
