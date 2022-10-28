@@ -28,9 +28,9 @@ const (
 type config struct {
 	Port               int    `env:"PORT" envDefault:"1976"`
 	Host               string `env:"HOST" envDefault:"localhost"`
-	Key                string `env:"KEY" envDefault:""`
 	GID                int    `env:"GID" envDefault:"0"`
 	UID                int    `env:"UID" envDefault:"0"`
+	KeyPath            string `env:"KEY_PATH" envDefault:""`
 	AuthorizedKeysPath string `env:"AUTHORIZED_KEYS_PATH"`
 }
 
@@ -44,7 +44,7 @@ var serveCmd = &cobra.Command{
 		}); err != nil {
 			return err
 		}
-		key := cfg.Key
+		key := cfg.KeyPath
 		if key == "" {
 			key = filepath.Join(".ssh", "vhs_ed25519")
 		}
