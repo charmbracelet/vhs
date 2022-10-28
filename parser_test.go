@@ -101,9 +101,9 @@ func TestParseTapeFile(t *testing.T) {
 	}
 
 	expected := []Command{
-		{Type: OUTPUT, Options: ".gif", Args: "all.gif"},
-		{Type: OUTPUT, Options: ".mp4", Args: "all.mp4"},
-		{Type: OUTPUT, Options: ".webm", Args: "all.webm"},
+		{Type: OUTPUT, Options: ".gif", Args: "examples/fixtures/all.gif"},
+		{Type: OUTPUT, Options: ".mp4", Args: "examples/fixtures/all.mp4"},
+		{Type: OUTPUT, Options: ".webm", Args: "examples/fixtures/all.webm"},
 		{Type: SET, Options: "FontSize", Args: "22"},
 		{Type: SET, Options: "FontFamily", Args: "DejaVu Sans Mono"},
 		{Type: SET, Options: "Height", Args: "600"},
