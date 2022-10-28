@@ -66,48 +66,46 @@ The following is a list of all possible setting commands in VHS:
 	manAuthor = "Charm <vt100@charm.sh>"
 )
 
-var (
-	manCmd = &cobra.Command{
-		Use:     "manual",
-		Aliases: []string{"man"},
-		Short:   "Generate man pages",
-		Args:    cobra.NoArgs,
-		Hidden:  true,
-		RunE: func(cmd *cobra.Command, args []string) error {
-			if isatty.IsTerminal(os.Stdout.Fd()) {
-				renderer, err := glamour.NewTermRenderer(
-					glamour.WithStyles(GlamourTheme),
-				)
-				if err != nil {
-					return err
-				}
-				v, err := renderer.Render(markdownManual())
-				if err != nil {
-					return err
-				}
-				fmt.Println(v)
-				return nil
-			}
-
-			manPage, err := mcobra.NewManPage(1, rootCmd)
+var manCmd = &cobra.Command{
+	Use:     "manual",
+	Aliases: []string{"man"},
+	Short:   "Generate man pages",
+	Args:    cobra.NoArgs,
+	Hidden:  true,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if isatty.IsTerminal(os.Stdout.Fd()) {
+			renderer, err := glamour.NewTermRenderer(
+				glamour.WithStyles(GlamourTheme),
+			)
 			if err != nil {
 				return err
 			}
-
-			manPage = manPage.
-				WithLongDescription(sanitizeSpecial(manDescription)).
-				WithSection("Output", sanitizeSpecial(manOutput)).
-				WithSection("Settings", sanitizeSpecial(manSettings)).
-				WithSection("Bugs", sanitizeSpecial(manBugs)).
-				WithSection("Author", sanitizeSpecial(manAuthor)).
-				WithSection("Copyright", "(C) 2021-2022 Charmbracelet, Inc.\n"+
-					"Released under MIT license.")
-
-			fmt.Println(manPage.Build(roff.NewDocument()))
+			v, err := renderer.Render(markdownManual())
+			if err != nil {
+				return err
+			}
+			fmt.Println(v)
 			return nil
-		},
-	}
-)
+		}
+
+		manPage, err := mcobra.NewManPage(1, rootCmd)
+		if err != nil {
+			return err
+		}
+
+		manPage = manPage.
+			WithLongDescription(sanitizeSpecial(manDescription)).
+			WithSection("Output", sanitizeSpecial(manOutput)).
+			WithSection("Settings", sanitizeSpecial(manSettings)).
+			WithSection("Bugs", sanitizeSpecial(manBugs)).
+			WithSection("Author", sanitizeSpecial(manAuthor)).
+			WithSection("Copyright", "(C) 2021-2022 Charmbracelet, Inc.\n"+
+				"Released under MIT license.")
+
+		fmt.Println(manPage.Build(roff.NewDocument()))
+		return nil
+	},
+}
 
 func markdownManual() string {
 	return fmt.Sprint(
