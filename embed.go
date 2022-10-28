@@ -4,5 +4,5 @@ import (
 	_ "embed"
 )
 
-//go:embed examples/tutorial.tape
+//go:embed examples/demo.tape
 var DemoTape []byte
