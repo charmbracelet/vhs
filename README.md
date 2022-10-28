@@ -144,6 +144,12 @@ Then, simply access VHS from any machine via `ssh`:
 ssh vhs.example.com < demo.tape > demo.gif
 ```
 
+### Authorization
+
+VHS will use the `~/.ssh/authorized_keys` files by default.
+You can customize it by setting the `VHS_AUTHORIZED_KEYS_PATH` environment
+variable.
+
 ## VHS Command Reference
 
 > **Note**
