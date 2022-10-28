@@ -137,19 +137,21 @@ applications on the host so you don't need to install them on your machine.
 
 You can customize the VHS server by setting the following environment variables:
 
-* `VHS_PORT` The port to listen on. Defaults to `1976`.
-* `VHS_HOST` The host to listen on. Defaults to `localhost`.
-* `VHS_GID` The GID to run the server as. Defaults to the current user's GID.
-* `VHS_UID` The UID to run the server as. Defaults to the current user's UID.
-* `VHS_KEY_PATH` The SSH key to use. Defaults to `.ssh/vhs_ed25519`.
-* `VHS_AUTHORIZED_KEYS_PATH` The authorized keys file to use. Disabled by default.
+| Environment                | Description                        | Default             |
+| -------------------------- | ---------------------------------- | ------------------- |
+| `VHS_PORT`                 | The port to listen on.             | `1976`              |
+| `VHS_HOST`                 | The host to listen on.             | `localhost`         |
+| `VHS_GID`                  | Group ID to run the server as.     | Current user's GID  |
+| `VHS_UID`                  | User ID to run the server as.      | Current user's UID  |
+| `VHS_KEY_PATH`             | The path to the SSH key to use     | `.ssh/vhs_ed25519`  |
+| `VHS_AUTHORIZED_KEYS_PATH` | The path to authorized keys files  | Empty               |
+
+> **Warning**:
+> An empty `VHS_AUTHORIZED_KEYS_PATH` means that your server is publically
+> accessible. Change this to `~/.ssh/authorized_keys` or another path to ensure
+> that your server is properly authenticated.
 
 </details>
-
-The VHS Server is open by default meaning anyone can have access. Ensure you've
-set `.ssh/authorized_keys` with the public keys to which you want to grant SSH
-access. You can change the file VHS looks at by setting
-`VHS_AUTHORIZED_KEYS_PATH` in your environment.
 
 To start the server run:
 
