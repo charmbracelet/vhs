@@ -40,7 +40,7 @@
 #   Hide                            Hide the subsequent commands from the output
 #   Show                            Show the subsequent commands in the output
 
-Output demo.gif
+Output examples/demo.gif
 
 Set FontSize 32
 Set Width 1200

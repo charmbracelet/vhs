@@ -1,0 +1,55 @@
+name: gif pr commenter
+
+on:
+  pull_request:
+    paths:
+      - '**/*.tape'
+
+jobs:
+  matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          list-files: json
+          filters: |
+            tape:
+              - added|modified: '**/*.tape'
+      - id: set-matrix
+        run: |
+          # Here we assume the gif output is going to be the same as the tape file path
+          echo "matrix={\"include\":$(echo '${{ steps.changes.outputs.tape_files }}' | jq -r 'to_entries | map({ path: .value, out: .value | sub(".tape"; ".gif") }) | tostring')}" >> $GITHUB_OUTPUT
+
+  gif-pr:
+    needs: [matrix]
+    if: ${{ needs.matrix.outputs.matrix != '' && needs.matrix.outputs.matrix != '[]' }}
+    strategy:
+      matrix: ${{ fromJSON(needs.matrix.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: charmbracelet/vhs-action@v1
+        with:
+          path: ${{ matrix.path }}
+      - run: |
+          ls
+          tree
+      - uses: devicons/public-upload-to-imgur@v2.2.2
+        id: imgur_step
+        with:
+          path: './${{ matrix.out }}'
+          client_id: ${{ secrets.IMGUR_CLIENT_ID }}
+      - uses: github-actions-up-and-running/pr-comment@v1.0.1
+        if: success()
+        env:
+          IMG_URL: ${{ fromJSON(steps.imgur_step.outputs.imgur_urls)[0] }}
+          MESSAGE: |
+            `${{ matrix.path }}` has changed.
+
+            ![VHS GIf]({0})
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          message: ${{ format(env.MESSAGE, env.IMG_URL) }}
