@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"strconv"
 	"syscall"
 	"time"
 
@@ -49,7 +50,7 @@ var serveCmd = &cobra.Command{
 		if key == "" {
 			key = filepath.Join(".ssh", "vhs_ed25519")
 		}
-		addr := fmt.Sprintf("%s:%d", cfg.Host, cfg.Port)
+		addr := net.JoinHostPort(cfg.Host, strconv.Itoa(cfg.Port))
 		s, err := wish.NewServer(
 			wish.WithAddress(addr),
 			wish.WithHostKeyPath(key),
