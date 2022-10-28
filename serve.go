@@ -3,8 +3,10 @@ package main
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"log"
 	"math/rand"
 	"os"
@@ -31,6 +33,8 @@ type config struct {
 	Key  string `env:"VHS_KEY" envDefault:""`
 	GID  int    `env:"VHS_GID" envDefault:"0"`
 	UID  int    `env:"VHS_UID" envDefault:"0"`
+
+	AuthorizedKeysPath string `env:"VHS_AUTHORIZED_KEYS_PATH" envDefault:"${HOME}/.ssh/authorized_keys" envExpand:"true"`
 }
 
 var serveCmd = &cobra.Command{
@@ -45,9 +49,13 @@ var serveCmd = &cobra.Command{
 		if key == "" {
 			key = filepath.Join(".ssh", "vhs_ed25519")
 		}
+		if err := ensureAuthorizedKeysFile(cfg.AuthorizedKeysPath); err != nil {
+			return err
+		}
 		s, err := wish.NewServer(
 			wish.WithAddress(fmt.Sprintf("%s:%d", cfg.Host, cfg.Port)),
 			wish.WithHostKeyPath(key),
+			wish.WithAuthorizedKeys(cfg.AuthorizedKeysPath),
 			wish.WithMiddleware(
 				func(h ssh.Handler) ssh.Handler {
 					return func(s ssh.Session) {
@@ -131,4 +139,16 @@ var serveCmd = &cobra.Command{
 		}
 		return nil
 	},
+}
+
+func ensureAuthorizedKeysFile(path string) error {
+	if _, err := os.Stat(path); errors.Is(err, fs.ErrNotExist) {
+		if err := os.MkdirAll(filepath.Dir(path), 0o644); err != nil {
+			return fmt.Errorf("could not create %s: %w", path, err)
+		}
+		if err := os.WriteFile(path, nil, 0o600); err != nil {
+			return fmt.Errorf("could not create %s: %w", path, err)
+		}
+	}
+	return nil
 }
