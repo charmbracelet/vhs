@@ -47,7 +47,7 @@ func Evaluate(tape string, out io.Writer, opts ...EvaluatorOption) error {
 
 	h, w, padding := v.Options.Video.Height, v.Options.Video.Width, v.Options.Video.Padding
 	if h < 2*padding || w < 2*padding {
-		return errors.New("height and width must be greater than " + fmt.Sprint(2*padding))
+		return fmt.Errorf("height and width must be greater than %d", 2*padding)
 	}
 
 	// Setup the terminal session so we can start executing commands.
