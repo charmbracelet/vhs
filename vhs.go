@@ -28,6 +28,7 @@ type VHS struct {
 
 // Options is the set of options for the setup.
 type Options struct {
+	Shell         string
 	FontFamily    string
 	FontSize      int
 	LetterSpacing float64
@@ -39,13 +40,14 @@ type Options struct {
 	Video         VideoOptions
 }
 
-const defaultFontSize = 22
-const typingSpeed = 50 * time.Millisecond
+const (
+	defaultFontSize = 22
+	typingSpeed     = 50 * time.Millisecond
+)
 
 // DefaultVHSOptions returns the default set of options to use for the setup function.
 func DefaultVHSOptions() Options {
 	return Options{
-		Prompt:        "\\[\\e[38;2;90;86;224m\\]> \\[\\e[0m\\]",
 		FontFamily:    "JetBrains Mono,DejaVu Sans Mono,Menlo,Bitstream Vera Sans Mono,Inconsolata,Roboto Mono,Hack,Consolas,ui-monospace,monospace",
 		FontSize:      defaultFontSize,
 		LetterSpacing: 0,
@@ -98,9 +100,7 @@ func (vhs *VHS) Setup() {
 	vhs.CursorCanvas, _ = vhs.Page.Element("canvas.xterm-cursor-layer")
 
 	// Set Prompt
-	vhs.Page.MustElement("textarea").
-		MustInput(fmt.Sprintf(` set +o history; unset PROMPT_COMMAND; export PS1="%s"; clear;`, vhs.Options.Prompt)).
-		MustType(input.Enter)
+	getPrompt(vhs).Setup(vhs)
 
 	// Apply options to the terminal
 	// By this point the setting commands have been executed, so the `opts` struct is up to date.
@@ -217,4 +217,86 @@ func (vhs *VHS) PauseRecording() {
 	defer vhs.mutex.Unlock()
 
 	vhs.recording = false
+}
+
+func (vhs *VHS) runShellCommand(format string, a ...interface{}) {
+	vhs.Page.MustElement("textarea").
+		MustInput(fmt.Sprintf(format, a...)).
+		MustType(input.Enter)
+}
+
+func getPrompt(vhs *VHS) Prompt {
+	switch vhs.Options.Shell {
+	case "", "bash":
+		return bash{}
+	case "zsh":
+		return zsh{}
+	case "fish":
+		return fish{}
+	case "pwsh":
+		return pwsh{}
+	default:
+		return generic{}
+	}
+}
+
+// Prompt defines how prompts set themselves up.
+type Prompt interface {
+	Setup(vhs *VHS)
+}
+
+var (
+	_ Prompt = bash{}
+	_ Prompt = zsh{}
+	_ Prompt = fish{}
+	_ Prompt = pwsh{}
+	_ Prompt = generic{}
+)
+
+type (
+	bash    struct{}
+	zsh     struct{}
+	fish    struct{}
+	pwsh    struct{}
+	generic struct{}
+)
+
+func (bash) Setup(vhs *VHS) {
+	prompt := vhs.Options.Prompt
+	if prompt == "" {
+		prompt = "\\[\\e[38;2;90;86;224m\\]> \\[\\e[0m\\]"
+	}
+	vhs.runShellCommand(` set +o history; unset PROMPT_COMMAND; export PS1="%s"; clear;`, prompt)
+}
+
+func (zsh) Setup(vhs *VHS) {
+	prompt := vhs.Options.Prompt
+	if prompt == "" {
+		prompt = `%F{blue bright dim}> %F{reset_color}`
+	}
+	vhs.runShellCommand(" clear; zsh --login --histnostore")
+	// PROMPT_SP: read about PROMPT_EOL_MARK
+	vhs.runShellCommand(` unsetopt PROMPT_SP; export PS1="%s"; clear`, prompt)
+}
+
+func (fish) Setup(vhs *VHS) {
+	prompt := vhs.Options.Prompt
+	if prompt == "" {
+		prompt = `function fish_prompt; echo -e "$(set_color --dim brblue)> $(set_color normal)"; end`
+	}
+	noGreeting := "function fish_greeting; end"
+	vhs.runShellCommand(` clear; fish --login --private -C '%s' -C '%s'`, noGreeting, prompt)
+}
+
+func (pwsh) Setup(vhs *VHS) {
+	prompt := vhs.Options.Prompt
+	if prompt == "" {
+		prompt = "Function prompt {Write-Host \"> \" -ForegroundColor Blue -NoNewLine; return \"`0\" }"
+	}
+	vhs.runShellCommand(` clear; pwsh -Login -NoLogo -NoExit -Command 'Set-PSReadLineOption -HistorySaveStyle SaveNothing; %s'`, prompt)
+}
+
+func (generic) Setup(vhs *VHS) {
+	// XXX: what should we do with prompt here?
+	vhs.runShellCommand(` clear; %s`, vhs.Options.Shell)
 }

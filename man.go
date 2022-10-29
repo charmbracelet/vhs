@@ -48,6 +48,7 @@ File names with the extension %.gif%, %.webm%, %.mp4% will have the respective f
 
 The following is a list of all possible setting commands in VHS:
 
+* Set %Shell% <string>
 * Set %FontSize% <number>
 * Set %FontFamily% <string>
 * Set %Height% <number>

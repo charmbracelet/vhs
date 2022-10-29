@@ -49,6 +49,7 @@ const (
 	SECONDS        = "SECONDS"
 	MINUTES        = "MINUTES"
 	COMMENT        = "COMMENT"
+	SHELL          = "SHELL"
 	FONT_FAMILY    = "FONT_FAMILY"
 	FONT_SIZE      = "FONT_SIZE"
 	FRAMERATE      = "FRAMERATE"
@@ -86,6 +87,7 @@ var keywords = map[string]TokenType{
 	"Hide":          HIDE,
 	"Show":          SHOW,
 	"Output":        OUTPUT,
+	"Shell":         SHELL,
 	"FontFamily":    FONT_FAMILY,
 	"FontSize":      FONT_SIZE,
 	"Framerate":     FRAMERATE,
@@ -102,7 +104,7 @@ var keywords = map[string]TokenType{
 // IsSetting returns whether a token is a setting.
 func IsSetting(t TokenType) bool {
 	switch t {
-	case FONT_FAMILY, FONT_SIZE, LETTER_SPACING, LINE_HEIGHT,
+	case SHELL, FONT_FAMILY, FONT_SIZE, LETTER_SPACING, LINE_HEIGHT,
 		FRAMERATE, TYPING_SPEED, THEME, PLAYBACK_SPEED,
 		HEIGHT, WIDTH, PADDING:
 		return true

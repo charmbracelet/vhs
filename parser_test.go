@@ -95,7 +95,6 @@ Sleep Bar`
 
 func TestParseTapeFile(t *testing.T) {
 	input, err := os.ReadFile("examples/fixtures/all.tape")
-
 	if err != nil {
 		t.Fatal("could not read fixture file")
 	}
@@ -104,6 +103,7 @@ func TestParseTapeFile(t *testing.T) {
 		{Type: OUTPUT, Options: ".gif", Args: "examples/fixtures/all.gif"},
 		{Type: OUTPUT, Options: ".mp4", Args: "examples/fixtures/all.mp4"},
 		{Type: OUTPUT, Options: ".webm", Args: "examples/fixtures/all.webm"},
+		{Type: SET, Options: "Shell", Args: "fish"},
 		{Type: SET, Options: "FontSize", Args: "22"},
 		{Type: SET, Options: "FontFamily", Args: "DejaVu Sans Mono"},
 		{Type: SET, Options: "Height", Args: "600"},
@@ -176,5 +176,4 @@ func TestParseTapeFile(t *testing.T) {
 			t.Errorf("Expected command %d to have options %s, got %s", i, expected[i].Options, cmd.Options)
 		}
 	}
-
 }
