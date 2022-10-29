@@ -70,7 +70,7 @@ func (pwsh) Setup(vhs *VHS) {
 	}
 	vhs.runShellCommandf(` clear; pwsh -Login -NoLogo -NoExit -Command 'Set-PSReadLineOption -HistorySaveStyle SaveNothing; %s'`, prompt)
 	// XXX: here would be a great place to reuse whatever we do for the Exec thing, so we can wait for the shell to load, maybe...
-	vhs.runShellCommandf(`clear; sleep 1; clear`)
+	vhs.runShellCommandf(`clear`)
 }
 
 func (generic) Setup(vhs *VHS) {

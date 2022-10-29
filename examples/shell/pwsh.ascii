@@ -1,4 +1,4 @@
-> echo "current shell: $ShellId
+> echo "current shell: $ShellId"
 
 
 
