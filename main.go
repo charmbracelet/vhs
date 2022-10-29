@@ -26,7 +26,7 @@ var (
 	// CommitSHA stores the commit SHA of VHS at the time of packaging through -ldflags
 	CommitSHA string
 
-	ttydMinVersion = version.Must(version.NewVersion("1.7.1"))
+	ttydMinVersion = version.Must(version.NewVersion("1.7.2"))
 
 	rootCmd = &cobra.Command{
 		Use:   "vhs <file>",
