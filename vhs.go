@@ -24,6 +24,7 @@ type VHS struct {
 	mutex        *sync.Mutex
 	recording    bool
 	tty          *exec.Cmd
+	close        func() error
 }
 
 // Options is the set of options for the setup.
@@ -39,8 +40,10 @@ type Options struct {
 	Video         VideoOptions
 }
 
-const defaultFontSize = 22
-const typingSpeed = 50 * time.Millisecond
+const (
+	defaultFontSize = 22
+	typingSpeed     = 50 * time.Millisecond
+)
 
 // DefaultVHSOptions returns the default set of options to use for the setup function.
 func DefaultVHSOptions() Options {
@@ -64,7 +67,7 @@ func New() VHS {
 
 	opts := DefaultVHSOptions()
 	path, _ := launcher.LookPath()
-	u := launcher.New().Bin(path).MustLaunch()
+	u := launcher.New().Leakless(false).Bin(path).MustLaunch()
 	browser := rod.New().ControlURL(u).MustConnect().SlowMotion(opts.TypingSpeed)
 	page := browser.MustPage(fmt.Sprintf("http://localhost:%d", port))
 
@@ -77,6 +80,7 @@ func New() VHS {
 		tty:       tty,
 		recording: true,
 		mutex:     mu,
+		close:     browser.Close,
 	}
 }
 

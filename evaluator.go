@@ -31,6 +31,7 @@ func Evaluate(tape string, out io.Writer, opts ...EvaluatorOption) error {
 	}
 
 	v := New()
+	defer func() { _ = v.close() }()
 
 	// Run Output and Set commands as they only modify options on the VHS instance.
 	var offset int
