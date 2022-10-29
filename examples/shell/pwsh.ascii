@@ -1,4 +1,4 @@
-> echo "current shell: $ShellId"
+> Write-Output "current shell: $ShellId
 
 
 
@@ -16,7 +16,7 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
-> echo "current shell: $ShellId"
+> Write-Output "current shell: $ShellId"
 
 
 
@@ -34,7 +34,7 @@
 
 
 ────────────────────────────────────────────────────────────────────────────────
-> echo "current shell: $ShellId"
+> Write-Output "current shell: $ShellId"
 current shell: Microsoft.PowerShell
 >
 
