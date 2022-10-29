@@ -29,7 +29,7 @@ func (l *Lexer) readChar() {
 func (l *Lexer) NextToken() Token {
 	l.skipWhitespace()
 
-	var tok = Token{Line: l.line, Column: l.column}
+	tok := Token{Line: l.line, Column: l.column}
 
 	switch l.ch {
 	case 0:
@@ -93,7 +93,7 @@ func (l *Lexer) readComment() string {
 	pos := l.pos + 1
 	for {
 		l.readChar()
-		if isNewLine(l.ch) || l.ch == 0 {
+		if isNewLine([2]byte{l.ch, l.peekChar()}) || l.ch == 0 {
 			break
 		}
 	}
@@ -108,7 +108,7 @@ func (l *Lexer) readString(endChar byte) string {
 	pos := l.pos + 1
 	for {
 		l.readChar()
-		if l.ch == endChar || l.ch == 0 || isNewLine(l.ch) {
+		if l.ch == endChar || l.ch == 0 || isNewLine([2]byte{l.ch, l.peekChar()}) {
 			break
 		}
 	}
@@ -153,7 +153,7 @@ func (l *Lexer) readIdentifier() string {
 // of the token's line number.
 func (l *Lexer) skipWhitespace() {
 	for isWhitespace(l.ch) {
-		if isNewLine(l.ch) {
+		if isNewLine([2]byte{l.ch, l.peekChar()}) {
 			l.line++
 			l.column = 0
 		}
@@ -202,8 +202,8 @@ func isWhitespace(ch byte) bool {
 }
 
 // isNewLine returns whether a character is a newline.
-func isNewLine(ch byte) bool {
-	return ch == '\n' || ch == '\r'
+func isNewLine(ch [2]byte) bool {
+	return ch[0] == '\n' || (ch[0] == '\r' && ch[1] == '\n')
 }
 
 // peekChar returns the next character in the input without advancing the lexer.

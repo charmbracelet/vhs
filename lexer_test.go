@@ -249,3 +249,51 @@ func TestLexTapeFile(t *testing.T) {
 		}
 	}
 }
+
+func TestNewLine(t *testing.T) {
+	input := "Output examples/out.gif\nSet FontSize 42\r\nSet Padding 5\r\n# a Comment\n# with many lines\r"
+
+	tests := []struct {
+		expectedType    TokenType
+		expectedLiteral string
+	}{
+		{OUTPUT, "Output"},
+		{STRING, "examples/out.gif"},
+		{SET, "Set"},
+		{FONT_SIZE, "FontSize"},
+		{NUMBER, "42"},
+		{SET, "Set"},
+		{PADDING, "Padding"},
+		{NUMBER, "5"},
+	}
+
+	l := NewLexer(input)
+
+	for i, tt := range tests {
+		tok := l.NextToken()
+
+		if tok.Type != tt.expectedType {
+			t.Fatalf("tests[%d] - tokentype wrong. expected=%q, got=%q", i, tt.expectedType, tok.Type)
+		}
+
+		if tok.Literal != tt.expectedLiteral {
+			t.Fatalf("tests[%d] - literal wrong. expected=%q, got=%q", i, tt.expectedLiteral, tok.Literal)
+		}
+	}
+}
+
+func TestIsNewLine(t *testing.T) {
+	for name, expected := range map[string]bool{
+		"\na":  true,
+		"\r\n": true,
+		"\n\b": true,
+		"a\n":  false,
+		"\ra":  false,
+	} {
+		t.Run(name, func(t *testing.T) {
+			if ok := isNewLine([2]byte{name[0], name[1]}); ok != expected {
+				t.Errorf("expected %q to be %v, but was %v", name, expected, ok)
+			}
+		})
+	}
+}
