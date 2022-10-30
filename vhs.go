@@ -1,8 +1,8 @@
 package main
 
 import (
-	"context"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -126,6 +126,8 @@ const cleanupWaitTime = 100 * time.Millisecond
 //
 // It also begins the rendering process of the frames into videos.
 func (vhs *VHS) Cleanup() {
+	vhs.PauseRecording()
+
 	// Give some time for any commands executed (such as `rm`) to finish.
 	//
 	// If a user runs a long running command, they must sleep for the required time
@@ -158,64 +160,53 @@ func (vhs *VHS) Cleanup() {
 	}
 }
 
-const quality = 0.92
-
 // Record begins the goroutine which captures images from the xterm.js canvases.
-func (vhs *VHS) Record(ctx context.Context) <-chan error {
-	ch := make(chan error)
+func (vhs *VHS) Record() {
 	interval := time.Second / time.Duration(vhs.Options.Video.Framerate)
-	time.Sleep(interval)
+	save := vhs.frameSaver()
+	current := time.Now()
 
 	go func() {
-		counter := 0
-		for {
-			select {
-			case <-ctx.Done():
-				close(ch)
-				return
-
-			default:
-				if !vhs.recording {
-					time.Sleep(interval + interval)
-					continue
-				}
-
-				if vhs.Page != nil {
-					counter++
-					start := time.Now()
-					cursor, cursorErr := vhs.CursorCanvas.CanvasToImage("image/png", quality)
-					text, textErr := vhs.TextCanvas.CanvasToImage("image/png", quality)
-					if textErr == nil && cursorErr == nil {
-						if err := os.WriteFile(
-							filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(cursorFrameFormat, counter)),
-							cursor,
-							os.ModePerm,
-						); err != nil {
-							ch <- fmt.Errorf("error writing cursor frame: %w", err)
-						}
-						if err := os.WriteFile(
-							filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(textFrameFormat, counter)),
-							text,
-							os.ModePerm,
-						); err != nil {
-							ch <- fmt.Errorf("error writing text frame: %w", err)
-						}
-					} else {
-						ch <- fmt.Errorf("error: %v, %v", textErr, cursorErr)
-					}
-
-					elapsed := time.Since(start)
-					if elapsed >= interval {
-						continue
-					} else {
-						time.Sleep(interval - elapsed)
-					}
-				}
+		for vhs.recording {
+			if time.Since(current) >= interval {
+				current = time.Now()
+				go save()
 			}
+			time.Sleep(time.Millisecond)
 		}
 	}()
+}
 
-	return ch
+func (vhs *VHS) frameSaver() func() {
+	const quality = 0.92
+	counter := 0
+	lock := &sync.Mutex{}
+
+	return func() {
+		lock.Lock()
+		defer lock.Unlock()
+
+		cursor, cursorErr := vhs.CursorCanvas.CanvasToImage("image/png", quality)
+		text, textErr := vhs.TextCanvas.CanvasToImage("image/png", quality)
+		if textErr == nil && cursorErr == nil {
+			if err := os.WriteFile(
+				filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(cursorFrameFormat, counter)),
+				cursor,
+				os.ModePerm,
+			); err != nil {
+				log.Printf("error writing cursor frame: %v", err)
+			}
+			if err := os.WriteFile(
+				filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(textFrameFormat, counter)),
+				text,
+				os.ModePerm,
+			); err != nil {
+				log.Printf("error writing text frame: %v", err)
+			}
+		} else {
+			log.Printf("error: %v, %v", textErr, cursorErr)
+		}
+	}
 }
 
 // ResumeRecording indicates to VHS that the recording should be resumed.
