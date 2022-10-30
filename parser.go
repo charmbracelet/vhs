@@ -156,9 +156,12 @@ func (p *Parser) parseKeypress(ct TokenType) Command {
 func (p *Parser) parseOutput() Command {
 	cmd := Command{Type: OUTPUT}
 
+	// If the name starts with a digit or any other non string character,
+	// add that to the next token for the complete file name/path
 	if p.peek.Type != STRING {
-		p.errors = append(p.errors, NewError(p.cur, "Expected file path after output"))
-		return cmd
+		leftOutName := p.peek.Literal
+		p.nextToken()
+		p.peek.Literal = leftOutName + p.peek.Literal
 	}
 
 	ext := filepath.Ext(p.peek.Literal)
