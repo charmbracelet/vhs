@@ -17,8 +17,8 @@ github.com/charmbracelet/keygen v0.3.0 h1:mXpsQcH7DDlST5TddmXNXjS0L7ECk4/kLQYyBc
 github.com/charmbracelet/keygen v0.3.0/go.mod h1:1ukgO8806O25lUZ5s0IrNur+RlwTBERlezdgW71F5rM=
 github.com/charmbracelet/lipgloss v0.6.0 h1:1StyZB9vBSOyuZxQUcUwGr17JmojPNm87inij9N3wJY=
 github.com/charmbracelet/lipgloss v0.6.0/go.mod h1:tHh2wr34xcHjC2HCXIlGSG1jaDF0S0atAUvBMP6Ppuk=
-github.com/charmbracelet/wish v0.5.0 h1:FkkdNBFqrLABR1ciNrAL2KCxoyWfKhXnIGZw6GfAtPg=
-github.com/charmbracelet/wish v0.5.0/go.mod h1:5GAn5SrDSZ7cgKjnC+3kDmiIo7I6k4/AYiRzC4+tpCk=
+github.com/charmbracelet/wish v0.6.0 h1:njygCS/bXIZfa3zf+BjzXI64islPRON81onHhuTpPso=
+github.com/charmbracelet/wish v0.6.0/go.mod h1:LgsszaPfplsjqqXATWqe/MJSkY1LCxUGecmIHFQ1n20=
 github.com/cpuguy83/go-md2man/v2 v2.0.2/go.mod h1:tgQtvFlXSQOSOSIRvRPT7W67SCa46tRHOmNcaadrF8o=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
