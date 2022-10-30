@@ -29,10 +29,11 @@ var (
 	ttydMinVersion = version.Must(version.NewVersion("1.7.2"))
 
 	rootCmd = &cobra.Command{
-		Use:          "vhs <file>",
-		Short:        "Run a given tape file and generates its outputs.",
-		Args:         cobra.MaximumNArgs(1),
-		SilenceUsage: true,
+		Use:           "vhs <file>",
+		Short:         "Run a given tape file and generates its outputs.",
+		Args:          cobra.MaximumNArgs(1),
+		SilenceUsage:  true,
+		SilenceErrors: true, // we print our own errors
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			err := ensureDependencies()
