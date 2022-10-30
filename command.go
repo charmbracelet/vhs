@@ -109,8 +109,8 @@ func ExecuteNoop(c Command, v *VHS) {}
 func ExecuteKey(k input.Key) CommandFunc {
 	return func(c Command, v *VHS) {
 		typingSpeed, err := time.ParseDuration(c.Options)
-		if err == nil {
-			v.browser.SlowMotion(typingSpeed)
+		if err != nil {
+			typingSpeed = v.Options.TypingSpeed
 		}
 		repeat, err := strconv.Atoi(c.Args)
 		if err != nil {
@@ -118,8 +118,8 @@ func ExecuteKey(k input.Key) CommandFunc {
 		}
 		for i := 0; i < repeat; i++ {
 			_ = v.Page.Keyboard.Type(k)
+			time.Sleep(typingSpeed)
 		}
-		v.browser.SlowMotion(v.Options.TypingSpeed)
 	}
 }
 
@@ -137,7 +137,6 @@ func ExecuteCtrl(c Command, v *VHS) {
 
 // ExecuteHide is a CommandFunc that starts or stops the recording of the vhs.
 func ExecuteHide(c Command, v *VHS) {
-	v.browser.SlowMotion(0)
 	v.PauseRecording()
 }
 
@@ -152,7 +151,6 @@ func ExecuteRequire(c Command, v *VHS) {
 
 // ExecuteShow is a CommandFunc that resumes the recording of the vhs.
 func ExecuteShow(c Command, v *VHS) {
-	v.browser.SlowMotion(v.Options.TypingSpeed)
 	v.ResumeRecording()
 }
 
@@ -169,8 +167,8 @@ func ExecuteSleep(c Command, v *VHS) {
 // ExecuteType types the argument string on the running instance of vhs.
 func ExecuteType(c Command, v *VHS) {
 	typingSpeed, err := time.ParseDuration(c.Options)
-	if err == nil {
-		v.browser.SlowMotion(typingSpeed)
+	if err != nil {
+		typingSpeed = v.Options.TypingSpeed
 	}
 	for _, r := range c.Args {
 		k, ok := keymap[r]
@@ -180,8 +178,8 @@ func ExecuteType(c Command, v *VHS) {
 			_ = v.Page.MustElement("textarea").Input(string(r))
 			v.Page.MustWaitIdle()
 		}
+		time.Sleep(typingSpeed)
 	}
-	v.browser.SlowMotion(v.Options.TypingSpeed)
 }
 
 // ExecuteOutput applies the output on the vhs videos.
@@ -288,7 +286,6 @@ func ExecuteSetTypingSpeed(c Command, v *VHS) {
 		return
 	}
 	v.Options.TypingSpeed = typingSpeed
-	v.browser.SlowMotion(typingSpeed)
 }
 
 // ExecuteSetPadding applies the padding on the vhs.

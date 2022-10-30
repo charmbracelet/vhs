@@ -89,12 +89,6 @@ func Evaluate(tape string, out io.Writer, opts ...EvaluatorOption) error {
 	}()
 
 	for _, cmd := range cmds[offset:] {
-
-		// Require commands are already run at this stage
-		if cmd.Type == REQUIRE {
-			continue
-		}
-
 		// When changing the FontFamily, FontSize, LineHeight, Padding
 		// The xterm.js canvas changes dimensions and causes FFMPEG to not work
 		// correctly (specifically) with palettegen.
@@ -104,7 +98,7 @@ func Evaluate(tape string, out io.Writer, opts ...EvaluatorOption) error {
 		//
 		// We should remove if isSetting statement.
 		isSetting := cmd.Type == SET && cmd.Options != "TypingSpeed"
-		if isSetting {
+		if isSetting || cmd.Type == REQUIRE {
 			fmt.Fprintln(out, cmd.Highlight(true))
 			continue
 		}
