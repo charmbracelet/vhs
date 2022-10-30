@@ -25,6 +25,7 @@ A tape file is a script made up of commands describing what actions to perform i
 The following is a list of all possible commands in VHS:
 
 * %Output% <path>.(gif|webm|mp4)
+* %Require% <program>
 * %Set% <setting> <value>
 * %Sleep% <time>
 * %Type% "<string>"
