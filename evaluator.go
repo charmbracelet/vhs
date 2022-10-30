@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"strings"
 )
 
@@ -68,9 +70,15 @@ func Evaluate(tape string, out io.Writer, opts ...EvaluatorOption) error {
 	}
 
 	// Begin recording frames as we are now in a recording state.
-	v.Record()
+	ctx, cancel := context.WithCancel(context.Background())
+	ch := v.Record(ctx)
 
-	defer v.Cleanup()
+	// Log errors from the recording process.
+	go func() {
+		for err := range ch {
+			log.Print(err.Error())
+		}
+	}()
 
 	for _, cmd := range cmds[offset:] {
 		// When changing the FontFamily, FontSize, LineHeight, Padding
@@ -102,5 +110,11 @@ func Evaluate(tape string, out io.Writer, opts ...EvaluatorOption) error {
 		opt(&v)
 	}
 
+	// Stop recording frames.
+	cancel()
+	// Read from channel to ensure recorder is done.
+	<-ch
+
+	v.Cleanup()
 	return nil
 }
