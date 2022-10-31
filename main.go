@@ -83,6 +83,14 @@ var (
 		},
 	}
 
+	shell     string
+	recordCmd = &cobra.Command{
+		Use:   "record",
+		Short: "Create a new tape file by recording your actions",
+		Args:  cobra.NoArgs,
+		RunE:  Record,
+	}
+
 	newCmd = &cobra.Command{
 		Use:   "new <name>",
 		Short: "Create a new tape file with example tape file contents and documentation",
@@ -165,7 +173,9 @@ func main() {
 func init() {
 	themesCmd.Flags().BoolVar(&markdown, "markdown", false, "output as markdown")
 	_ = themesCmd.Flags().MarkHidden("markdown")
+	recordCmd.Flags().StringVarP(&shell, "shell", "s", "bash", "shell for recording")
 	rootCmd.AddCommand(
+		recordCmd,
 		newCmd,
 		themesCmd,
 		validateCmd,
