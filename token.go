@@ -1,5 +1,7 @@
 package main
 
+import "strings"
+
 // Type represents a token's type.
 type TokenType string
 
@@ -11,7 +13,7 @@ type Token struct {
 	Column  int
 }
 
-//nolint:revive
+// Tokens for the VHS language
 const (
 	AT             = "@"
 	EQUAL          = "="
@@ -40,7 +42,9 @@ const (
 	UP             = "UP"
 	TAB            = "TAB"
 	ESCAPE         = "ESCAPE"
-	BEGIN          = "BEGIN"
+	DELETE         = "DELETE"
+	HOME           = "HOME"
+	INSERT         = "INSERT"
 	END            = "END"
 	HIDE           = "HIDE"
 	REQUIRE        = "REQUIRE"
@@ -51,18 +55,18 @@ const (
 	MINUTES        = "MINUTES"
 	COMMENT        = "COMMENT"
 	SHELL          = "SHELL"
-	FONT_FAMILY    = "FONT_FAMILY"
-	FONT_SIZE      = "FONT_SIZE"
+	FONT_FAMILY    = "FONT_FAMILY" //nolint:revive
+	FONT_SIZE      = "FONT_SIZE"   //nolint:revive
 	FRAMERATE      = "FRAMERATE"
-	PLAYBACK_SPEED = "PLAYBACK_SPEED"
+	PLAYBACK_SPEED = "PLAYBACK_SPEED" //nolint:revive
 	HEIGHT         = "HEIGHT"
 	WIDTH          = "WIDTH"
-	LETTER_SPACING = "LETTER_SPACING"
-	LINE_HEIGHT    = "LINE_HEIGHT"
-	TYPING_SPEED   = "TYPING_SPEED"
+	LETTER_SPACING = "LETTER_SPACING" //nolint:revive
+	LINE_HEIGHT    = "LINE_HEIGHT"    //nolint:revive
+	TYPING_SPEED   = "TYPING_SPEED"   //nolint:revive
 	PADDING        = "PADDING"
 	THEME          = "THEME"
-	LOOP_OFFSET    = "LOOP_OFFSET"
+	LOOP_OFFSET    = "LOOP_OFFSET" //nolint:revive
 )
 
 var keywords = map[string]TokenType{
@@ -84,7 +88,6 @@ var keywords = map[string]TokenType{
 	"Up":            UP,
 	"Tab":           TAB,
 	"Escape":        ESCAPE,
-	"Begin":         BEGIN,
 	"End":           END,
 	"Hide":          HIDE,
 	"Require":       REQUIRE,
@@ -115,6 +118,27 @@ func IsSetting(t TokenType) bool {
 	default:
 		return false
 	}
+}
+
+// IsCommand returns whether the string is a command
+func IsCommand(t TokenType) bool {
+	switch t {
+	case TYPE, SLEEP,
+		UP, DOWN, RIGHT, LEFT,
+		ENTER, BACKSPACE, DELETE, TAB,
+		HOME, INSERT, END, CTRL:
+		return true
+	default:
+		return false
+	}
+}
+
+// String converts a token to it's human readable string format.
+func (t TokenType) String() string {
+	if IsCommand(t) || IsSetting(t) {
+		return strings.ToTitle(string(t[0])) + strings.ToLower(string(t[1:]))
+	}
+	return string(t)
 }
 
 // LookupIdentifier returns whether the identifier is a keyword.

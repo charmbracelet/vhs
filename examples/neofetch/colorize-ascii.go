@@ -1,4 +1,4 @@
-package main
+package neofetch
 
 import (
 	_ "embed"
