@@ -314,10 +314,20 @@ func ExecuteSetPlaybackSpeed(c Command, v *VHS) {
 
 // ExecuteLoopOffset applies the loop offset option on the vhs.
 func ExecuteLoopOffset(c Command, v *VHS) {
-	loopOffset, err := strconv.ParseInt(c.Args, base, 0)
-	if err != nil {
-		return
+	// LoopOffset support # of frames as well as percentage
+	if strings.HasSuffix(c.Args, "%") {
+		loopOffset, err := strconv.ParseFloat(strings.TrimRight(c.Args, "%"), bitSize)
+		if err != nil {
+			return
+		}
+		v.Options.LoopOffset.percentage = loopOffset
+		v.Options.LoopOffset.frames = DefaultLoopOffsetFrames
+	} else {
+		loopOffset, err := strconv.ParseInt(c.Args, base, 0)
+		if err != nil {
+			return
+		}
+		v.Options.LoopOffset.percentage = DefaultLoopOffsetPercentage
+		v.Options.LoopOffset.frames = int(loopOffset)
 	}
-
-	v.Options.LoopOffset.frames = int(loopOffset)
 }

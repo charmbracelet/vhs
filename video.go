@@ -40,16 +40,16 @@ type VideoOutputs struct {
 // LoopOffsetOptions is a set of options for rendering loop offset
 type LoopOffsetOptions struct {
 	frames     int
-	percentage int
+	percentage float64
 }
 
-const defaultLoopOffsetFrames = 0
-const defaultLoopOffsetPercentage = 0
+const DefaultLoopOffsetFrames = 0
+const DefaultLoopOffsetPercentage float64 = 0.0
 
 func DefaultLoopOffsetOptions() LoopOffsetOptions {
 	return LoopOffsetOptions{
-		frames:     defaultLoopOffsetFrames,
-		percentage: defaultLoopOffsetPercentage,
+		frames:     DefaultLoopOffsetFrames,
+		percentage: DefaultLoopOffsetPercentage,
 	}
 }
 

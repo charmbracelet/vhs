@@ -193,6 +193,15 @@ func (p *Parser) parseSet() Command {
 	p.nextToken()
 
 	switch p.cur.Type {
+	case LOOP_OFFSET:
+		cmd.Args = p.peek.Literal
+		p.nextToken()
+		// Allow LoopOffset to have percentage
+		// Set LoopOffset 20%
+		if p.peek.Type == PERCENT {
+			cmd.Args += "%"
+			p.nextToken()
+		}
 	case TYPING_SPEED:
 		cmd.Args = p.peek.Literal
 		p.nextToken()

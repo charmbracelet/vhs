@@ -166,16 +166,28 @@ func (vhs *VHS) Cleanup() {
 
 // Apply Loop Offset by modifying frame sequence (REVIEW: concurrency)
 func (vhs *VHS) ApplyLoopOffset() {
-	errCh := make(chan error)
-	doneCh := make(chan bool)
-	var wg sync.WaitGroup
+	if vhs.Options.LoopOffset.percentage > 0 {
+		vhs.Options.LoopOffset.frames = int(vhs.Options.LoopOffset.percentage / 100.0 * float64(vhs.totalFrames))
+	}
+	if vhs.Options.LoopOffset.frames <= 0 {
+		return
+	}
+	vhs.Options.LoopOffset.frames = vhs.Options.LoopOffset.frames % vhs.totalFrames
+	vhs.Options.LoopOffset.percentage = float64(vhs.Options.LoopOffset.frames) / float64(vhs.totalFrames) * 100
+	fmt.Printf(
+		"Applying LoopOffset %d/%d frames (%.2f%%)\n",
+		vhs.Options.LoopOffset.frames, vhs.totalFrames, vhs.Options.LoopOffset.percentage,
+	)
 
 	// Move all frames in [offsetStart, offsetEnd] to end of frame sequence
 	offsetStart := vhs.Options.Video.StartingFrame
 	offsetEnd := vhs.Options.LoopOffset.frames
-
 	// Calculate new starting frame for loop after applying offset
 	vhs.Options.Video.StartingFrame = (vhs.Options.LoopOffset.frames + 1) % vhs.totalFrames
+
+	errCh := make(chan error)
+	doneCh := make(chan bool)
+	var wg sync.WaitGroup
 
 	for counter := offsetStart; counter <= offsetEnd; counter++ {
 		wg.Add(2)
