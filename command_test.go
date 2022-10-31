@@ -37,7 +37,7 @@ func TestExecuteSetTheme(t *testing.T) {
 	})
 	t.Run("suggestion", func(t *testing.T) {
 		theme, err := getTheme("cattppuccin latt")
-		requireEqualErr(t, err, "invalid `Set Theme \"cattppuccin latt\"`: did you mean Catppuccin Latte")
+		requireEqualErr(t, err, "invalid `Set Theme \"cattppuccin latt\"`: did you mean \"Catppuccin Latte\"")
 		requireDefaultTheme(t, theme)
 	})
 	t.Run("invalid json", func(t *testing.T) {
