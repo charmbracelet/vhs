@@ -33,15 +33,28 @@ func sortedThemeNames() []string {
 }
 
 // findTheme return the given theme, if it exists.
-func findTheme(name string) (Theme, bool) {
+func findTheme(name string) (Theme, []string, bool) {
 	for _, bts := range [][]byte{themesBts, customThemesBts} {
 		for _, theme := range parseThemes(bts) {
 			if theme.Name == name {
-				return theme, true
+				return theme, nil, true
 			}
 		}
 	}
-	return Theme{}, false
+
+	// not found, lets find similar themes!
+	keys := sortedThemeNames()
+
+	suggestions := []string{}
+	for _, theme := range keys {
+		levenshteinDistance := ld(name, theme, true)
+		suggestByLevenshtein := levenshteinDistance <= 2
+		suggestByPrefix := strings.HasPrefix(strings.ToLower(name), strings.ToLower(theme))
+		if suggestByLevenshtein || suggestByPrefix {
+			suggestions = append(suggestions, theme)
+		}
+	}
+	return Theme{}, suggestions, false
 }
 
 func parseThemes(bts []byte) []Theme {

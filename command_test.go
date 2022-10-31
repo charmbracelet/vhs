@@ -35,6 +35,11 @@ func TestExecuteSetTheme(t *testing.T) {
 			t.Errorf("wrong background, expected %q, got %q", "#29283b", theme.Background)
 		}
 	})
+	t.Run("suggestion", func(t *testing.T) {
+		theme, err := getTheme("cattppuccin latt")
+		requireEqualErr(t, err, "invalid `Set Theme \"cattppuccin latt\"`: did you mean Catppuccin Latte")
+		requireDefaultTheme(t, theme)
+	})
 	t.Run("invalid json", func(t *testing.T) {
 		theme, err := getTheme(`{"background`)
 		requireErr(t, err)
@@ -51,6 +56,16 @@ func requireErr(tb testing.TB, err error) {
 	tb.Helper()
 	if err == nil {
 		tb.Fatalf("expected an error, got nil")
+	}
+}
+
+func requireEqualErr(tb testing.TB, err1 error, err2 string) {
+	tb.Helper()
+	if err1 == nil {
+		tb.Fatalf("expected an error, got nil")
+	}
+	if err1.Error() != err2 {
+		tb.Fatalf("errors do not match: %q != %q", err1.Error(), err2)
 	}
 }
 
