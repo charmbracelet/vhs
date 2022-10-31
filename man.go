@@ -57,12 +57,11 @@ The following is a list of all possible setting commands in VHS:
 * Set %LetterSpacing% <float>
 * Set %LineHeight% <float>
 * Set %TypingSpeed% <time>
-* Set %Theme% <json>
+* Set %Theme% <json|string>
 * Set %Padding% <number>
 * Set %Framerate% <number>
 * Set %PlaybackSpeed% <float>
 `
-
 	manBugs = "See GitHub Issues: <https://github.com/charmbracelet/vhs/issues>"
 
 	manAuthor = "Charm <vt100@charm.sh>"
