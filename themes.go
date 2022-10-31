@@ -8,6 +8,8 @@ import (
 	"os"
 	"sort"
 	"strings"
+
+	"github.com/agnivade/levenshtein"
 )
 
 var (
@@ -48,10 +50,12 @@ func findTheme(name string) (Theme, []string, bool) {
 	keys := sortedThemeNames()
 
 	suggestions := []string{}
+	lname := strings.ToLower(name)
 	for _, theme := range keys {
-		levenshteinDistance := ld(name, theme, true)
+		ltheme := strings.ToLower(theme)
+		levenshteinDistance := levenshtein.ComputeDistance(lname, ltheme)
 		suggestByLevenshtein := levenshteinDistance <= distance
-		suggestByPrefix := strings.HasPrefix(strings.ToLower(name), strings.ToLower(theme))
+		suggestByPrefix := strings.HasPrefix(lname, ltheme)
 		if suggestByLevenshtein || suggestByPrefix {
 			suggestions = append(suggestions, theme)
 		}
