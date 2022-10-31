@@ -13,7 +13,6 @@ import (
 	"fmt"
 	"net"
 	"os/exec"
-	"runtime"
 )
 
 // randomPort returns a random port number that is not in use.
@@ -32,12 +31,9 @@ func StartTTY(port int) *exec.Cmd {
 		"-t", "cursorBlink=true",
 		"-t", "customGlyphs=true",
 	}
-	switch runtime.GOOS {
-	case "windows":
-		args = append(args, "cmd.exe")
-	default:
-		args = append(args, "bash", "--login")
-	}
+
+	args = append(args, defaultShellWithArgs()...)
+
 	//nolint:gosec
 	cmd := exec.Command("ttyd", args...)
 	return cmd
