@@ -13,7 +13,7 @@ Set FontSize 22
 Set Width 1350
 Set Height 900 
 
-Type "onefetch"
+Type "onefetch --ascii-input "$(cat vhs.ascii)" --ascii-colors 5"
 
 Sleep 500ms
 
