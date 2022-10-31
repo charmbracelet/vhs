@@ -37,6 +37,22 @@ type VideoOutputs struct {
 	MP4  string
 }
 
+// LoopOffsetOptions is a set of options for rendering loop offset
+type LoopOffsetOptions struct {
+	frames     int
+	percentage int
+}
+
+const defaultLoopOffsetFrames = 0
+const defaultLoopOffsetPercentage = 0
+
+func DefaultLoopOffsetOptions() LoopOffsetOptions {
+	return LoopOffsetOptions{
+		frames:     defaultLoopOffsetFrames,
+		percentage: defaultLoopOffsetPercentage,
+	}
+}
+
 // Options is the set of options for converting frames to a GIF.
 type VideoOptions struct {
 	CleanupFrames   bool
@@ -49,6 +65,7 @@ type VideoOptions struct {
 	Height          int
 	Padding         int
 	BackgroundColor string
+	StartingFrame   int
 }
 
 const defaultFramerate = 50
@@ -57,6 +74,7 @@ const defaultMaxColors = 256
 const defaultPadding = 72
 const defaultPlaybackSpeed = 1.0
 const defaultWidth = 1200
+const defaultStartingFrame = 1
 
 // DefaultVideoOptions is the set of default options for converting frames
 // to a GIF, which are used if they are not overridden.
@@ -72,6 +90,7 @@ func DefaultVideoOptions() VideoOptions {
 		Padding:         defaultPadding,
 		PlaybackSpeed:   defaultPlaybackSpeed,
 		BackgroundColor: DefaultTheme.Background,
+		StartingFrame:   defaultStartingFrame,
 	}
 }
 
@@ -82,13 +101,16 @@ func MakeGIF(opts VideoOptions) *exec.Cmd {
 	}
 
 	fmt.Println("Creating GIF...")
+	fmt.Println("Starting frame", opts.StartingFrame)
 
 	//nolint:gosec
 	return exec.Command(
 		"ffmpeg", "-y",
 		"-r", fmt.Sprint(opts.Framerate),
+		"-start_number", fmt.Sprint(opts.StartingFrame),
 		"-i", filepath.Join(opts.Input, textFrameFormat),
 		"-r", fmt.Sprint(opts.Framerate),
+		"-start_number", fmt.Sprint(opts.StartingFrame),
 		"-i", filepath.Join(opts.Input, cursorFrameFormat),
 		"-filter_complex",
 		fmt.Sprintf(`[0][1]overlay[merged];[merged]scale=%d:%d:force_original_aspect_ratio=1[scaled];[scaled]fps=%d,setpts=PTS/%f[speed];[speed]pad=%d:%d:(ow-iw)/2:(oh-ih)/2:%s[padded];[padded]fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s[bordered];[bordered]split[a][b];[a]palettegen=max_colors=256[p];[b][p]paletteuse[out]`,
@@ -116,8 +138,10 @@ func MakeWebM(opts VideoOptions) *exec.Cmd {
 	return exec.Command(
 		"ffmpeg", "-y",
 		"-r", fmt.Sprint(opts.Framerate),
+		"-start_number", fmt.Sprint(opts.StartingFrame),
 		"-i", filepath.Join(opts.Input, textFrameFormat),
 		"-r", fmt.Sprint(opts.Framerate),
+		"-start_number", fmt.Sprint(opts.StartingFrame),
 		"-i", filepath.Join(opts.Input, cursorFrameFormat),
 		"-filter_complex",
 		fmt.Sprintf(`[0][1]overlay,scale=%d:%d:force_original_aspect_ratio=1,fps=%d,setpts=PTS/%f,pad=%d:%d:(ow-iw)/2:(oh-ih)/2:%s,fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s`,
@@ -148,8 +172,10 @@ func MakeMP4(opts VideoOptions) *exec.Cmd {
 	return exec.Command(
 		"ffmpeg", "-y",
 		"-r", fmt.Sprint(opts.Framerate),
+		"-start_number", fmt.Sprint(opts.StartingFrame),
 		"-i", filepath.Join(opts.Input, textFrameFormat),
 		"-r", fmt.Sprint(opts.Framerate),
+		"-start_number", fmt.Sprint(opts.StartingFrame),
 		"-i", filepath.Join(opts.Input, cursorFrameFormat),
 		"-filter_complex",
 		fmt.Sprintf(`[0][1]overlay,scale=%d:%d:force_original_aspect_ratio=1,fps=%d,setpts=PTS/%f,pad=%d:%d:(ow-iw)/2:(oh-ih)/2:%s,fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s`,

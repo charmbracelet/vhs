@@ -61,6 +61,7 @@ const (
 	TYPING_SPEED   = "TYPING_SPEED"
 	PADDING        = "PADDING"
 	THEME          = "THEME"
+	LOOP_OFFSET    = "LOOP_OFFSET"
 )
 
 var keywords = map[string]TokenType{
@@ -99,6 +100,7 @@ var keywords = map[string]TokenType{
 	"Padding":       PADDING,
 	"Theme":         THEME,
 	"Width":         WIDTH,
+	"LoopOffset":    LOOP_OFFSET,
 }
 
 // IsSetting returns whether a token is a setting.
@@ -106,7 +108,7 @@ func IsSetting(t TokenType) bool {
 	switch t {
 	case FONT_FAMILY, FONT_SIZE, LETTER_SPACING, LINE_HEIGHT,
 		FRAMERATE, TYPING_SPEED, THEME, PLAYBACK_SPEED,
-		HEIGHT, WIDTH, PADDING:
+		HEIGHT, WIDTH, PADDING, LOOP_OFFSET:
 		return true
 	default:
 		return false

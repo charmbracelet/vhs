@@ -212,6 +212,7 @@ var Settings = map[string]CommandFunc{
 	"Theme":         ExecuteSetTheme,
 	"TypingSpeed":   ExecuteSetTypingSpeed,
 	"Width":         ExecuteSetWidth,
+	"LoopOffset":    ExecuteLoopOffset,
 }
 
 // ExecuteSet applies the settings on the running vhs specified by the
@@ -309,4 +310,14 @@ func ExecuteSetPlaybackSpeed(c Command, v *VHS) {
 		return
 	}
 	v.Options.Video.PlaybackSpeed = playbackSpeed
+}
+
+// ExecuteLoopOffset applies the loop offset option on the vhs.
+func ExecuteLoopOffset(c Command, v *VHS) {
+	loopOffset, err := strconv.ParseInt(c.Args, base, 0)
+	if err != nil {
+		return
+	}
+
+	v.Options.LoopOffset.frames = int(loopOffset)
 }
