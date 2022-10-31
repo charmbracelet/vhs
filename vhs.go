@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"sync"
 	"time"
+	"math"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/input"
@@ -164,33 +165,43 @@ func (vhs *VHS) Cleanup() {
 	}
 }
 
-// Apply Loop Offset by modifying frame sequence (REVIEW: concurrency)
+// Apply Loop Offset by modifying frame sequence
 func (vhs *VHS) ApplyLoopOffset() {
-	if vhs.Options.LoopOffset.percentage > 0 {
-		vhs.Options.LoopOffset.frames = int(vhs.Options.LoopOffset.percentage / 100.0 * float64(vhs.totalFrames))
+	loopOffsetPercentage := vhs.Options.LoopOffset.percentage
+	loopOffsetFrames := vhs.Options.LoopOffset.frames
+
+	// Calculate offset frames corresponding to the LoopOffset percentage
+	if loopOffsetPercentage > 0 {
+		loopOffsetFrames = int(math.Ceil(loopOffsetPercentage / 100.0 * float64(vhs.totalFrames)))
 	}
-	if vhs.Options.LoopOffset.frames <= 0 {
+
+	// Take care of overflow and keep track of exact offsetPercentage
+	loopOffsetFrames = loopOffsetFrames % vhs.totalFrames
+	loopOffsetPercentage = float64(loopOffsetFrames) / float64(vhs.totalFrames) * 100
+
+	// No operation as nothing to offset
+	if loopOffsetFrames <= 0 {
 		return
 	}
-	vhs.Options.LoopOffset.frames = vhs.Options.LoopOffset.frames % vhs.totalFrames
-	vhs.Options.LoopOffset.percentage = float64(vhs.Options.LoopOffset.frames) / float64(vhs.totalFrames) * 100
-	fmt.Printf(
-		"Applying LoopOffset %d/%d frames (%.2f%%)\n",
-		vhs.Options.LoopOffset.frames, vhs.totalFrames, vhs.Options.LoopOffset.percentage,
-	)
 
 	// Move all frames in [offsetStart, offsetEnd] to end of frame sequence
-	offsetStart := vhs.Options.Video.StartingFrame
-	offsetEnd := vhs.Options.LoopOffset.frames
-	// Calculate new starting frame for loop after applying offset
-	vhs.Options.Video.StartingFrame = (vhs.Options.LoopOffset.frames + 1) % vhs.totalFrames
+	offsetStart := DefaultStartingFrame
+	offsetEnd := loopOffsetFrames
 
+	// New starting frame will be the next frame after offsetEnd
+	vhs.Options.Video.StartingFrame = offsetEnd + 1
+	fmt.Printf(
+		"Applying LoopOffset %d/%d frames (%.2f%%)\n",
+		loopOffsetFrames, vhs.totalFrames, loopOffsetPercentage,
+	)
+
+	// Rename all text and cursor frame files in the range concurrently
 	errCh := make(chan error)
 	doneCh := make(chan bool)
 	var wg sync.WaitGroup
 
 	for counter := offsetStart; counter <= offsetEnd; counter++ {
-		wg.Add(2)
+		wg.Add(1)
 		go func(frameNum int) {
 			defer wg.Done()
 			offsetFrameNum := frameNum + vhs.totalFrames
@@ -202,6 +213,7 @@ func (vhs *VHS) ApplyLoopOffset() {
 			}
 		}(counter)
 
+		wg.Add(1)
 		go func(frameNum int) {
 			defer wg.Done()
 			offsetFrameNum := frameNum + vhs.totalFrames
@@ -223,6 +235,7 @@ func (vhs *VHS) ApplyLoopOffset() {
 	case <-doneCh:
 		break
 	case err := <-errCh:
+		// Bail out in case of an error while renaming
 		fmt.Println(err)
 		os.Exit(1)
 	}

@@ -46,6 +46,8 @@ type LoopOffsetOptions struct {
 const DefaultLoopOffsetFrames = 0
 const DefaultLoopOffsetPercentage float64 = 0.0
 
+// DefaultLoopOffsetOptions is the set of default options for applying
+// offset to frame sequence, which are overriden by LoopOverflow setting
 func DefaultLoopOffsetOptions() LoopOffsetOptions {
 	return LoopOffsetOptions{
 		frames:     DefaultLoopOffsetFrames,
@@ -74,7 +76,7 @@ const defaultMaxColors = 256
 const defaultPadding = 72
 const defaultPlaybackSpeed = 1.0
 const defaultWidth = 1200
-const defaultStartingFrame = 1
+const DefaultStartingFrame = 1
 
 // DefaultVideoOptions is the set of default options for converting frames
 // to a GIF, which are used if they are not overridden.
@@ -90,7 +92,7 @@ func DefaultVideoOptions() VideoOptions {
 		Padding:         defaultPadding,
 		PlaybackSpeed:   defaultPlaybackSpeed,
 		BackgroundColor: DefaultTheme.Background,
-		StartingFrame:   defaultStartingFrame,
+		StartingFrame:   DefaultStartingFrame,
 	}
 }
 
@@ -101,7 +103,6 @@ func MakeGIF(opts VideoOptions) *exec.Cmd {
 	}
 
 	fmt.Println("Creating GIF...")
-	fmt.Println("Starting frame", opts.StartingFrame)
 
 	//nolint:gosec
 	return exec.Command(
