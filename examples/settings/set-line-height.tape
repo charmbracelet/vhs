@@ -1,4 +1,4 @@
-Output examples/settings/line-height.gif
+Output examples/settings/set-line-height.gif
 Set Height 400
 Set FontSize 32
 Set LineHeight 1.8

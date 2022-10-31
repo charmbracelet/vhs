@@ -1,4 +1,4 @@
-Output examples/settings/font-size-20.gif
+Output examples/settings/set-font-size-20.gif
 
 Set Height 225
 
