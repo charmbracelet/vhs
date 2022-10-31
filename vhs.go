@@ -41,7 +41,7 @@ type Options struct {
 	Theme         Theme
 	Test          TestOptions
 	Video         VideoOptions
-	LoopOffset    LoopOffsetOptions
+	LoopOffset    float64
 }
 
 const (
@@ -167,19 +167,16 @@ func (vhs *VHS) Cleanup() {
 
 // Apply Loop Offset by modifying frame sequence
 func (vhs *VHS) ApplyLoopOffset() {
-	loopOffsetPercentage := vhs.Options.LoopOffset.percentage
-	loopOffsetFrames := vhs.Options.LoopOffset.frames
+	loopOffsetPercentage := vhs.Options.LoopOffset
 
-	// Calculate offset frames corresponding to the LoopOffset percentage
-	if loopOffsetPercentage > 0 {
-		loopOffsetFrames = int(math.Ceil(loopOffsetPercentage / 100.0 * float64(vhs.totalFrames)))
-	}
+	// Calculate # of frames to offset from LoopOffset percentage
+	loopOffsetFrames := int(math.Ceil(loopOffsetPercentage / 100.0 * float64(vhs.totalFrames)))
 
 	// Take care of overflow and keep track of exact offsetPercentage
 	loopOffsetFrames = loopOffsetFrames % vhs.totalFrames
 	loopOffsetPercentage = float64(loopOffsetFrames) / float64(vhs.totalFrames) * 100
 
-	// No operation as nothing to offset
+	// No operation if nothing to offset
 	if loopOffsetFrames <= 0 {
 		return
 	}

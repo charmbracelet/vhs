@@ -17,8 +17,8 @@ Set Padding 50
 Set Framerate 60
 Set PlaybackSpeed 2
 Set TypingSpeed .1
-Set LoopOffset 60
-Set LoopOffset 20%
+Set LoopOffset 60.4
+Set LoopOffset 20.99%
 
 # Sleep:
 Sleep 1

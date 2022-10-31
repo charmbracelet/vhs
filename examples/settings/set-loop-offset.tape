@@ -4,8 +4,8 @@
 
 Output examples/settings/set-loop-offset.gif
 
-# Set LoopOffset 300
 Set LoopOffset 50.55%
+# Set LoopOffset 50.55
 
 Type "Betty bought a butter but the bit of butter was bitter."
 Sleep 1s

@@ -37,24 +37,6 @@ type VideoOutputs struct {
 	MP4  string
 }
 
-// LoopOffsetOptions is a set of options for rendering loop offset
-type LoopOffsetOptions struct {
-	frames     int
-	percentage float64
-}
-
-const DefaultLoopOffsetFrames = 0
-const DefaultLoopOffsetPercentage float64 = 0.0
-
-// DefaultLoopOffsetOptions is the set of default options for applying
-// offset to frame sequence, which are overriden by LoopOverflow setting
-func DefaultLoopOffsetOptions() LoopOffsetOptions {
-	return LoopOffsetOptions{
-		frames:     DefaultLoopOffsetFrames,
-		percentage: DefaultLoopOffsetPercentage,
-	}
-}
-
 // Options is the set of options for converting frames to a GIF.
 type VideoOptions struct {
 	CleanupFrames   bool
@@ -76,6 +58,8 @@ const defaultMaxColors = 256
 const defaultPadding = 72
 const defaultPlaybackSpeed = 1.0
 const defaultWidth = 1200
+
+// DefaultStartingFrame is the index of the file to start the image sequence loop from
 const DefaultStartingFrame = 1
 
 // DefaultVideoOptions is the set of default options for converting frames
