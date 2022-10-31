@@ -1,9 +1,12 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
+	"log"
+	"os"
 	"strings"
 )
 
@@ -31,17 +34,30 @@ func Evaluate(tape string, out io.Writer, opts ...EvaluatorOption) error {
 	}
 
 	v := New()
+	defer func() { _ = v.close() }()
 
 	// Run Output and Set commands as they only modify options on the VHS instance.
 	var offset int
 	for i, cmd := range cmds {
-		if cmd.Type == SET || cmd.Type == OUTPUT {
+		if cmd.Type == SET || cmd.Type == OUTPUT || cmd.Type == REQUIRE {
 			fmt.Fprintln(out, cmd.Highlight(false))
 			cmd.Execute(&v)
 		} else {
 			offset = i
 			break
 		}
+	}
+
+	video := v.Options.Video
+	if video.Height < 2*video.Padding || video.Width < 2*video.Padding {
+		v.Errors = append(v.Errors, fmt.Errorf("height and width must be greater than %d", 2*video.Padding))
+	}
+
+	if len(v.Errors) > 0 {
+		for _, err := range v.Errors {
+			fmt.Fprintln(out, ErrorStyle.Render(err.Error()))
+		}
+		os.Exit(1)
 	}
 
 	// Setup the terminal session so we can start executing commands.
@@ -62,9 +78,15 @@ func Evaluate(tape string, out io.Writer, opts ...EvaluatorOption) error {
 	}
 
 	// Begin recording frames as we are now in a recording state.
-	v.Record()
+	ctx, cancel := context.WithCancel(context.Background())
+	ch := v.Record(ctx)
 
-	defer v.Cleanup()
+	// Log errors from the recording process.
+	go func() {
+		for err := range ch {
+			log.Print(err.Error())
+		}
+	}()
 
 	for _, cmd := range cmds[offset:] {
 		// When changing the FontFamily, FontSize, LineHeight, Padding
@@ -76,7 +98,7 @@ func Evaluate(tape string, out io.Writer, opts ...EvaluatorOption) error {
 		//
 		// We should remove if isSetting statement.
 		isSetting := cmd.Type == SET && cmd.Options != "TypingSpeed"
-		if isSetting {
+		if isSetting || cmd.Type == REQUIRE {
 			fmt.Fprintln(out, cmd.Highlight(true))
 			continue
 		}
@@ -96,5 +118,11 @@ func Evaluate(tape string, out io.Writer, opts ...EvaluatorOption) error {
 		opt(&v)
 	}
 
+	// Stop recording frames.
+	cancel()
+	// Read from channel to ensure recorder is done.
+	<-ch
+
+	v.Cleanup()
 	return nil
 }

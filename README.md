@@ -81,7 +81,7 @@ brew install charmbracelet/tap/vhs ffmpeg
 brew install ttyd --HEAD
 
 # Arch Linux (btw)
-yay -S vhs-bin ttyd ffmpeg
+yay -S vhs-bin
 
 # Nix
 nix-env -iA nixpkgs.vhs
@@ -165,6 +165,7 @@ ssh vhs.example.com < demo.tape > demo.gif
 There are a few basic types of VHS commands:
 
 * [`Output <path>`](#output): specify file output
+* [`Require <program>`](#require): specify required programs for tape file
 * [`Set <Setting> Value`](#settings): set recording settings
 * [`Type "<characters>"`](#type): emulate typing
 * [`Left`](#arrow-keys) [`Right`](#arrow-keys) [`Up`](#arrow-keys) [`Down`](#arrow-keys): arrow keys
@@ -185,6 +186,21 @@ Output out.gif
 Output out.mp4
 Output out.webm
 Output frames/ # a directory of frames as a PNG sequence
+```
+
+### Require
+
+The `Require` command allows you to specify dependencies for your tape file.
+These are useful to fail early if a required program is missing from the
+`$PATH` and it is certain that the VHS execution will not work as expected.
+
+Require commands must be defined at the top of a tape file, before any non-
+setting or non-output command.
+
+```elixir
+# A tape file that requires gum and glow to be in the $PATH
+Require gum
+Require glow
 ```
 
 ### Settings

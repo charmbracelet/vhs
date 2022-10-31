@@ -1,8 +1,8 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -17,6 +17,7 @@ import (
 // VHS is the object that controls the setup.
 type VHS struct {
 	Options      *Options
+	Errors       []error
 	Page         *rod.Page
 	browser      *rod.Browser
 	TextCanvas   *rod.Element
@@ -24,6 +25,7 @@ type VHS struct {
 	mutex        *sync.Mutex
 	recording    bool
 	tty          *exec.Cmd
+	close        func() error
 }
 
 // Options is the set of options for the setup.
@@ -66,8 +68,8 @@ func New() VHS {
 
 	opts := DefaultVHSOptions()
 	path, _ := launcher.LookPath()
-	u := launcher.New().Bin(path).MustLaunch()
-	browser := rod.New().ControlURL(u).MustConnect().SlowMotion(opts.TypingSpeed)
+	u := launcher.New().Leakless(false).Bin(path).MustLaunch()
+	browser := rod.New().ControlURL(u).MustConnect()
 	page := browser.MustPage(fmt.Sprintf("http://localhost:%d", port))
 
 	mu := &sync.Mutex{}
@@ -79,6 +81,7 @@ func New() VHS {
 		tty:       tty,
 		recording: true,
 		mutex:     mu,
+		close:     browser.Close,
 	}
 }
 
@@ -122,8 +125,6 @@ const cleanupWaitTime = 100 * time.Millisecond
 //
 // It also begins the rendering process of the frames into videos.
 func (vhs *VHS) Cleanup() {
-	vhs.PauseRecording()
-
 	// Give some time for any commands executed (such as `rm`) to finish.
 	//
 	// If a user runs a long running command, they must sleep for the required time
@@ -159,48 +160,61 @@ func (vhs *VHS) Cleanup() {
 const quality = 0.92
 
 // Record begins the goroutine which captures images from the xterm.js canvases.
-func (vhs *VHS) Record() {
+func (vhs *VHS) Record(ctx context.Context) <-chan error {
+	ch := make(chan error)
 	interval := time.Second / time.Duration(vhs.Options.Video.Framerate)
 	time.Sleep(interval)
+
 	go func() {
 		counter := 0
 		for {
-			if !vhs.recording {
-				time.Sleep(interval + interval)
-				continue
-			}
-			if vhs.Page != nil {
-				counter++
-				start := time.Now()
-				cursor, cursorErr := vhs.CursorCanvas.CanvasToImage("image/png", quality)
-				text, textErr := vhs.TextCanvas.CanvasToImage("image/png", quality)
-				if textErr == nil && cursorErr == nil {
-					if err := os.WriteFile(
-						filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(cursorFrameFormat, counter)),
-						cursor,
-						os.ModePerm,
-					); err != nil {
-						log.Printf("error writing cursor frame: %v", err)
-					}
-					if err := os.WriteFile(
-						filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(textFrameFormat, counter)),
-						text,
-						os.ModePerm,
-					); err != nil {
-						log.Printf("error writing text frame: %v", err)
-					}
-				} else {
-					log.Printf("error: %v, %v", textErr, cursorErr)
-				}
-				elapsed := time.Since(start)
-				if elapsed >= interval {
+			select {
+			case <-ctx.Done():
+				close(ch)
+				return
+
+			default:
+				if !vhs.recording {
+					time.Sleep(interval + interval)
 					continue
-				} else {
-					time.Sleep(interval - elapsed)
+				}
+
+				if vhs.Page != nil {
+					counter++
+					start := time.Now()
+					cursor, cursorErr := vhs.CursorCanvas.CanvasToImage("image/png", quality)
+					text, textErr := vhs.TextCanvas.CanvasToImage("image/png", quality)
+					if textErr == nil && cursorErr == nil {
+						if err := os.WriteFile(
+							filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(cursorFrameFormat, counter)),
+							cursor,
+							os.ModePerm,
+						); err != nil {
+							ch <- fmt.Errorf("error writing cursor frame: %w", err)
+						}
+						if err := os.WriteFile(
+							filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(textFrameFormat, counter)),
+							text,
+							os.ModePerm,
+						); err != nil {
+							ch <- fmt.Errorf("error writing text frame: %w", err)
+						}
+					} else {
+						ch <- fmt.Errorf("error: %v, %v", textErr, cursorErr)
+					}
+
+					elapsed := time.Since(start)
+					if elapsed >= interval {
+						continue
+					} else {
+						time.Sleep(interval - elapsed)
+					}
 				}
 			}
 		}
 	}()
+
+	return ch
 }
 
 // ResumeRecording indicates to VHS that the recording should be resumed.

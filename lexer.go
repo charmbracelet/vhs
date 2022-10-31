@@ -153,7 +153,9 @@ func (l *Lexer) readIdentifier() string {
 // of the token's line number.
 func (l *Lexer) skipWhitespace() {
 	for isWhitespace(l.ch) {
-		if isNewLine(l.ch) {
+		// Note: we don't use isNewline since we don't want to double count \r\n on
+		// windows and increment the l.line.
+		if l.ch == '\n' {
 			l.line++
 			l.column = 0
 		}
@@ -202,6 +204,9 @@ func isWhitespace(ch byte) bool {
 }
 
 // isNewLine returns whether a character is a newline.
+//
+// Note: in windows a single new line is \r\n so using isNewline is not
+// recommended for counting the number of new lines.
 func isNewLine(ch byte) bool {
 	return ch == '\n' || ch == '\r'
 }
