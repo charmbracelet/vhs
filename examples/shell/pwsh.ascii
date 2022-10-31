@@ -1,24 +1,4 @@
-> Write-Output "current shell: $ShellId
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-────────────────────────────────────────────────────────────────────────────────
 > Write-Output "current shell: $ShellId"
-
-
 
 
 
@@ -39,6 +19,20 @@ current shell: Microsoft.PowerShell
 >
 
 
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> Write-Output "current shell: $ShellId"
+current shell: Microsoft.PowerShell
+>
 
 
 

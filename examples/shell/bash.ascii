@@ -13,14 +13,10 @@
 
 
 
-
-
 ────────────────────────────────────────────────────────────────────────────────
 > echo current shell: $0
-
-
-
-
+current shell: bash
+>
 
 
 
@@ -37,8 +33,6 @@
 > echo current shell: $0
 current shell: bash
 >
-
-
 
 
 

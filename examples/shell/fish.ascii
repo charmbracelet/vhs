@@ -13,14 +13,10 @@
 
 
 
-
-
 ────────────────────────────────────────────────────────────────────────────────
 > echo current shell: (basename (status fish-path))
-
-
-
-
+current shell: fish
+>
 
 
 
@@ -37,8 +33,6 @@
 > echo current shell: (basename (status fish-path))
 current shell: fish
 >
-
-
 
 
 
