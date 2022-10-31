@@ -1,11 +1,11 @@
 # Output examples/settings/set-loop-offset.mp4
-Output examples/settings/set-loop-offset.webm
+# Output examples/settings/set-loop-offset.webm
 # Output examples/settings/frames/
 
 Output examples/settings/set-loop-offset.gif
 
 # Set LoopOffset 300
-Set LoopOffset 99.5%
+Set LoopOffset 50.55%
 
 Type "Betty bought a butter but the bit of butter was bitter."
 Sleep 1s

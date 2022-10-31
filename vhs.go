@@ -3,12 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
+	"math"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"sync"
 	"time"
-	"math"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/input"
