@@ -16,6 +16,11 @@ type EvaluatorOption func(*VHS)
 // Evaluate takes as input a tape string, an output writer, and an output file
 // and evaluates all the commands within the tape string and produces a GIF.
 func Evaluate(tape string, out io.Writer, opts ...EvaluatorOption) error {
+	tape, err := ExecuteTemplate(tape)
+	if err != nil {
+		return err
+	}
+
 	l := NewLexer(tape)
 	p := NewParser(l)
 
