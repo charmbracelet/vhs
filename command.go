@@ -15,7 +15,7 @@ import (
 type CommandType TokenType
 
 // CommandTypes is a list of the available commands that can be executed.
-var CommandTypes = []CommandType{
+var CommandTypes = []CommandType{ //nolint: deadcode
 	BACKSPACE,
 	CTRL,
 	DOWN,
@@ -250,8 +250,10 @@ func ExecuteSetWidth(c Command, v *VHS) {
 	v.Options.Video.Width, _ = strconv.Atoi(c.Args)
 }
 
-const bitSize = 64
-const base = 10
+const (
+	bitSize = 64
+	base    = 10
+)
 
 // ExecuteSetLetterSpacing applies letter spacing (also known as tracking) on the
 // vhs.
@@ -270,13 +272,15 @@ func ExecuteSetLineHeight(c Command, v *VHS) {
 
 // ExecuteSetTheme applies the theme on the vhs.
 func ExecuteSetTheme(c Command, v *VHS) {
-	err := json.Unmarshal([]byte(c.Args), &v.Options.Theme)
+	var err error
+	v.Options.Theme, err = getTheme(c.Args)
 	if err != nil {
-		fmt.Println(err)
-		v.Options.Theme = DefaultTheme
+		v.Errors = append(v.Errors, err)
 		return
 	}
-	_, _ = v.Page.Eval(fmt.Sprintf("() => term.options.theme = %s", c.Args))
+
+	bts, _ := json.Marshal(v.Options.Theme)
+	_, _ = v.Page.Eval(fmt.Sprintf("() => term.options.theme = %s", string(bts)))
 	v.Options.Video.BackgroundColor = v.Options.Theme.Background
 }
 
@@ -319,4 +323,32 @@ func ExecuteLoopOffset(c Command, v *VHS) {
 		return
 	}
 	v.Options.LoopOffset = loopOffset
+}
+
+func getTheme(s string) (Theme, error) {
+	if strings.TrimSpace(s) == "" {
+		return DefaultTheme, nil
+	}
+	switch s[0] {
+	case '{':
+		return getJSONTheme(s)
+	default:
+		return getNamedTheme(s)
+	}
+}
+
+func getNamedTheme(s string) (Theme, error) {
+	theme, ok := findTheme(s)
+	if !ok {
+		return DefaultTheme, fmt.Errorf("invalid `Set Theme %q`: theme does not exist", s)
+	}
+	return theme, nil
+}
+
+func getJSONTheme(s string) (Theme, error) {
+	var t Theme
+	if err := json.Unmarshal([]byte(s), &t); err != nil {
+		return DefaultTheme, fmt.Errorf("invalid `Set Theme %q: %w`", s, err)
+	}
+	return t, nil
 }
