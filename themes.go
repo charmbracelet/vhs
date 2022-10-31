@@ -32,6 +32,8 @@ func sortedThemeNames() []string {
 	return keys
 }
 
+const distance = 2
+
 // findTheme return the given theme, if it exists.
 func findTheme(name string) (Theme, []string, bool) {
 	for _, bts := range [][]byte{themesBts, customThemesBts} {
@@ -48,7 +50,7 @@ func findTheme(name string) (Theme, []string, bool) {
 	suggestions := []string{}
 	for _, theme := range keys {
 		levenshteinDistance := ld(name, theme, true)
-		suggestByLevenshtein := levenshteinDistance <= 2
+		suggestByLevenshtein := levenshteinDistance <= distance
 		suggestByPrefix := strings.HasPrefix(strings.ToLower(name), strings.ToLower(theme))
 		if suggestByLevenshtein || suggestByPrefix {
 			suggestions = append(suggestions, theme)
