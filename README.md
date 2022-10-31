@@ -80,6 +80,9 @@ Use a package manager:
 brew install charmbracelet/tap/vhs ffmpeg
 brew install ttyd --HEAD
 
+# macOS (via MacPorts)
+sudo port install vhs
+
 # Arch Linux (btw)
 yay -S vhs-bin
 
