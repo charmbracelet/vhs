@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"math"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -25,6 +26,7 @@ type VHS struct {
 	mutex        *sync.Mutex
 	recording    bool
 	tty          *exec.Cmd
+	totalFrames  int
 	close        func() error
 }
 
@@ -39,6 +41,7 @@ type Options struct {
 	Theme         Theme
 	Test          TestOptions
 	Video         VideoOptions
+	LoopOffset    float64
 }
 
 const (
@@ -137,6 +140,9 @@ func (vhs *VHS) Cleanup() {
 	vhs.browser.MustClose()
 	_ = vhs.tty.Process.Kill()
 
+	// Apply Loop Offset by modifying frame sequence
+	vhs.ApplyLoopOffset()
+
 	// Generate the video(s) with the frames.
 	var cmds []*exec.Cmd
 	cmds = append(cmds, MakeGIF(vhs.Options.Video))
@@ -159,6 +165,79 @@ func (vhs *VHS) Cleanup() {
 	}
 }
 
+// Apply Loop Offset by modifying frame sequence
+func (vhs *VHS) ApplyLoopOffset() {
+	loopOffsetPercentage := vhs.Options.LoopOffset
+
+	// Calculate # of frames to offset from LoopOffset percentage
+	loopOffsetFrames := int(math.Ceil(loopOffsetPercentage / 100.0 * float64(vhs.totalFrames)))
+
+	// Take care of overflow and keep track of exact offsetPercentage
+	loopOffsetFrames = loopOffsetFrames % vhs.totalFrames
+	loopOffsetPercentage = float64(loopOffsetFrames) / float64(vhs.totalFrames) * 100
+
+	// No operation if nothing to offset
+	if loopOffsetFrames <= 0 {
+		return
+	}
+
+	// Move all frames in [offsetStart, offsetEnd] to end of frame sequence
+	offsetStart := vhs.Options.Video.StartingFrame
+	offsetEnd := loopOffsetFrames
+
+	// New starting frame will be the next frame after offsetEnd
+	vhs.Options.Video.StartingFrame = offsetEnd + 1
+	fmt.Printf(
+		"Applying LoopOffset %d/%d frames (%.2f%%)\n",
+		loopOffsetFrames, vhs.totalFrames, loopOffsetPercentage,
+	)
+
+	// Rename all text and cursor frame files in the range concurrently
+	errCh := make(chan error)
+	doneCh := make(chan bool)
+	var wg sync.WaitGroup
+
+	for counter := offsetStart; counter <= offsetEnd; counter++ {
+		wg.Add(1)
+		go func(frameNum int) {
+			defer wg.Done()
+			offsetFrameNum := frameNum + vhs.totalFrames
+			if err := os.Rename(
+				filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(cursorFrameFormat, frameNum)),
+				filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(cursorFrameFormat, offsetFrameNum)),
+			); err != nil {
+				errCh <- fmt.Errorf("error applying offset to cursor frame: %w", err)
+			}
+		}(counter)
+
+		wg.Add(1)
+		go func(frameNum int) {
+			defer wg.Done()
+			offsetFrameNum := frameNum + vhs.totalFrames
+			if err := os.Rename(
+				filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(textFrameFormat, frameNum)),
+				filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(textFrameFormat, offsetFrameNum)),
+			); err != nil {
+				errCh <- fmt.Errorf("error applying offset to text frame: %w", err)
+			}
+		}(counter)
+	}
+
+	go func() {
+		wg.Wait()
+		close(doneCh)
+	}()
+
+	select {
+	case <-doneCh:
+		break
+	case err := <-errCh:
+		// Bail out in case of an error while renaming
+		fmt.Println(err)
+		os.Exit(1)
+	}
+}
+
 const quality = 0.92
 
 // Record begins the goroutine which captures images from the xterm.js canvases.
@@ -173,6 +252,8 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 			select {
 			case <-ctx.Done():
 				close(ch)
+				// Save total # of frames for offset calculation
+				vhs.totalFrames = counter
 				return
 
 			default:
