@@ -181,7 +181,6 @@ func (vhs *VHS) ApplyLoopOffset() {
 
 	// Take care of overflow and keep track of exact offsetPercentage
 	loopOffsetFrames = loopOffsetFrames % vhs.totalFrames
-	loopOffsetPercentage = float64(loopOffsetFrames) / float64(vhs.totalFrames) * 100
 
 	// No operation if nothing to offset
 	if loopOffsetFrames <= 0 {
