@@ -9,10 +9,8 @@ import (
 	"math/rand"
 	"net"
 	"os"
-	"os/signal"
 	"path/filepath"
 	"strconv"
-	"syscall"
 	"time"
 
 	"github.com/caarlos0/env/v6"
@@ -94,7 +92,7 @@ var serveCmd = &cobra.Command{
 						rand := rand.Int63n(maxNumber)
 						tempFile := filepath.Join(os.TempDir(), fmt.Sprintf("vhs-%d.gif", rand))
 
-						err = Evaluate(b.String(), s.Stderr(), func(v *VHS) {
+						err = Evaluate(cmd.Context(), b.String(), s.Stderr(), func(v *VHS) {
 							v.Options.Video.Output.GIF = tempFile
 							// Disable generating MP4 & WebM.
 							v.Options.Video.Output.MP4 = ""
@@ -118,8 +116,6 @@ var serveCmd = &cobra.Command{
 			log.Fatalln(err)
 		}
 
-		done := make(chan os.Signal, 1)
-		signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 		log.Printf("Starting SSH server on %s", addr)
 		go func() {
 			ls, err := net.Listen("tcp", addr)
@@ -138,13 +134,10 @@ var serveCmd = &cobra.Command{
 			}
 		}()
 
-		<-done
+		<-cmd.Context().Done()
 		log.Println("Stopping SSH server")
 		ctx, cancel := context.WithTimeout(context.Background(), timeout)
 		defer func() { cancel() }()
-		if err := s.Shutdown(ctx); err != nil {
-			log.Fatalln(err)
-		}
-		return nil
+		return s.Shutdown(ctx)
 	},
 }
