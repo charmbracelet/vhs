@@ -58,9 +58,7 @@ const defaultMaxColors = 256
 const defaultPadding = 72
 const defaultPlaybackSpeed = 1.0
 const defaultWidth = 1200
-
-// DefaultStartingFrame is the index of the file to start the image sequence loop from
-const DefaultStartingFrame = 1
+const defaultStartingFrame = 1
 
 // DefaultVideoOptions is the set of default options for converting frames
 // to a GIF, which are used if they are not overridden.
@@ -76,7 +74,7 @@ func DefaultVideoOptions() VideoOptions {
 		Padding:         defaultPadding,
 		PlaybackSpeed:   defaultPlaybackSpeed,
 		BackgroundColor: DefaultTheme.Background,
-		StartingFrame:   DefaultStartingFrame,
+		StartingFrame:   defaultStartingFrame,
 	}
 }
 

@@ -182,7 +182,7 @@ func (vhs *VHS) ApplyLoopOffset() {
 	}
 
 	// Move all frames in [offsetStart, offsetEnd] to end of frame sequence
-	offsetStart := DefaultStartingFrame
+	offsetStart := vhs.Options.Video.StartingFrame
 	offsetEnd := loopOffsetFrames
 
 	// New starting frame will be the next frame after offsetEnd
