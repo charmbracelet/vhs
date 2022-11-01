@@ -246,10 +246,10 @@ const quality = 0.92
 func (vhs *VHS) Record(ctx context.Context) <-chan error {
 	ch := make(chan error)
 	interval := time.Second / time.Duration(vhs.Options.Video.Framerate)
-	time.Sleep(interval)
 
 	go func() {
 		counter := 0
+		start := time.Now()
 		for {
 			select {
 			case <-ctx.Done():
@@ -260,42 +260,40 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 				vhs.totalFrames = counter
 				return
 
-			default:
+			case <-time.After(interval - time.Since(start)):
+				// record last attempt
+				start = time.Now()
+
 				if !vhs.recording {
-					time.Sleep(interval + interval)
+					continue
+				}
+				if vhs.Page == nil {
 					continue
 				}
 
-				if vhs.Page != nil {
-					counter++
-					start := time.Now()
-					cursor, cursorErr := vhs.CursorCanvas.CanvasToImage("image/png", quality)
-					text, textErr := vhs.TextCanvas.CanvasToImage("image/png", quality)
-					if textErr == nil && cursorErr == nil {
-						if err := os.WriteFile(
-							filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(cursorFrameFormat, counter)),
-							cursor,
-							os.ModePerm,
-						); err != nil {
-							ch <- fmt.Errorf("error writing cursor frame: %w", err)
-						}
-						if err := os.WriteFile(
-							filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(textFrameFormat, counter)),
-							text,
-							os.ModePerm,
-						); err != nil {
-							ch <- fmt.Errorf("error writing text frame: %w", err)
-						}
-					} else {
-						ch <- fmt.Errorf("error: %v, %v", textErr, cursorErr)
-					}
+				cursor, cursorErr := vhs.CursorCanvas.CanvasToImage("image/png", quality)
+				text, textErr := vhs.TextCanvas.CanvasToImage("image/png", quality)
+				if textErr != nil || cursorErr != nil {
+					ch <- fmt.Errorf("error: %v, %v", textErr, cursorErr)
+					continue
+				}
 
-					elapsed := time.Since(start)
-					if elapsed >= interval {
-						continue
-					} else {
-						time.Sleep(interval - elapsed)
-					}
+				counter++
+				if err := os.WriteFile(
+					filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(cursorFrameFormat, counter)),
+					cursor,
+					os.ModePerm,
+				); err != nil {
+					ch <- fmt.Errorf("error writing cursor frame: %w", err)
+					continue
+				}
+				if err := os.WriteFile(
+					filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(textFrameFormat, counter)),
+					text,
+					os.ModePerm,
+				); err != nil {
+					ch <- fmt.Errorf("error writing text frame: %w", err)
+					continue
 				}
 			}
 		}
