@@ -125,11 +125,9 @@ func (vhs *VHS) Setup() {
 
 const cleanupWaitTime = 100 * time.Millisecond
 
-// Cleanup cleans up a VHS instance and terminates the go-rod browser and ttyd
+// Terminate cleans up a VHS instance and terminates the go-rod browser and ttyd
 // processes.
-//
-// It also begins the rendering process of the frames into videos.
-func (vhs *VHS) Cleanup() {
+func (vhs *VHS) terminate() error {
 	// Give some time for any commands executed (such as `rm`) to finish.
 	//
 	// If a user runs a long running command, they must sleep for the required time
@@ -138,8 +136,20 @@ func (vhs *VHS) Cleanup() {
 
 	// Tear down the processes we started.
 	vhs.browser.MustClose()
-	_ = vhs.tty.Process.Kill()
+	return vhs.tty.Process.Kill()
+}
 
+// Cleanup individual frames.
+func (vhs *VHS) Cleanup() error {
+	if !vhs.Options.Video.CleanupFrames {
+		return nil
+	}
+
+	return os.RemoveAll(vhs.Options.Video.Input)
+}
+
+// Render starts rendering the individual frames into a video.
+func (vhs *VHS) Render() error {
 	// Apply Loop Offset by modifying frame sequence
 	vhs.ApplyLoopOffset()
 
@@ -159,10 +169,7 @@ func (vhs *VHS) Cleanup() {
 		}
 	}
 
-	// Cleanup frames if we successfully made the GIF.
-	if vhs.Options.Video.CleanupFrames {
-		_ = os.RemoveAll(vhs.Options.Video.Input)
-	}
+	return nil
 }
 
 // Apply Loop Offset by modifying frame sequence
@@ -247,6 +254,8 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 		for {
 			select {
 			case <-ctx.Done():
+				_ = vhs.terminate()
+
 				close(ch)
 				// Save total # of frames for offset calculation
 				vhs.totalFrames = counter

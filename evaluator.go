@@ -81,6 +81,9 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	ctx, cancel := context.WithCancel(ctx)
 	ch := v.Record(ctx)
 
+	// Clean up temporary files at the end.
+	defer func() { _ = v.Cleanup() }()
+
 	teardown := func() {
 		// Stop recording frames.
 		cancel()
@@ -131,7 +134,5 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	}
 
 	teardown()
-
-	v.Cleanup()
-	return nil
+	return v.Render()
 }
