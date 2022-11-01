@@ -1,15 +1,18 @@
 package main
 
 import (
+	"context"
 	_ "embed"
 	"errors"
 	"fmt"
 	"io"
 	"os"
 	"os/exec"
+	"os/signal"
 	"regexp"
 	"runtime/debug"
 	"strings"
+	"syscall"
 
 	version "github.com/hashicorp/go-version"
 	"github.com/spf13/cobra"
@@ -59,11 +62,7 @@ var (
 				return errors.New("no input provided")
 			}
 
-			err = Evaluate(string(input), os.Stdout)
-			if err != nil {
-				return err
-			}
-			return nil
+			return Evaluate(cmd.Context(), string(input), os.Stdout)
 		},
 	}
 
@@ -151,7 +150,13 @@ var (
 )
 
 func main() {
-	if err := rootCmd.Execute(); err != nil {
+	ctx, cancel := signal.NotifyContext(
+		context.Background(),
+		os.Interrupt, syscall.SIGTERM,
+	)
+	defer cancel()
+
+	if err := rootCmd.ExecuteContext(ctx); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
