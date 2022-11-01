@@ -255,9 +255,11 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 			case <-ctx.Done():
 				_ = vhs.terminate()
 
-				close(ch)
 				// Save total # of frames for offset calculation
 				vhs.totalFrames = counter
+
+				// Signal caller that we're done recording.
+				close(ch)
 				return
 
 			case <-time.After(interval - time.Since(start)):
