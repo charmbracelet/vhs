@@ -5,6 +5,9 @@
 #   Output <path>.mp4               Create an MP4 output at the given <path>
 #   Output <path>.webm              Create a WebM output at the given <path>
 #
+# Require:
+#   Require <string>                Ensure a program is on the $PATH to proceed
+#
 # Settings:
 #   Set FontSize <number>           Set the font size of the terminal
 #   Set FontFamily <string>         Set the font family of the terminal
@@ -12,7 +15,8 @@
 #   Set Width <number>              Set the width of the terminal
 #   Set LetterSpacing <float>       Set the font letter spacing (tracking)
 #   Set LineHeight <float>          Set the font line height
-#   Set Theme <string>              Set the theme of the terminal (JSON)
+#   Set LoopOffset <float>%         Set the starting frame offset for the GIF loop
+#   Set Theme <json|string>         Set the theme of the terminal
 #   Set Padding <number>            Set the padding of the terminal
 #   Set Framerate <number>          Set the framerate of the recording
 #   Set PlaybackSpeed <float>       Set the playback speed of the recording
@@ -47,6 +51,7 @@ Require echo
 Set FontSize 32
 Set Width 1200
 Set Height 600
+Set LoopOffset 50%
 
 Type "echo 'Welcome to VHS!'" Sleep 500ms  Enter
 
