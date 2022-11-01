@@ -151,7 +151,9 @@ func (vhs *VHS) Cleanup() error {
 // Render starts rendering the individual frames into a video.
 func (vhs *VHS) Render() error {
 	// Apply Loop Offset by modifying frame sequence
-	vhs.ApplyLoopOffset()
+	if err := vhs.ApplyLoopOffset(); err != nil {
+		return err
+	}
 
 	// Generate the video(s) with the frames.
 	var cmds []*exec.Cmd
@@ -173,7 +175,7 @@ func (vhs *VHS) Render() error {
 }
 
 // Apply Loop Offset by modifying frame sequence
-func (vhs *VHS) ApplyLoopOffset() {
+func (vhs *VHS) ApplyLoopOffset() error {
 	loopOffsetPercentage := vhs.Options.LoopOffset
 
 	// Calculate # of frames to offset from LoopOffset percentage
@@ -184,7 +186,7 @@ func (vhs *VHS) ApplyLoopOffset() {
 
 	// No operation if nothing to offset
 	if loopOffsetFrames <= 0 {
-		return
+		return nil
 	}
 
 	// Move all frames in [offsetStart, offsetEnd] to end of frame sequence
@@ -232,11 +234,10 @@ func (vhs *VHS) ApplyLoopOffset() {
 
 	select {
 	case <-doneCh:
-		break
+		return nil
 	case err := <-errCh:
 		// Bail out in case of an error while renaming
-		fmt.Println(err)
-		os.Exit(1)
+		return err
 	}
 }
 
