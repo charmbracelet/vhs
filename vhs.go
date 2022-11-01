@@ -187,10 +187,6 @@ func (vhs *VHS) ApplyLoopOffset() {
 
 	// New starting frame will be the next frame after offsetEnd
 	vhs.Options.Video.StartingFrame = offsetEnd + 1
-	fmt.Printf(
-		"Applying LoopOffset %d/%d frames (%.2f%%)\n",
-		loopOffsetFrames, vhs.totalFrames, loopOffsetPercentage,
-	)
 
 	// Rename all text and cursor frame files in the range concurrently
 	errCh := make(chan error)
