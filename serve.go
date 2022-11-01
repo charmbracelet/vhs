@@ -92,13 +92,14 @@ var serveCmd = &cobra.Command{
 						rand := rand.Int63n(maxNumber)
 						tempFile := filepath.Join(os.TempDir(), fmt.Sprintf("vhs-%d.gif", rand))
 
-						err = Evaluate(cmd.Context(), b.String(), s.Stderr(), func(v *VHS) {
+						errs := Evaluate(cmd.Context(), b.String(), s.Stderr(), func(v *VHS) {
 							v.Options.Video.Output.GIF = tempFile
 							// Disable generating MP4 & WebM.
 							v.Options.Video.Output.MP4 = ""
 							v.Options.Video.Output.WebM = ""
 						})
-						if err != nil {
+						printErrors(s.Stderr(), b.String(), errs)
+						if len(errs) > 0 {
 							_ = s.Exit(1)
 						}
 

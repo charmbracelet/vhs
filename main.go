@@ -62,7 +62,13 @@ var (
 				return errors.New("no input provided")
 			}
 
-			return Evaluate(cmd.Context(), string(input), os.Stdout)
+			errs := Evaluate(cmd.Context(), string(input), os.Stdout)
+			if len(errs) > 0 {
+				printErrors(os.Stderr, string(input), errs)
+				return errors.New("recording failed")
+			}
+
+			return nil
 		},
 	}
 
@@ -127,14 +133,10 @@ var (
 				errs := p.Errors()
 
 				if len(errs) != 0 {
-					lines := strings.Split(string(b), "\n")
 					fmt.Println(ErrorFileStyle.Render(file))
+
 					for _, err := range errs {
-						fmt.Print(LineNumber(err.Token.Line))
-						fmt.Println(lines[err.Token.Line-1])
-						fmt.Print(strings.Repeat(" ", err.Token.Column+ErrorColumnOffset))
-						fmt.Println(Underline(len(err.Token.Literal)), err.Msg)
-						fmt.Println()
+						printParserError(os.Stderr, string(b), err)
 					}
 					valid = false
 				}
