@@ -342,19 +342,8 @@ func getTheme(s string) (Theme, error) {
 	case '{':
 		return getJSONTheme(s)
 	default:
-		return getNamedTheme(s)
+		return findTheme(s)
 	}
-}
-
-func getNamedTheme(s string) (Theme, error) {
-	theme, suggestions, ok := findTheme(s)
-	if !ok && len(suggestions) > 0 {
-		return DefaultTheme, fmt.Errorf("invalid `Set Theme %q`: did you mean %q", s, strings.Join(suggestions, ", "))
-	}
-	if !ok {
-		return DefaultTheme, fmt.Errorf("invalid `Set Theme %q`: theme does not exist", s)
-	}
-	return theme, nil
 }
 
 func getJSONTheme(s string) (Theme, error) {

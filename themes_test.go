@@ -1,9 +1,14 @@
 package main
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestFindAllThemes(t *testing.T) {
-	themes := sortedThemeNames()
+	themes, err := sortedThemeNames()
+	if err != nil {
+		t.Fatal(err)
+	}
 	expect := 295
 	if l := len(themes); l != expect {
 		t.Errorf("expected to load %d themes, got %d", expect, l)
@@ -11,14 +16,20 @@ func TestFindAllThemes(t *testing.T) {
 }
 
 func TestFindTheme(t *testing.T) {
-	theme, suggestions, ok := findTheme("caTppuccin ltt")
-	if ok {
+	theme, err := findTheme("Catppuccin Latte")
+	if err != nil {
+		t.Error(err)
+	}
+
+	theme, err = findTheme("caTppuccin ltt")
+	te, ok := err.(ThemeNotFoundError)
+	if !ok {
 		t.Fatal("expected to not be found:", theme)
 	}
-	if len(suggestions) != 1 {
-		t.Fatal("expected 1 suggestions, got:", suggestions)
+	if len(te.Suggestions) != 1 {
+		t.Fatal("expected 1 suggestions, got:", te.Suggestions)
 	}
-	if sg := suggestions[0]; sg != "Catppuccin Latte" {
-		t.Fatal("wrong suggestion:", suggestions[0])
+	if sg := te.Suggestions[0]; sg != "Catppuccin Latte" {
+		t.Fatal("wrong suggestion:", te.Suggestions[0])
 	}
 }
