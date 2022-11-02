@@ -108,6 +108,10 @@ sudo yum install vhs ffmpeg
 
 # Void Linux
 sudo xbps-install vhs
+
+# Windows 7-11 (via Scoop, https://scoop.sh/#/apps?q=vhs&s=2&d=1&o=true)
+scoop install vhs
+
 ```
 
 Or, use Docker to run VHS directly, dependencies included:
