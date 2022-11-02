@@ -253,16 +253,16 @@ func ExecuteSetWidth(c Command, v *VHS) {
 
 // ExecuteSetShell applies the shell on the vhs.
 func ExecuteSetShell(c Command, v *VHS) {
-	v.Options.Shell = c.Args
+	if s, ok := Shells[c.Args]; ok {
+		v.Options.Shell = s
+	}
 }
 
-const (
-	bitSize = 64
-	base    = 10
-)
+const bitSize = 64
+const base = 10
 
-// ExecuteSetLetterSpacing applies letter spacing (also known as tracking) on the
-// vhs.
+// ExecuteSetLetterSpacing applies letter spacing (also known as tracking) on
+// the vhs.
 func ExecuteSetLetterSpacing(c Command, v *VHS) {
 	letterSpacing, _ := strconv.ParseFloat(c.Args, bitSize)
 	v.Options.LetterSpacing = letterSpacing

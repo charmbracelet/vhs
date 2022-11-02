@@ -1,79 +1,40 @@
 package main
 
-func getPrompt(vhs *VHS) Prompt {
-	switch vhs.Options.Shell {
-	case "", "bash":
-		return bash{}
-	case "zsh":
-		return zsh{}
-	case "fish":
-		return fish{}
-	case "pwsh":
-		return pwsh{}
-	default:
-		return generic{}
-	}
-}
-
-// Prompt defines how prompts set themselves up.
-type Prompt interface {
-	Setup(vhs *VHS)
-}
-
-var (
-	_ Prompt = bash{}
-	_ Prompt = zsh{}
-	_ Prompt = fish{}
-	_ Prompt = pwsh{}
-	_ Prompt = generic{}
+// Supported shells of VHS
+const (
+	BASH       = "bash"
+	CMD        = "cmd"
+	FISH       = "fish"
+	POWERSHELL = "pwsh"
+	ZSH        = "zsh"
 )
 
-type (
-	bash    struct{}
-	zsh     struct{}
-	fish    struct{}
-	pwsh    struct{}
-	generic struct{}
-)
-
-func (bash) Setup(vhs *VHS) {
-	prompt := vhs.Options.Prompt
-	if prompt == "" {
-		prompt = "\\[\\e[38;2;90;86;224m\\]> \\[\\e[0m\\]"
-	}
-	vhs.runShellCommandf(` set +o history; unset PROMPT_COMMAND; export PS1="%s"; clear;`, prompt)
+// Shell is a type that contains a prompt and the command to set up the shell.
+type Shell struct {
+	Prompt  string
+	Command string
 }
 
-func (zsh) Setup(vhs *VHS) {
-	prompt := vhs.Options.Prompt
-	if prompt == "" {
-		prompt = `%F{blue bright dim}> %F{reset_color}`
-	}
-	vhs.runShellCommandf(" clear; zsh --login --histnostore")
-	// PROMPT_SP: read about PROMPT_EOL_MARK
-	vhs.runShellCommandf(` unsetopt PROMPT_SP; export PS1="%s"; clear`, prompt)
-}
-
-func (fish) Setup(vhs *VHS) {
-	prompt := vhs.Options.Prompt
-	if prompt == "" {
-		prompt = `function fish_prompt; echo -e "$(set_color --dim brblue)> $(set_color normal)"; end`
-	}
-	noGreeting := "function fish_greeting; end"
-	vhs.runShellCommandf(` clear; fish --login --private -C '%s' -C '%s'`, noGreeting, prompt)
-}
-
-func (pwsh) Setup(vhs *VHS) {
-	prompt := vhs.Options.Prompt
-	if prompt == "" {
-		prompt = "Function prompt {Write-Host \"> \" -ForegroundColor Blue -NoNewLine; return \"`0\" }"
-	}
-	vhs.runShellCommandf(` clear; pwsh -Login -NoLogo -NoExit -Command 'Set-PSReadLineOption -HistorySaveStyle SaveNothing; %s'`, prompt)
-	// XXX: here would be a great place to reuse whatever we do for the Exec thing, so we can wait for the shell to load, maybe...
-	vhs.runShellCommandf(`clear`)
-}
-
-func (generic) Setup(vhs *VHS) {
-	// XXX: what should we do with prompt here?
-	vhs.runShellCommandf(` clear; %s`, vhs.Options.Shell)
+// Shells contains a mapping from shell names to their Shell struct.
+var Shells = map[string]Shell{
+	BASH: {
+		Prompt:  "\\[\\e[38;2;90;86;224m\\]> \\[\\e[0m\\]",
+		Command: ` set +o history; unset PROMPT_COMMAND; export PS1="%s"; clear;`,
+	},
+	ZSH: {
+		Prompt:  `%F{#5B56E0}> %F{reset_color}`,
+		Command: ` clear; zsh --login --histnostore; unsetopt PROMPT_SP; unset PROMPT; export PS1="%s"; clear`,
+	},
+	FISH: {
+		Prompt:  `function fish_prompt; echo -e "$(set_color 5B56E0)> $(set_color normal)"; end`,
+		Command: `clear; fish --login --private -C 'function fish_greeting; end' -C '%s'`,
+	},
+	POWERSHELL: {
+		Prompt:  "Function prompt {Write-Host \"> \" -ForegroundColor Blue -NoNewLine; return \"`0\" }",
+		Command: ` clear; pwsh -Login -NoLogo -NoExit -Command 'Set-PSReadLineOption -HistorySaveStyle SaveNothing; %s'`,
+	},
+	CMD: {
+		Prompt:  "> ",
+		Command: ` clear; export PS1="%s"; clear`,
+	},
 }

@@ -32,12 +32,11 @@ type VHS struct {
 
 // Options is the set of options for the setup.
 type Options struct {
-	Shell         string
+	Shell         Shell
 	FontFamily    string
 	FontSize      int
 	LetterSpacing float64
 	LineHeight    float64
-	Prompt        string
 	TypingSpeed   time.Duration
 	Theme         Theme
 	Test          TestOptions
@@ -48,6 +47,7 @@ type Options struct {
 const (
 	defaultFontSize = 22
 	typingSpeed     = 50 * time.Millisecond
+	defaultShell    = BASH
 )
 
 // DefaultVHSOptions returns the default set of options to use for the setup function.
@@ -58,6 +58,7 @@ func DefaultVHSOptions() Options {
 		LetterSpacing: 0,
 		LineHeight:    1.0,
 		TypingSpeed:   typingSpeed,
+		Shell:         Shells[defaultShell],
 		Theme:         DefaultTheme,
 		Video:         DefaultVideoOptions(),
 	}
@@ -105,8 +106,10 @@ func (vhs *VHS) Setup() {
 	vhs.TextCanvas, _ = vhs.Page.Element("canvas.xterm-text-layer")
 	vhs.CursorCanvas, _ = vhs.Page.Element("canvas.xterm-cursor-layer")
 
-	// Set Prompt
-	getPrompt(vhs).Setup(vhs)
+	// Set up the Prompt
+	vhs.Page.MustElement("textarea").
+		MustInput(fmt.Sprintf(vhs.Options.Shell.Command, vhs.Options.Shell.Prompt)).
+		MustType(input.Enter)
 
 	// Apply options to the terminal
 	// By this point the setting commands have been executed, so the `opts` struct is up to date.
@@ -317,10 +320,4 @@ func (vhs *VHS) PauseRecording() {
 	defer vhs.mutex.Unlock()
 
 	vhs.recording = false
-}
-
-func (vhs *VHS) runShellCommandf(format string, a ...interface{}) {
-	vhs.Page.MustElement("textarea").
-		MustInput(fmt.Sprintf(format, a...)).
-		MustType(input.Enter)
 }

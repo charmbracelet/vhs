@@ -217,14 +217,11 @@ ignored.
 
 #### Set Shell
 
-Set the shell with the `Set Shell "<shell name>"` command
+Set the shell with the `Set Shell <shell>` command
 
 ```elixir
-Set Shell "zsh"
+Set Shell fish
 ```
-
-<img alt="Example of changing the shell to zsh" src="https://stuff.charm.sh/vhs/examples/shell.gif" width="600" />
-
 
 #### Set Font Size
 
