@@ -213,6 +213,7 @@ var Settings = map[string]CommandFunc{
 	"TypingSpeed":   ExecuteSetTypingSpeed,
 	"Width":         ExecuteSetWidth,
 	"Shell":         ExecuteSetShell,
+	"LoopOffset":    ExecuteLoopOffset,
 }
 
 // ExecuteSet applies the settings on the running vhs specified by the
@@ -321,6 +322,15 @@ func ExecuteSetPlaybackSpeed(c Command, v *VHS) {
 	v.Options.Video.PlaybackSpeed = playbackSpeed
 }
 
+// ExecuteLoopOffset applies the loop offset option on the vhs.
+func ExecuteLoopOffset(c Command, v *VHS) {
+	loopOffset, err := strconv.ParseFloat(strings.TrimRight(c.Args, "%"), bitSize)
+	if err != nil {
+		return
+	}
+	v.Options.LoopOffset = loopOffset
+}
+
 func getTheme(s string) (Theme, error) {
 	if strings.TrimSpace(s) == "" {
 		return DefaultTheme, nil
@@ -334,7 +344,10 @@ func getTheme(s string) (Theme, error) {
 }
 
 func getNamedTheme(s string) (Theme, error) {
-	theme, ok := findTheme(s)
+	theme, suggestions, ok := findTheme(s)
+	if !ok && len(suggestions) > 0 {
+		return DefaultTheme, fmt.Errorf("invalid `Set Theme %q`: did you mean %q", s, strings.Join(suggestions, ", "))
+	}
 	if !ok {
 		return DefaultTheme, fmt.Errorf("invalid `Set Theme %q`: theme does not exist", s)
 	}

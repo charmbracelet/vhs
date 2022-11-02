@@ -1,4 +1,4 @@
-Output examples/settings/typing-speed.gif
+Output examples/settings/set-typing-speed.gif
 Set Height 400
 Set FontSize 32
 

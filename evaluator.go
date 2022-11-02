@@ -15,7 +15,7 @@ type EvaluatorOption func(*VHS)
 
 // Evaluate takes as input a tape string, an output writer, and an output file
 // and evaluates all the commands within the tape string and produces a GIF.
-func Evaluate(tape string, out io.Writer, opts ...EvaluatorOption) error {
+func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...EvaluatorOption) error {
 	l := NewLexer(tape)
 	p := NewParser(l)
 
@@ -78,8 +78,18 @@ func Evaluate(tape string, out io.Writer, opts ...EvaluatorOption) error {
 	}
 
 	// Begin recording frames as we are now in a recording state.
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(ctx)
 	ch := v.Record(ctx)
+
+	// Clean up temporary files at the end.
+	defer func() { _ = v.Cleanup() }()
+
+	teardown := func() {
+		// Stop recording frames.
+		cancel()
+		// Read from channel to ensure recorder is done.
+		<-ch
+	}
 
 	// Log errors from the recording process.
 	go func() {
@@ -89,12 +99,17 @@ func Evaluate(tape string, out io.Writer, opts ...EvaluatorOption) error {
 	}()
 
 	for _, cmd := range cmds[offset:] {
+		if ctx.Err() != nil {
+			teardown()
+			return ctx.Err()
+		}
+
 		// When changing the FontFamily, FontSize, LineHeight, Padding
 		// The xterm.js canvas changes dimensions and causes FFMPEG to not work
 		// correctly (specifically) with palettegen.
-		// It will be possible to change settings on the fly in the future, but it is currently not
-		// as it does not result in a proper render of the GIF as the frame sequence
-		// will change dimensions. This is fixable.
+		// It will be possible to change settings on the fly in the future, but
+		// it is currently not as it does not result in a proper render of the
+		// GIF as the frame sequence will change dimensions. This is fixable.
 		//
 		// We should remove if isSetting statement.
 		isSetting := cmd.Type == SET && cmd.Options != "TypingSpeed"
@@ -118,11 +133,6 @@ func Evaluate(tape string, out io.Writer, opts ...EvaluatorOption) error {
 		opt(&v)
 	}
 
-	// Stop recording frames.
-	cancel()
-	// Read from channel to ensure recorder is done.
-	<-ch
-
-	v.Cleanup()
-	return nil
+	teardown()
+	return v.Render()
 }

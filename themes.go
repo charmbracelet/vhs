@@ -8,6 +8,8 @@ import (
 	"os"
 	"sort"
 	"strings"
+
+	"github.com/agnivade/levenshtein"
 )
 
 var (
@@ -32,16 +34,33 @@ func sortedThemeNames() []string {
 	return keys
 }
 
+const distance = 2
+
 // findTheme return the given theme, if it exists.
-func findTheme(name string) (Theme, bool) {
+func findTheme(name string) (Theme, []string, bool) {
 	for _, bts := range [][]byte{themesBts, customThemesBts} {
 		for _, theme := range parseThemes(bts) {
 			if theme.Name == name {
-				return theme, true
+				return theme, nil, true
 			}
 		}
 	}
-	return Theme{}, false
+
+	// not found, lets find similar themes!
+	keys := sortedThemeNames()
+
+	suggestions := []string{}
+	lname := strings.ToLower(name)
+	for _, theme := range keys {
+		ltheme := strings.ToLower(theme)
+		levenshteinDistance := levenshtein.ComputeDistance(lname, ltheme)
+		suggestByLevenshtein := levenshteinDistance <= distance
+		suggestByPrefix := strings.HasPrefix(lname, ltheme)
+		if suggestByLevenshtein || suggestByPrefix {
+			suggestions = append(suggestions, theme)
+		}
+	}
+	return Theme{}, suggestions, false
 }
 
 func parseThemes(bts []byte) []Theme {
