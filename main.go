@@ -71,15 +71,20 @@ var (
 		Use:   "themes",
 		Short: "List all the available themes, one per line",
 		Args:  cobra.NoArgs,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			var prefix, suffix string
 			if markdown {
 				fmt.Fprintf(cmd.OutOrStdout(), "# Themes\n\n")
 				prefix, suffix = "* `", "`"
 			}
-			for _, theme := range sortedThemeNames() {
+			themes, err := sortedThemeNames()
+			if err != nil {
+				return err
+			}
+			for _, theme := range themes {
 				fmt.Fprintf(cmd.OutOrStdout(), "%s%s%s\n", prefix, theme, suffix)
 			}
+			return nil
 		},
 	}
 
