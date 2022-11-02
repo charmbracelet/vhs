@@ -92,7 +92,10 @@ var serveCmd = &cobra.Command{
 						rand := rand.Int63n(maxNumber)
 						tempFile := filepath.Join(os.TempDir(), fmt.Sprintf("vhs-%d.gif", rand))
 
-						err = Evaluate(cmd.Context(), b.String(), s.Stderr(), func(v *VHS) {
+						// Clean up the temp file eventually.
+						defer func() { _ = os.Remove(tempFile) }()
+
+						err = Evaluate(s.Context(), b.String(), s.Stderr(), func(v *VHS) {
 							v.Options.Video.Output.GIF = tempFile
 							// Disable generating MP4 & WebM.
 							v.Options.Video.Output.MP4 = ""
@@ -104,7 +107,6 @@ var serveCmd = &cobra.Command{
 
 						gif, _ := os.ReadFile(tempFile)
 						wish.Print(s, string(gif))
-						_ = os.Remove(tempFile)
 
 						h(s)
 					}
@@ -113,31 +115,40 @@ var serveCmd = &cobra.Command{
 			),
 		)
 		if err != nil {
-			log.Fatalln(err)
+			return err
 		}
 
+		// listen
 		log.Printf("Starting SSH server on %s", addr)
+		ls, err := net.Listen("tcp", addr)
+		if err != nil {
+			return fmt.Errorf("failed to listen on %s: %w", addr, err)
+		}
+
+		// drop privileges
+		gid, uid := cfg.GID, cfg.UID
+		if gid != 0 && uid != 0 {
+			log.Printf("Starting server with GID: %d, UID: %d", gid, uid)
+			if err := dropUserPrivileges(gid, uid); err != nil {
+				return err
+			}
+		}
+
+		sch := make(chan error)
 		go func() {
-			ls, err := net.Listen("tcp", addr)
-			if err != nil {
-				log.Fatalf("Failed to listen on %s: %v", addr, err)
-			}
-			gid, uid := cfg.GID, cfg.UID
-			if gid != 0 && uid != 0 {
-				log.Printf("Starting server with GID: %d, UID: %d", gid, uid)
-				if err := dropUserPrivileges(gid, uid); err != nil {
-					log.Fatalln(err)
-				}
-			}
-			if err = s.Serve(ls); err != nil {
-				log.Fatalln(err)
-			}
+			defer close(sch)
+			sch <- s.Serve(ls)
 		}()
 
 		<-cmd.Context().Done()
 		log.Println("Stopping SSH server")
 		ctx, cancel := context.WithTimeout(context.Background(), timeout)
-		defer func() { cancel() }()
-		return s.Shutdown(ctx)
+		defer cancel()
+		if err := s.Shutdown(ctx); err != nil {
+			return err
+		}
+
+		// wait for serve to finish
+		return <-sch
 	},
 }
