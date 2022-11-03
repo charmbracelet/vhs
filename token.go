@@ -126,7 +126,7 @@ func IsCommand(t TokenType) bool {
 	case TYPE, SLEEP,
 		UP, DOWN, RIGHT, LEFT,
 		ENTER, BACKSPACE, DELETE, TAB,
-		HOME, INSERT, END, CTRL:
+		ESCAPE, HOME, INSERT, END, CTRL:
 		return true
 	default:
 		return false
