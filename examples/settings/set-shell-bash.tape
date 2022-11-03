@@ -1,4 +1,4 @@
-Output examples/settings/set-shell-zsh.gif
+Output examples/settings/set-shell-bash.gif
 
 Set FontSize 38
 Set Height 225
