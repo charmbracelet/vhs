@@ -219,6 +219,14 @@ Setting must be administered at the top of the tape file. Any setting (except
 `TypingSpeed`) applied after a non-setting or non-output command will be
 ignored.
 
+#### Set Shell
+
+Set the shell with the `Set Shell <shell>` command
+
+```elixir
+Set Shell fish
+```
+
 #### Set Font Size
 
 Set the font size with the `Set FontSize <number>` command.
