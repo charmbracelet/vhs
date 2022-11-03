@@ -107,8 +107,12 @@ func (vhs *VHS) Setup() {
 	vhs.CursorCanvas, _ = vhs.Page.Element("canvas.xterm-cursor-layer")
 
 	// Set up the Prompt
+	shellCommand := fmt.Sprintf(vhs.Options.Shell.Command, vhs.Options.Shell.Prompt)
+	if vhs.Options.Shell.Prompt == "" {
+		shellCommand = vhs.Options.Shell.Command
+	}
 	vhs.Page.MustElement("textarea").
-		MustInput(fmt.Sprintf(vhs.Options.Shell.Command, vhs.Options.Shell.Prompt)).
+		MustInput(shellCommand).
 		MustType(input.Enter)
 
 	// Apply options to the terminal
