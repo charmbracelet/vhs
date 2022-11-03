@@ -255,6 +255,9 @@ func ExecuteSetWidth(c Command, v *VHS) {
 func ExecuteSetShell(c Command, v *VHS) {
 	if s, ok := Shells[c.Args]; ok {
 		v.Options.Shell = s
+	} else {
+		v.Options.Shell.Prompt = ""
+		v.Options.Shell.Command = c.Args
 	}
 }
 
