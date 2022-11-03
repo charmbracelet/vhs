@@ -31,6 +31,7 @@ var (
 
 	ttydMinVersion = version.Must(version.NewVersion("1.7.2"))
 
+	publish bool
 	rootCmd = &cobra.Command{
 		Use:           "vhs <file>",
 		Short:         "Run a given tape file and generates its outputs.",
@@ -62,7 +63,22 @@ var (
 				return errors.New("no input provided")
 			}
 
-			return Evaluate(cmd.Context(), string(input), os.Stdout)
+			var output string
+			if err := Evaluate(cmd.Context(), string(input), os.Stdout, func(v *VHS) {
+				output = v.Options.Video.Output.GIF
+			}); err != nil {
+				return err
+			}
+
+			if publish && output != "" {
+				url, err := Publish(cmd.Context(), output)
+				if err != nil {
+					return err
+				}
+				fmt.Println(StringStyle.Render("URL: " + url))
+			}
+
+			return nil
 		},
 	}
 
@@ -171,6 +187,7 @@ func main() {
 }
 
 func init() {
+	rootCmd.Flags().BoolVarP(&publish, "publish", "p", false, "publish your GIF to vhs.charm.sh and get a shareable URL")
 	themesCmd.Flags().BoolVar(&markdown, "markdown", false, "output as markdown")
 	_ = themesCmd.Flags().MarkHidden("markdown")
 	recordCmd.Flags().StringVarP(&shell, "shell", "s", "bash", "shell for recording")
@@ -181,6 +198,7 @@ func init() {
 		validateCmd,
 		manCmd,
 		serveCmd,
+		publishCmd,
 	)
 	rootCmd.CompletionOptions.HiddenDefaultCmd = true
 
