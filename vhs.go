@@ -47,7 +47,7 @@ type Options struct {
 const (
 	defaultFontSize = 22
 	typingSpeed     = 50 * time.Millisecond
-	defaultShell    = BASH
+	defaultShell    = bash
 )
 
 // DefaultVHSOptions returns the default set of options to use for the setup function.
