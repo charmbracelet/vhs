@@ -7,9 +7,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"os/signal"
 	"strings"
-	"syscall"
 	"time"
 
 	"github.com/creack/pty"
@@ -40,11 +38,11 @@ var EscapeSequences = map[string]string{
 	"\x07":    CTRL + "+G",
 	"\x08":    BACKSPACE,
 	"\x09":    TAB,
-	"\x0B":    CTRL + "+K",
-	"\x0C":    CTRL + "+L",
-	"\x0D":    ENTER,
-	"\x0E":    CTRL + "+N",
-	"\x0F":    CTRL + "+O",
+	"\x0b":    CTRL + "+K",
+	"\x0c":    CTRL + "+L",
+	"\x0d":    ENTER,
+	"\x0e":    CTRL + "+N",
+	"\x0f":    CTRL + "+O",
 	"\x10":    CTRL + "+P",
 	"\x11":    CTRL + "+Q",
 	"\x12":    CTRL + "+R",
@@ -55,8 +53,8 @@ var EscapeSequences = map[string]string{
 	"\x17":    CTRL + "+W",
 	"\x18":    CTRL + "+X",
 	"\x19":    CTRL + "+Y",
-	"\x1A":    CTRL + "+Z",
-	"\x1B":    ESCAPE,
+	"\x1a":    CTRL + "+Z",
+	"\x1b":    ESCAPE,
 	"\x7f":    BACKSPACE,
 }
 
@@ -73,16 +71,9 @@ func Record(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	ch := make(chan os.Signal, 1)
-	signal.Notify(ch, syscall.SIGWINCH)
-	go func() {
-		for range ch {
-			if err := pty.InheritSize(os.Stdin, terminal); err != nil {
-				log.Printf("error resizing pty: %s", err)
-			}
-		}
-	}()
-	ch <- syscall.SIGWINCH
+	if err := pty.InheritSize(os.Stdin, terminal); err != nil {
+		log.Printf("error resizing pty: %s", err)
+	}
 
 	prevState, err := term.MakeRaw(int(os.Stdin.Fd()))
 	if err != nil {
@@ -112,8 +103,6 @@ func Record(cmd *cobra.Command, args []string) error {
 	_, _ = io.Copy(os.Stderr, terminal)
 
 	// PTY cleanup and restore terminal
-	signal.Stop(ch)
-	close(ch)
 	_ = terminal.Close()
 	_ = term.Restore(int(os.Stdin.Fd()), prevState)
 
