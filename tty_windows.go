@@ -5,6 +5,8 @@ package main
 
 import "golang.org/x/sys/windows"
 
+const defaultShell = pwsh
+
 func defaultShellWithArgs() []string {
 	major, _, _ := windows.RtlGetNtVersionNumbers()
 	if major >= 10 {

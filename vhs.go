@@ -48,7 +48,6 @@ type Options struct {
 const (
 	defaultFontSize      = 22
 	defaultTypingSpeed   = 50 * time.Millisecond
-	defaultShell         = bash
 	defaultLineHeight    = 1.0
 	defaultLetterSpacing = 0
 	fontsSeparator       = ","
