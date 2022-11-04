@@ -2,12 +2,9 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"io"
 	"log"
-	"os"
-	"strings"
 )
 
 // EvaluatorOption is a function that can be used to modify the VHS instance.
@@ -15,22 +12,14 @@ type EvaluatorOption func(*VHS)
 
 // Evaluate takes as input a tape string, an output writer, and an output file
 // and evaluates all the commands within the tape string and produces a GIF.
-func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...EvaluatorOption) error {
+func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...EvaluatorOption) []error {
 	l := NewLexer(tape)
 	p := NewParser(l)
 
 	cmds := p.Parse()
 	errs := p.Errors()
 	if len(errs) != 0 || len(cmds) == 0 {
-		lines := strings.Split(tape, "\n")
-		for _, err := range errs {
-			fmt.Fprint(out, LineNumber(err.Token.Line))
-			fmt.Fprintln(out, lines[err.Token.Line-1])
-			fmt.Fprint(out, strings.Repeat(" ", err.Token.Column+ErrorColumnOffset))
-			fmt.Fprintln(out, Underline(len(err.Token.Literal)), err.Msg)
-			fmt.Fprintln(out)
-		}
-		return errors.New("parse error")
+		return []error{InvalidSyntaxError{errs}}
 	}
 
 	v := New()
@@ -54,10 +43,7 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	}
 
 	if len(v.Errors) > 0 {
-		for _, err := range v.Errors {
-			fmt.Fprintln(out, ErrorStyle.Render(err.Error()))
-		}
-		os.Exit(1)
+		return v.Errors
 	}
 
 	// Setup the terminal session so we can start executing commands.
@@ -101,7 +87,7 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	for _, cmd := range cmds[offset:] {
 		if ctx.Err() != nil {
 			teardown()
-			return ctx.Err()
+			return []error{ctx.Err()}
 		}
 
 		// When changing the FontFamily, FontSize, LineHeight, Padding
@@ -134,5 +120,8 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	}
 
 	teardown()
-	return v.Render()
+	if err := v.Render(); err != nil {
+		return []error{err}
+	}
+	return nil
 }

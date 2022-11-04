@@ -63,12 +63,14 @@ var (
 				return errors.New("no input provided")
 			}
 
-			var output string
-			if err := Evaluate(cmd.Context(), string(input), os.Stdout, func(v *VHS) {
-				output = v.Options.Video.Output.GIF
-			}); err != nil {
-				return err
-			}
+      var output string
+			errs := Evaluate(cmd.Context(), string(input), os.Stdout, func(v *VHS) {
+        output = v.Options.Video.Output.GIF
+      })
+			if len(errs) > 0 {
+				printErrors(os.Stderr, string(input), errs)
+				return errors.New("recording failed")
+      }
 
 			if publish && output != "" {
 				url, err := Publish(cmd.Context(), output)
@@ -156,14 +158,10 @@ var (
 				errs := p.Errors()
 
 				if len(errs) != 0 {
-					lines := strings.Split(string(b), "\n")
 					fmt.Println(ErrorFileStyle.Render(file))
+
 					for _, err := range errs {
-						fmt.Print(LineNumber(err.Token.Line))
-						fmt.Println(lines[err.Token.Line-1])
-						fmt.Print(strings.Repeat(" ", err.Token.Column+ErrorColumnOffset))
-						fmt.Println(Underline(len(err.Token.Literal)), err.Msg)
-						fmt.Println()
+						printParserError(os.Stderr, string(b), err)
 					}
 					valid = false
 				}
