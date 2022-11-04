@@ -5,7 +5,7 @@ package main
 
 import "golang.org/x/sys/windows"
 
-const defaultShell = pwsh
+const defaultShell = powershell
 
 func defaultShellWithArgs() []string {
 	major, _, _ := windows.RtlGetNtVersionNumbers()
