@@ -3,15 +3,23 @@
 
 package main
 
-import "golang.org/x/sys/windows"
+import (
+	"os/exec"
 
-const defaultShell = powershell
+	"golang.org/x/sys/windows"
+)
+
+var defaultShell = cmdexe
 
 func defaultShellWithArgs() []string {
 	major, _, _ := windows.RtlGetNtVersionNumbers()
 	if major >= 10 {
-		return []string{"powershell"}
+		if _, err := exec.LookPath("pwsh"); err == nil {
+			defaultShell = pwsh
+		} else {
+			defaultShell = powershell
+		}
 	}
 
-	return []string{"cmd"}
+	return []string{defaultShell}
 }
