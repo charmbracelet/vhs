@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"sync"
 	"time"
 
@@ -45,19 +46,35 @@ type Options struct {
 }
 
 const (
-	defaultFontSize = 22
-	typingSpeed     = 50 * time.Millisecond
-	defaultShell    = bash
+	defaultFontSize      = 22
+	defaultTypingSpeed   = 50 * time.Millisecond
+	defaultShell         = bash
+	defaultLineHeight    = 1.0
+	defaultLetterSpacing = 0
+	fontsSeparator       = ","
 )
+
+var defaultFontFamily = strings.Join([]string{
+	"JetBrains Mono",
+	"DejaVu Sans Mono",
+	"Menlo",
+	"Bitstream Vera Sans Mono",
+	"Inconsolata",
+	"Roboto Mono",
+	"Hack",
+	"Consolas",
+	"ui-monospace",
+	"monospace",
+}, fontsSeparator)
 
 // DefaultVHSOptions returns the default set of options to use for the setup function.
 func DefaultVHSOptions() Options {
 	return Options{
-		FontFamily:    "JetBrains Mono,DejaVu Sans Mono,Menlo,Bitstream Vera Sans Mono,Inconsolata,Roboto Mono,Hack,Consolas,ui-monospace,monospace",
+		FontFamily:    defaultFontFamily,
 		FontSize:      defaultFontSize,
-		LetterSpacing: 0,
-		LineHeight:    1.0,
-		TypingSpeed:   typingSpeed,
+		LetterSpacing: defaultLetterSpacing,
+		LineHeight:    defaultLineHeight,
+		TypingSpeed:   defaultTypingSpeed,
 		Shell:         Shells[defaultShell],
 		Theme:         DefaultTheme,
 		Video:         DefaultVideoOptions(),
