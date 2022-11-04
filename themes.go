@@ -62,7 +62,7 @@ func findTheme(name string) (Theme, error) {
 	for _, bts := range [][]byte{themesBts, customThemesBts} {
 		themes, err := parseThemes(bts)
 		if err != nil {
-			return Theme{}, err
+			return DefaultTheme, err
 		}
 
 		for _, theme := range themes {
@@ -75,7 +75,7 @@ func findTheme(name string) (Theme, error) {
 	// not found, lets find similar themes!
 	keys, err := sortedThemeNames()
 	if err != nil {
-		return Theme{}, err
+		return DefaultTheme, err
 	}
 
 	suggestions := []string{}
@@ -89,7 +89,7 @@ func findTheme(name string) (Theme, error) {
 			suggestions = append(suggestions, theme)
 		}
 	}
-	return Theme{}, ThemeNotFoundError{name, suggestions}
+	return DefaultTheme, ThemeNotFoundError{name, suggestions}
 }
 
 func parseThemes(bts []byte) ([]Theme, error) {
