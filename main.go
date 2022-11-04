@@ -63,14 +63,14 @@ var (
 				return errors.New("no input provided")
 			}
 
-      var output string
+			var output string
 			errs := Evaluate(cmd.Context(), string(input), os.Stdout, func(v *VHS) {
-        output = v.Options.Video.Output.GIF
-      })
+				output = v.Options.Video.Output.GIF
+			})
 			if len(errs) > 0 {
 				printErrors(os.Stderr, string(input), errs)
 				return errors.New("recording failed")
-      }
+			}
 
 			if publish && output != "" {
 				url, err := Publish(cmd.Context(), output)
