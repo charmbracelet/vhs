@@ -246,7 +246,7 @@ func (vhs *VHS) ApplyLoopOffset() error {
 	}
 }
 
-const quality = 0.92
+const quality = 1.0
 
 // Record begins the goroutine which captures images from the xterm.js canvases.
 func (vhs *VHS) Record(ctx context.Context) <-chan error {
