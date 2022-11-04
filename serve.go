@@ -98,8 +98,9 @@ var serveCmd = &cobra.Command{
 							v.Options.Video.Output.MP4 = ""
 							v.Options.Video.Output.WebM = ""
 						})
-						printErrors(s.Stderr(), b.String(), errs)
+
 						if len(errs) > 0 {
+							printErrors(s.Stderr(), b.String(), errs)
 							_ = s.Exit(1)
 						}
 
