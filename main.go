@@ -31,6 +31,7 @@ var (
 
 	ttydMinVersion = version.Must(version.NewVersion("1.7.2"))
 
+	publish bool
 	rootCmd = &cobra.Command{
 		Use:           "vhs <file>",
 		Short:         "Run a given tape file and generates its outputs.",
@@ -62,10 +63,21 @@ var (
 				return errors.New("no input provided")
 			}
 
-			errs := Evaluate(cmd.Context(), string(input), os.Stdout)
+      var output string
+			errs := Evaluate(cmd.Context(), string(input), os.Stdout, func(v *VHS) {
+        output = v.Options.Video.Output.GIF
+      })
 			if len(errs) > 0 {
 				printErrors(os.Stderr, string(input), errs)
 				return errors.New("recording failed")
+      }
+
+			if publish && output != "" {
+				url, err := Publish(cmd.Context(), output)
+				if err != nil {
+					return err
+				}
+				fmt.Println(StringStyle.Render("URL: " + url))
 			}
 
 			return nil
@@ -77,16 +89,29 @@ var (
 		Use:   "themes",
 		Short: "List all the available themes, one per line",
 		Args:  cobra.NoArgs,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			var prefix, suffix string
 			if markdown {
 				fmt.Fprintf(cmd.OutOrStdout(), "# Themes\n\n")
 				prefix, suffix = "* `", "`"
 			}
-			for _, theme := range sortedThemeNames() {
+			themes, err := sortedThemeNames()
+			if err != nil {
+				return err
+			}
+			for _, theme := range themes {
 				fmt.Fprintf(cmd.OutOrStdout(), "%s%s%s\n", prefix, theme, suffix)
 			}
+			return nil
 		},
+	}
+
+	shell     string
+	recordCmd = &cobra.Command{
+		Use:   "record",
+		Short: "Create a new tape file by recording your actions",
+		Args:  cobra.NoArgs,
+		RunE:  Record,
 	}
 
 	newCmd = &cobra.Command{
@@ -165,14 +190,18 @@ func main() {
 }
 
 func init() {
+	rootCmd.Flags().BoolVarP(&publish, "publish", "p", false, "publish your GIF to vhs.charm.sh and get a shareable URL")
 	themesCmd.Flags().BoolVar(&markdown, "markdown", false, "output as markdown")
 	_ = themesCmd.Flags().MarkHidden("markdown")
+	recordCmd.Flags().StringVarP(&shell, "shell", "s", "bash", "shell for recording")
 	rootCmd.AddCommand(
+		recordCmd,
 		newCmd,
 		themesCmd,
 		validateCmd,
 		manCmd,
 		serveCmd,
+		publishCmd,
 	)
 	rootCmd.CompletionOptions.HiddenDefaultCmd = true
 

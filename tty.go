@@ -29,6 +29,7 @@ func StartTTY(port int) *exec.Cmd {
 		"-t", "rendererType=canvas",
 		"-t", "disableResizeOverlay=true",
 		"-t", "cursorBlink=true",
+		"-t", "enableSixel=true",
 		"-t", "customGlyphs=true",
 	}
 

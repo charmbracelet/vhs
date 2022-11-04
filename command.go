@@ -212,6 +212,7 @@ var Settings = map[string]CommandFunc{
 	"Theme":         ExecuteSetTheme,
 	"TypingSpeed":   ExecuteSetTypingSpeed,
 	"Width":         ExecuteSetWidth,
+	"Shell":         ExecuteSetShell,
 	"LoopOffset":    ExecuteLoopOffset,
 }
 
@@ -250,13 +251,21 @@ func ExecuteSetWidth(c Command, v *VHS) {
 	v.Options.Video.Width, _ = strconv.Atoi(c.Args)
 }
 
-const (
-	bitSize = 64
-	base    = 10
-)
+// ExecuteSetShell applies the shell on the vhs.
+func ExecuteSetShell(c Command, v *VHS) {
+	if s, ok := Shells[c.Args]; ok {
+		v.Options.Shell = s
+	} else {
+		v.Options.Shell.Prompt = ""
+		v.Options.Shell.Command = c.Args
+	}
+}
 
-// ExecuteSetLetterSpacing applies letter spacing (also known as tracking) on the
-// vhs.
+const bitSize = 64
+const base = 10
+
+// ExecuteSetLetterSpacing applies letter spacing (also known as tracking) on
+// the vhs.
 func ExecuteSetLetterSpacing(c Command, v *VHS) {
 	letterSpacing, _ := strconv.ParseFloat(c.Args, bitSize)
 	v.Options.LetterSpacing = letterSpacing
@@ -333,19 +342,8 @@ func getTheme(s string) (Theme, error) {
 	case '{':
 		return getJSONTheme(s)
 	default:
-		return getNamedTheme(s)
+		return findTheme(s)
 	}
-}
-
-func getNamedTheme(s string) (Theme, error) {
-	theme, suggestions, ok := findTheme(s)
-	if !ok && len(suggestions) > 0 {
-		return DefaultTheme, fmt.Errorf("invalid `Set Theme %q`: did you mean %q", s, strings.Join(suggestions, ", "))
-	}
-	if !ok {
-		return DefaultTheme, fmt.Errorf("invalid `Set Theme %q`: theme does not exist", s)
-	}
-	return theme, nil
 }
 
 func getJSONTheme(s string) (Theme, error) {

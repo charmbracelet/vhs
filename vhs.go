@@ -32,11 +32,11 @@ type VHS struct {
 
 // Options is the set of options for the setup.
 type Options struct {
+	Shell         Shell
 	FontFamily    string
 	FontSize      int
 	LetterSpacing float64
 	LineHeight    float64
-	Prompt        string
 	TypingSpeed   time.Duration
 	Theme         Theme
 	Test          TestOptions
@@ -47,17 +47,18 @@ type Options struct {
 const (
 	defaultFontSize = 22
 	typingSpeed     = 50 * time.Millisecond
+	defaultShell    = bash
 )
 
 // DefaultVHSOptions returns the default set of options to use for the setup function.
 func DefaultVHSOptions() Options {
 	return Options{
-		Prompt:        "\\[\\e[38;2;90;86;224m\\]> \\[\\e[0m\\]",
 		FontFamily:    "JetBrains Mono,DejaVu Sans Mono,Menlo,Bitstream Vera Sans Mono,Inconsolata,Roboto Mono,Hack,Consolas,ui-monospace,monospace",
 		FontSize:      defaultFontSize,
 		LetterSpacing: 0,
 		LineHeight:    1.0,
 		TypingSpeed:   typingSpeed,
+		Shell:         Shells[defaultShell],
 		Theme:         DefaultTheme,
 		Video:         DefaultVideoOptions(),
 	}
@@ -105,9 +106,13 @@ func (vhs *VHS) Setup() {
 	vhs.TextCanvas, _ = vhs.Page.Element("canvas.xterm-text-layer")
 	vhs.CursorCanvas, _ = vhs.Page.Element("canvas.xterm-cursor-layer")
 
-	// Set Prompt
+	// Set up the Prompt
+	shellCommand := fmt.Sprintf(vhs.Options.Shell.Command, vhs.Options.Shell.Prompt)
+	if vhs.Options.Shell.Prompt == "" {
+		shellCommand = vhs.Options.Shell.Command
+	}
 	vhs.Page.MustElement("textarea").
-		MustInput(fmt.Sprintf(` set +o history; unset PROMPT_COMMAND; export PS1="%s"; clear;`, vhs.Options.Prompt)).
+		MustInput(shellCommand).
 		MustType(input.Enter)
 
 	// Apply options to the terminal

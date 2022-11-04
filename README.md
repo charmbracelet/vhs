@@ -108,6 +108,10 @@ sudo yum install vhs ffmpeg
 
 # Void Linux
 sudo xbps-install vhs
+
+# Windows
+scoop install vhs
+
 ```
 
 Or, use Docker to run VHS directly, dependencies included:
@@ -214,6 +218,14 @@ the font settings, window dimensions, and GIF output location.
 Setting must be administered at the top of the tape file. Any setting (except
 `TypingSpeed`) applied after a non-setting or non-output command will be
 ignored.
+
+#### Set Shell
+
+Set the shell with the `Set Shell <shell>` command
+
+```elixir
+Set Shell fish
+```
 
 #### Set Font Size
 

@@ -6,6 +6,7 @@ Output examples/fixtures/all.mp4
 Output examples/fixtures/all.webm
 
 # Settings:
+Set Shell "fish"
 Set FontSize 22
 Set FontFamily "DejaVu Sans Mono"
 Set Height 600
