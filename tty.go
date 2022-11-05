@@ -33,7 +33,7 @@ func StartTTY(port int) *exec.Cmd {
 		"-t", "customGlyphs=true",
 	}
 
-	args = append(args, defaultShellWithArgs()...)
+	args = append(args, defaultEntryPoint()...)
 
 	//nolint:gosec
 	cmd := exec.Command("ttyd", args...)
