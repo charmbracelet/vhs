@@ -106,6 +106,7 @@ func New() VHS {
 }
 
 const magicText = "charmcharm"
+const commandExecutionWaitTime = 3 * time.Second
 
 // Setup sets up the VHS instance and performs the necessary actions to reflect
 // the options that are default and set by the user.
@@ -160,6 +161,10 @@ func (vhs *VHS) Setup() {
 
 	_ = os.RemoveAll(vhs.Options.Video.Input)
 	_ = os.MkdirAll(vhs.Options.Video.Input, os.ModePerm)
+
+	// FIXME: Since we have not yet figured out how to make sure that all the
+	// commands have been executed, we will give some time for this to happen for sure.
+	time.Sleep(commandExecutionWaitTime)
 }
 
 const cleanupWaitTime = 100 * time.Millisecond
