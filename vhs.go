@@ -74,7 +74,7 @@ func DefaultVHSOptions() Options {
 		LetterSpacing: defaultLetterSpacing,
 		LineHeight:    defaultLineHeight,
 		TypingSpeed:   defaultTypingSpeed,
-		Shell:         Shells[defaultShell],
+		Shell:         Shells[defaultShell](),
 		Theme:         DefaultTheme,
 		Video:         DefaultVideoOptions(),
 	}
@@ -105,6 +105,8 @@ func New() VHS {
 	}
 }
 
+const magicText = "charmcharm"
+
 // Setup sets up the VHS instance and performs the necessary actions to reflect
 // the options that are default and set by the user.
 func (vhs *VHS) Setup() {
@@ -123,6 +125,22 @@ func (vhs *VHS) Setup() {
 	vhs.CursorCanvas, _ = vhs.Page.Element("canvas.xterm-cursor-layer")
 
 	// Set up the Prompt
+	vhs.Page.MustElement("textarea").
+		MustInput(vhs.Options.Shell.EntryPoint).
+		MustType(input.Enter)
+
+	// HACKHACK: Wait until Prompt got initialized.
+	//
+	// FIXME: Make sure what shell support ECHO command.
+	//
+	// NOTE: We could move this to the TTY startup stage (ttyd [shell]),
+	// but this is not possible due to the current implementation of
+	// command parsing (they use vhs.Page).
+	vhs.Page.MustElement("textarea").
+		MustInput(fmt.Sprintf("echo '%s'", magicText)).
+		MustType(input.Enter).
+		MustWait(fmt.Sprintf("() => { term.selectAll(); return (term.getSelection().split('%s').length - 1) === 2}", magicText))
+
 	shellCommand := fmt.Sprintf(vhs.Options.Shell.Command, vhs.Options.Shell.Prompt)
 	if vhs.Options.Shell.Prompt == "" {
 		shellCommand = vhs.Options.Shell.Command
