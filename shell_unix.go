@@ -28,7 +28,7 @@ var Shells = map[string]LazyShell{
 	pwsh: func() Shell {
 		return Shell{
 			EntryPoint: "bash --login",
-			Prompt:     "Function prompt {Write-Host \"> \" -ForegroundColor Blue -NoNewLine; return \"`0\" }",
+			Prompt:     "Function prompt {Write-Host \\\"> \\\" -ForegroundColor Blue -NoNewLine; return \\\"`0\\\" }",
 			Command:    ` clear; powershell -NoLogo -NoExit -Command 'Set-PSReadLineOption -HistorySaveStyle SaveNothing; %s'`,
 		}
 	},

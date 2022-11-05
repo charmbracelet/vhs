@@ -17,14 +17,14 @@ var Shells = map[string]LazyShell{
 		if _, err := exec.LookPath("pwsh"); err == nil {
 			return Shell{
 				EntryPoint: "powershell",
-				Prompt:     "Function prompt {Write-Host \"> \" -ForegroundColor Blue -NoNewLine; return \"`0\" }",
+				Prompt:     "Function prompt {Write-Host \\\"> \\\" -ForegroundColor Blue -NoNewLine; return \\\"`0\\\" }",
 				Command:    ` clear; pwsh -Login -NoLogo -NoExit -Command 'Set-PSReadLineOption -HistorySaveStyle SaveNothing; %s'`,
 			}
 		}
 
 		return Shell{
 			EntryPoint: "powershell",
-			Prompt:     "Function prompt {Write-Host \"> \" -ForegroundColor Blue -NoNewLine; return \"`0\" }",
+			Prompt:     "Function prompt {Write-Host \\\"> \\\" -ForegroundColor Blue -NoNewLine; return \\\"`0\\\" }",
 			Command:    ` clear; powershell -NoLogo -NoExit -Command 'Set-PSReadLineOption -HistorySaveStyle SaveNothing; %s'`,
 		}
 	},
