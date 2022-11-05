@@ -85,7 +85,7 @@ func (es EventStream) toTapeCommands() []string {
 	commands := make([]string, 0)
 	es.traverse(func(events []Event) {
 		if events[0].IsKey() {
-			if length := len(events); length > 0 {
+			if length := len(events); length > 1 {
 				commands = append(commands, fmt.Sprintf("%v %v", events[0].Key(), length))
 			} else {
 				commands = append(commands, events[0].Key())
