@@ -202,6 +202,7 @@ func init() {
 		manCmd,
 		serveCmd,
 		publishCmd,
+		convertCmd,
 	)
 	rootCmd.CompletionOptions.HiddenDefaultCmd = true
 
