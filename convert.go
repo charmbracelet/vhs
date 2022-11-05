@@ -20,16 +20,21 @@ type Asciicast struct {
 		Timestamp int // TODO timestamp format
 		Env       map[string]string
 	}
-	Events EventStream
+	Events []Event
 }
 
 func (a Asciicast) ToTape() string {
-	tape := make([]string, 0)
+	settings := make([]string, 0)
 	if shell, ok := a.Meta.Env["SHELL"]; ok && shell != "bash" {
-		tape = append(tape, fmt.Sprintf("Set Shell %v", shell))
+		settings = append(settings, fmt.Sprintf("Set Shell %v", shell))
 	}
-	tape = append(tape, a.Events.toTapeCommands()...)
-	return strings.Join(tape, "\n")
+
+	input := make([]string, 0)
+	for _, e := range a.Events {
+		input = append(input, e.Content)
+	}
+	return strings.Join(settings, "\n") + "\n" + inputToTape(strings.Join(input, ""))
+
 }
 
 func ReadFile(path string) (*Asciicast, error) {
@@ -65,63 +70,10 @@ func ReadFile(path string) (*Asciicast, error) {
 
 }
 
-type EventStream []Event
-
-func (es EventStream) traverse(f func(events []Event)) {
-	buffer := make([]Event, 0)
-	for _, event := range []Event(es) {
-		if len(buffer) != 0 && (event.IsKey() || buffer[0].IsKey()) && event.Key() != buffer[0].Key() {
-			f(buffer)
-			buffer = make([]Event, 0) // TODO better way to clear it
-		}
-		buffer = append(buffer, event)
-	}
-	if len(buffer) != 0 {
-		f(buffer)
-	}
-}
-
-func (es EventStream) toTapeCommands() []string {
-	commands := make([]string, 0)
-	es.traverse(func(events []Event) {
-		if events[0].IsKey() {
-			if length := len(events); length > 1 {
-				commands = append(commands, fmt.Sprintf("%v %v", events[0].Key(), length))
-			} else {
-				commands = append(commands, events[0].Key())
-			}
-		} else {
-			s := make([]string, 0, len(events))
-			for _, e := range events {
-				s = append(s, e.Content)
-			}
-			commands = append(commands, fmt.Sprintf(`Type "%v"`, strings.ReplaceAll(strings.Join(s, ""), `"`, `\""`)))
-		}
-	})
-	return commands
-}
-
 type Event struct {
 	Timestamp float64
 	Type      string
 	Content   string
-}
-
-func (e Event) IsKey() bool {
-	return e.Content != e.Key()
-}
-
-func (e Event) Key() string {
-	switch e.Content {
-	case "\x7f":
-		return "Backspace"
-	case "\r":
-		return "Enter"
-	case "\t":
-		return "Tab"
-	default:
-		return e.Content
-	}
 }
 
 func (e *Event) UnmarshalJSON(data []byte) error {
@@ -161,9 +113,9 @@ var convertCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		// TODO fmt.Printf("%#v\n", cast)
 
 		fmt.Println(cast.ToTape())
+
 		return nil
 	},
 }
