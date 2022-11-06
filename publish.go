@@ -52,7 +52,7 @@ func dataPath() (string, error) {
 // if the host does not exist there, it adds it so its available next time, as plain old `ssh` does.
 func hostKeyCallback(path string) ssh.HostKeyCallback {
 	return func(hostname string, remote net.Addr, key ssh.PublicKey) error {
-		kh, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0o600) // nolint:gomnd
+		kh, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0o600) //nolint:gomnd
 		if err != nil {
 			return fmt.Errorf("failed to open known_hosts: %w", err)
 		}

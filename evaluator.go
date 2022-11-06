@@ -38,8 +38,9 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	}
 
 	video := v.Options.Video
-	if video.Height < 2*video.Padding || video.Width < 2*video.Padding {
-		v.Errors = append(v.Errors, fmt.Errorf("height and width must be greater than %d", 2*video.Padding))
+	minDimension := video.Padding + video.Padding
+	if video.Height < minDimension || video.Width < minDimension {
+		v.Errors = append(v.Errors, fmt.Errorf("height and width must be greater than %d", minDimension))
 	}
 
 	if len(v.Errors) > 0 {
