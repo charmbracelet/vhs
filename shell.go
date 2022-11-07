@@ -10,6 +10,9 @@ const (
 	zsh        = "zsh"
 )
 
+// The default uncolored prompt
+const promptASCII = "> "
+
 // Shell is a type that contains a prompt and the command to set up the shell.
 type Shell struct {
 	Prompt  string
