@@ -475,7 +475,8 @@ Sleep 1s    # 1s
 
 ### Hide
 
-The `Hide` command allows you to exclude commands from the output.
+The `Hide` command instructs VHS to stop capturing frames. It's useful to pause
+a recording to perform hidden commands.
 
 ```elixir
 Hide
@@ -506,9 +507,8 @@ Type 'rm example'
 
 ### Show
 
-The `Show` command allows you to specify that the following commands should be
-un-hidden in the output. Since commands are shown by default, this command is
-really only useful after using the `Hide` command.
+The `Show` command instructs VHS to begin capturing frames, again. It's useful
+after a `Hide` command to resume frame recording for the output.
 
 ```elixir
 Hide
