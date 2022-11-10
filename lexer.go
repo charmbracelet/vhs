@@ -53,6 +53,10 @@ func (l *Lexer) NextToken() Token {
 		tok.Type = JSON
 		tok.Literal = "{" + l.readJSON() + "}"
 		l.readChar()
+	case '`':
+		tok.Type = STRING
+		tok.Literal = l.readString('`')
+		l.readChar()
 	case '\'':
 		tok.Type = STRING
 		tok.Literal = l.readString('\'')

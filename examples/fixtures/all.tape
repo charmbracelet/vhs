@@ -29,9 +29,11 @@ Sleep .5
 Sleep 0.5
 
 # Type:
-Type "All"
 Type@.5 "All"
 Type@500ms "All"
+Type "Double Quote"
+Type '"Single" Quote'
+Type `"Backtick" 'Quote'`
 
 # Keys:
 Backspace
