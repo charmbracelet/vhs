@@ -21,8 +21,8 @@ github.com/charmbracelet/keygen v0.3.0 h1:mXpsQcH7DDlST5TddmXNXjS0L7ECk4/kLQYyBc
 github.com/charmbracelet/keygen v0.3.0/go.mod h1:1ukgO8806O25lUZ5s0IrNur+RlwTBERlezdgW71F5rM=
 github.com/charmbracelet/lipgloss v0.6.0 h1:1StyZB9vBSOyuZxQUcUwGr17JmojPNm87inij9N3wJY=
 github.com/charmbracelet/lipgloss v0.6.0/go.mod h1:tHh2wr34xcHjC2HCXIlGSG1jaDF0S0atAUvBMP6Ppuk=
-github.com/charmbracelet/wish v0.6.0 h1:njygCS/bXIZfa3zf+BjzXI64islPRON81onHhuTpPso=
-github.com/charmbracelet/wish v0.6.0/go.mod h1:LgsszaPfplsjqqXATWqe/MJSkY1LCxUGecmIHFQ1n20=
+github.com/charmbracelet/wish v0.7.0 h1:rdfacCWaKCQpCMPbOKfi68GYqsb+9CnUzN1Ov/INZJ0=
+github.com/charmbracelet/wish v0.7.0/go.mod h1:16EQz7k3hEgPkPENghcpEddvlrmucIudE0jnczKr+k4=
 github.com/cpuguy83/go-md2man/v2 v2.0.2/go.mod h1:tgQtvFlXSQOSOSIRvRPT7W67SCa46tRHOmNcaadrF8o=
 github.com/creack/pty v1.1.18 h1:n56/Zwd5o6whRC5PMGretI4IdRLlmBXYNjScPaBgsbY=
 github.com/creack/pty v1.1.18/go.mod h1:MOBLtS5ELjhRRrroQr9kyvTxUAFNvYEK993ew/Vr4O4=
