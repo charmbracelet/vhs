@@ -7,7 +7,7 @@ require (
 	github.com/charmbracelet/glamour v0.5.1-0.20221015050842-c4cd9ed13e4c
 	github.com/charmbracelet/keygen v0.3.0
 	github.com/charmbracelet/lipgloss v0.6.0
-	github.com/charmbracelet/wish v0.6.0
+	github.com/charmbracelet/wish v0.7.0
 	github.com/creack/pty v1.1.18
 	github.com/gliderlabs/ssh v0.3.5
 	github.com/go-rod/rod v0.112.0
