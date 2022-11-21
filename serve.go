@@ -16,7 +16,6 @@ import (
 	"github.com/caarlos0/env/v6"
 	"github.com/charmbracelet/wish"
 	"github.com/charmbracelet/wish/logging"
-	"github.com/gliderlabs/ssh"
 	"github.com/spf13/cobra"
 )
 
@@ -52,15 +51,15 @@ var serveCmd = &cobra.Command{
 		s, err := wish.NewServer(
 			wish.WithAddress(addr),
 			wish.WithHostKeyPath(key),
-			func(s *ssh.Server) error {
+			func(s *wish.Server) error {
 				if cfg.AuthorizedKeysPath == "" {
 					return nil
 				}
 				return wish.WithAuthorizedKeys(cfg.AuthorizedKeysPath)(s)
 			},
 			wish.WithMiddleware(
-				func(h ssh.Handler) ssh.Handler {
-					return func(s ssh.Session) {
+				func(h wish.Handler) wish.Handler {
+					return func(s wish.Session) {
 						// Request for vhs must be passed in through stdin, which
 						// implies that there is no PTY.
 						//
