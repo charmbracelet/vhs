@@ -90,13 +90,24 @@ var serveCmd = &cobra.Command{
 
 						//nolint:gosec
 						rand := rand.Int63n(maxNumber)
-						tempFile := filepath.Join(os.TempDir(), fmt.Sprintf("vhs-%d.gif", rand))
+						tempFile := filepath.Join(os.TempDir(), fmt.Sprintf("vhs-%d", rand))
 						defer func() { _ = os.Remove(tempFile) }()
 						errs := Evaluate(s.Context(), b.String(), s.Stderr(), func(v *VHS) {
-							v.Options.Video.Output.GIF = tempFile
-							// Disable generating MP4 & WebM.
-							v.Options.Video.Output.MP4 = ""
-							v.Options.Video.Output.WebM = ""
+							var gif, mp4, webm string
+							switch {
+							case v.Options.Video.Output.MP4 != "":
+								tempFile += ".mp4"
+								mp4 = tempFile
+							case v.Options.Video.Output.WebM != "":
+								tempFile += ".webm"
+								webm = tempFile
+							default:
+								tempFile += ".gif"
+								gif = tempFile
+							}
+							v.Options.Video.Output.GIF = gif
+							v.Options.Video.Output.MP4 = mp4
+							v.Options.Video.Output.WebM = webm
 						})
 
 						if len(errs) > 0 {
