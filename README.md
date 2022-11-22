@@ -84,7 +84,7 @@ brew install ttyd --HEAD
 sudo port install vhs
 
 # Arch Linux (btw)
-yay -S vhs-bin
+pacman -S vhs
 
 # Nix
 nix-env -iA nixpkgs.vhs
