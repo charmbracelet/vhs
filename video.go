@@ -68,7 +68,7 @@ func DefaultVideoOptions() VideoOptions {
 		Framerate:       defaultFramerate,
 		Input:           randomDir(),
 		MaxColors:       defaultMaxColors,
-		Output:          VideoOutputs{GIF: "out.gif", WebM: "", MP4: ""},
+		Output:          VideoOutputs{GIF: "", WebM: "", MP4: ""},
 		Width:           defaultWidth,
 		Height:          defaultHeight,
 		Padding:         defaultPadding,
@@ -80,7 +80,17 @@ func DefaultVideoOptions() VideoOptions {
 
 // MakeGIF takes a list of images (as frames) and converts them to a GIF.
 func MakeGIF(opts VideoOptions) *exec.Cmd {
-	if opts.Output.GIF == "" {
+
+	// Make a new variable so we don't have to overwrite
+	// config options.
+	var target_file string = opts.Output.GIF
+
+	if opts.Output.GIF == "" &&
+		opts.Output.WebM == "" &&
+		opts.Output.MP4 == "" {
+
+		target_file = "out.gif"
+	} else if opts.Output.GIF == "" {
 		return nil
 	}
 
@@ -106,7 +116,7 @@ func MakeGIF(opts VideoOptions) *exec.Cmd {
 			opts.BackgroundColor,
 		),
 		"-map", "[out]",
-		opts.Output.GIF,
+		target_file,
 	)
 }
 
