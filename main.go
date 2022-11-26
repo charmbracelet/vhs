@@ -32,6 +32,8 @@ var (
 	ttydMinVersion = version.Must(version.NewVersion("1.7.2"))
 
 	publish bool
+	outputs *[]string
+
 	rootCmd = &cobra.Command{
 		Use:           "vhs <file>",
 		Short:         "Run a given tape file and generates its outputs.",
@@ -63,17 +65,34 @@ var (
 				return errors.New("no input provided")
 			}
 
-			var output string
+			var publishFile string
 			errs := Evaluate(cmd.Context(), string(input), os.Stdout, func(v *VHS) {
-				output = v.Options.Video.Output.GIF
+				// Output is being overridden, prevent all outputs
+				if len(*outputs) <= 0 {
+					publishFile = v.Options.Video.Output.GIF
+					return
+				}
+
+				for _, output := range *outputs {
+					if strings.HasSuffix(output, ".gif") {
+						v.Options.Video.Output.GIF = output
+					} else if strings.HasSuffix(output, ".webm") {
+						v.Options.Video.Output.WebM = output
+					} else if strings.HasSuffix(output, ".mp4") {
+						v.Options.Video.Output.MP4 = output
+					}
+				}
+
+				publishFile = v.Options.Video.Output.GIF
 			})
+
 			if len(errs) > 0 {
 				printErrors(os.Stderr, string(input), errs)
 				return errors.New("recording failed")
 			}
 
-			if publish && output != "" {
-				url, err := Publish(cmd.Context(), output)
+			if publish && publishFile != "" {
+				url, err := Publish(cmd.Context(), publishFile)
 				if err != nil {
 					return err
 				}
@@ -191,6 +210,7 @@ func main() {
 
 func init() {
 	rootCmd.Flags().BoolVarP(&publish, "publish", "p", false, "publish your GIF to vhs.charm.sh and get a shareable URL")
+	outputs = rootCmd.Flags().StringSliceP("output", "o", []string{}, "file name(s) of video output")
 	themesCmd.Flags().BoolVar(&markdown, "markdown", false, "output as markdown")
 	_ = themesCmd.Flags().MarkHidden("markdown")
 	recordCmd.Flags().StringVarP(&shell, "shell", "s", "bash", "shell for recording")

@@ -94,7 +94,7 @@ func MakeGIF(opts VideoOptions) *exec.Cmd {
 		return nil
 	}
 
-	fmt.Println("Creating GIF...")
+	fmt.Printf("Creating %s...\n", opts.Output.GIF)
 
 	//nolint:gosec
 	return exec.Command(
@@ -126,7 +126,7 @@ func MakeWebM(opts VideoOptions) *exec.Cmd {
 		return nil
 	}
 
-	fmt.Println("Creating WebM...")
+	fmt.Printf("Creating %s...\n", opts.Output.WebM)
 
 	//nolint:gosec
 	return exec.Command(
@@ -161,7 +161,7 @@ func MakeMP4(opts VideoOptions) *exec.Cmd {
 		return nil
 	}
 
-	fmt.Println("Creating MP4...")
+	fmt.Printf("Creating %s...\n", opts.Output.MP4)
 
 	//nolint:gosec
 	return exec.Command(
