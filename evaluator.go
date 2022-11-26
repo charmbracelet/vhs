@@ -99,7 +99,7 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 		// GIF as the frame sequence will change dimensions. This is fixable.
 		//
 		// We should remove if isSetting statement.
-		isSetting := cmd.Type == SET && cmd.Options != "TypingSpeed"
+		isSetting := cmd.Type == SET && cmd.Options != "TypingSpeed" && cmd.Options != "Match"
 		if isSetting || cmd.Type == REQUIRE {
 			fmt.Fprintln(out, cmd.Highlight(true))
 			continue
