@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
 
@@ -62,10 +64,44 @@ func (p *Parser) parseCommand() Command {
 		return p.parseRequire()
 	case SHOW:
 		return p.parseShow()
+	case MATCH:
+		return p.parseMatch()
+	case MATCH_ANY:
+		return p.parseMatchAny()
 	default:
 		p.errors = append(p.errors, NewError(p.cur, "Invalid command: "+p.cur.Literal))
 		return Command{Type: ILLEGAL}
 	}
+}
+
+func (p *Parser) parseMatchAny() Command {
+	cmd := Command{Type: MATCH_ANY}
+	if p.peek.Type == STRING {
+		p.nextToken()
+		if _, err := regexp.Compile(p.cur.Literal); err != nil {
+			p.errors = append(p.errors, NewError(p.cur, fmt.Sprintf("Invalid regular expression '%s': %v", p.cur.Literal, err)))
+			return cmd
+		}
+
+		cmd.Args = p.cur.Literal
+	}
+
+	return cmd
+}
+
+func (p *Parser) parseMatch() Command {
+	cmd := Command{Type: MATCH}
+	if p.peek.Type == STRING {
+		p.nextToken()
+		if _, err := regexp.Compile(p.cur.Literal); err != nil {
+			p.errors = append(p.errors, NewError(p.cur, fmt.Sprintf("Invalid regular expression '%s': %v", p.cur.Literal, err)))
+			return cmd
+		}
+
+		cmd.Args = p.cur.Literal
+	}
+
+	return cmd
 }
 
 // parseSpeed parses a typing speed indication.

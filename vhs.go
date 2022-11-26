@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -43,6 +44,7 @@ type Options struct {
 	Test          TestOptions
 	Video         VideoOptions
 	LoopOffset    float64
+	Match         *regexp.Regexp
 }
 
 const (
@@ -77,6 +79,7 @@ func DefaultVHSOptions() Options {
 		Shell:         Shells[defaultShell],
 		Theme:         DefaultTheme,
 		Video:         DefaultVideoOptions(),
+		Match:         regexp.MustCompile("^>"),
 	}
 }
 

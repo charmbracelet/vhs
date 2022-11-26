@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os/exec"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -34,20 +36,20 @@ var CommandTypes = []CommandType{ //nolint: deadcode
 	TAB,
 	TYPE,
 	UP,
+	MATCH,
+	MATCH_ANY,
 }
 
 // String returns the string representation of the command.
-func (c CommandType) String() string {
-	if len(c) < 1 {
-		return ""
-	}
-	s := string(c)
-	return string(s[0]) + strings.ToLower(s[1:])
-}
+func (c CommandType) String() string { return toCamel(string(c)) }
 
 // CommandFunc is a function that executes a command on a running
 // instance of vhs.
 type CommandFunc func(c Command, v *VHS)
+
+// ContextCommandFunc is an interuptable function that executes a command on a
+// running instance of vhs.
+type ContextCommandFunc func(ctx context.Context, c Command, v *VHS)
 
 // CommandFuncs maps command types to their executable functions.
 var CommandFuncs = map[CommandType]CommandFunc{
@@ -69,6 +71,8 @@ var CommandFuncs = map[CommandType]CommandFunc{
 	TYPE:      ExecuteType,
 	CTRL:      ExecuteCtrl,
 	ILLEGAL:   ExecuteNoop,
+	MATCH:     ExecuteMatch,
+	MATCH_ANY: ExecuteMatchAny,
 }
 
 // Command represents a command with options and arguments.
@@ -119,6 +123,66 @@ func ExecuteKey(k input.Key) CommandFunc {
 		for i := 0; i < repeat; i++ {
 			_ = v.Page.Keyboard.Type(k)
 			time.Sleep(typingSpeed)
+		}
+	}
+}
+
+// ExecuteMatch is a CommandFunc that waits for the current
+// line to match the given regex.
+func ExecuteMatch(c Command, v *VHS) {
+	var rx *regexp.Regexp
+	if c.Args == "" {
+		rx = v.Options.Match
+	} else {
+		rx = regexp.MustCompile(c.Args)
+	}
+
+	if rx == nil {
+		return
+	}
+
+	t := time.NewTicker(10 * time.Millisecond)
+	defer t.Stop()
+
+	for range t.C {
+		line, err := v.CurrentLine()
+		if err != nil {
+			return
+		}
+
+		if rx.MatchString(line) {
+			return
+		}
+	}
+}
+
+// ExecuteMatchAny is a CommandFunc that waits for the given regex
+// to match any line on the screen.
+func ExecuteMatchAny(c Command, v *VHS) {
+	var rx *regexp.Regexp
+	if c.Args == "" {
+		rx = v.Options.Match
+	} else {
+		rx = regexp.MustCompile(c.Args)
+	}
+
+	if rx == nil {
+		return
+	}
+
+	t := time.NewTicker(10 * time.Millisecond)
+	defer t.Stop()
+
+	for range t.C {
+		lines, err := v.Buffer()
+		if err != nil {
+			return
+		}
+
+		for _, line := range lines {
+			if rx.MatchString(line) {
+				return
+			}
 		}
 	}
 }
@@ -214,6 +278,7 @@ var Settings = map[string]CommandFunc{
 	"Width":         ExecuteSetWidth,
 	"Shell":         ExecuteSetShell,
 	"LoopOffset":    ExecuteLoopOffset,
+	"Match":         ExecuteSetMatch,
 }
 
 // ExecuteSet applies the settings on the running vhs specified by the
@@ -261,8 +326,10 @@ func ExecuteSetShell(c Command, v *VHS) {
 	}
 }
 
-const bitSize = 64
-const base = 10
+const (
+	bitSize = 64
+	base    = 10
+)
 
 // ExecuteSetLetterSpacing applies letter spacing (also known as tracking) on
 // the vhs.
@@ -300,6 +367,16 @@ func ExecuteSetTypingSpeed(c Command, v *VHS) {
 		return
 	}
 	v.Options.TypingSpeed = typingSpeed
+}
+
+// ExecuteSetMatch applies the default prompt on the vhs.
+func ExecuteSetMatch(c Command, v *VHS) {
+	rx, err := regexp.Compile(c.Args)
+	if err != nil {
+		return
+	}
+
+	v.Options.Match = rx
 }
 
 // ExecuteSetPadding applies the padding on the vhs.

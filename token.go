@@ -67,6 +67,8 @@ const (
 	PADDING        = "PADDING"
 	THEME          = "THEME"
 	LOOP_OFFSET    = "LOOP_OFFSET" //nolint:revive
+	MATCH          = "MATCH"
+	MATCH_ANY      = "MATCH_ANY" //nolint:revive
 )
 
 var keywords = map[string]TokenType{
@@ -106,6 +108,8 @@ var keywords = map[string]TokenType{
 	"Theme":         THEME,
 	"Width":         WIDTH,
 	"LoopOffset":    LOOP_OFFSET,
+	"Match":         MATCH,
+	"MatchAny":      MATCH_ANY,
 }
 
 // IsSetting returns whether a token is a setting.
@@ -113,7 +117,7 @@ func IsSetting(t TokenType) bool {
 	switch t {
 	case SHELL, FONT_FAMILY, FONT_SIZE, LETTER_SPACING, LINE_HEIGHT,
 		FRAMERATE, TYPING_SPEED, THEME, PLAYBACK_SPEED,
-		HEIGHT, WIDTH, PADDING, LOOP_OFFSET:
+		HEIGHT, WIDTH, PADDING, LOOP_OFFSET, MATCH:
 		return true
 	default:
 		return false
@@ -126,7 +130,7 @@ func IsCommand(t TokenType) bool {
 	case TYPE, SLEEP,
 		UP, DOWN, RIGHT, LEFT,
 		ENTER, BACKSPACE, DELETE, TAB,
-		ESCAPE, HOME, INSERT, END, CTRL:
+		ESCAPE, HOME, INSERT, END, CTRL, MATCH, MATCH_ANY:
 		return true
 	default:
 		return false
@@ -136,9 +140,19 @@ func IsCommand(t TokenType) bool {
 // String converts a token to it's human readable string format.
 func (t TokenType) String() string {
 	if IsCommand(t) || IsSetting(t) {
-		return strings.ToTitle(string(t[0])) + strings.ToLower(string(t[1:]))
+		return toCamel(string(t))
 	}
 	return string(t)
+}
+
+func toCamel(s string) string {
+	parts := strings.Split(s, "_")
+	for i, p := range parts {
+		p = strings.ToUpper(p[:1]) + strings.ToLower(p[1:])
+		parts[i] = p
+	}
+
+	return strings.Join(parts, "")
 }
 
 // LookupIdentifier returns whether the identifier is a keyword.
