@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 
 	"github.com/charmbracelet/keygen"
+	"github.com/mattn/go-isatty"
 	gap "github.com/muesli/go-app-paths"
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/ssh"
@@ -32,7 +33,7 @@ var publishCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		fmt.Println(StringStyle.Render("URL: " + url))
+		fmt.Println(StringStyle.Render(url))
 		return nil
 	},
 }
@@ -115,7 +116,9 @@ func sshSession() (*ssh.Session, error) {
 
 // Publish publishes the given GIF file to the web.
 func Publish(ctx context.Context, path string) (string, error) {
-	fmt.Println("Publishing GIF...")
+	if isatty.IsTerminal(os.Stdout.Fd()) {
+		fmt.Println("Publishing GIF...")
+	}
 
 	s, err := sshSession()
 	if err != nil {

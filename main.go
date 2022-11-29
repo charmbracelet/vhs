@@ -31,8 +31,8 @@ var (
 
 	ttydMinVersion = version.Must(version.NewVersion("1.7.2"))
 
-	publish bool
-	outputs *[]string
+	publishFlag bool
+	outputs     *[]string
 
 	rootCmd = &cobra.Command{
 		Use:           "vhs <file>",
@@ -65,6 +65,11 @@ var (
 				return errors.New("no input provided")
 			}
 
+			publishEnv, publishEnvSet := os.LookupEnv("VHS_PUBLISH")
+			if !publishEnvSet && !publishFlag {
+				fmt.Println(FaintStyle.Render("Host your GIF on vhs.charm.sh: vhs publish <file>.gif"))
+			}
+
 			var publishFile string
 			errs := Evaluate(cmd.Context(), string(input), os.Stdout, func(v *VHS) {
 				// Output is being overridden, prevent all outputs
@@ -91,7 +96,7 @@ var (
 				return errors.New("recording failed")
 			}
 
-			if publish && publishFile != "" {
+			if (publishFlag || publishEnv == "true") && publishFile != "" {
 				url, err := Publish(cmd.Context(), publishFile)
 				if err != nil {
 					return err
@@ -209,7 +214,7 @@ func main() {
 }
 
 func init() {
-	rootCmd.Flags().BoolVarP(&publish, "publish", "p", false, "publish your GIF to vhs.charm.sh and get a shareable URL")
+	rootCmd.Flags().BoolVarP(&publishFlag, "publish", "p", false, "publish your GIF to vhs.charm.sh and get a shareable URL")
 	outputs = rootCmd.Flags().StringSliceP("output", "o", []string{}, "file name(s) of video output")
 	themesCmd.Flags().BoolVar(&markdown, "markdown", false, "output as markdown")
 	_ = themesCmd.Flags().MarkHidden("markdown")
