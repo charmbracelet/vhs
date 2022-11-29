@@ -163,6 +163,9 @@ func inputToTape(input string) string {
 
 // quote wraps a string in (single or double) quotes
 func quote(s string) string {
+	if strings.ContainsRune(s, '"') && strings.ContainsRune(s, '\'') {
+		return fmt.Sprintf("`%s`", s)
+	}
 	if strings.ContainsRune(s, '"') {
 		return fmt.Sprintf(`'%s'`, s)
 	}
