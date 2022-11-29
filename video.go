@@ -83,7 +83,7 @@ func MakeGIF(opts VideoOptions) *exec.Cmd {
 
 	// Make a new variable so we don't have to overwrite
 	// config options.
-	var target_file string = opts.Output.GIF
+	var targetFile string = opts.Output.GIF
 
 	if opts.Output.GIF == "" &&
 		opts.Output.WebM == "" &&
