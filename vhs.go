@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"math"
 	"os"
@@ -197,6 +198,10 @@ func (vhs *VHS) Render() error {
 
 // Apply Loop Offset by modifying frame sequence
 func (vhs *VHS) ApplyLoopOffset() error {
+	if vhs.totalFrames <= 0 {
+		return errors.New("no frames")
+	}
+
 	loopOffsetPercentage := vhs.Options.LoopOffset
 
 	// Calculate # of frames to offset from LoopOffset percentage
