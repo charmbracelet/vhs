@@ -101,7 +101,7 @@ var (
 				if err != nil {
 					return err
 				}
-				fmt.Println(StringStyle.Render("URL: " + url))
+				fmt.Println(UrlStyle.Render(url))
 			}
 
 			return nil

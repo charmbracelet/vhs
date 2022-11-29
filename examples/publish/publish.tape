@@ -1,10 +1,7 @@
 Output publish.gif
-Set FontSize 28
+Set FontSize 36
 
-Type 'vhs cassette.tape'
-Sleep 0.5s
-Space
-Type "--publish"
+Type 'vhs cassette.tape --publish'
 Sleep 0.5s
 Enter
-Sleep 7s
+Sleep 10s

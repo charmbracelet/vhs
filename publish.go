@@ -33,7 +33,7 @@ var publishCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		fmt.Println(StringStyle.Render(url))
+		fmt.Println(KeywordStyle.Render(url))
 		return nil
 	},
 }
@@ -117,7 +117,7 @@ func sshSession() (*ssh.Session, error) {
 // Publish publishes the given GIF file to the web.
 func Publish(ctx context.Context, path string) (string, error) {
 	if isatty.IsTerminal(os.Stdout.Fd()) {
-		fmt.Println("Publishing GIF...")
+		fmt.Printf("Publishing %s...\n", path)
 	}
 
 	s, err := sshSession()
