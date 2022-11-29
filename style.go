@@ -33,7 +33,7 @@ var (
 	FaintStyle      = lipgloss.NewStyle().Foreground(lipgloss.AdaptiveColor{Light: "242", Dark: "238"})
 	NoneStyle       = lipgloss.NewStyle()
 	KeywordStyle    = lipgloss.NewStyle()
-	UrlStyle        = lipgloss.NewStyle().Foreground(lipgloss.Color("3"))
+	URLStyle        = lipgloss.NewStyle().Foreground(lipgloss.Color("3"))
 	NumberStyle     = lipgloss.NewStyle().Foreground(lipgloss.Color("3"))
 	StringStyle     = lipgloss.NewStyle().Foreground(lipgloss.Color("10"))
 	TimeStyle       = lipgloss.NewStyle().Foreground(lipgloss.Color("11"))
