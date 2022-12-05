@@ -80,9 +80,6 @@ func DefaultVideoOptions() VideoOptions {
 
 // MakeGIF takes a list of images (as frames) and converts them to a GIF.
 func MakeGIF(opts VideoOptions) *exec.Cmd {
-
-	// Make a new variable so we don't have to overwrite
-	// config options.
 	var targetFile = opts.Output.GIF
 
 	if opts.Output.GIF == "" && opts.Output.WebM == "" && opts.Output.MP4 == "" {
