@@ -89,7 +89,7 @@ func MakeGIF(opts VideoOptions) *exec.Cmd {
 		opts.Output.WebM == "" &&
 		opts.Output.MP4 == "" {
 
-		target_file = "out.gif"
+		targetFile = "out.gif"
 	} else if opts.Output.GIF == "" {
 		return nil
 	}
