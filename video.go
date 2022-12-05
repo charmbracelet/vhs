@@ -116,7 +116,7 @@ func MakeGIF(opts VideoOptions) *exec.Cmd {
 			opts.BackgroundColor,
 		),
 		"-map", "[out]",
-		target_file,
+		targetFile,
 	)
 }
 
