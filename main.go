@@ -15,6 +15,7 @@ import (
 	"syscall"
 
 	version "github.com/hashicorp/go-version"
+	"github.com/mattn/go-isatty"
 	"github.com/spf13/cobra"
 )
 
@@ -54,7 +55,7 @@ var (
 				if err != nil {
 					return err
 				}
-				fmt.Println(FileStyle.Render("File: " + args[0]))
+				fmt.Println(GrayStyle.Render("File: " + args[0]))
 			}
 
 			input, err := io.ReadAll(in)
@@ -97,11 +98,23 @@ var (
 			}
 
 			if (publishFlag || publishEnv == "true") && publishFile != "" {
+				if isatty.IsTerminal(os.Stdout.Fd()) {
+					fmt.Printf(GrayStyle.Render("Publishing %s... "), publishFile)
+				}
+
 				url, err := Publish(cmd.Context(), publishFile)
 				if err != nil {
 					return err
 				}
+				if isatty.IsTerminal(os.Stdout.Fd()) {
+					fmt.Println(StringStyle.Render("Done!"))
+					publishShareInstructions(url)
+				}
+
 				fmt.Println(URLStyle.Render(url))
+				if isatty.IsTerminal(os.Stdout.Fd()) {
+					fmt.Println()
+				}
 			}
 
 			return nil

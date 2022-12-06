@@ -88,7 +88,8 @@ func MakeGIF(opts VideoOptions) *exec.Cmd {
 		return nil
 	}
 
-	fmt.Printf("Creating %s...\n", opts.Output.GIF)
+	fmt.Printf(GrayStyle.Render("Creating %s..."), opts.Output.GIF)
+	fmt.Println()
 
 	//nolint:gosec
 	return exec.Command(
