@@ -232,6 +232,8 @@ var Settings = map[string]CommandFunc{
 	"Width":         ExecuteSetWidth,
 	"Shell":         ExecuteSetShell,
 	"LoopOffset":    ExecuteLoopOffset,
+	"ImageFrame":    ExecuteSetImageFrame,
+	"FrameSize":     ExecuteSetFrameSize,
 }
 
 // ExecuteSet applies the settings on the running vhs specified by the
@@ -349,6 +351,16 @@ func ExecuteLoopOffset(c Command, v *VHS) {
 		return
 	}
 	v.Options.LoopOffset = loopOffset
+}
+
+// ExecuteSetImageFrame sets vhs frame image
+func ExecuteSetImageFrame(c Command, v *VHS) {
+	v.Options.Video.ImageFrame = c.Args
+}
+
+// ExecuteSetImageFrame sets vhs frame size
+func ExecuteSetFrameSize(c Command, v *VHS) {
+	v.Options.Video.FrameSize, _ = strconv.Atoi(c.Args)
 }
 
 func getTheme(s string) (Theme, error) {

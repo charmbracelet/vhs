@@ -50,9 +50,9 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	}
 
 	video := v.Options.Video
-	minDimension := video.Padding + video.Padding
+	minDimension := (2 * video.Padding) + (2 * video.FrameSize)
 	if video.Height < minDimension || video.Width < minDimension {
-		v.Errors = append(v.Errors, fmt.Errorf("height and width must be greater than %d", minDimension))
+		v.Errors = append(v.Errors, fmt.Errorf("width and height must be greater than %d to account for padding and frames", minDimension))
 	}
 
 	if len(v.Errors) > 0 {
