@@ -111,6 +111,23 @@ Type "I'm so edgy!"
 Sleep 1
 ```
 
+### Image Frame
+
+<img width="600" src="./set-image-frame.gif">
+
+```
+Output examples/settings/set-image-frame.gif
+Set FontSize 32
+Set Height 150
+
+Set ImageFrame examples/settings/image.jpg
+Set FrameSize 20
+
+Type "I have a frame!"
+Sleep 1s
+```
+
+
 ### Theme
 
 <img width="600" src="./set-theme.gif" />
