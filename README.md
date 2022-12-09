@@ -65,6 +65,9 @@ All done! You should see a new file called `demo.gif` (or whatever you named
 the `Output`) in the directory.
 
 <img alt="A GIF produced by the VHS code above" src="https://stuff.charm.sh/vhs/examples/demo.gif" width="600" />
+<a href="https://github.com/charmbracelet/vhs/#badge">
+  <img width="150" alt="Made with VHS" src="https://stuff.charm.sh/vhs/badge.svg" />
+</a>
 
 For more examples see the [`examples/`](https://github.com/charmbracelet/vhs/tree/main/examples) directory.
 
@@ -544,6 +547,27 @@ support syntax highlighting with tree-sitter:
 > [🌳 charmbracelet/tree-sitter-vhs](https://github.com/charmbracelet/tree-sitter-vhs)
 
 It works great with Neovim, Emacs, and so on!
+
+## Badge
+
+Love VHS? Tell the world. Add a "Made with VHS" badge to your GIFs.
+
+<a href="github.com/charmbracelet/vhs">
+  <img alt="Made with VHS" src="https://stuff.charm.sh/vhs/badge.svg" />
+</a>
+
+Markdown:
+
+```markdown
+[![Made with VHS](https://stuff.charm.sh/vhs/badge.svg)](https://github.com/charmbracelet/vhs)
+```
+
+HTML:
+```html
+<a href="github.com/charmbracelet/vhs">
+  <img width="150" alt="Made with VHS" src="https://stuff.charm.sh/vhs/badge.svg" />
+</a>
+```
 
 ## Feedback
 
