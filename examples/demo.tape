@@ -20,8 +20,8 @@
 #   Set Padding <number>            Set the padding of the terminal
 #   Set Framerate <number>          Set the framerate of the recording
 #   Set PlaybackSpeed <float>       Set the playback speed of the recording
-#   Set ImageFrame <file>           Set an image to frame the terminal
-#   Set Margin <number>          Set the frame size. Has no effect if ImageFrame isn't set.
+#   Set ImageFrame <file|#000000>   Set the file or color the margin will be filled with.
+#   Set Margin <number>             Set the size of the margin. Has no effect if ImageFrame isn't set.
 #
 # Sleep:
 #   Sleep <time>                    Sleep for a set amount of <time> in seconds
