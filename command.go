@@ -232,7 +232,7 @@ var Settings = map[string]CommandFunc{
 	"Width":         ExecuteSetWidth,
 	"Shell":         ExecuteSetShell,
 	"LoopOffset":    ExecuteLoopOffset,
-	"ImageFrame":    ExecuteSetImageFrame,
+	"MarginFill":    ExecuteSetMarginFill,
 	"Margin":        ExecuteSetMargin,
 }
 
@@ -353,9 +353,9 @@ func ExecuteLoopOffset(c Command, v *VHS) {
 	v.Options.LoopOffset = loopOffset
 }
 
-// ExecuteSetImageFrame sets vhs frame image
-func ExecuteSetImageFrame(c Command, v *VHS) {
-	v.Options.Video.ImageFrame = c.Args
+// ExecuteSetMarginFill sets vhs margin fill
+func ExecuteSetMarginFill(c Command, v *VHS) {
+	v.Options.Video.MarginFill = c.Args
 
 	if strings.HasPrefix(c.Args, "#") {
 		// TODO: verify hex color format (length & characters)
@@ -366,7 +366,7 @@ func ExecuteSetImageFrame(c Command, v *VHS) {
 	}
 }
 
-// ExecuteSetImageFrame sets vhs frame size
+// ExecuteSetMargin sets vhs margin size
 func ExecuteSetMargin(c Command, v *VHS) {
 	v.Options.Video.Margin, _ = strconv.Atoi(c.Args)
 }

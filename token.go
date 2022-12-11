@@ -71,6 +71,7 @@ const (
 	PAGEUP         = "PAGEUP"
 	PAGEDOWN       = "PAGEDOWN"
 	IMAGE_FRAME    = "IMAGE_FRAME" //nolint:revive
+	MARGIN_FILL    = "MARGIN_FILL" //nolint:revive
 	MARGIN         = "MARGIN"
 )
 
@@ -103,7 +104,7 @@ var keywords = map[string]TokenType{
 	"Output":        OUTPUT,
 	"Shell":         SHELL,
 	"FontFamily":    FONT_FAMILY,
-	"ImageFrame":    IMAGE_FRAME,
+	"MarginFill":    MARGIN_FILL,
 	"Margin":        MARGIN,
 	"FontSize":      FONT_SIZE,
 	"Framerate":     FRAMERATE,
@@ -123,7 +124,7 @@ func IsSetting(t TokenType) bool {
 	switch t {
 	case SHELL, FONT_FAMILY, FONT_SIZE, LETTER_SPACING, LINE_HEIGHT,
 		FRAMERATE, TYPING_SPEED, THEME, PLAYBACK_SPEED,
-		HEIGHT, WIDTH, PADDING, LOOP_OFFSET, IMAGE_FRAME, MARGIN:
+		HEIGHT, WIDTH, PADDING, LOOP_OFFSET, MARGIN_FILL, MARGIN:
 		return true
 	default:
 		return false

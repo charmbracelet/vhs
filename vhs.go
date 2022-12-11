@@ -135,7 +135,7 @@ func (vhs *VHS) Setup() {
 	// added during the render.
 	padding := vhs.Options.Video.Padding
 	framing := 0
-	if vhs.Options.Video.ImageFrame != "" {
+	if vhs.Options.Video.MarginFill != "" {
 		// Ensures margins are zero if image frame is not provided,
 		// Even if frame size is set.
 		framing = vhs.Options.Video.Margin

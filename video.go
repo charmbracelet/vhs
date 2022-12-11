@@ -53,7 +53,7 @@ type VideoOptions struct {
 	Padding         int
 	BackgroundColor string
 	StartingFrame   int
-	ImageFrame      string
+	MarginFill      string
 	Margin          int
 	MarginIsColor   bool
 }
@@ -72,7 +72,7 @@ const (
 // to a GIF, which are used if they are not overridden.
 func DefaultVideoOptions() VideoOptions {
 	return VideoOptions{
-		ImageFrame:      "",
+		MarginFill:      "",
 		Margin:          25,
 		MarginIsColor:   false,
 		CleanupFrames:   true,
@@ -114,7 +114,7 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 	}
 
 	// Set margin input if one is provided
-	if opts.ImageFrame != "" {
+	if opts.MarginFill != "" {
 		if opts.MarginIsColor {
 			// Plain color
 
@@ -123,7 +123,7 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 				"-i",
 				fmt.Sprintf(
 					"color=%s:s=%dx%d",
-					opts.ImageFrame,
+					opts.MarginFill,
 					opts.Width,
 					opts.Height,
 				),
@@ -133,7 +133,7 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 
 			args = append(args,
 				"-loop", "1",
-				"-i", opts.ImageFrame,
+				"-i", opts.MarginFill,
 			)
 		}
 	}
@@ -147,7 +147,7 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 	// values depend on settings.
 	var termWidth int
 	var termHeight int
-	if opts.ImageFrame != "" {
+	if opts.MarginFill != "" {
 		termWidth = opts.Width - (opts.Padding * 2) - (opts.Margin * 2)
 		termHeight = opts.Height - (opts.Padding * 2) - (opts.Margin * 2)
 	} else {
@@ -183,7 +183,7 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 	)
 	prevStageName = "bordered"
 
-	if opts.ImageFrame != "" {
+	if opts.MarginFill != "" {
 		// Overlay terminal on background
 
 		// ffmpeg will complain if the final filter ends with a semicolon,
