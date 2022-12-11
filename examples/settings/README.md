@@ -111,20 +111,24 @@ Type "I'm so edgy!"
 Sleep 1
 ```
 
-### Image Frame
+### Margins
 
-<img width="600" src="./set-image-frame.gif">
+<img width="600" src="./set-margin.gif">
 
 ```
-Output examples/settings/set-image-frame.gif
-Set FontSize 32
-Set Height 150
+Output "examples/settings/set-margin.gif"
+Set FontSize 20
+Set Width 600
+Set Height 300
+Set Padding 20
 
-Set ImageFrame examples/settings/image.jpg
+# You can also use an image:
+# Set MarginFill "path/to/image.png"
+Set MarginFill "#79B8C3"
 Set Margin 20
 
-Type "I have a frame!"
-Sleep 1s
+Type "I'm on top of an image!"
+Sleep 2s
 ```
 
 
