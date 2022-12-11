@@ -52,7 +52,7 @@ type VideoOptions struct {
 	BackgroundColor string
 	StartingFrame   int
 	ImageFrame      string
-	FrameSize       int
+	Margin          int
 }
 
 const defaultFramerate = 50
@@ -68,7 +68,7 @@ const defaultStartingFrame = 1
 func DefaultVideoOptions() VideoOptions {
 	return VideoOptions{
 		ImageFrame:      "",
-		FrameSize:       25,
+		Margin:          25,
 		CleanupFrames:   true,
 		Framerate:       defaultFramerate,
 		Input:           randomDir(),
@@ -116,8 +116,8 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 	var termWidth int
 	var termHeight int
 	if opts.ImageFrame != "" {
-		termWidth = opts.Width - (opts.Padding * 2) - (opts.FrameSize * 2)
-		termHeight = opts.Height - (opts.Padding * 2) - (opts.FrameSize * 2)
+		termWidth = opts.Width - (opts.Padding * 2) - (opts.Margin * 2)
+		termHeight = opts.Height - (opts.Padding * 2) - (opts.Margin * 2)
 	} else {
 		termWidth = opts.Width - (opts.Padding * 2)
 		termHeight = opts.Height - (opts.Padding * 2)

@@ -121,7 +121,7 @@ Set FontSize 32
 Set Height 150
 
 Set ImageFrame examples/settings/image.jpg
-Set FrameSize 20
+Set Margin 20
 
 Type "I have a frame!"
 Sleep 1s

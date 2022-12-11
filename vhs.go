@@ -116,7 +116,7 @@ func (vhs *VHS) Setup() {
 	if vhs.Options.Video.ImageFrame != "" {
 		// Ensures margins are zero if image frame is not provided,
 		// Even if frame size is set.
-		framing = vhs.Options.Video.FrameSize
+		framing = vhs.Options.Video.Margin
 	}
 	width := vhs.Options.Video.Width - (2 * padding) - (2 * framing)
 	height := vhs.Options.Video.Height - (2 * padding) - (2 * framing)

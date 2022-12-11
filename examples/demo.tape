@@ -21,7 +21,7 @@
 #   Set Framerate <number>          Set the framerate of the recording
 #   Set PlaybackSpeed <float>       Set the playback speed of the recording
 #   Set ImageFrame <file>           Set an image to frame the terminal
-#   Set FrameSize <number>          Set the frame size. Has no effect if ImageFrame isn't set.
+#   Set Margin <number>          Set the frame size. Has no effect if ImageFrame isn't set.
 #
 # Sleep:
 #   Sleep <time>                    Sleep for a set amount of <time> in seconds
