@@ -64,43 +64,50 @@ func (p *Parser) parseCommand() Command {
 		return p.parseRequire()
 	case SHOW:
 		return p.parseShow()
-	case MATCH:
-		return p.parseMatch()
-	case MATCH_ANY:
-		return p.parseMatchAny()
+	case MATCH_LINE:
+		return p.parseMatchLine()
+	case MATCH_SCREEN:
+		return p.parseMatchScreen()
 	default:
 		p.errors = append(p.errors, NewError(p.cur, "Invalid command: "+p.cur.Literal))
 		return Command{Type: ILLEGAL}
 	}
 }
 
-func (p *Parser) parseMatchAny() Command {
-	cmd := Command{Type: MATCH_ANY}
-	if p.peek.Type == STRING {
-		p.nextToken()
-		if _, err := regexp.Compile(p.cur.Literal); err != nil {
-			p.errors = append(p.errors, NewError(p.cur, fmt.Sprintf("Invalid regular expression '%s': %v", p.cur.Literal, err)))
-			return cmd
-		}
+func (p *Parser) parseMatchLine() Command {
+	cmd := Command{Type: MATCH_LINE}
 
-		cmd.Args = p.cur.Literal
+	if p.peek.Type != STRING {
+		p.errors = append(p.errors, NewError(p.peek, p.cur.Literal+" expects string"))
+		return cmd
 	}
+
+	p.nextToken()
+	if _, err := regexp.Compile(p.cur.Literal); err != nil {
+		p.errors = append(p.errors, NewError(p.cur, fmt.Sprintf("Invalid regular expression '%s': %v", p.cur.Literal, err)))
+		return cmd
+	}
+
+	cmd.Args = p.cur.Literal
 
 	return cmd
 }
 
-func (p *Parser) parseMatch() Command {
-	cmd := Command{Type: MATCH}
-	if p.peek.Type == STRING {
-		p.nextToken()
-		if _, err := regexp.Compile(p.cur.Literal); err != nil {
-			p.errors = append(p.errors, NewError(p.cur, fmt.Sprintf("Invalid regular expression '%s': %v", p.cur.Literal, err)))
-			return cmd
-		}
+func (p *Parser) parseMatchScreen() Command {
+	cmd := Command{Type: MATCH_SCREEN}
 
-		cmd.Args = p.cur.Literal
+	if p.peek.Type != STRING {
+		p.errors = append(p.errors, NewError(p.peek, p.cur.Literal+" expects string"))
+		return cmd
 	}
 
+	p.nextToken()
+	if _, err := regexp.Compile(p.cur.Literal); err != nil {
+		p.errors = append(p.errors, NewError(p.cur, fmt.Sprintf("Invalid regular expression '%s': %v", p.cur.Literal, err)))
+		return cmd
+	}
+
+	cmd.Args = p.cur.Literal
 	return cmd
 }
 

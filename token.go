@@ -66,9 +66,9 @@ const (
 	TYPING_SPEED   = "TYPING_SPEED"   //nolint:revive
 	PADDING        = "PADDING"
 	THEME          = "THEME"
-	LOOP_OFFSET    = "LOOP_OFFSET" //nolint:revive
-	MATCH          = "MATCH"
-	MATCH_ANY      = "MATCH_ANY" //nolint:revive
+	LOOP_OFFSET    = "LOOP_OFFSET"  //nolint:revive
+	MATCH_LINE     = "MATCH_LINE"   //nolint:revive
+	MATCH_SCREEN   = "MATCH_SCREEN" //nolint:revive
 )
 
 var keywords = map[string]TokenType{
@@ -108,8 +108,8 @@ var keywords = map[string]TokenType{
 	"Theme":         THEME,
 	"Width":         WIDTH,
 	"LoopOffset":    LOOP_OFFSET,
-	"Match":         MATCH,
-	"MatchAny":      MATCH_ANY,
+	"MatchLine":     MATCH_LINE,
+	"MatchScreen":   MATCH_SCREEN,
 }
 
 // IsSetting returns whether a token is a setting.
@@ -117,7 +117,7 @@ func IsSetting(t TokenType) bool {
 	switch t {
 	case SHELL, FONT_FAMILY, FONT_SIZE, LETTER_SPACING, LINE_HEIGHT,
 		FRAMERATE, TYPING_SPEED, THEME, PLAYBACK_SPEED,
-		HEIGHT, WIDTH, PADDING, LOOP_OFFSET, MATCH:
+		HEIGHT, WIDTH, PADDING, LOOP_OFFSET:
 		return true
 	default:
 		return false
@@ -130,7 +130,7 @@ func IsCommand(t TokenType) bool {
 	case TYPE, SLEEP,
 		UP, DOWN, RIGHT, LEFT,
 		ENTER, BACKSPACE, DELETE, TAB,
-		ESCAPE, HOME, INSERT, END, CTRL, MATCH, MATCH_ANY:
+		ESCAPE, HOME, INSERT, END, CTRL, MATCH_LINE, MATCH_SCREEN:
 		return true
 	default:
 		return false

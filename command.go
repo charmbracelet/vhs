@@ -36,8 +36,8 @@ var CommandTypes = []CommandType{ //nolint: deadcode
 	TAB,
 	TYPE,
 	UP,
-	MATCH,
-	MATCH_ANY,
+	MATCH_LINE,
+	MATCH_SCREEN,
 }
 
 // String returns the string representation of the command.
@@ -53,26 +53,26 @@ type ContextCommandFunc func(ctx context.Context, c Command, v *VHS)
 
 // CommandFuncs maps command types to their executable functions.
 var CommandFuncs = map[CommandType]CommandFunc{
-	BACKSPACE: ExecuteKey(input.Backspace),
-	DOWN:      ExecuteKey(input.ArrowDown),
-	ENTER:     ExecuteKey(input.Enter),
-	LEFT:      ExecuteKey(input.ArrowLeft),
-	RIGHT:     ExecuteKey(input.ArrowRight),
-	SPACE:     ExecuteKey(input.Space),
-	UP:        ExecuteKey(input.ArrowUp),
-	TAB:       ExecuteKey(input.Tab),
-	ESCAPE:    ExecuteKey(input.Escape),
-	HIDE:      ExecuteHide,
-	REQUIRE:   ExecuteRequire,
-	SHOW:      ExecuteShow,
-	SET:       ExecuteSet,
-	OUTPUT:    ExecuteOutput,
-	SLEEP:     ExecuteSleep,
-	TYPE:      ExecuteType,
-	CTRL:      ExecuteCtrl,
-	ILLEGAL:   ExecuteNoop,
-	MATCH:     ExecuteMatch,
-	MATCH_ANY: ExecuteMatchAny,
+	BACKSPACE:    ExecuteKey(input.Backspace),
+	DOWN:         ExecuteKey(input.ArrowDown),
+	ENTER:        ExecuteKey(input.Enter),
+	LEFT:         ExecuteKey(input.ArrowLeft),
+	RIGHT:        ExecuteKey(input.ArrowRight),
+	SPACE:        ExecuteKey(input.Space),
+	UP:           ExecuteKey(input.ArrowUp),
+	TAB:          ExecuteKey(input.Tab),
+	ESCAPE:       ExecuteKey(input.Escape),
+	HIDE:         ExecuteHide,
+	REQUIRE:      ExecuteRequire,
+	SHOW:         ExecuteShow,
+	SET:          ExecuteSet,
+	OUTPUT:       ExecuteOutput,
+	SLEEP:        ExecuteSleep,
+	TYPE:         ExecuteType,
+	CTRL:         ExecuteCtrl,
+	ILLEGAL:      ExecuteNoop,
+	MATCH_LINE:   ExecuteMatchLine,
+	MATCH_SCREEN: ExecuteMatchScreen,
 }
 
 // Command represents a command with options and arguments.
@@ -127,19 +127,10 @@ func ExecuteKey(k input.Key) CommandFunc {
 	}
 }
 
-// ExecuteMatch is a CommandFunc that waits for the current
+// ExecuteMatchLine is a CommandFunc that waits for the current
 // line to match the given regex.
-func ExecuteMatch(c Command, v *VHS) {
-	var rx *regexp.Regexp
-	if c.Args == "" {
-		rx = v.Options.Match
-	} else {
-		rx = regexp.MustCompile(c.Args)
-	}
-
-	if rx == nil {
-		return
-	}
+func ExecuteMatchLine(c Command, v *VHS) {
+	rx := regexp.MustCompile(c.Args)
 
 	t := time.NewTicker(10 * time.Millisecond)
 	defer t.Stop()
@@ -156,19 +147,10 @@ func ExecuteMatch(c Command, v *VHS) {
 	}
 }
 
-// ExecuteMatchAny is a CommandFunc that waits for the given regex
+// ExecuteMatchScreen is a CommandFunc that waits for the given regex
 // to match any line on the screen.
-func ExecuteMatchAny(c Command, v *VHS) {
-	var rx *regexp.Regexp
-	if c.Args == "" {
-		rx = v.Options.Match
-	} else {
-		rx = regexp.MustCompile(c.Args)
-	}
-
-	if rx == nil {
-		return
-	}
+func ExecuteMatchScreen(c Command, v *VHS) {
+	rx := regexp.MustCompile(c.Args)
 
 	t := time.NewTicker(10 * time.Millisecond)
 	defer t.Stop()
@@ -179,10 +161,8 @@ func ExecuteMatchAny(c Command, v *VHS) {
 			return
 		}
 
-		for _, line := range lines {
-			if rx.MatchString(line) {
-				return
-			}
+		if rx.MatchString(strings.Join(lines, "\n")) {
+			return
 		}
 	}
 }
@@ -278,7 +258,6 @@ var Settings = map[string]CommandFunc{
 	"Width":         ExecuteSetWidth,
 	"Shell":         ExecuteSetShell,
 	"LoopOffset":    ExecuteLoopOffset,
-	"Match":         ExecuteSetMatch,
 }
 
 // ExecuteSet applies the settings on the running vhs specified by the
@@ -367,16 +346,6 @@ func ExecuteSetTypingSpeed(c Command, v *VHS) {
 		return
 	}
 	v.Options.TypingSpeed = typingSpeed
-}
-
-// ExecuteSetMatch applies the default prompt on the vhs.
-func ExecuteSetMatch(c Command, v *VHS) {
-	rx, err := regexp.Compile(c.Args)
-	if err != nil {
-		return
-	}
-
-	v.Options.Match = rx
 }
 
 // ExecuteSetPadding applies the padding on the vhs.

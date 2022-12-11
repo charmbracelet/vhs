@@ -23,7 +23,7 @@ func (c Command) Highlight(faint bool) string {
 	}
 
 	switch c.Type {
-	case MATCH, MATCH_ANY:
+	case MATCH_LINE, MATCH_SCREEN:
 		argsStyle = StringStyle
 	case SET:
 		optionsStyle = KeywordStyle
