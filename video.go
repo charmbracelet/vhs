@@ -55,6 +55,7 @@ type VideoOptions struct {
 	StartingFrame   int
 	ImageFrame      string
 	Margin          int
+	MarginIsColor   bool
 }
 
 const (
@@ -73,6 +74,7 @@ func DefaultVideoOptions() VideoOptions {
 	return VideoOptions{
 		ImageFrame:      "",
 		Margin:          25,
+		MarginIsColor:   false,
 		CleanupFrames:   true,
 		Framerate:       defaultFramerate,
 		Input:           randomDir(),
@@ -111,12 +113,29 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 		"-i", filepath.Join(opts.Input, cursorFrameFormat),
 	}
 
-	// Add frame image as stream 2 if one is provided
+	// Set margin input if one is provided
 	if opts.ImageFrame != "" {
-		args = append(args,
-			"-loop", "1",
-			"-i", opts.ImageFrame,
-		)
+		if opts.MarginIsColor {
+			// Plain color
+
+			args = append(args,
+				"-f", "lavfi",
+				"-i",
+				fmt.Sprintf(
+					"color=%s:s=%dx%d",
+					opts.ImageFrame,
+					opts.Width,
+					opts.Height,
+				),
+			)
+		} else {
+			// Image
+
+			args = append(args,
+				"-loop", "1",
+				"-i", opts.ImageFrame,
+			)
+		}
 	}
 
 	// Build filter code
