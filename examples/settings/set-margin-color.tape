@@ -4,7 +4,7 @@ Set Width 600
 Set Height 300
 Set Padding 20
 
-Set ImageFrame "#79B8C3"
+Set MarginFill "#79B8C3"
 Set Margin 30
 
 Type "I'm on top of a color!"
