@@ -72,7 +72,7 @@ const (
 	PAGEDOWN       = "PAGEDOWN"
 	IMAGE_FRAME    = "IMAGE_FRAME" //nolint:revive
 	MARGIN_FILL    = "MARGIN_FILL" //nolint:revive
-	MARGIN         = "MARGIN"
+	MARGIN_SIZE    = "MARGIN_SIZE" //nolint:revive
 )
 
 var keywords = map[string]TokenType{
@@ -105,7 +105,7 @@ var keywords = map[string]TokenType{
 	"Shell":         SHELL,
 	"FontFamily":    FONT_FAMILY,
 	"MarginFill":    MARGIN_FILL,
-	"Margin":        MARGIN,
+	"MarginSize":    MARGIN_SIZE,
 	"FontSize":      FONT_SIZE,
 	"Framerate":     FRAMERATE,
 	"Height":        HEIGHT,
@@ -124,7 +124,7 @@ func IsSetting(t TokenType) bool {
 	switch t {
 	case SHELL, FONT_FAMILY, FONT_SIZE, LETTER_SPACING, LINE_HEIGHT,
 		FRAMERATE, TYPING_SPEED, THEME, PLAYBACK_SPEED,
-		HEIGHT, WIDTH, PADDING, LOOP_OFFSET, MARGIN_FILL, MARGIN:
+		HEIGHT, WIDTH, PADDING, LOOP_OFFSET, MARGIN_FILL, MARGIN_SIZE:
 		return true
 	default:
 		return false
