@@ -48,7 +48,7 @@ Type "One moment please..."
 Sleep 0.5s
 ```
 
-### Font Size 
+### Font Size
 
 <img width="600" src="./set-font-size-10.gif" />
 <img width="600" src="./set-font-size-20.gif" />
@@ -125,7 +125,7 @@ Set Padding 20
 # You can also use an image:
 # Set MarginFill "path/to/image.png"
 Set MarginFill "#79B8C3"
-Set Margin 20
+Set MarginSize 20
 
 Type "I'm on top of an image!"
 Sleep 2s

@@ -52,7 +52,7 @@ type VideoOptions struct {
 	BackgroundColor string
 	StartingFrame   int
 	MarginFill      string
-	Margin          int
+	MarginSize      int
 	MarginIsColor   bool
 }
 
@@ -69,7 +69,7 @@ const defaultStartingFrame = 1
 func DefaultVideoOptions() VideoOptions {
 	return VideoOptions{
 		MarginFill:      "",
-		Margin:          25,
+		MarginSize:      25,
 		MarginIsColor:   false,
 		CleanupFrames:   true,
 		Framerate:       defaultFramerate,
@@ -135,8 +135,8 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 	var termWidth int
 	var termHeight int
 	if opts.MarginFill != "" {
-		termWidth = opts.Width - (opts.Padding * 2) - (opts.Margin * 2)
-		termHeight = opts.Height - (opts.Padding * 2) - (opts.Margin * 2)
+		termWidth = opts.Width - (opts.Padding * 2) - (opts.MarginSize * 2)
+		termHeight = opts.Height - (opts.Padding * 2) - (opts.MarginSize * 2)
 	} else {
 		termWidth = opts.Width - (opts.Padding * 2)
 		termHeight = opts.Height - (opts.Padding * 2)

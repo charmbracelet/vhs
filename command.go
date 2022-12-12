@@ -215,7 +215,7 @@ var Settings = map[string]CommandFunc{
 	"Shell":         ExecuteSetShell,
 	"LoopOffset":    ExecuteLoopOffset,
 	"MarginFill":    ExecuteSetMarginFill,
-	"Margin":        ExecuteSetMargin,
+	"MarginSize":    ExecuteSetMarginSize,
 }
 
 // ExecuteSet applies the settings on the running vhs specified by the
@@ -349,9 +349,9 @@ func ExecuteSetMarginFill(c Command, v *VHS) {
 	}
 }
 
-// ExecuteSetMargin sets vhs margin size
-func ExecuteSetMargin(c Command, v *VHS) {
-	v.Options.Video.Margin, _ = strconv.Atoi(c.Args)
+// ExecuteSetMarginSize sets vhs margin size
+func ExecuteSetMarginSize(c Command, v *VHS) {
+	v.Options.Video.MarginSize, _ = strconv.Atoi(c.Args)
 }
 
 func getTheme(s string) (Theme, error) {
