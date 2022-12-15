@@ -128,7 +128,7 @@ func inputToTape(input string) string {
 	s = cursorResponse.ReplaceAllString(s, "")
 	s = oscResponse.ReplaceAllString(s, "")
 
-	// Substitue escape sequences for commands
+	// Substitute escape sequences for commands
 	for sequence, command := range EscapeSequences {
 		s = strings.ReplaceAll(s, sequence, "\n"+command+"\n")
 	}
