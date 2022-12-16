@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"strconv"
 )
 
 // EvaluatorOption is a function that can be used to modify the VHS instance.
@@ -42,25 +41,6 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	minDimension := (2 * video.Padding) + (2 * video.MarginSize)
 	if video.Height < minDimension || video.Width < minDimension {
 		v.Errors = append(v.Errors, fmt.Errorf("width and height must be greater than %d to account for padding and frames", minDimension))
-	}
-
-	// Check if margin color is a valid hex string
-	if video.MarginIsColor {
-		_, err := strconv.ParseUint(
-			video.MarginFill[1:],
-			16,
-			64,
-		)
-
-		if err != nil || len(video.MarginFill) != 7 {
-			v.Errors = append(
-				v.Errors,
-				fmt.Errorf(
-					"\"%s\" is not a valid color",
-					video.MarginFill,
-				),
-			)
-		}
 	}
 
 	if len(v.Errors) > 0 {

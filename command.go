@@ -340,7 +340,8 @@ func ExecuteLoopOffset(c Command, v *VHS) {
 func ExecuteSetMarginFill(c Command, v *VHS) {
 	v.Options.Video.MarginFill = c.Args
 
-	// We check if this hex string is valid elsewhere.
+	// Is this a hex string or a file name?
+	// Hex string format is checked while parsing.
 	if strings.HasPrefix(c.Args, "#") {
 		v.Options.Video.MarginIsColor = true
 	} else {
