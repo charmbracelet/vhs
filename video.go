@@ -85,7 +85,7 @@ func DefaultVideoOptions() VideoOptions {
 	}
 }
 
-// BuildFFopts builds an ffmpeg command from a VideoOptions
+// buildFFopts assembles an ffmpeg command from some VideoOptions
 func buildFFopts(opts VideoOptions, targetFile string) []string {
 	// Input frame options, used no matter what
 	// Stream 0: text frames
@@ -100,11 +100,10 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 		"-i", filepath.Join(opts.Input, cursorFrameFormat),
 	}
 
-	// Set margin input if one is provided
+	// Add a margin stream if one is provided
 	if opts.MarginFill != "" {
 		if opts.MarginIsColor {
 			// Plain color
-
 			args = append(args,
 				"-f", "lavfi",
 				"-i",
@@ -117,7 +116,6 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 			)
 		} else {
 			// Image
-
 			args = append(args,
 				"-loop", "1",
 				"-i", opts.MarginFill,
@@ -129,9 +127,7 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 	var filterArgs strings.Builder
 	var prevStageName string
 
-	// Compute dimensions.
-	// We do this separately because these
-	// values depend on settings.
+	// Compute dimensions
 	var termWidth int
 	var termHeight int
 	if opts.MarginFill != "" {
@@ -142,7 +138,7 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 		termHeight = opts.Height - (opts.Padding * 2)
 	}
 
-	// The following is used by ALL formats:
+	// The following filters are always used
 	filterArgs.WriteString(
 		fmt.Sprintf(`
 		[0][1]overlay[merged];
@@ -170,11 +166,10 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 	)
 	prevStageName = "bordered"
 
+	// Overlay terminal on margin
 	if opts.MarginFill != "" {
-		// Overlay terminal on background
-
 		// ffmpeg will complain if the final filter ends with a semicolon,
-		// so we add one right BEFORE adding additional options.
+		// so we add one BEFORE we start adding filters.
 		filterArgs.WriteString(";")
 		filterArgs.WriteString(
 			fmt.Sprintf(`
@@ -190,14 +185,13 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 	}
 
 	// Format-specific options
-
 	if filepath.Ext(targetFile) == ".gif" {
 		filterArgs.WriteString(";")
 		filterArgs.WriteString(
 			fmt.Sprintf(`
-			[%s]split[p_a][p_b];
-			[p_a]palettegen=max_colors=256[plt];
-			[p_b][plt]paletteuse[palette]`,
+			[%s]split[plt_a][plt_b];
+			[plt_a]palettegen=max_colors=256[plt];
+			[plt_b][plt]paletteuse[palette]`,
 				prevStageName,
 			),
 		)
