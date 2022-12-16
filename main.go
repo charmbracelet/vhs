@@ -68,7 +68,7 @@ var (
 
 			publishEnv, publishEnvSet := os.LookupEnv("VHS_PUBLISH")
 			if !publishEnvSet && !publishFlag {
-				fmt.Println(FaintStyle.Render("Share your GIF: vhs publish <file>.gif"))
+				fmt.Println(FaintStyle.Render("Host your GIF on vhs.charm.sh: vhs publish <file>.gif"))
 			}
 
 			var publishFile string
