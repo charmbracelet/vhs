@@ -15,64 +15,66 @@ type Token struct {
 
 // Tokens for the VHS language
 const (
-	AT             = "@"
-	EQUAL          = "="
-	PLUS           = "+"
-	PERCENT        = "%"
-	SLASH          = "/"
-	DOT            = "."
-	DASH           = "-"
-	PX             = "PX"
-	EM             = "EM"
-	EOF            = "EOF"
-	ILLEGAL        = "ILLEGAL"
-	SPACE          = "SPACE"
-	BACKSPACE      = "BACKSPACE"
-	CTRL           = "CTRL"
-	ALT            = "ALT"
-	ENTER          = "ENTER"
-	NUMBER         = "NUMBER"
-	SET            = "SET"
-	SLEEP          = "SLEEP"
-	STRING         = "STRING"
-	JSON           = "JSON"
-	TYPE           = "TYPE"
-	DOWN           = "DOWN"
-	LEFT           = "LEFT"
-	RIGHT          = "RIGHT"
-	UP             = "UP"
-	TAB            = "TAB"
-	ESCAPE         = "ESCAPE"
-	DELETE         = "DELETE"
-	HOME           = "HOME"
-	INSERT         = "INSERT"
-	END            = "END"
-	HIDE           = "HIDE"
-	REQUIRE        = "REQUIRE"
-	SHOW           = "SHOW"
-	OUTPUT         = "OUTPUT"
-	MILLISECONDS   = "MILLISECONDS"
-	SECONDS        = "SECONDS"
-	MINUTES        = "MINUTES"
-	COMMENT        = "COMMENT"
-	SHELL          = "SHELL"
-	FONT_FAMILY    = "FONT_FAMILY" //nolint:revive
-	FONT_SIZE      = "FONT_SIZE"   //nolint:revive
-	FRAMERATE      = "FRAMERATE"
-	PLAYBACK_SPEED = "PLAYBACK_SPEED" //nolint:revive
-	HEIGHT         = "HEIGHT"
-	WIDTH          = "WIDTH"
-	LETTER_SPACING = "LETTER_SPACING" //nolint:revive
-	LINE_HEIGHT    = "LINE_HEIGHT"    //nolint:revive
-	TYPING_SPEED   = "TYPING_SPEED"   //nolint:revive
-	PADDING        = "PADDING"
-	THEME          = "THEME"
-	LOOP_OFFSET    = "LOOP_OFFSET" //nolint:revive
-	PAGEUP         = "PAGEUP"
-	PAGEDOWN       = "PAGEDOWN"
-	IMAGE_FRAME    = "IMAGE_FRAME" //nolint:revive
-	MARGIN_FILL    = "MARGIN_FILL" //nolint:revive
-	MARGIN_SIZE    = "MARGIN_SIZE" //nolint:revive
+	AT              = "@"
+	EQUAL           = "="
+	PLUS            = "+"
+	PERCENT         = "%"
+	SLASH           = "/"
+	DOT             = "."
+	DASH            = "-"
+	PX              = "PX"
+	EM              = "EM"
+	EOF             = "EOF"
+	ILLEGAL         = "ILLEGAL"
+	SPACE           = "SPACE"
+	BACKSPACE       = "BACKSPACE"
+	ALT             = "ALT"
+	CTRL            = "CTRL"
+	ENTER           = "ENTER"
+	NUMBER          = "NUMBER"
+	SET             = "SET"
+	SLEEP           = "SLEEP"
+	STRING          = "STRING"
+	JSON            = "JSON"
+	TYPE            = "TYPE"
+	DOWN            = "DOWN"
+	LEFT            = "LEFT"
+	RIGHT           = "RIGHT"
+	UP              = "UP"
+	TAB             = "TAB"
+	ESCAPE          = "ESCAPE"
+	DELETE          = "DELETE"
+	HOME            = "HOME"
+	INSERT          = "INSERT"
+	END             = "END"
+	HIDE            = "HIDE"
+	REQUIRE         = "REQUIRE"
+	SHOW            = "SHOW"
+	OUTPUT          = "OUTPUT"
+	MILLISECONDS    = "MILLISECONDS"
+	SECONDS         = "SECONDS"
+	MINUTES         = "MINUTES"
+	COMMENT         = "COMMENT"
+	SHELL           = "SHELL"
+	FONT_FAMILY     = "FONT_FAMILY" //nolint:revive
+	FONT_SIZE       = "FONT_SIZE"   //nolint:revive
+	FRAMERATE       = "FRAMERATE"
+	PLAYBACK_SPEED  = "PLAYBACK_SPEED" //nolint:revive
+	HEIGHT          = "HEIGHT"
+	WIDTH           = "WIDTH"
+	LETTER_SPACING  = "LETTER_SPACING" //nolint:revive
+	LINE_HEIGHT     = "LINE_HEIGHT"    //nolint:revive
+	TYPING_SPEED    = "TYPING_SPEED"   //nolint:revive
+	PADDING         = "PADDING"
+	THEME           = "THEME"
+	PAGEUP          = "PAGEUP"
+	PAGEDOWN        = "PAGEDOWN"
+	LOOP_OFFSET     = "LOOP_OFFSET"     //nolint:revive
+	MARGIN_FILL     = "MARGIN_FILL"     //nolint:revive
+	MARGIN_SIZE     = "MARGIN_SIZE"     //nolint:revive
+	WINDOW_BAR      = "WINDOW_BAR"      //nolint:revive
+	WINDOW_BAR_SIZE = "WINDOW_BAR_SIZE" //nolint:revive
+	CORNER_RADIUS   = "CORNER_RADIUS"   //nolint:revive
 )
 
 var keywords = map[string]TokenType{
@@ -106,6 +108,9 @@ var keywords = map[string]TokenType{
 	"FontFamily":    FONT_FAMILY,
 	"MarginFill":    MARGIN_FILL,
 	"MarginSize":    MARGIN_SIZE,
+	"WindowBar":     WINDOW_BAR,
+	"WindowBarSize": WINDOW_BAR_SIZE,
+	"CornerRadius":  CORNER_RADIUS,
 	"FontSize":      FONT_SIZE,
 	"Framerate":     FRAMERATE,
 	"Height":        HEIGHT,
@@ -123,8 +128,9 @@ var keywords = map[string]TokenType{
 func IsSetting(t TokenType) bool {
 	switch t {
 	case SHELL, FONT_FAMILY, FONT_SIZE, LETTER_SPACING, LINE_HEIGHT,
-		FRAMERATE, TYPING_SPEED, THEME, PLAYBACK_SPEED,
-		HEIGHT, WIDTH, PADDING, LOOP_OFFSET, MARGIN_FILL, MARGIN_SIZE:
+		FRAMERATE, TYPING_SPEED, THEME, PLAYBACK_SPEED, HEIGHT, WIDTH,
+		PADDING, LOOP_OFFSET, MARGIN_FILL, MARGIN_SIZE, WINDOW_BAR,
+		WINDOW_BAR_SIZE, CORNER_RADIUS:
 		return true
 	default:
 		return false

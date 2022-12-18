@@ -136,12 +136,14 @@ func (vhs *VHS) Setup() {
 	padding := vhs.Options.Video.Padding
 	margin := 0
 	if vhs.Options.Video.MarginFill != "" {
-		// Ensures margins are zero if image frame is not provided,
-		// Even if frame size is set.
 		margin = vhs.Options.Video.MarginSize
 	}
+	bar := 0
+	if vhs.Options.Video.WindowBar != "" {
+		bar = vhs.Options.Video.WindowBarSize
+	}
 	width := vhs.Options.Video.Width - (2 * padding) - (2 * margin)
-	height := vhs.Options.Video.Height - (2 * padding) - (2 * margin)
+	height := vhs.Options.Video.Height - (2 * padding) - (2 * margin) - bar
 	vhs.Page = vhs.Page.MustSetViewport(width, height, 0, false)
 
 	// Let's wait until we can access the window.term variable.

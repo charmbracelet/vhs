@@ -234,6 +234,9 @@ var Settings = map[string]CommandFunc{
 	"LoopOffset":    ExecuteLoopOffset,
 	"MarginFill":    ExecuteSetMarginFill,
 	"MarginSize":    ExecuteSetMarginSize,
+	"WindowBar":     ExecuteSetWindowBar,
+	"WindowBarSize": ExecuteSetWindowBarSize,
+	"CornerRadius":  ExecuteSetCornerRadius,
 }
 
 // ExecuteSet applies the settings on the running vhs specified by the
@@ -369,6 +372,21 @@ func ExecuteSetMarginFill(c Command, v *VHS) {
 // ExecuteSetMarginSize sets vhs margin size
 func ExecuteSetMarginSize(c Command, v *VHS) {
 	v.Options.Video.MarginSize, _ = strconv.Atoi(c.Args)
+}
+
+// ExecuteSetWindowBar sets window bar type
+func ExecuteSetWindowBar(c Command, v *VHS) {
+	v.Options.Video.WindowBar = c.Args
+}
+
+// ExecuteSetWindowBar sets window bar size
+func ExecuteSetWindowBarSize(c Command, v *VHS) {
+	v.Options.Video.WindowBarSize, _ = strconv.Atoi(c.Args)
+}
+
+// ExecuteSetWindowBar sets corner radius
+func ExecuteSetCornerRadius(c Command, v *VHS) {
+	v.Options.Video.CornerRadius, _ = strconv.Atoi(c.Args)
 }
 
 func getTheme(s string) (Theme, error) {
