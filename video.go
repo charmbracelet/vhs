@@ -106,7 +106,6 @@ func ensureDir(output string) {
 
 // buildFFopts assembles an ffmpeg command from some VideoOptions
 func buildFFopts(opts VideoOptions, targetFile string) []string {
-
 	// Variables used for building ffmpeg command
 	var filterCode strings.Builder
 	var args []string
@@ -153,7 +152,7 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 				),
 			)
 			marginStream = streamCounter
-			streamCounter += 1
+			streamCounter++
 		} else {
 			// Image
 			args = append(args,
@@ -161,7 +160,7 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 				"-i", opts.MarginFill,
 			)
 			marginStream = streamCounter
-			streamCounter += 1
+			streamCounter++
 		}
 	}
 
@@ -175,7 +174,7 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 			"-i", barPath,
 		)
 		barStream = streamCounter
-		streamCounter += 1
+		streamCounter++
 	}
 
 	// Create and add rounded-corner mask if necessary
@@ -192,7 +191,7 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 			"-i", cornerMaskPath,
 		)
 		cornerMaskStream = streamCounter
-		streamCounter += 1
+		//streamCounter++
 	}
 
 	// The following filters are always used
