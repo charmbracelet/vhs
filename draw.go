@@ -161,7 +161,7 @@ func (r *roundedrect) At(x, y int) color.Color {
 }
 
 // Make a mask to round a terminal's corners
-func MakeCornerMask(width, height, radius int, targetpng string) error {
+func MakeCornerMask(width, height, radius int, targetpng string) {
 	img := image.NewGray(
 		image.Rectangle{
 			image.Point{0, 0},
@@ -187,7 +187,11 @@ func MakeCornerMask(width, height, radius int, targetpng string) error {
 	if err == nil {
 		err = png.Encode(f, img)
 	}
-	return err
+
+	// TODO: Proper error handling
+	if err != nil {
+		return
+	}
 }
 
 // Check if a given windowbar type is valid
@@ -205,19 +209,23 @@ func CheckBar(windowbar string) bool {
 }
 
 // Make a window bar and save it to a file
-func MakeBar(termWidth, termHeight int, opts VideoOptions, targetpng string) error {
+func MakeBar(termWidth, termHeight int, opts VideoOptions, targetpng string) {
+	var err error
 	switch opts.WindowBar {
 	case "Colorful":
-		return makeColorfulBar(termWidth, termHeight, false, opts, targetpng)
+		err = makeColorfulBar(termWidth, termHeight, false, opts, targetpng)
 	case "ColorfulRight":
-		return makeColorfulBar(termWidth, termHeight, true, opts, targetpng)
+		err = makeColorfulBar(termWidth, termHeight, true, opts, targetpng)
 	case "Rings":
-		return makeRingBar(termWidth, termHeight, false, opts, targetpng)
+		err = makeRingBar(termWidth, termHeight, false, opts, targetpng)
 	case "RingsRight":
-		return makeRingBar(termWidth, termHeight, true, opts, targetpng)
+		err = makeRingBar(termWidth, termHeight, true, opts, targetpng)
 	}
 
-	return nil
+	// TODO: Proper error handling
+	if err != nil {
+		return
+	}
 }
 
 func makeColorfulBar(termWidth int, termHeight int, isRight bool, opts VideoOptions, targetpng string) error {
