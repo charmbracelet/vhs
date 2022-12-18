@@ -21,7 +21,10 @@
 #   Set Framerate <number>          Set the framerate of the recording
 #   Set PlaybackSpeed <float>       Set the playback speed of the recording
 #   Set MarginFill <file|#000000>   Set the file or color the margin will be filled with.
-#   Set MarginSize <number>             Set the size of the margin. Has no effect if MarginFill isn't set.
+#   Set MarginSize <number>         Set the size of the margin. Has no effect if MarginFill isn't set.
+#   Set CornerRadius <number>       Set terminal corner radius, in pixels.
+#   Set WindowBar <string>          Set window bar type. Valid bar types are Rings, RingsRight, Colorful, ColorfulRight
+#   Set WindowBarSize <number>      Set window bar size, in pixels. Default is 40.
 #
 # Sleep:
 #   Sleep <time>                    Sleep for a set amount of <time> in seconds

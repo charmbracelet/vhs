@@ -132,6 +132,46 @@ Sleep 2s
 ```
 
 
+### Window Bars
+
+<img width="600" src="./set-bar.gif">
+
+```
+Output "examples/settings/set-bar.gif"
+Set FontSize 25
+Set Width 600
+Set Height 300
+Set Padding 20
+
+Set WindowBar Colorful
+Set WindowBarSize 40
+
+Type "I have a bar!"
+Sleep 2s
+```
+
+
+### Corner Radius
+
+<img width="600" src="./set-corner-radius.gif">
+
+```
+Output "examples/settings/set-corner-radius.gif"
+Set FontSize 25
+Set Width 600
+Set Height 300
+Set Padding 20
+
+Set MarginFill "#79B8C3"
+Set MarginSize 20
+
+Set CornerRadius 20
+
+Type "I have round corners."
+Sleep 2s
+```
+
+
 ### Theme
 
 <img width="600" src="./set-theme.gif" />
