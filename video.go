@@ -54,6 +54,9 @@ type VideoOptions struct {
 	MarginFill      string
 	MarginSize      int
 	MarginIsColor   bool
+	WindowBar       string
+	WindowBarSize   int
+	CornerRadius    int
 }
 
 const defaultFramerate = 50
@@ -70,6 +73,9 @@ func DefaultVideoOptions() VideoOptions {
 	return VideoOptions{
 		MarginFill:      "",
 		MarginSize:      25,
+		WindowBar:       "",
+		WindowBarSize:   40,
+		CornerRadius:    0,
 		MarginIsColor:   false,
 		CleanupFrames:   true,
 		Framerate:       defaultFramerate,
@@ -87,10 +93,28 @@ func DefaultVideoOptions() VideoOptions {
 
 // buildFFopts assembles an ffmpeg command from some VideoOptions
 func buildFFopts(opts VideoOptions, targetFile string) []string {
+
+	// Variables used for building ffmpeg command
+	var filterCode strings.Builder
+	var args []string
+	var prevStageName string
+	streamCounter := 2
+
+	// Compute dimensions of terminal
+	termWidth := opts.Width
+	termHeight := opts.Height
+	if opts.MarginFill != "" {
+		termWidth = termWidth - (opts.MarginSize * 2)
+		termHeight = termHeight - (opts.MarginSize * 2)
+	}
+	if opts.WindowBar != "" {
+		termHeight = termHeight - opts.WindowBarSize
+	}
+
 	// Input frame options, used no matter what
 	// Stream 0: text frames
 	// Stream 1: cursor frames
-	args := []string{
+	args = append(args,
 		"-y",
 		"-r", fmt.Sprint(opts.Framerate),
 		"-start_number", fmt.Sprint(opts.StartingFrame),
@@ -98,9 +122,10 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 		"-r", fmt.Sprint(opts.Framerate),
 		"-start_number", fmt.Sprint(opts.StartingFrame),
 		"-i", filepath.Join(opts.Input, cursorFrameFormat),
-	}
+	)
 
-	// Add a margin stream if one is provided
+	// Add margin stream if one is provided
+	var marginStream int
 	if opts.MarginFill != "" {
 		if opts.MarginIsColor {
 			// Plain color
@@ -114,47 +139,66 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 					opts.Height,
 				),
 			)
+			marginStream = streamCounter
+			streamCounter += 1
 		} else {
 			// Image
 			args = append(args,
 				"-loop", "1",
 				"-i", opts.MarginFill,
 			)
+			marginStream = streamCounter
+			streamCounter += 1
 		}
 	}
 
-	// Build filter code
-	var filterArgs strings.Builder
-	var prevStageName string
+	// Create and add window bar stream if necessary
+	var barStream int
+	if opts.WindowBar != "" {
+		barPath := filepath.Join(opts.Input, "bar.png")
+		MakeBar(termWidth, termHeight, opts, barPath)
 
-	// Compute dimensions
-	var termWidth int
-	var termHeight int
-	if opts.MarginFill != "" {
-		termWidth = opts.Width - (opts.Padding * 2) - (opts.MarginSize * 2)
-		termHeight = opts.Height - (opts.Padding * 2) - (opts.MarginSize * 2)
-	} else {
-		termWidth = opts.Width - (opts.Padding * 2)
-		termHeight = opts.Height - (opts.Padding * 2)
+		args = append(args,
+			"-i", barPath,
+		)
+		barStream = streamCounter
+		streamCounter += 1
+	}
+
+	// Create and add rounded-corner mask if necessary
+	var cornerMaskStream int
+	if opts.CornerRadius != 0 {
+		cornerMaskPath := filepath.Join(opts.Input, "mask.png")
+		if opts.WindowBar != "" {
+			MakeCornerMask(termWidth, termHeight+opts.WindowBarSize, opts.CornerRadius, cornerMaskPath)
+		} else {
+			MakeCornerMask(termWidth, termHeight, opts.CornerRadius, cornerMaskPath)
+		}
+
+		args = append(args,
+			"-i", cornerMaskPath,
+		)
+		cornerMaskStream = streamCounter
+		streamCounter += 1
 	}
 
 	// The following filters are always used
-	filterArgs.WriteString(
+	filterCode.WriteString(
 		fmt.Sprintf(`
 		[0][1]overlay[merged];
 		[merged]scale=%d:%d:force_original_aspect_ratio=1[scaled];
 		[scaled]fps=%d,setpts=PTS/%f[speed];
 		[speed]pad=%d:%d:(ow-iw)/2:(oh-ih)/2:%s[padded];
-		[padded]fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s[bordered]
+		[padded]fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s[padded]
 		`,
-			termWidth,
-			termHeight,
+			termWidth-(2*opts.Padding),
+			termHeight-(2*opts.Padding),
 
 			opts.Framerate,
 			opts.PlaybackSpeed,
 
-			termWidth+(opts.Padding+opts.Padding),
-			termHeight+(opts.Padding+opts.Padding),
+			termWidth,
+			termHeight,
 			opts.BackgroundColor,
 
 			opts.Padding,
@@ -164,18 +208,50 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 			opts.BackgroundColor,
 		),
 	)
-	prevStageName = "bordered"
+	prevStageName = "padded"
+
+	// Add a bar to the terminal and mask the output.
+	// This allows us to round the corners of the terminal.
+	if opts.WindowBar != "" {
+		filterCode.WriteString(";")
+		filterCode.WriteString(
+			fmt.Sprintf(`
+			[%d]loop=-1[loopbar];
+			[loopbar][%s]overlay=0:%d[withbar]
+			`,
+				barStream,
+				prevStageName,
+				opts.WindowBarSize,
+			),
+		)
+		prevStageName = "withbar"
+	}
+
+	if opts.CornerRadius != 0 {
+		filterCode.WriteString(";")
+		filterCode.WriteString(
+			fmt.Sprintf(`
+				[%d]loop=-1[loopmask];
+				[%s][loopmask]alphamerge[rounded]
+				`,
+				cornerMaskStream,
+				prevStageName,
+			),
+		)
+		prevStageName = "rounded"
+	}
 
 	// Overlay terminal on margin
 	if opts.MarginFill != "" {
 		// ffmpeg will complain if the final filter ends with a semicolon,
 		// so we add one BEFORE we start adding filters.
-		filterArgs.WriteString(";")
-		filterArgs.WriteString(
+		filterCode.WriteString(";")
+		filterCode.WriteString(
 			fmt.Sprintf(`
-			[2]scale=%d:%d[bg];
+			[%d]scale=%d:%d[bg];
 			[bg][%s]overlay=(W-w)/2:(H-h)/2:shortest=1[withbg]
 			`,
+				marginStream,
 				opts.Width,
 				opts.Height,
 				prevStageName,
@@ -186,8 +262,8 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 
 	// Format-specific options
 	if filepath.Ext(targetFile) == ".gif" {
-		filterArgs.WriteString(";")
-		filterArgs.WriteString(
+		filterCode.WriteString(";")
+		filterCode.WriteString(
 			fmt.Sprintf(`
 			[%s]split[plt_a][plt_b];
 			[plt_a]palettegen=max_colors=256[plt];
@@ -213,7 +289,7 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 	}
 
 	args = append(args,
-		"-filter_complex", filterArgs.String(),
+		"-filter_complex", filterCode.String(),
 		"-map", "["+prevStageName+"]",
 		targetFile,
 	)
