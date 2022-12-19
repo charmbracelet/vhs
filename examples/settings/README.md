@@ -48,7 +48,7 @@ Type "One moment please..."
 Sleep 0.5s
 ```
 
-### Font Size 
+### Font Size
 
 <img width="600" src="./set-font-size-10.gif" />
 <img width="600" src="./set-font-size-20.gif" />
@@ -110,6 +110,67 @@ Set Padding 0
 Type "I'm so edgy!"
 Sleep 1
 ```
+
+### Margins
+
+<img width="600" src="./set-margin.gif">
+
+```
+Output "examples/settings/set-margin.gif"
+Set FontSize 20
+Set Width 600
+Set Height 300
+Set Padding 20
+
+# You can also use an image:
+# Set MarginFill "path/to/image.png"
+Set MarginFill "#79B8C3"
+Set MarginSize 20
+
+Type "I'm on top of an image!"
+Sleep 2s
+```
+
+
+### Window Bars
+
+<img width="600" src="./set-bar.gif">
+
+```
+Output "examples/settings/set-bar.gif"
+Set FontSize 25
+Set Width 600
+Set Height 300
+Set Padding 20
+
+Set WindowBar Colorful
+Set WindowBarSize 40
+
+Type "I have a bar!"
+Sleep 2s
+```
+
+
+### Corner Radius
+
+<img width="600" src="./set-corner-radius.gif">
+
+```
+Output "examples/settings/set-corner-radius.gif"
+Set FontSize 25
+Set Width 600
+Set Height 300
+Set Padding 20
+
+Set MarginFill "#79B8C3"
+Set MarginSize 20
+
+Set CornerRadius 20
+
+Type "I have round corners."
+Sleep 2s
+```
+
 
 ### Theme
 
