@@ -77,8 +77,7 @@ Use a package manager:
 
 ```sh
 # macOS or Linux
-brew install charmbracelet/tap/vhs ffmpeg
-brew install ttyd --HEAD
+brew install vhs
 
 # macOS (via MacPorts)
 sudo port install vhs
