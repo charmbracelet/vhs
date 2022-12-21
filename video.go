@@ -78,6 +78,15 @@ func DefaultVideoOptions() VideoOptions {
 	}
 }
 
+// ensureDir ensures that the file path of the output can be created by
+// creating all the necessary nested folders.
+func ensureDir(output string) {
+	err := os.MkdirAll(filepath.Dir(output), os.ModePerm)
+	if err != nil {
+		fmt.Println(ErrorStyle.Render("Unable to create output directory: "), output)
+	}
+}
+
 // MakeGIF takes a list of images (as frames) and converts them to a GIF.
 func MakeGIF(opts VideoOptions) *exec.Cmd {
 	var targetFile = opts.Output.GIF
@@ -88,12 +97,14 @@ func MakeGIF(opts VideoOptions) *exec.Cmd {
 		return nil
 	}
 
-	fmt.Printf(GrayStyle.Render("Creating %s..."), opts.Output.GIF)
-	fmt.Println()
+	fmt.Println(GrayStyle.Render("Creating " + opts.Output.GIF + "..."))
+	ensureDir(opts.Output.GIF)
 
 	//nolint:gosec
 	return exec.Command(
 		"ffmpeg", "-y",
+		"-hide_banner",
+		"-loglevel", "warning",
 		"-r", fmt.Sprint(opts.Framerate),
 		"-start_number", fmt.Sprint(opts.StartingFrame),
 		"-i", filepath.Join(opts.Input, textFrameFormat),
@@ -121,11 +132,14 @@ func MakeWebM(opts VideoOptions) *exec.Cmd {
 		return nil
 	}
 
-	fmt.Printf("Creating %s...\n", opts.Output.WebM)
+	fmt.Println(GrayStyle.Render("Creating " + opts.Output.WebM + "..."))
+	ensureDir(opts.Output.WebM)
 
 	//nolint:gosec
 	return exec.Command(
 		"ffmpeg", "-y",
+		"-hide_banner",
+		"-loglevel", "warning",
 		"-r", fmt.Sprint(opts.Framerate),
 		"-start_number", fmt.Sprint(opts.StartingFrame),
 		"-i", filepath.Join(opts.Input, textFrameFormat),
@@ -156,11 +170,14 @@ func MakeMP4(opts VideoOptions) *exec.Cmd {
 		return nil
 	}
 
-	fmt.Printf("Creating %s...\n", opts.Output.MP4)
+	fmt.Println(GrayStyle.Render("Creating " + opts.Output.MP4 + "..."))
+	ensureDir(opts.Output.MP4)
 
 	//nolint:gosec
 	return exec.Command(
 		"ffmpeg", "-y",
+		"-hide_banner",
+		"-loglevel", "warning",
 		"-r", fmt.Sprint(opts.Framerate),
 		"-start_number", fmt.Sprint(opts.StartingFrame),
 		"-i", filepath.Join(opts.Input, textFrameFormat),
