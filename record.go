@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"regexp"
 	"strings"
 	"time"
 
@@ -110,6 +111,9 @@ func Record(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+var cursorResponse = regexp.MustCompile(`\x1b\[\d+;\d+R`)
+var oscResponse = regexp.MustCompile(`\x1b\]\d+;rgb:....\/....\/....\x07`)
+
 // inputToTape takes input from a PTY stdin and converts it into a tape file.
 func inputToTape(input string) string {
 	// If the user exited the shell by typing exit don't record this in the
@@ -119,6 +123,12 @@ func inputToTape(input string) string {
 	// correctly and the exit will show up. In this case, the user should edit the
 	// tape file.
 	s := strings.TrimSuffix(strings.TrimSpace(input), "exit")
+
+	// Remove cursor / osc responses
+	s = cursorResponse.ReplaceAllString(s, "")
+	s = oscResponse.ReplaceAllString(s, "")
+
+	// Substitute escape sequences for commands
 	for sequence, command := range EscapeSequences {
 		s = strings.ReplaceAll(s, sequence, "\n"+command+"\n")
 	}

@@ -91,6 +91,15 @@ func DefaultVideoOptions() VideoOptions {
 	}
 }
 
+// ensureDir ensures that the file path of the output can be created by
+// creating all the necessary nested folders.
+func ensureDir(output string) {
+	err := os.MkdirAll(filepath.Dir(output), os.ModePerm)
+	if err != nil {
+		fmt.Println(ErrorStyle.Render("Unable to create output directory: "), output)
+	}
+}
+
 // buildFFopts assembles an ffmpeg command from some VideoOptions
 func buildFFopts(opts VideoOptions, targetFile string) []string {
 	// Variables used for building ffmpeg command
@@ -115,6 +124,8 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 	// Stream 1: cursor frames
 	args = append(args,
 		"-y",
+		"-hide_banner",
+		"-loglevel", "warning",
 		"-r", fmt.Sprint(opts.Framerate),
 		"-start_number", fmt.Sprint(opts.StartingFrame),
 		"-i", filepath.Join(opts.Input, textFrameFormat),
@@ -306,8 +317,8 @@ func MakeGIF(opts VideoOptions) *exec.Cmd {
 		return nil
 	}
 
-	fmt.Printf(GrayStyle.Render("Creating %s..."), targetFile)
-	fmt.Println()
+	fmt.Println(GrayStyle.Render("Creating " + targetFile + "..."))
+	ensureDir(targetFile)
 
 	//nolint:gosec
 	return exec.Command(
@@ -322,8 +333,8 @@ func MakeWebM(opts VideoOptions) *exec.Cmd {
 		return nil
 	}
 
-	fmt.Printf(GrayStyle.Render("Creating %s..."), opts.Output.WebM)
-	fmt.Println()
+	fmt.Println(GrayStyle.Render("Creating " + opts.Output.WebM + "..."))
+	ensureDir(opts.Output.WebM)
 
 	//nolint:gosec
 	return exec.Command(
@@ -338,8 +349,8 @@ func MakeMP4(opts VideoOptions) *exec.Cmd {
 		return nil
 	}
 
-	fmt.Printf(GrayStyle.Render("Creating %s..."), opts.Output.MP4)
-	fmt.Println()
+	fmt.Println(GrayStyle.Render("Creating " + opts.Output.MP4 + "..."))
+	ensureDir(opts.Output.MP4)
 
 	//nolint:gosec
 	return exec.Command(

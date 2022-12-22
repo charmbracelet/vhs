@@ -133,6 +133,25 @@ go install github.com/charmbracelet/vhs@latest
 
 [releases]: https://github.com/charmbracelet/vhs/releases
 
+## Record Tapes
+
+VHS has the ability to generate tape files from your terminal actions!
+
+To record to a tape file, run:
+
+```bash
+vhs record > cassette.tape
+```
+
+Perform any actions you want and then `exit` the terminal session to stop
+recording. You may want to manually edit the generated `.tape` file to add
+settings or modify actions. Then, you can generate the GIF:
+
+```bash
+vhs < cassette.tape
+```
+
+
 ## The VHS Server
 
 VHS has an SSH server built in! When you self host VHS you can access it as
