@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
@@ -188,9 +189,8 @@ func MakeCornerMask(width, height, radius int, targetpng string) {
 		err = png.Encode(f, img)
 	}
 
-	// TODO: Proper error handling
-	if err != nil {
-		return
+	if err == nil {
+		fmt.Println(ErrorStyle.Render("Couldn't draw CornerMask, something is very wrong."))
 	}
 }
 
@@ -222,9 +222,8 @@ func MakeBar(termWidth, termHeight int, opts VideoOptions, targetpng string) {
 		err = makeRingBar(termWidth, termHeight, true, opts, targetpng)
 	}
 
-	// TODO: Proper error handling
-	if err != nil {
-		return
+	if err == nil {
+		fmt.Println(ErrorStyle.Render("Couldn't draw Bar, something is very wrong."))
 	}
 }
 
