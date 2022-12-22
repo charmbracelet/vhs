@@ -138,7 +138,7 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 	var marginStream int
 	if opts.MarginFill != "" {
 		if opts.MarginIsColor {
-			// Plain color
+			// Create plain color stream
 			args = append(args,
 				"-f", "lavfi",
 				"-i",
@@ -152,7 +152,13 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 			marginStream = streamCounter
 			streamCounter++
 		} else {
-			// Image
+			// Check for existence first.
+			_, err := os.Stat(opts.MarginFill)
+			if err != nil {
+				fmt.Println(ErrorStyle.Render("Unable to read margin file: "), opts.MarginFill)
+			}
+
+			// Add image stream
 			args = append(args,
 				"-loop", "1",
 				"-i", opts.MarginFill,
@@ -162,7 +168,7 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 		}
 	}
 
-	// Create and add window bar stream if necessary
+	// Create and add a window bar stream if necessary
 	var barStream int
 	if opts.WindowBar != "" {
 		barPath := filepath.Join(opts.Input, "bar.png")
