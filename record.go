@@ -30,6 +30,8 @@ var EscapeSequences = map[string]string{
 	"\x1b[2~": INSERT,
 	"\x1b[3~": DELETE,
 	"\x1b[4~": END,
+	"\x1b[5~": PAGEUP,
+	"\x1b[6~": PAGEDOWN,
 	"\x01":    CTRL + "+A",
 	"\x02":    CTRL + "+B",
 	"\x03":    CTRL + "+C",
