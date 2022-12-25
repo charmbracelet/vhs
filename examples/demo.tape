@@ -38,6 +38,8 @@
 #   Right[@<time>] [number]         Press the Right Arrow key
 #   Up[@<time>] [number]            Press the Up Arrow key
 #   Down[@<time>] [number]          Press the Down Arrow key
+#   PageUp[@<time>] [number]        Press the Page Up key
+#   PageDown[@<time>] [number]      Press the Page Down key
 #   Ctrl+<key>                      Press the Control key + <key> (e.g. Ctrl+C)
 #
 # Display:
