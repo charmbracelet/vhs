@@ -40,6 +40,8 @@ func Highlight(c parser.Command, faint bool) string {
 		argsStyle = StringStyle
 	case token.CTRL:
 		argsStyle = CommandStyle
+	case token.ALT:
+		argsStyle = AltStyle
 	case token.SLEEP:
 		argsStyle = TimeStyle
 	case token.TYPE:
