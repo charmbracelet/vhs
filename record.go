@@ -112,7 +112,7 @@ func Record(cmd *cobra.Command, args []string) error {
 }
 
 var cursorResponse = regexp.MustCompile(`\x1b\[\d+;\d+R`)
-var oscResponse = regexp.MustCompile(`\x1b\]\d+;rgb:....\/....\/....\x07`)
+var oscResponse = regexp.MustCompile(`\x1b\]\d+;rgb:....\/....\/....(\x07|\x1b\\)`)
 
 // inputToTape takes input from a PTY stdin and converts it into a tape file.
 func inputToTape(input string) string {
