@@ -185,12 +185,14 @@ func MakeCornerMask(width, height, radius int, targetpng string) {
 	)
 
 	f, err := os.Create(targetpng)
-	if err == nil {
+	if err != nil {
+		fmt.Println(ErrorStyle.Render("Couldn't draw CornerMask: unable to save file."))
+	} else {
 		err = png.Encode(f, img)
 	}
 
-	if err == nil {
-		fmt.Println(ErrorStyle.Render("Couldn't draw CornerMask, something is very wrong."))
+	if err != nil {
+		fmt.Println(ErrorStyle.Render("Couldn't draw CornerMask: encoding failed."))
 	}
 }
 
@@ -222,8 +224,8 @@ func MakeBar(termWidth, termHeight int, opts VideoOptions, targetpng string) {
 		err = makeRingBar(termWidth, termHeight, true, opts, targetpng)
 	}
 
-	if err == nil {
-		fmt.Println(ErrorStyle.Render("Couldn't draw Bar, something is very wrong."))
+	if err != nil {
+		fmt.Println(ErrorStyle.Render("Couldn't draw Bar: encoding failed"))
 	}
 }
 
@@ -299,7 +301,9 @@ func makeColorfulBar(termWidth int, termHeight int, isRight bool, opts VideoOpti
 	)
 
 	f, err := os.Create(targetpng)
-	if err == nil {
+	if err != nil {
+		fmt.Println(ErrorStyle.Render("Couldn't draw colorful bar: unable to save file."))
+	} else {
 		err = png.Encode(f, img)
 	}
 	return err
@@ -370,7 +374,9 @@ func makeRingBar(termWidth int, termHeight int, isRight bool, opts VideoOptions,
 	}
 
 	f, err := os.Create(targetpng)
-	if err == nil {
+	if err != nil {
+		fmt.Println(ErrorStyle.Render("Couldn't draw ring bar: unable to save file."))
+	} else {
 		err = png.Encode(f, img)
 	}
 	return err
