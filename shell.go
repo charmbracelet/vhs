@@ -31,12 +31,12 @@ var Shells = map[string]Shell{
 		Command: ` clear; fish --login --no-config --private -C 'function fish_greeting; end' -C '%s'`,
 	},
 	powershell: {
-		Prompt:  "Function prompt {Write-Host \\\"> \\\" -ForegroundColor Blue -NoNewLine; return \\\"`0\\\" }",
-		Command: ` clear; powershell -NoLogo -NoExit -Command 'Set-PSReadLineOption -HistorySaveStyle SaveNothing; %s'`,
+		Prompt:  `Set-PSReadLineOption -HistorySaveStyle SaveNothing; Function prompt { Write-Host -ForegroundColor Blue -NoNewLine '>'; return ' ' }`,
+		Command: ` clear; powershell -Login -NoLogo -NoExit -NoProfile -Command %q`,
 	},
 	pwsh: {
-		Prompt:  "Function prompt {Write-Host \\\"> \\\" -ForegroundColor Blue -NoNewLine; return \\\"`0\\\" }",
-		Command: ` clear; pwsh -Login -NoLogo -NoExit -Command 'Set-PSReadLineOption -HistorySaveStyle SaveNothing; %s'`,
+		Prompt:  `Set-PSReadLineOption -HistorySaveStyle SaveNothing; Function prompt { Write-Host -ForegroundColor Blue -NoNewLine '>'; return ' ' }`,
+		Command: ` clear; pwsh -Login -NoLogo -NoExit -NoProfile -Command %q`,
 	},
 	cmdexe: {
 		Prompt:  "$g",
