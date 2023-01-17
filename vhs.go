@@ -50,7 +50,7 @@ const (
 	defaultFontSize      = 22
 	defaultTypingSpeed   = 50 * time.Millisecond
 	defaultLineHeight    = 1.0
-	defaultLetterSpacing = 0
+	defaultLetterSpacing = 1.0
 	fontsSeparator       = ","
 )
 
