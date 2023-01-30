@@ -96,11 +96,7 @@ func New() VHS {
 func (vhs *VHS) Start() error {
 	shell := vhs.Options.Shell
 	port := randomPort()
-	tty, err := StartTTY(port, shell)
-	if err != nil {
-		return err
-	}
-	vhs.tty = tty
+	vhs.tty = StartTTY(port, shell)
 	go vhs.tty.Run()
 
 	path, _ := launcher.LookPath()
