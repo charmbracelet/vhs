@@ -23,7 +23,7 @@ func randomPort() int {
 }
 
 // StartTTY starts the ttyd process on the given port.
-func StartTTY(port int) *exec.Cmd {
+func StartTTY(port int, shell Shell) (*exec.Cmd, error) {
 	args := []string{
 		fmt.Sprintf("--port=%d", port),
 		"-t", "rendererType=canvas",
@@ -33,9 +33,17 @@ func StartTTY(port int) *exec.Cmd {
 		"-t", "customGlyphs=true",
 	}
 
-	args = append(args, defaultShellWithArgs()...)
+	rc, err := shell.Command()
+	if err != nil {
+		return nil, err
+	}
+
+	args = append(args, rc...)
 
 	//nolint:gosec
 	cmd := exec.Command("ttyd", args...)
-	return cmd
+	if shell.Env != nil {
+		cmd.Env = append(shell.Env, cmd.Env...)
+	}
+	return cmd, nil
 }

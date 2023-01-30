@@ -13,7 +13,6 @@ import (
 	"time"
 
 	"github.com/go-rod/rod"
-	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/launcher"
 )
 
@@ -83,28 +82,34 @@ func DefaultVHSOptions() Options {
 
 // New sets up ttyd and go-rod for recording frames.
 func New() VHS {
-	port := randomPort()
-	tty := StartTTY(port)
-	go tty.Run() //nolint:errcheck
+	mu := &sync.Mutex{}
 
 	opts := DefaultVHSOptions()
-	path, _ := launcher.LookPath()
-	enableNoSandbox := os.Getenv("VHS_NO_SANDBOX") != ""
-	u := launcher.New().Leakless(false).Bin(path).NoSandbox(enableNoSandbox).MustLaunch()
-	browser := rod.New().ControlURL(u).MustConnect()
-	page := browser.MustPage(fmt.Sprintf("http://localhost:%d", port))
-
-	mu := &sync.Mutex{}
 
 	return VHS{
 		Options:   &opts,
-		Page:      page,
-		browser:   browser,
-		tty:       tty,
 		recording: true,
 		mutex:     mu,
-		close:     browser.Close,
 	}
+}
+
+func (vhs *VHS) Start() error {
+	shell := vhs.Options.Shell
+	port := randomPort()
+	tty, err := StartTTY(port, shell)
+	if err != nil {
+		return err
+	}
+	vhs.tty = tty
+	go vhs.tty.Run()
+
+	path, _ := launcher.LookPath()
+	enableNoSandbox := os.Getenv("VHS_NO_SANDBOX") != ""
+	u := launcher.New().Leakless(false).Bin(path).NoSandbox(enableNoSandbox).MustLaunch()
+	vhs.browser = rod.New().ControlURL(u).MustConnect()
+	vhs.Page = vhs.browser.MustPage(fmt.Sprintf("http://localhost:%d", port))
+	vhs.close = vhs.browser.Close
+	return nil
 }
 
 // Setup sets up the VHS instance and performs the necessary actions to reflect
@@ -123,15 +128,6 @@ func (vhs *VHS) Setup() {
 	// Find xterm.js canvases for the text and cursor layer for recording.
 	vhs.TextCanvas, _ = vhs.Page.Element("canvas.xterm-text-layer")
 	vhs.CursorCanvas, _ = vhs.Page.Element("canvas.xterm-cursor-layer")
-
-	// Set up the Prompt
-	shellCommand := fmt.Sprintf(vhs.Options.Shell.Command, vhs.Options.Shell.Prompt)
-	if vhs.Options.Shell.Prompt == "" {
-		shellCommand = vhs.Options.Shell.Command
-	}
-	vhs.Page.MustElement("textarea").
-		MustInput(shellCommand).
-		MustType(input.Enter)
 
 	// Apply options to the terminal
 	// By this point the setting commands have been executed, so the `opts` struct is up to date.
