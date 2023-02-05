@@ -477,6 +477,15 @@ Space 10
 
 <img alt="Example of pressing the space key" src="https://stuff.charm.sh/vhs/examples/space.gif" width="600" />
 
+#### Page Up / Down
+
+Press the Page Up / Down keys with the `PageUp` or `PageDown` commands.
+
+```elixir
+PageUp 3
+PageDown 5
+```
+
 ### Sleep
 
 The `Sleep` command allows you to continue capturing frames without interacting
