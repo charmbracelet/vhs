@@ -10,7 +10,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -24,7 +23,7 @@ const cursorFrameFormat = "frame-cursor-%05d.png"
 func randomDir() string {
 	tmp, err := os.MkdirTemp(os.TempDir(), "vhs")
 	if err != nil {
-		log.Printf("Error creating temporary directory: %v", err)
+		logger.Printf("Error creating temporary directory: %v", err)
 	}
 	return tmp
 }
@@ -97,7 +96,7 @@ func MakeGIF(opts VideoOptions) *exec.Cmd {
 		return nil
 	}
 
-	fmt.Println(GrayStyle.Render("Creating " + opts.Output.GIF + "..."))
+	logger.Println(GrayStyle.Render("Creating " + opts.Output.GIF + "..."))
 	ensureDir(opts.Output.GIF)
 
 	//nolint:gosec
@@ -132,7 +131,7 @@ func MakeWebM(opts VideoOptions) *exec.Cmd {
 		return nil
 	}
 
-	fmt.Println(GrayStyle.Render("Creating " + opts.Output.WebM + "..."))
+	logger.Println(GrayStyle.Render("Creating " + opts.Output.WebM + "..."))
 	ensureDir(opts.Output.WebM)
 
 	//nolint:gosec
@@ -170,7 +169,7 @@ func MakeMP4(opts VideoOptions) *exec.Cmd {
 		return nil
 	}
 
-	fmt.Println(GrayStyle.Render("Creating " + opts.Output.MP4 + "..."))
+	logger.Println(GrayStyle.Render("Creating " + opts.Output.MP4 + "..."))
 	ensureDir(opts.Output.MP4)
 
 	//nolint:gosec

@@ -35,6 +35,8 @@ var (
 	publishFlag bool
 	outputs     *[]string
 
+	logLevel string
+
 	rootCmd = &cobra.Command{
 		Use:           "vhs <file>",
 		Short:         "Run a given tape file and generates its outputs.",
@@ -42,6 +44,8 @@ var (
 		SilenceUsage:  true,
 		SilenceErrors: true, // we print our own errors
 		RunE: func(cmd *cobra.Command, args []string) error {
+			InitLogger(logLevel)
+
 			err := ensureDependencies()
 			if err != nil {
 				return err
@@ -55,7 +59,7 @@ var (
 				if err != nil {
 					return err
 				}
-				fmt.Println(GrayStyle.Render("File: " + args[0]))
+				logger.Println(GrayStyle.Render("File: " + args[0]))
 			} else {
 				stat, _ := os.Stdin.Stat()
 				if (stat.Mode() & os.ModeCharDevice) != 0 {
@@ -75,11 +79,11 @@ var (
 
 			publishEnv, publishEnvSet := os.LookupEnv("VHS_PUBLISH")
 			if !publishEnvSet && !publishFlag {
-				fmt.Println(FaintStyle.Render("Host your GIF on vhs.charm.sh: vhs publish <file>.gif"))
+				logger.Println(FaintStyle.Render("Host your GIF on vhs.charm.sh: vhs publish <file>.gif"))
 			}
 
 			var publishFile string
-			errs := Evaluate(cmd.Context(), string(input), os.Stdout, func(v *VHS) {
+			errs := Evaluate(cmd.Context(), string(input), loggerOut, func(v *VHS) {
 				// Output is being overridden, prevent all outputs
 				if len(*outputs) <= 0 {
 					publishFile = v.Options.Video.Output.GIF
@@ -106,7 +110,7 @@ var (
 
 			if (publishFlag || publishEnv == "true") && publishFile != "" {
 				if isatty.IsTerminal(os.Stdout.Fd()) {
-					fmt.Printf(GrayStyle.Render("Publishing %s... "), publishFile)
+					logger.Printf(GrayStyle.Render("Publishing %s... "), publishFile)
 				}
 
 				url, err := Publish(cmd.Context(), publishFile)
@@ -114,13 +118,13 @@ var (
 					return err
 				}
 				if isatty.IsTerminal(os.Stdout.Fd()) {
-					fmt.Println(StringStyle.Render("Done!"))
+					logger.Println(StringStyle.Render("Done!"))
 					publishShareInstructions(url)
 				}
 
-				fmt.Println(URLStyle.Render(url))
+				logger.Println(URLStyle.Render(url))
 				if isatty.IsTerminal(os.Stdout.Fd()) {
-					fmt.Println()
+					logger.Println()
 				}
 			}
 
@@ -134,9 +138,11 @@ var (
 		Short: "List all the available themes, one per line",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			InitLogger(logLevel)
+
 			var prefix, suffix string
 			if markdown {
-				fmt.Fprintf(cmd.OutOrStdout(), "# Themes\n\n")
+				logger.Printf("# Themes\n\n")
 				prefix, suffix = "* `", "`"
 			}
 			themes, err := sortedThemeNames()
@@ -144,7 +150,7 @@ var (
 				return err
 			}
 			for _, theme := range themes {
-				fmt.Fprintf(cmd.OutOrStdout(), "%s%s%s\n", prefix, theme, suffix)
+				logger.Printf("%s%s%s\n", prefix, theme, suffix)
 			}
 			return nil
 		},
@@ -163,6 +169,8 @@ var (
 		Short: "Create a new tape file with example tape file contents and documentation",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			InitLogger(logLevel)
+
 			fileName := strings.TrimSuffix(args[0], extension) + extension
 
 			f, err := os.Create(fileName)
@@ -175,7 +183,7 @@ var (
 				return err
 			}
 
-			fmt.Println("Created " + fileName)
+			logger.Println("Created " + fileName)
 
 			return nil
 		},
@@ -186,6 +194,8 @@ var (
 		Short: "Validate a glob file path and parses all the files to ensure they are valid without running them.",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			InitLogger(logLevel)
+
 			valid := true
 
 			for _, file := range args {
@@ -202,7 +212,7 @@ var (
 				errs := p.Errors()
 
 				if len(errs) != 0 {
-					fmt.Println(ErrorFileStyle.Render(file))
+					logger.Println(ErrorFileStyle.Render(file))
 
 					for _, err := range errs {
 						printParserError(os.Stderr, string(b), err)
@@ -235,6 +245,8 @@ func main() {
 
 func init() {
 	rootCmd.Flags().BoolVarP(&publishFlag, "publish", "p", false, "publish your GIF to vhs.charm.sh and get a shareable URL")
+	rootCmd.PersistentFlags().StringVarP(&logLevel, "loglevel", "l", "verbose", "Log level (quiet or verbose)")
+	rootCmd.MarkFlagRequired("log")
 	outputs = rootCmd.Flags().StringSliceP("output", "o", []string{}, "file name(s) of video output")
 	themesCmd.Flags().BoolVar(&markdown, "markdown", false, "output as markdown")
 	_ = themesCmd.Flags().MarkHidden("markdown")

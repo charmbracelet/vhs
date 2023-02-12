@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"os/exec"
 	"regexp"
@@ -67,6 +66,8 @@ var EscapeSequences = map[string]string{
 //
 // vhs record > file.tape
 func Record(cmd *cobra.Command, args []string) error {
+	InitLogger(logLevel)
+
 	command := exec.Command(shell)
 
 	terminal, err := pty.Start(command)
@@ -75,7 +76,7 @@ func Record(cmd *cobra.Command, args []string) error {
 	}
 
 	if err := pty.InheritSize(os.Stdin, terminal); err != nil {
-		log.Printf("error resizing pty: %s", err)
+		logger.Printf("error resizing pty: %s", err)
 	}
 
 	prevState, err := term.MakeRaw(int(os.Stdin.Fd()))
@@ -86,7 +87,7 @@ func Record(cmd *cobra.Command, args []string) error {
 	// We'll need to display the stdin on the screen but we'll also need a copy to
 	// analyze later and create a tape file.
 	var tape = &bytes.Buffer{}
-	in := io.MultiWriter(tape, terminal)
+	in := io.MultiWriter(tape, nil)
 
 	go func() {
 		var length int
@@ -109,7 +110,7 @@ func Record(cmd *cobra.Command, args []string) error {
 	_ = terminal.Close()
 	_ = term.Restore(int(os.Stdin.Fd()), prevState)
 
-	fmt.Println(inputToTape(tape.String()))
+	logger.Println(inputToTape(tape.String()))
 	return nil
 }
 

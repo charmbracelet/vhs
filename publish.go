@@ -37,9 +37,9 @@ var publishCmd = &cobra.Command{
 		if isatty.IsTerminal(os.Stdout.Fd()) {
 			publishShareInstructions(url)
 		}
-		fmt.Println(URLStyle.Render(url))
+		logger.Println(URLStyle.Render(url))
 		if isatty.IsTerminal(os.Stdout.Fd()) {
-			fmt.Println()
+			logger.Println()
 		}
 		return nil
 	},
@@ -122,15 +122,15 @@ func sshSession() (*ssh.Session, error) {
 }
 
 func publishShareInstructions(url string) {
-	fmt.Println("\n" + GrayStyle.Render("  Share your GIF with Markdown:"))
-	fmt.Println(CommandStyle.Render("  ![Made with VHS]") + URLStyle.Render("("+url+")"))
-	fmt.Println(GrayStyle.Render("\n  Or HTML (with badge):"))
-	fmt.Println(CommandStyle.Render("  <img ") + CommandStyle.Render("src=") + URLStyle.Render(`"`+url+`"`) + CommandStyle.Render(" alt=") + URLStyle.Render(`"Made with VHS"`) + CommandStyle.Render(">"))
-	fmt.Println(CommandStyle.Render("  <a ") + CommandStyle.Render("href=") + URLStyle.Render(`"https://vhs.charm.sh"`) + CommandStyle.Render(">"))
-	fmt.Println(CommandStyle.Render("    <img ") + CommandStyle.Render("src=") + URLStyle.Render(`"https://stuff.charm.sh/vhs/badge.svg"`) + CommandStyle.Render(">"))
-	fmt.Println(CommandStyle.Render("  </a>"))
-	fmt.Println(GrayStyle.Render("\n  Or link to it:"))
-	fmt.Printf("  ")
+	logger.Println("\n" + GrayStyle.Render("  Share your GIF with Markdown:"))
+	logger.Println(CommandStyle.Render("  ![Made with VHS]") + URLStyle.Render("("+url+")"))
+	logger.Println(GrayStyle.Render("\n  Or HTML (with badge):"))
+	logger.Println(CommandStyle.Render("  <img ") + CommandStyle.Render("src=") + URLStyle.Render(`"`+url+`"`) + CommandStyle.Render(" alt=") + URLStyle.Render(`"Made with VHS"`) + CommandStyle.Render(">"))
+	logger.Println(CommandStyle.Render("  <a ") + CommandStyle.Render("href=") + URLStyle.Render(`"https://vhs.charm.sh"`) + CommandStyle.Render(">"))
+	logger.Println(CommandStyle.Render("    <img ") + CommandStyle.Render("src=") + URLStyle.Render(`"https://stuff.charm.sh/vhs/badge.svg"`) + CommandStyle.Render(">"))
+	logger.Println(CommandStyle.Render("  </a>"))
+	logger.Println(GrayStyle.Render("\n  Or link to it:"))
+	logger.Printf("  ")
 }
 
 // Publish publishes the given GIF file to the web.

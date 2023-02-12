@@ -190,7 +190,7 @@ func (vhs *VHS) Render() error {
 		}
 		out, err := cmd.CombinedOutput()
 		if err != nil {
-			fmt.Println(string(out))
+			logger.Println(string(out))
 		}
 	}
 
