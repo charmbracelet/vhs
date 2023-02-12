@@ -85,7 +85,7 @@ func Record(cmd *cobra.Command, args []string) error {
 
 	// We'll need to display the stdin on the screen but we'll also need a copy to
 	// analyze later and create a tape file.
-	var tape = &bytes.Buffer{}
+	tape := &bytes.Buffer{}
 	in := io.MultiWriter(tape, terminal)
 
 	go func() {
@@ -109,12 +109,14 @@ func Record(cmd *cobra.Command, args []string) error {
 	_ = terminal.Close()
 	_ = term.Restore(int(os.Stdin.Fd()), prevState)
 
-	fmt.Println(inputToTape(tape.String()))
+	log.Println(inputToTape(tape.String()))
 	return nil
 }
 
-var cursorResponse = regexp.MustCompile(`\x1b\[\d+;\d+R`)
-var oscResponse = regexp.MustCompile(`\x1b\]\d+;rgb:....\/....\/....(\x07|\x1b\\)`)
+var (
+	cursorResponse = regexp.MustCompile(`\x1b\[\d+;\d+R`)
+	oscResponse    = regexp.MustCompile(`\x1b\]\d+;rgb:....\/....\/....(\x07|\x1b\\)`)
+)
 
 // inputToTape takes input from a PTY stdin and converts it into a tape file.
 func inputToTape(input string) string {

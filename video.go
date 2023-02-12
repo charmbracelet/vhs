@@ -16,8 +16,10 @@ import (
 	"path/filepath"
 )
 
-const textFrameFormat = "frame-text-%05d.png"
-const cursorFrameFormat = "frame-cursor-%05d.png"
+const (
+	textFrameFormat   = "frame-text-%05d.png"
+	cursorFrameFormat = "frame-cursor-%05d.png"
+)
 
 // randomDir returns a random temporary directory to be used for storing frames
 // from screenshots of the terminal.
@@ -52,13 +54,15 @@ type VideoOptions struct {
 	StartingFrame   int
 }
 
-const defaultFramerate = 50
-const defaultHeight = 600
-const defaultMaxColors = 256
-const defaultPadding = 72
-const defaultPlaybackSpeed = 1.0
-const defaultWidth = 1200
-const defaultStartingFrame = 1
+const (
+	defaultFramerate     = 50
+	defaultHeight        = 600
+	defaultMaxColors     = 256
+	defaultPadding       = 72
+	defaultPlaybackSpeed = 1.0
+	defaultWidth         = 1200
+	defaultStartingFrame = 1
+)
 
 // DefaultVideoOptions is the set of default options for converting frames
 // to a GIF, which are used if they are not overridden.
@@ -89,7 +93,7 @@ func ensureDir(output string) {
 
 // MakeGIF takes a list of images (as frames) and converts them to a GIF.
 func MakeGIF(opts VideoOptions) *exec.Cmd {
-	var targetFile = opts.Output.GIF
+	targetFile := opts.Output.GIF
 
 	if opts.Output.GIF == "" && opts.Output.WebM == "" && opts.Output.MP4 == "" {
 		targetFile = "out.gif"
@@ -97,7 +101,7 @@ func MakeGIF(opts VideoOptions) *exec.Cmd {
 		return nil
 	}
 
-	fmt.Println(GrayStyle.Render("Creating " + opts.Output.GIF + "..."))
+	log.Println(GrayStyle.Render("Creating " + opts.Output.GIF + "..."))
 	ensureDir(opts.Output.GIF)
 
 	//nolint:gosec
@@ -132,7 +136,7 @@ func MakeWebM(opts VideoOptions) *exec.Cmd {
 		return nil
 	}
 
-	fmt.Println(GrayStyle.Render("Creating " + opts.Output.WebM + "..."))
+	log.Println(GrayStyle.Render("Creating " + opts.Output.WebM + "..."))
 	ensureDir(opts.Output.WebM)
 
 	//nolint:gosec
@@ -170,7 +174,7 @@ func MakeMP4(opts VideoOptions) *exec.Cmd {
 		return nil
 	}
 
-	fmt.Println(GrayStyle.Render("Creating " + opts.Output.MP4 + "..."))
+	log.Println(GrayStyle.Render("Creating " + opts.Output.MP4 + "..."))
 	ensureDir(opts.Output.MP4)
 
 	//nolint:gosec
