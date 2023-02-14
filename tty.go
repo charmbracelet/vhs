@@ -37,5 +37,6 @@ func StartTTY(port int) *exec.Cmd {
 
 	//nolint:gosec
 	cmd := exec.Command("ttyd", args...)
+	cmd.Env = append(cmd.Env, "BASH_SILENCE_DEPRECATION_WARNING=1")
 	return cmd
 }
