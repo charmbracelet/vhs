@@ -34,14 +34,14 @@ var publishCmd = &cobra.Command{
 
 		if strings.HasSuffix(file, ".tape") {
 			cmd.Printf("Use vhs %s --publish flag to publish tapes\n", file)
-			return errors.New("Must pass a GIF file.")
+			return errors.New("must pass a GIF file")
 		}
 
 		if !strings.HasSuffix(file, ".gif") {
-			return errors.New("Must pass a GIF file.")
+			return errors.New("must pass a GIF file")
 		}
 
-		url, err := Publish(cmd.Context(), args[0])
+		url, err := Publish(cmd.Context(), file)
 		if err != nil {
 			return err
 		}
