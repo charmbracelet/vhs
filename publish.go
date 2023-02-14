@@ -8,6 +8,7 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/charmbracelet/keygen"
 	"github.com/mattn/go-isatty"
@@ -29,6 +30,17 @@ var publishCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true, // we print our own errors
 	RunE: func(cmd *cobra.Command, args []string) error {
+		file := args[0]
+
+		if strings.HasSuffix(file, ".tape") {
+			cmd.Printf("Use vhs %s --publish flag to publish tapes\n", file)
+			return errors.New("Must pass a GIF file.")
+		}
+
+		if !strings.HasSuffix(file, ".gif") {
+			return errors.New("Must pass a GIF file.")
+		}
+
 		url, err := Publish(cmd.Context(), args[0])
 		if err != nil {
 			return err
