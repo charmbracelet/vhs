@@ -29,6 +29,8 @@ var publishCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true, // we print our own errors
 	RunE: func(cmd *cobra.Command, args []string) error {
+		InitLogger(logLevel)
+
 		url, err := Publish(cmd.Context(), args[0])
 		if err != nil {
 			return err
