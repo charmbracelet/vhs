@@ -123,7 +123,16 @@ func sshSession() (*ssh.Session, error) {
 	return s, nil
 }
 
+// publishShareInstructions log shareable URL
+// If log level is set to `logLevelQuiet` the log message will be forced
 func publishShareInstructions(url string) {
+	// Set log level to verbose if current mode is quiet
+	forcedLog := false
+	if logLevel == logLevelQuiet {
+		forcedLog = true
+		SetLogLevel(logLevelVerbose)
+	}
+
 	logger.Println("\n" + GrayStyle.Render("  Share your GIF with Markdown:"))
 	logger.Println(CommandStyle.Render("  ![Made with VHS]") + URLStyle.Render("("+url+")"))
 	logger.Println(GrayStyle.Render("\n  Or HTML (with badge):"))
@@ -133,6 +142,11 @@ func publishShareInstructions(url string) {
 	logger.Println(CommandStyle.Render("  </a>"))
 	logger.Println(GrayStyle.Render("\n  Or link to it:"))
 	logger.Printf("  ")
+
+	// If log was forced restore original log level quiet
+	if forcedLog {
+		SetLogLevel(logLevelQuiet)
+	}
 }
 
 // Publish publishes the given GIF file to the web.

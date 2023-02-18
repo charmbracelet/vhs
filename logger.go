@@ -23,12 +23,28 @@ var (
 
 // InitLogger configures logger level
 func InitLogger(level LogLevel) {
-	loggerOut = os.Stderr
-	logger = log.New(loggerOut, "", 0)
+	logger = log.New(os.Stderr, "", 0)
 
-	// Quiet must not log any messages to std output
-	if level == logLevelQuiet {
-		loggerOut = io.Discard
-		logger.SetOutput(loggerOut)
+	SetLogLevel(level)
+}
+
+// SetLogLevel modify log level
+func SetLogLevel(level LogLevel) {
+	if level == logLevelVerbose {
+		setLogLevelVerbose()
+	} else if level == logLevelQuiet {
+		setLogLevelQuiet()
 	}
+}
+
+// setLogLevelQuiet configures log level verbose behaviour
+func setLogLevelVerbose() {
+	loggerOut = os.Stderr
+	logger.SetOutput(loggerOut)
+}
+
+// setLogLevelQuiet configures log level quiet behaviour
+func setLogLevelQuiet() {
+	loggerOut = io.Discard
+	logger.SetOutput(loggerOut)
 }
