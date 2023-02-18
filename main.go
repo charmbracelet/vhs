@@ -35,7 +35,10 @@ var (
 	publishFlag bool
 	outputs     *[]string
 
-	logLevel string
+	// Logging flags
+	verboseFlag bool
+	quietFlag   bool
+	logLevel    LogLevel = logLevelVerbose
 
 	rootCmd = &cobra.Command{
 		Use:           "vhs <file>",
@@ -44,6 +47,11 @@ var (
 		SilenceUsage:  true,
 		SilenceErrors: true, // we print our own errors
 		RunE: func(cmd *cobra.Command, args []string) error {
+			// Init logger
+			if quietFlag {
+				logLevel = logLevelQuiet
+			}
+
 			InitLogger(logLevel)
 
 			err := ensureDependencies()
@@ -138,6 +146,11 @@ var (
 		Short: "List all the available themes, one per line",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			// Init logger
+			if quietFlag {
+				logLevel = logLevelQuiet
+			}
+
 			InitLogger(logLevel)
 
 			var prefix, suffix string
@@ -169,6 +182,11 @@ var (
 		Short: "Create a new tape file with example tape file contents and documentation",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			// Init logger
+			if quietFlag {
+				logLevel = logLevelQuiet
+			}
+
 			InitLogger(logLevel)
 
 			fileName := strings.TrimSuffix(args[0], extension) + extension
@@ -194,6 +212,11 @@ var (
 		Short: "Validate a glob file path and parses all the files to ensure they are valid without running them.",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			// Init logger
+			if quietFlag {
+				logLevel = logLevelQuiet
+			}
+
 			InitLogger(logLevel)
 
 			valid := true
@@ -245,8 +268,9 @@ func main() {
 
 func init() {
 	rootCmd.Flags().BoolVarP(&publishFlag, "publish", "p", false, "publish your GIF to vhs.charm.sh and get a shareable URL")
-	rootCmd.PersistentFlags().StringVarP(&logLevel, "loglevel", "l", "verbose", "Log level (quiet or verbose)")
-	rootCmd.MarkFlagRequired("log")
+	rootCmd.Flags().BoolVarP(&verboseFlag, "verbose", "v", true, "verbose display all log messages")
+	rootCmd.Flags().BoolVarP(&quietFlag, "quiet", "q", false, "quiet do not log messages. If publish flag is provided, it will log shareable URL")
+
 	outputs = rootCmd.Flags().StringSliceP("output", "o", []string{}, "file name(s) of video output")
 	themesCmd.Flags().BoolVar(&markdown, "markdown", false, "output as markdown")
 	_ = themesCmd.Flags().MarkHidden("markdown")
