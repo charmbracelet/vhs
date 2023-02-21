@@ -133,6 +133,10 @@ func (vhs *VHS) Setup() {
 		MustInput(shellCommand).
 		MustType(input.Enter)
 
+	vhs.Page.MustElement("textarea").
+		MustInput(vhs.Options.Shell.Clear).
+		MustType(input.Enter)
+
 	// Apply options to the terminal
 	// By this point the setting commands have been executed, so the `opts` struct is up to date.
 	vhs.Page.MustEval(fmt.Sprintf("() => { term.options = { fontSize: %d, fontFamily: '%s', letterSpacing: %f, lineHeight: %f, theme: %s } }",
