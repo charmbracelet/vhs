@@ -58,9 +58,11 @@ var Shells = map[string]Shell{
 			`Set-PSReadLineOption -HistorySaveStyle SaveNothing; Function prompt { Write-Host -ForegroundColor Blue -NoNewLine '>'; return ' ' }`,
 		},
 	},
-	// TODO: oh boy
-	// cmdexe: {
-	// 	Prompt:  "$g",
-	// 	Command: ` cls && set prompt=%s && cls`,
-	// },
+	cmdexe: {
+		Command: []string{
+			"cmd.exe",
+			"/K",
+			"set prompt=$g ",
+		},
+	},
 }
