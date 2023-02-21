@@ -59,10 +59,6 @@ var Shells = map[string]Shell{
 		},
 	},
 	cmdexe: {
-		Command: []string{
-			"cmd.exe",
-			"/K",
-			"set prompt=$g ",
-		},
+		Command: []string{"cmd.exe", "/K", "set prompt=$g "},
 	},
 }
