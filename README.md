@@ -77,8 +77,7 @@ Use a package manager:
 
 ```sh
 # macOS or Linux
-brew install charmbracelet/tap/vhs ffmpeg
-brew install ttyd --HEAD
+brew install vhs
 
 # macOS (via MacPorts)
 sudo port install vhs
@@ -477,6 +476,15 @@ Space 10
 ```
 
 <img alt="Example of pressing the space key" src="https://stuff.charm.sh/vhs/examples/space.gif" width="600" />
+
+#### Page Up / Down
+
+Press the Page Up / Down keys with the `PageUp` or `PageDown` commands.
+
+```elixir
+PageUp 3
+PageDown 5
+```
 
 ### Sleep
 

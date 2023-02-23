@@ -26,6 +26,7 @@ func randomPort() int {
 func StartTTY(port int) *exec.Cmd {
 	args := []string{
 		fmt.Sprintf("--port=%d", port),
+		"--interface", "127.0.0.1",
 		"-t", "rendererType=canvas",
 		"-t", "disableResizeOverlay=true",
 		"-t", "cursorBlink=true",

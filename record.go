@@ -30,6 +30,8 @@ var EscapeSequences = map[string]string{
 	"\x1b[2~": INSERT,
 	"\x1b[3~": DELETE,
 	"\x1b[4~": END,
+	"\x1b[5~": PAGEUP,
+	"\x1b[6~": PAGEDOWN,
 	"\x01":    CTRL + "+A",
 	"\x02":    CTRL + "+B",
 	"\x03":    CTRL + "+C",
@@ -112,7 +114,7 @@ func Record(cmd *cobra.Command, args []string) error {
 }
 
 var cursorResponse = regexp.MustCompile(`\x1b\[\d+;\d+R`)
-var oscResponse = regexp.MustCompile(`\x1b\]\d+;rgb:....\/....\/....\x07`)
+var oscResponse = regexp.MustCompile(`\x1b\]\d+;rgb:....\/....\/....(\x07|\x1b\\)`)
 
 // inputToTape takes input from a PTY stdin and converts it into a tape file.
 func inputToTape(input string) string {

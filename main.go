@@ -56,6 +56,13 @@ var (
 					return err
 				}
 				fmt.Println(GrayStyle.Render("File: " + args[0]))
+			} else {
+				stat, _ := os.Stdin.Stat()
+				if (stat.Mode() & os.ModeCharDevice) != 0 {
+					// The user ran vhs without any arguments or stdin.
+					// Print the usage.
+					return cmd.Help()
+				}
 			}
 
 			input, err := io.ReadAll(in)
