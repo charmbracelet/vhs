@@ -14,9 +14,9 @@ import (
 	"time"
 
 	"github.com/caarlos0/env/v6"
+	"github.com/charmbracelet/ssh"
 	"github.com/charmbracelet/wish"
 	"github.com/charmbracelet/wish/logging"
-	"github.com/gliderlabs/ssh"
 	"github.com/spf13/cobra"
 )
 
