@@ -22,7 +22,10 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 		return []error{InvalidSyntaxError{errs}}
 	}
 
-	v := New()
+	v, err := New()
+	if err != nil {
+		return []error{err}
+	}
 	defer func() { _ = v.close() }()
 
 	// Run Output and Set commands as they only modify options on the VHS instance.

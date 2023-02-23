@@ -15,6 +15,7 @@ import (
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/launcher"
+	"github.com/go-rod/rod/lib/proto"
 )
 
 // VHS is the object that controls the setup.
@@ -82,17 +83,22 @@ func DefaultVHSOptions() Options {
 }
 
 // New sets up ttyd and go-rod for recording frames.
-func New() VHS {
+func New() (VHS, error) {
 	port := randomPort()
 	tty := StartTTY(port)
-	go tty.Run() //nolint:errcheck
+	if err := tty.Start(); err != nil {
+		return VHS{}, fmt.Errorf("could not start ttyd: %w", err)
+	}
 
 	opts := DefaultVHSOptions()
 	path, _ := launcher.LookPath()
 	enableNoSandbox := os.Getenv("VHS_NO_SANDBOX") != ""
 	u := launcher.New().Leakless(false).Bin(path).NoSandbox(enableNoSandbox).MustLaunch()
 	browser := rod.New().ControlURL(u).MustConnect()
-	page := browser.MustPage(fmt.Sprintf("http://localhost:%d", port))
+	page, err := browser.Page(proto.TargetCreateTarget{URL: fmt.Sprintf("http://localhost:%d", port)})
+	if err != nil {
+		return VHS{}, fmt.Errorf("could not open ttyd: %w", err)
+	}
 
 	mu := &sync.Mutex{}
 
@@ -104,7 +110,7 @@ func New() VHS {
 		recording: true,
 		mutex:     mu,
 		close:     browser.Close,
-	}
+	}, nil
 }
 
 // Setup sets up the VHS instance and performs the necessary actions to reflect
