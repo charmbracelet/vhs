@@ -91,9 +91,15 @@ func New() (VHS, error) {
 	}
 
 	opts := DefaultVHSOptions()
-	path, _ := launcher.LookPath()
+	path, found := launcher.LookPath()
+	if !found {
+		return VHS{}, fmt.Errorf("browser not available in path")
+	}
 	enableNoSandbox := os.Getenv("VHS_NO_SANDBOX") != ""
-	u := launcher.New().Leakless(false).Bin(path).NoSandbox(enableNoSandbox).MustLaunch()
+	u, err := launcher.New().Leakless(false).Bin(path).NoSandbox(enableNoSandbox).Launch()
+	if err != nil {
+		return VHS{}, fmt.Errorf("could not launch browser: %w", err)
+	}
 	browser := rod.New().ControlURL(u).MustConnect()
 	page, err := browser.Page(proto.TargetCreateTarget{URL: fmt.Sprintf("http://localhost:%d", port)})
 	if err != nil {
