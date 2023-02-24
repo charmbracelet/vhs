@@ -66,7 +66,7 @@ the `Output`) in the directory.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/demo.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-3LEaCUkQECJOfTVzCABtLd.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/demo.gif">
   <img width="600" alt="A GIF produced by the VHS code above" src="https://stuff.charm.sh/vhs/examples/demo.gif">
 </picture>
 
@@ -261,19 +261,19 @@ Set FontSize 40
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/font-size-10.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-2Bt3mm2N99nq7S7khhwLoq.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/font-size-10.gif">
   <img width="600" alt="Example of setting the font size to 10 pixels" src="https://stuff.charm.sh/vhs/examples/font-size-10.gif">
 </picture>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/font-size-20.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-wjtoFTyJlc25vLmXs04QL.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/font-size-20.gif">
   <img width="600" alt="Example of setting the font size to 20 pixels" src="https://stuff.charm.sh/vhs/examples/font-size-20.gif">
 </picture>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/font-size-40.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-1uosPK0vSvI63dVHzrZHB4.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/font-size-40.gif">
   <img width="600" alt="Example of setting the font size to 40 pixels" src="https://stuff.charm.sh/vhs/examples/font-size-40.gif">
 </picture>
 
@@ -287,7 +287,7 @@ Set FontFamily "Monoflow"
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/font-family.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-5ciL1Gxv9haWgJCKIxmvxW.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/font-family.gif">
   <img width="600" alt="Example of changing the font family to Monoflow" src="https://stuff.charm.sh/vhs/examples/font-family.gif">
 </picture>
 
@@ -301,7 +301,7 @@ Set Width 300
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/width.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-4zqNcpJrUuBGn1PLS1WYik.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/width.gif">
   <img width="300" alt="Example of changing the width of the terminal" src="https://stuff.charm.sh/vhs/examples/width.gif">
 </picture>
 
@@ -314,7 +314,7 @@ Set Height 1000
 ```
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/height.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-2hb6DVprzKa3mMm1fovUzT.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/height.gif">
   <img width="300" alt="Example of changing the height of the terminal" src="https://stuff.charm.sh/vhs/examples/height.gif">
 </picture>
 
@@ -329,7 +329,7 @@ Set LetterSpacing 20
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/letter-spacing.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-41eQJKAcBzssTxgJkxNITY.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/letter-spacing.gif">
   <img width="600" alt="Example of changing the letter spacing to 20 pixels between characters" src="https://stuff.charm.sh/vhs/examples/letter-spacing.gif">
 </picture>
 
@@ -343,7 +343,7 @@ Set LineHeight 1.8
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/line-height.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-4Hd6xSHkj6scEJ1MU4pP2g.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/line-height.gif">
   <img width="600" alt="Example of changing the line height to 1.8" src="https://stuff.charm.sh/vhs/examples/line-height.gif">
 </picture>
 
@@ -367,7 +367,7 @@ Type@500ms "500ms delay per character"
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/typing-speed.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-6GJETss5OFAoraSYCYrpiL.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/typing-speed.gif">
   <img width="600" alt="Example of changing the typing speed to type different words" src="https://stuff.charm.sh/vhs/examples/typing-speed.gif">
 </picture>
 
@@ -401,7 +401,7 @@ Set Padding 0
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/padding.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-1NSxlGR31IdgVIHy1PlExc.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/padding.gif">
   <img width="600" alt="Example of setting the padding" src="https://stuff.charm.sh/vhs/examples/padding.gif">
 </picture>
 
@@ -443,7 +443,7 @@ Type@500ms "Slow down there, partner."
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/type.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-2FdZSrmP1spETQj6cJSbcj.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/type.gif">
   <img width="600" alt="Example of using the Type command in VHS" src="https://stuff.charm.sh/vhs/examples/type.gif">
 </picture>
 
@@ -466,7 +466,7 @@ Backspace 18
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/backspace.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-5c7epBfRDC2J2u6bWWxqOq.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/backspace.gif">
   <img width="600" alt="Example of pressing the Backspace key 18 times" src="https://stuff.charm.sh/vhs/examples/backspace.gif">
 </picture>
 
@@ -481,7 +481,7 @@ Ctrl+R
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/ctrl.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-4saosqdjOj1YJt8NWFV3xG.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/ctrl.gif">
   <img width="600" alt="Example of pressing the Ctrl+R key to reverse search" src="https://stuff.charm.sh/vhs/examples/ctrl.gif">
 </picture>
 
@@ -495,7 +495,7 @@ Enter 2
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/enter.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-35SNRsXFRu9oJQPVwh0dv4.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/enter.gif">
   <img width="600" alt="Example of pressing the Enter key twice" src="https://stuff.charm.sh/vhs/examples/enter.gif">
 </picture>
 
@@ -516,7 +516,7 @@ Type "A"
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/arrow.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-2zuVQXqEajEYRzIovlTpuv.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/arrow.gif">
   <img width="600" alt="Example of pressing the arrow keys to navigate text" src="https://stuff.charm.sh/vhs/examples/arrow.gif">
 </picture>
 
@@ -530,7 +530,7 @@ Tab@500ms 2
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/tab.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-52GBs2DNicD25umxS5PwvQ.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/tab.gif">
   <img width="600" alt="Example of pressing the tab key twice for autocomplete" src="https://stuff.charm.sh/vhs/examples/tab.gif">
 </picture>
 
@@ -544,7 +544,7 @@ Space 10
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/space.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-3p9lUw2vrBaHA4lvDa3zWX.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/space.gif">
   <img width="600" alt="Example of pressing the space key" src="https://stuff.charm.sh/vhs/examples/space.gif">
 </picture>
 
@@ -617,7 +617,7 @@ Type "You will see this being typed."
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/hide.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-618MoZzs2TR0ZtLKc2eaZt.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/hide.gif">
   <img width="600" alt="Example of typing something while hidden" src="https://stuff.charm.sh/vhs/examples/hide.gif">
 </picture>
 
