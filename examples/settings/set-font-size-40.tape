@@ -1,5 +1,6 @@
 Output examples/settings/set-font-size-40.gif
 
+Set Theme "Catppuccin Latte"
 Set Height 225
 
 Set FontSize 40

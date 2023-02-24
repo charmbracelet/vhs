@@ -261,19 +261,19 @@ Set FontSize 40
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/font-size-10.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-2Bt3mm2N99nq7S7khhwLoq.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-4aehY6GbBtvZGp3ynuxT6X.gif">
   <img width="600" alt="Example of setting the font size to 10 pixels" src="https://stuff.charm.sh/vhs/examples/font-size-10.gif">
 </picture>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/font-size-20.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-wjtoFTyJlc25vLmXs04QL.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-7dAGRcK5r8NO8Axd1u3aSw.gif">
   <img width="600" alt="Example of setting the font size to 20 pixels" src="https://stuff.charm.sh/vhs/examples/font-size-20.gif">
 </picture>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/font-size-40.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-1uosPK0vSvI63dVHzrZHB4.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-63P6s9Gc5HJtSNnJc4HNmw.gif">
   <img width="600" alt="Example of setting the font size to 40 pixels" src="https://stuff.charm.sh/vhs/examples/font-size-40.gif">
 </picture>
 
