@@ -11,9 +11,9 @@ type LogLevel int
 
 const (
 	// Default log mode, it log to stdout
-	logLevelVerbose LogLevel = 1
+	logLevelVerbose LogLevel = iota
 	// It does not log nothing except the publish shareable URL's
-	logLevelQuiet LogLevel = 2
+	logLevelQuiet
 )
 
 var (
@@ -21,15 +21,15 @@ var (
 	loggerOut io.Writer
 )
 
-// InitLogger configures logger level
-func InitLogger(level LogLevel) {
+// initLogger configures logger level
+func initLogger(level LogLevel) {
 	logger = log.New(os.Stderr, "", 0)
 
-	SetLogLevel(level)
+	setLogLevel(level)
 }
 
-// SetLogLevel modify log level
-func SetLogLevel(level LogLevel) {
+// setLogLevel modify log level
+func setLogLevel(level LogLevel) {
 	if level == logLevelVerbose {
 		setLogLevelVerbose()
 	} else if level == logLevelQuiet {

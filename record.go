@@ -66,7 +66,7 @@ var EscapeSequences = map[string]string{
 //
 // vhs record > file.tape
 func Record(cmd *cobra.Command, args []string) error {
-	InitLogger(logLevel)
+	initLogger(logLevel)
 
 	command := exec.Command(shell)
 

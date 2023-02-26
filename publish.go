@@ -30,7 +30,7 @@ var publishCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true, // we print our own errors
 	RunE: func(cmd *cobra.Command, args []string) error {
-		InitLogger(logLevel)
+		initLogger(logLevel)
 
 		file := args[0]
 
@@ -142,7 +142,7 @@ func publishShareInstructions(url string) {
 	forcedLog := false
 	if logLevel == logLevelQuiet {
 		forcedLog = true
-		SetLogLevel(logLevelVerbose)
+		setLogLevel(logLevelVerbose)
 	}
 
 	logger.Println("\n" + GrayStyle.Render("  Share your GIF with Markdown:"))
@@ -157,7 +157,7 @@ func publishShareInstructions(url string) {
 
 	// If log was forced restore original log level quiet
 	if forcedLog {
-		SetLogLevel(logLevelQuiet)
+		setLogLevel(logLevelQuiet)
 	}
 }
 

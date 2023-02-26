@@ -52,7 +52,7 @@ var (
 				logLevel = logLevelQuiet
 			}
 
-			InitLogger(logLevel)
+			initLogger(logLevel)
 
 			err := ensureDependencies()
 			if err != nil {
@@ -151,7 +151,7 @@ var (
 				logLevel = logLevelQuiet
 			}
 
-			InitLogger(logLevel)
+			initLogger(logLevel)
 
 			var prefix, suffix string
 			if markdown {
@@ -187,7 +187,7 @@ var (
 				logLevel = logLevelQuiet
 			}
 
-			InitLogger(logLevel)
+			initLogger(logLevel)
 
 			fileName := strings.TrimSuffix(args[0], extension) + extension
 
@@ -217,7 +217,7 @@ var (
 				logLevel = logLevelQuiet
 			}
 
-			InitLogger(logLevel)
+			initLogger(logLevel)
 
 			valid := true
 
