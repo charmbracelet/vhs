@@ -118,7 +118,6 @@ var (
 					publishShareInstructions(url)
 				}
 
-				fmt.Println(URLStyle.Render(url))
 				if isatty.IsTerminal(os.Stdout.Fd()) {
 					fmt.Println()
 				}

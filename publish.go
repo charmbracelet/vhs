@@ -141,7 +141,7 @@ func publishShareInstructions(url string) {
 	fmt.Println(CommandStyle.Render("  <a ") + CommandStyle.Render("href=") + URLStyle.Render(`"https://vhs.charm.sh"`) + CommandStyle.Render(">"))
 	fmt.Println(CommandStyle.Render("    <img ") + CommandStyle.Render("src=") + URLStyle.Render(`"https://stuff.charm.sh/vhs/badge.svg"`) + CommandStyle.Render(">"))
 	fmt.Println(CommandStyle.Render("  </a>"))
-	fmt.Println(GrayStyle.Render("\n  Or link to it:"))
+	fmt.Println(GrayStyle.Render("\n  Or link to it: " + URLStyle.Render(`"`+url+`"`)))
 	fmt.Printf("  ")
 }
 
