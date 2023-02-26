@@ -25,26 +25,26 @@ var (
 func initOutput(output outputMode) {
 	logger = log.New(os.Stderr, "", 0)
 
-	setOutputLevel(output)
+	setOutputMode(output)
 }
 
-// setOutputLevel modify log level
-func setOutputLevel(output outputMode) {
+// setOutputMode modify log level
+func setOutputMode(output outputMode) {
 	if output == outputVerbose {
-		setLogLevelVerbose()
+		setOutputModeVerbose()
 	} else if output == outputQuiet {
-		setLogLevelQuiet()
+		setOutputModeQuiet()
 	}
 }
 
 // setLogLevelQuiet configures log level verbose behaviour
-func setLogLevelVerbose() {
+func setOutputModeVerbose() {
 	out = os.Stderr
 	logger.SetOutput(out)
 }
 
-// setLogLevelQuiet configures log level quiet behaviour
-func setLogLevelQuiet() {
+// setOutputModeQuiet configures log level quiet behaviour
+func setOutputModeQuiet() {
 	out = io.Discard
 	logger.SetOutput(out)
 }

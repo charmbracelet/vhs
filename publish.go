@@ -142,7 +142,7 @@ func publishShareInstructions(url string) {
 	forcedLog := false
 	if output == outputQuiet {
 		forcedLog = true
-		setOutputLevel(outputVerbose)
+		setOutputMode(outputVerbose)
 	}
 
 	logger.Println("\n" + GrayStyle.Render("  Share your GIF with Markdown:"))
@@ -157,7 +157,7 @@ func publishShareInstructions(url string) {
 
 	// If log was forced restore original log level quiet
 	if forcedLog {
-		setOutputLevel(outputQuiet)
+		setOutputMode(outputQuiet)
 	}
 }
 
