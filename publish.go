@@ -30,7 +30,7 @@ var publishCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true, // we print our own errors
 	RunE: func(cmd *cobra.Command, args []string) error {
-		initLogger(logLevel)
+		initOutput(output)
 
 		file := args[0]
 
@@ -140,9 +140,9 @@ func sshSession() (*ssh.Session, error) {
 func publishShareInstructions(url string) {
 	// Set log level to verbose if current mode is quiet
 	forcedLog := false
-	if logLevel == logLevelQuiet {
+	if output == outputQuiet {
 		forcedLog = true
-		setLogLevel(logLevelVerbose)
+		setOutputLevel(outputVerbose)
 	}
 
 	logger.Println("\n" + GrayStyle.Render("  Share your GIF with Markdown:"))
@@ -157,7 +157,7 @@ func publishShareInstructions(url string) {
 
 	// If log was forced restore original log level quiet
 	if forcedLog {
-		setLogLevel(logLevelQuiet)
+		setOutputLevel(outputQuiet)
 	}
 }
 

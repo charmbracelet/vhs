@@ -38,7 +38,7 @@ var (
 	// Logging flags
 	verboseFlag bool
 	quietFlag   bool
-	logLevel    LogLevel = logLevelVerbose
+	output      outputMode = outputVerbose
 
 	rootCmd = &cobra.Command{
 		Use:           "vhs <file>",
@@ -47,12 +47,12 @@ var (
 		SilenceUsage:  true,
 		SilenceErrors: true, // we print our own errors
 		RunE: func(cmd *cobra.Command, args []string) error {
-			// Init logger
+			// Init output
 			if quietFlag {
-				logLevel = logLevelQuiet
+				output = outputQuiet
 			}
 
-			initLogger(logLevel)
+			initOutput(output)
 
 			err := ensureDependencies()
 			if err != nil {
@@ -91,7 +91,7 @@ var (
 			}
 
 			var publishFile string
-			errs := Evaluate(cmd.Context(), string(input), loggerOut, func(v *VHS) {
+			errs := Evaluate(cmd.Context(), string(input), out, func(v *VHS) {
 				// Output is being overridden, prevent all outputs
 				if len(*outputs) <= 0 {
 					publishFile = v.Options.Video.Output.GIF
@@ -146,12 +146,12 @@ var (
 		Short: "List all the available themes, one per line",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			// Init logger
+			// Init output
 			if quietFlag {
-				logLevel = logLevelQuiet
+				output = outputQuiet
 			}
 
-			initLogger(logLevel)
+			initOutput(output)
 
 			var prefix, suffix string
 			if markdown {
@@ -182,12 +182,12 @@ var (
 		Short: "Create a new tape file with example tape file contents and documentation",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			// Init logger
+			// Init output
 			if quietFlag {
-				logLevel = logLevelQuiet
+				output = outputQuiet
 			}
 
-			initLogger(logLevel)
+			initOutput(output)
 
 			fileName := strings.TrimSuffix(args[0], extension) + extension
 
@@ -212,12 +212,12 @@ var (
 		Short: "Validate a glob file path and parses all the files to ensure they are valid without running them.",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			// Init logger
+			// Init output
 			if quietFlag {
-				logLevel = logLevelQuiet
+				output = outputQuiet
 			}
 
-			initLogger(logLevel)
+			initOutput(output)
 
 			valid := true
 
