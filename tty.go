@@ -22,8 +22,8 @@ func randomPort() int {
 	return addr.Addr().(*net.TCPAddr).Port
 }
 
-// StartTTY starts the ttyd process on the given port.
-func StartTTY(port int, shell Shell) *exec.Cmd {
+// buildTtyCmd builds the ttyd exec.Command on the given port.
+func buildTtyCmd(port int, shell Shell) *exec.Cmd {
 	args := []string{
 		fmt.Sprintf("--port=%d", port),
 		"--interface", "127.0.0.1",
