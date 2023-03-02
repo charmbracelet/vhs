@@ -27,6 +27,7 @@ type VHS struct {
 	TextCanvas   *rod.Element
 	CursorCanvas *rod.Element
 	mutex        *sync.Mutex
+	started      bool
 	recording    bool
 	tty          *exec.Cmd
 	totalFrames  int
@@ -83,40 +84,48 @@ func DefaultVHSOptions() Options {
 }
 
 // New sets up ttyd and go-rod for recording frames.
-func New() (VHS, error) {
-	port := randomPort()
-	tty := StartTTY(port)
-	if err := tty.Start(); err != nil {
-		return VHS{}, fmt.Errorf("could not start ttyd: %w", err)
+func New() VHS {
+	mu := &sync.Mutex{}
+	opts := DefaultVHSOptions()
+	return VHS{
+		Options:   &opts,
+		recording: true,
+		mutex:     mu,
+	}
+}
+
+// Start starts ttyd, browser and everything else needed to create the gif.
+func (vhs *VHS) Start() error {
+	vhs.mutex.Lock()
+	defer vhs.mutex.Unlock()
+
+	if vhs.started {
+		return fmt.Errorf("vhs is already started")
 	}
 
-	opts := DefaultVHSOptions()
-	path, found := launcher.LookPath()
-	if !found {
-		return VHS{}, fmt.Errorf("browser not available in path")
+	port := randomPort()
+	vhs.tty = buildTtyCmd(port)
+	if err := vhs.tty.Start(); err != nil {
+		return fmt.Errorf("could not start tty: %w", err)
 	}
+
+	path, _ := launcher.LookPath()
 	enableNoSandbox := os.Getenv("VHS_NO_SANDBOX") != ""
 	u, err := launcher.New().Leakless(false).Bin(path).NoSandbox(enableNoSandbox).Launch()
 	if err != nil {
-		return VHS{}, fmt.Errorf("could not launch browser: %w", err)
+		return fmt.Errorf("could not launch browser: %w", err)
 	}
 	browser := rod.New().ControlURL(u).MustConnect()
 	page, err := browser.Page(proto.TargetCreateTarget{URL: fmt.Sprintf("http://localhost:%d", port)})
 	if err != nil {
-		return VHS{}, fmt.Errorf("could not open ttyd: %w", err)
+		return fmt.Errorf("could not open ttyd: %w", err)
 	}
 
-	mu := &sync.Mutex{}
-
-	return VHS{
-		Options:   &opts,
-		Page:      page,
-		browser:   browser,
-		tty:       tty,
-		recording: true,
-		mutex:     mu,
-		close:     browser.Close,
-	}, nil
+	vhs.browser = browser
+	vhs.Page = page
+	vhs.close = vhs.browser.Close
+	vhs.started = true
+	return nil
 }
 
 // Setup sets up the VHS instance and performs the necessary actions to reflect

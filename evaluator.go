@@ -22,8 +22,8 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 		return []error{InvalidSyntaxError{errs}}
 	}
 
-	v, err := New()
-	if err != nil {
+	v := New()
+	if err := v.Start(); err != nil {
 		return []error{err}
 	}
 	defer func() { _ = v.close() }()
