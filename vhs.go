@@ -14,6 +14,7 @@ import (
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
+	"github.com/go-rod/rod/lib/proto"
 )
 
 // VHS is the object that controls the setup.
@@ -83,9 +84,7 @@ func DefaultVHSOptions() Options {
 // New sets up ttyd and go-rod for recording frames.
 func New() VHS {
 	mu := &sync.Mutex{}
-
 	opts := DefaultVHSOptions()
-
 	return VHS{
 		Options:   &opts,
 		recording: true,
@@ -99,11 +98,23 @@ func (vhs *VHS) Start() error {
 	vhs.tty = StartTTY(port, shell)
 	go vhs.tty.Run()
 
-	path, _ := launcher.LookPath()
+	path, found := launcher.LookPath()
+	if !found {
+		return fmt.Errorf("browser not available in path")
+	}
 	enableNoSandbox := os.Getenv("VHS_NO_SANDBOX") != ""
-	u := launcher.New().Leakless(false).Bin(path).NoSandbox(enableNoSandbox).MustLaunch()
-	vhs.browser = rod.New().ControlURL(u).MustConnect()
-	vhs.Page = vhs.browser.MustPage(fmt.Sprintf("http://localhost:%d", port))
+	u, err := launcher.New().Leakless(false).Bin(path).NoSandbox(enableNoSandbox).Launch()
+	if err != nil {
+		return fmt.Errorf("could not launch browser: %w", err)
+	}
+	browser := rod.New().ControlURL(u).MustConnect()
+	page, err := browser.Page(proto.TargetCreateTarget{URL: fmt.Sprintf("http://localhost:%d", port)})
+	if err != nil {
+		return fmt.Errorf("could not open ttyd: %w", err)
+	}
+
+	vhs.browser = browser
+	vhs.Page = page
 	vhs.close = vhs.browser.Close
 	return nil
 }
