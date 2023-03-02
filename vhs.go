@@ -94,6 +94,7 @@ func New() VHS {
 	}
 }
 
+// Start starts ttyd, browser and everything else needed to create the gif.
 func (vhs *VHS) Start() error {
 	vhs.mutex.Lock()
 	defer vhs.mutex.Unlock()
