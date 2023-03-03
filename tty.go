@@ -32,6 +32,7 @@ func buildTtyCmd(port int, shell Shell) *exec.Cmd {
 		"-t", "cursorBlink=true",
 		"-t", "enableSixel=true",
 		"-t", "customGlyphs=true",
+		"--once", // will allow one connection and exit
 	}
 
 	args = append(args, shell.Command...)
