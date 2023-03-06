@@ -19,7 +19,7 @@ type Shell struct {
 // Shells contains a mapping from shell names to their Shell struct.
 var Shells = map[string]Shell{
 	bash: {
-		Env:     []string{"PS1=\\[\\e[38;2;90;86;224m\\]> \\[\\e[0m\\]"},
+		Env:     []string{"PS1=\\[\\e[38;2;90;86;224m\\]> \\[\\e[0m\\]", "BASH_SILENCE_DEPRECATION_WARNING=1"},
 		Command: []string{"bash", "--noprofile", "--norc", "--login", "+o", "history"},
 	},
 	zsh: {
