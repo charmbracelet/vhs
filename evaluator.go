@@ -23,6 +23,13 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	}
 
 	v := New()
+	for _, cmd := range cmds {
+		if cmd.Type == SET && cmd.Options == "Shell" {
+			cmd.Execute(&v)
+		}
+	}
+
+	// Start things up
 	if err := v.Start(); err != nil {
 		return []error{err}
 	}
@@ -33,7 +40,9 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	for i, cmd := range cmds {
 		if cmd.Type == SET || cmd.Type == OUTPUT || cmd.Type == REQUIRE {
 			fmt.Fprintln(out, cmd.Highlight(false))
-			cmd.Execute(&v)
+			if cmd.Options != "Shell" {
+				cmd.Execute(&v)
+			}
 		} else {
 			offset = i
 			break

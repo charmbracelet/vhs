@@ -13,7 +13,6 @@ import (
 	"time"
 
 	"github.com/go-rod/rod"
-	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
 )
@@ -104,7 +103,7 @@ func (vhs *VHS) Start() error {
 	}
 
 	port := randomPort()
-	vhs.tty = buildTtyCmd(port)
+	vhs.tty = buildTtyCmd(port, vhs.Options.Shell)
 	if err := vhs.tty.Start(); err != nil {
 		return fmt.Errorf("could not start tty: %w", err)
 	}
@@ -144,19 +143,6 @@ func (vhs *VHS) Setup() {
 	// Find xterm.js canvases for the text and cursor layer for recording.
 	vhs.TextCanvas, _ = vhs.Page.Element("canvas.xterm-text-layer")
 	vhs.CursorCanvas, _ = vhs.Page.Element("canvas.xterm-cursor-layer")
-
-	// Set up the Prompt
-	shellCommand := fmt.Sprintf(vhs.Options.Shell.Command, vhs.Options.Shell.Prompt)
-	if vhs.Options.Shell.Prompt == "" {
-		shellCommand = vhs.Options.Shell.Command
-	}
-	vhs.Page.MustElement("textarea").
-		MustInput(shellCommand).
-		MustType(input.Enter)
-
-	vhs.Page.MustElement("textarea").
-		MustInput(vhs.Options.Shell.Clear).
-		MustType(input.Enter)
 
 	// Apply options to the terminal
 	// By this point the setting commands have been executed, so the `opts` struct is up to date.
