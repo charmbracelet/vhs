@@ -17,7 +17,7 @@ require (
 	github.com/muesli/go-app-paths v0.2.2
 	github.com/muesli/mango-cobra v1.2.0
 	github.com/muesli/roff v0.1.0
-	github.com/muesli/termenv v0.14.0
+	github.com/muesli/termenv v0.15.0
 	github.com/spf13/cobra v1.6.1
 	golang.org/x/crypto v0.7.0
 	golang.org/x/term v0.6.0
@@ -26,7 +26,7 @@ require (
 require (
 	github.com/alecthomas/chroma v0.10.0 // indirect
 	github.com/anmitsu/go-shlex v0.0.0-20200514113438-38f4b401e2be // indirect
-	github.com/aymanbagabas/go-osc52 v1.2.2 // indirect
+	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/caarlos0/sshmarshal v0.1.0 // indirect
 	github.com/dlclark/regexp2 v1.8.1 // indirect
