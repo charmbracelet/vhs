@@ -4,9 +4,3 @@
 package main
 
 const defaultShell = bash
-
-func defaultShellWithArgs() []string {
-	return []string{
-		"bash", "--login",
-	}
-}

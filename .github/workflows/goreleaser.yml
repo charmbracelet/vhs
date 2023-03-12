@@ -21,3 +21,13 @@ jobs:
       fury_token: ${{ secrets.FURY_TOKEN }}
       nfpm_gpg_key: ${{ secrets.NFPM_GPG_KEY }}
       nfpm_passphrase: ${{ secrets.NFPM_PASSPHRASE }}
+  homebrew:
+    name: Bump Homebrew formula
+    runs-on: ubuntu-latest
+    steps:
+      - uses: mislav/bump-homebrew-formula-action@v2
+        with:
+          # A PR will be sent to github.com/Homebrew/homebrew-core to update this formula:
+          formula-name: vhs
+        env:
+          COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}

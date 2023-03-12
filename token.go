@@ -66,7 +66,9 @@ const (
 	TYPING_SPEED   = "TYPING_SPEED"   //nolint:revive
 	PADDING        = "PADDING"
 	THEME          = "THEME"
-	LOOP_OFFSET    = "LOOP_OFFSET"  //nolint:revive
+	LOOP_OFFSET    = "LOOP_OFFSET" //nolint:revive
+	PAGEUP         = "PAGEUP"
+	PAGEDOWN       = "PAGEDOWN"
 	MATCH_LINE     = "MATCH_LINE"   //nolint:revive
 	MATCH_SCREEN   = "MATCH_SCREEN" //nolint:revive
 )
@@ -88,6 +90,8 @@ var keywords = map[string]TokenType{
 	"Left":          LEFT,
 	"Right":         RIGHT,
 	"Up":            UP,
+	"PageUp":        PAGEUP,
+	"PageDown":      PAGEDOWN,
 	"Tab":           TAB,
 	"Escape":        ESCAPE,
 	"End":           END,
@@ -128,7 +132,7 @@ func IsSetting(t TokenType) bool {
 func IsCommand(t TokenType) bool {
 	switch t {
 	case TYPE, SLEEP,
-		UP, DOWN, RIGHT, LEFT,
+		UP, DOWN, RIGHT, LEFT, PAGEUP, PAGEDOWN,
 		ENTER, BACKSPACE, DELETE, TAB,
 		ESCAPE, HOME, INSERT, END, CTRL, MATCH_LINE, MATCH_SCREEN:
 		return true

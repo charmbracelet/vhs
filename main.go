@@ -15,6 +15,7 @@ import (
 	"syscall"
 
 	version "github.com/hashicorp/go-version"
+	"github.com/mattn/go-isatty"
 	"github.com/spf13/cobra"
 )
 
@@ -31,8 +32,8 @@ var (
 
 	ttydMinVersion = version.Must(version.NewVersion("1.7.2"))
 
-	publish bool
-	outputs *[]string
+	publishFlag bool
+	outputs     *[]string
 
 	rootCmd = &cobra.Command{
 		Use:           "vhs <file>",
@@ -54,7 +55,14 @@ var (
 				if err != nil {
 					return err
 				}
-				fmt.Println(FileStyle.Render("File: " + args[0]))
+				fmt.Println(GrayStyle.Render("File: " + args[0]))
+			} else {
+				stat, _ := os.Stdin.Stat()
+				if (stat.Mode() & os.ModeCharDevice) != 0 {
+					// The user ran vhs without any arguments or stdin.
+					// Print the usage.
+					return cmd.Help()
+				}
 			}
 
 			input, err := io.ReadAll(in)
@@ -63,6 +71,11 @@ var (
 			}
 			if string(input) == "" {
 				return errors.New("no input provided")
+			}
+
+			publishEnv, publishEnvSet := os.LookupEnv("VHS_PUBLISH")
+			if !publishEnvSet && !publishFlag {
+				fmt.Println(FaintStyle.Render("Host your GIF on vhs.charm.sh: vhs publish <file>.gif"))
 			}
 
 			var publishFile string
@@ -91,12 +104,24 @@ var (
 				return errors.New("recording failed")
 			}
 
-			if publish && publishFile != "" {
+			if (publishFlag || publishEnv == "true") && publishFile != "" {
+				if isatty.IsTerminal(os.Stdout.Fd()) {
+					fmt.Printf(GrayStyle.Render("Publishing %s... "), publishFile)
+				}
+
 				url, err := Publish(cmd.Context(), publishFile)
 				if err != nil {
 					return err
 				}
-				fmt.Println(StringStyle.Render("URL: " + url))
+				if isatty.IsTerminal(os.Stdout.Fd()) {
+					fmt.Println(StringStyle.Render("Done!"))
+					publishShareInstructions(url)
+				}
+
+				fmt.Println(URLStyle.Render(url))
+				if isatty.IsTerminal(os.Stdout.Fd()) {
+					fmt.Println()
+				}
 			}
 
 			return nil
@@ -209,7 +234,7 @@ func main() {
 }
 
 func init() {
-	rootCmd.Flags().BoolVarP(&publish, "publish", "p", false, "publish your GIF to vhs.charm.sh and get a shareable URL")
+	rootCmd.Flags().BoolVarP(&publishFlag, "publish", "p", false, "publish your GIF to vhs.charm.sh and get a shareable URL")
 	outputs = rootCmd.Flags().StringSliceP("output", "o", []string{}, "file name(s) of video output")
 	themesCmd.Flags().BoolVar(&markdown, "markdown", false, "output as markdown")
 	_ = themesCmd.Flags().MarkHidden("markdown")

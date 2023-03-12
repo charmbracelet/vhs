@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"math"
 	"os"
@@ -12,8 +13,8 @@ import (
 	"time"
 
 	"github.com/go-rod/rod"
-	"github.com/go-rod/rod/lib/input"
 	"github.com/go-rod/rod/lib/launcher"
+	"github.com/go-rod/rod/lib/proto"
 )
 
 // VHS is the object that controls the setup.
@@ -25,6 +26,7 @@ type VHS struct {
 	TextCanvas   *rod.Element
 	CursorCanvas *rod.Element
 	mutex        *sync.Mutex
+	started      bool
 	recording    bool
 	tty          *exec.Cmd
 	totalFrames  int
@@ -49,7 +51,7 @@ const (
 	defaultFontSize      = 22
 	defaultTypingSpeed   = 50 * time.Millisecond
 	defaultLineHeight    = 1.0
-	defaultLetterSpacing = 0
+	defaultLetterSpacing = 1.0
 	fontsSeparator       = ","
 )
 
@@ -82,27 +84,47 @@ func DefaultVHSOptions() Options {
 
 // New sets up ttyd and go-rod for recording frames.
 func New() VHS {
-	port := randomPort()
-	tty := StartTTY(port)
-	go tty.Run() //nolint:errcheck
-
-	opts := DefaultVHSOptions()
-	path, _ := launcher.LookPath()
-	u := launcher.New().Leakless(false).Bin(path).MustLaunch()
-	browser := rod.New().ControlURL(u).MustConnect()
-	page := browser.MustPage(fmt.Sprintf("http://localhost:%d", port))
-
 	mu := &sync.Mutex{}
-
+	opts := DefaultVHSOptions()
 	return VHS{
 		Options:   &opts,
-		Page:      page,
-		browser:   browser,
-		tty:       tty,
 		recording: true,
 		mutex:     mu,
-		close:     browser.Close,
 	}
+}
+
+// Start starts ttyd, browser and everything else needed to create the gif.
+func (vhs *VHS) Start() error {
+	vhs.mutex.Lock()
+	defer vhs.mutex.Unlock()
+
+	if vhs.started {
+		return fmt.Errorf("vhs is already started")
+	}
+
+	port := randomPort()
+	vhs.tty = buildTtyCmd(port, vhs.Options.Shell)
+	if err := vhs.tty.Start(); err != nil {
+		return fmt.Errorf("could not start tty: %w", err)
+	}
+
+	path, _ := launcher.LookPath()
+	enableNoSandbox := os.Getenv("VHS_NO_SANDBOX") != ""
+	u, err := launcher.New().Leakless(false).Bin(path).NoSandbox(enableNoSandbox).Launch()
+	if err != nil {
+		return fmt.Errorf("could not launch browser: %w", err)
+	}
+	browser := rod.New().ControlURL(u).MustConnect()
+	page, err := browser.Page(proto.TargetCreateTarget{URL: fmt.Sprintf("http://localhost:%d", port)})
+	if err != nil {
+		return fmt.Errorf("could not open ttyd: %w", err)
+	}
+
+	vhs.browser = browser
+	vhs.Page = page
+	vhs.close = vhs.browser.Close
+	vhs.started = true
+	return nil
 }
 
 // Setup sets up the VHS instance and performs the necessary actions to reflect
@@ -121,15 +143,6 @@ func (vhs *VHS) Setup() {
 	// Find xterm.js canvases for the text and cursor layer for recording.
 	vhs.TextCanvas, _ = vhs.Page.Element("canvas.xterm-text-layer")
 	vhs.CursorCanvas, _ = vhs.Page.Element("canvas.xterm-cursor-layer")
-
-	// Set up the Prompt
-	shellCommand := fmt.Sprintf(vhs.Options.Shell.Command, vhs.Options.Shell.Prompt)
-	if vhs.Options.Shell.Prompt == "" {
-		shellCommand = vhs.Options.Shell.Command
-	}
-	vhs.Page.MustElement("textarea").
-		MustInput(shellCommand).
-		MustType(input.Enter)
 
 	// Apply options to the terminal
 	// By this point the setting commands have been executed, so the `opts` struct is up to date.
@@ -197,6 +210,10 @@ func (vhs *VHS) Render() error {
 
 // Apply Loop Offset by modifying frame sequence
 func (vhs *VHS) ApplyLoopOffset() error {
+	if vhs.totalFrames <= 0 {
+		return errors.New("no frames")
+	}
+
 	loopOffsetPercentage := vhs.Options.LoopOffset
 
 	// Calculate # of frames to offset from LoopOffset percentage

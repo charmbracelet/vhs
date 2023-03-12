@@ -8,8 +8,10 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/charmbracelet/keygen"
+	"github.com/mattn/go-isatty"
 	gap "github.com/muesli/go-app-paths"
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/ssh"
@@ -28,11 +30,29 @@ var publishCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true, // we print our own errors
 	RunE: func(cmd *cobra.Command, args []string) error {
-		url, err := Publish(cmd.Context(), args[0])
+		file := args[0]
+
+		if strings.HasSuffix(file, ".tape") {
+			cmd.Printf("Use vhs %s --publish flag to publish tapes\n", file)
+			return errors.New("must pass a GIF file")
+		}
+
+		if !strings.HasSuffix(file, ".gif") {
+			return errors.New("must pass a GIF file")
+		}
+
+		url, err := Publish(cmd.Context(), file)
 		if err != nil {
 			return err
 		}
-		fmt.Println(StringStyle.Render("URL: " + url))
+
+		if isatty.IsTerminal(os.Stdout.Fd()) {
+			publishShareInstructions(url)
+		}
+		fmt.Println(URLStyle.Render(url))
+		if isatty.IsTerminal(os.Stdout.Fd()) {
+			fmt.Println()
+		}
 		return nil
 	},
 }
@@ -113,10 +133,20 @@ func sshSession() (*ssh.Session, error) {
 	return s, nil
 }
 
+func publishShareInstructions(url string) {
+	fmt.Println("\n" + GrayStyle.Render("  Share your GIF with Markdown:"))
+	fmt.Println(CommandStyle.Render("  ![Made with VHS]") + URLStyle.Render("("+url+")"))
+	fmt.Println(GrayStyle.Render("\n  Or HTML (with badge):"))
+	fmt.Println(CommandStyle.Render("  <img ") + CommandStyle.Render("src=") + URLStyle.Render(`"`+url+`"`) + CommandStyle.Render(" alt=") + URLStyle.Render(`"Made with VHS"`) + CommandStyle.Render(">"))
+	fmt.Println(CommandStyle.Render("  <a ") + CommandStyle.Render("href=") + URLStyle.Render(`"https://vhs.charm.sh"`) + CommandStyle.Render(">"))
+	fmt.Println(CommandStyle.Render("    <img ") + CommandStyle.Render("src=") + URLStyle.Render(`"https://stuff.charm.sh/vhs/badge.svg"`) + CommandStyle.Render(">"))
+	fmt.Println(CommandStyle.Render("  </a>"))
+	fmt.Println(GrayStyle.Render("\n  Or link to it:"))
+	fmt.Printf("  ")
+}
+
 // Publish publishes the given GIF file to the web.
 func Publish(ctx context.Context, path string) (string, error) {
-	fmt.Println("Publishing GIF...")
-
 	s, err := sshSession()
 	if err != nil {
 		return "", err

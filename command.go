@@ -25,6 +25,8 @@ var CommandTypes = []CommandType{ //nolint: deadcode
 	ESCAPE,
 	ILLEGAL,
 	LEFT,
+	PAGEUP,
+	PAGEDOWN,
 	RIGHT,
 	SET,
 	OUTPUT,
@@ -62,6 +64,8 @@ var CommandFuncs = map[CommandType]CommandFunc{
 	UP:           ExecuteKey(input.ArrowUp),
 	TAB:          ExecuteKey(input.Tab),
 	ESCAPE:       ExecuteKey(input.Escape),
+	PAGEUP:       ExecuteKey(input.PageUp),
+	PAGEDOWN:     ExecuteKey(input.PageDown),
 	HIDE:         ExecuteHide,
 	REQUIRE:      ExecuteRequire,
 	SHOW:         ExecuteShow,
@@ -299,9 +303,6 @@ func ExecuteSetWidth(c Command, v *VHS) {
 func ExecuteSetShell(c Command, v *VHS) {
 	if s, ok := Shells[c.Args]; ok {
 		v.Options.Shell = s
-	} else {
-		v.Options.Shell.Prompt = ""
-		v.Options.Shell.Command = c.Args
 	}
 }
 

@@ -64,7 +64,11 @@ vhs < demo.tape
 All done! You should see a new file called `demo.gif` (or whatever you named
 the `Output`) in the directory.
 
-<img alt="A GIF produced by the VHS code above" src="https://stuff.charm.sh/vhs/examples/demo.gif" width="600" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/demo.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/demo.gif">
+  <img width="600" alt="A GIF produced by the VHS code above" src="https://stuff.charm.sh/vhs/examples/demo.gif">
+</picture>
 
 For more examples see the [`examples/`](https://github.com/charmbracelet/vhs/tree/main/examples) directory.
 
@@ -77,8 +81,7 @@ Use a package manager:
 
 ```sh
 # macOS or Linux
-brew install charmbracelet/tap/vhs ffmpeg
-brew install ttyd --HEAD
+brew install vhs
 
 # macOS (via MacPorts)
 sudo port install vhs
@@ -132,6 +135,25 @@ go install github.com/charmbracelet/vhs@latest
 ```
 
 [releases]: https://github.com/charmbracelet/vhs/releases
+
+## Record Tapes
+
+VHS has the ability to generate tape files from your terminal actions!
+
+To record to a tape file, run:
+
+```bash
+vhs record > cassette.tape
+```
+
+Perform any actions you want and then `exit` the terminal session to stop
+recording. You may want to manually edit the generated `.tape` file to add
+settings or modify actions. Then, you can generate the GIF:
+
+```bash
+vhs < cassette.tape
+```
+
 
 ## The VHS Server
 
@@ -237,11 +259,23 @@ Set FontSize 20
 Set FontSize 40
 ```
 
-<img alt="Example of setting the font size to 10 pixels" src="https://stuff.charm.sh/vhs/examples/font-size-10.gif" width="600" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/font-size-10.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/font-size-10.gif">
+  <img width="600" alt="Example of setting the font size to 10 pixels" src="https://stuff.charm.sh/vhs/examples/font-size-10.gif">
+</picture>
 
-<img alt="Example of setting the font size to 20 pixels" src="https://stuff.charm.sh/vhs/examples/font-size-20.gif" width="600" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/font-size-20.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/font-size-20.gif">
+  <img width="600" alt="Example of setting the font size to 20 pixels" src="https://stuff.charm.sh/vhs/examples/font-size-20.gif">
+</picture>
 
-<img alt="Example of setting the font size to 40 pixels" src="https://stuff.charm.sh/vhs/examples/font-size-40.gif" width="600" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/font-size-40.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/font-size-40.gif">
+  <img width="600" alt="Example of setting the font size to 40 pixels" src="https://stuff.charm.sh/vhs/examples/font-size-40.gif">
+</picture>
 
 #### Set Font Family
 
@@ -251,7 +285,11 @@ Set the font family with the `Set FontFamily "<font>"` command
 Set FontFamily "Monoflow"
 ```
 
-<img alt="Example of changing the font family to Monoflow" src="https://stuff.charm.sh/vhs/examples/font-family.gif" width="600" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/font-family.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/font-family.gif">
+  <img width="600" alt="Example of changing the font family to Monoflow" src="https://stuff.charm.sh/vhs/examples/font-family.gif">
+</picture>
 
 #### Set Width
 
@@ -261,7 +299,11 @@ Set the width of the terminal with the `Set Width` command.
 Set Width 300
 ```
 
-<img alt="Example of changing the width of the terminal" src="https://stuff.charm.sh/vhs/examples/width.gif" width="300" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/width.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/width.gif">
+  <img width="300" alt="Example of changing the width of the terminal" src="https://stuff.charm.sh/vhs/examples/width.gif">
+</picture>
 
 #### Set Height
 
@@ -270,8 +312,11 @@ Set the height of the terminal with the `Set Height` command.
 ```elixir
 Set Height 1000
 ```
-
-<img alt="Example of changing the height of the terminal" src="https://stuff.charm.sh/vhs/examples/height.gif" width="300" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/height.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/height.gif">
+  <img width="300" alt="Example of changing the height of the terminal" src="https://stuff.charm.sh/vhs/examples/height.gif">
+</picture>
 
 #### Set Letter Spacing
 
@@ -282,7 +327,11 @@ Command.
 Set LetterSpacing 20
 ```
 
-<img alt="Example of changing the letter spacing to 20 pixels between characters" src="https://stuff.charm.sh/vhs/examples/letter-spacing.gif" width="600" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/letter-spacing.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/letter-spacing.gif">
+  <img width="600" alt="Example of changing the letter spacing to 20 pixels between characters" src="https://stuff.charm.sh/vhs/examples/letter-spacing.gif">
+</picture>
 
 #### Set Line Height
 
@@ -292,7 +341,11 @@ Set the spacing between lines with the `Set LineHeight` Command.
 Set LineHeight 1.8
 ```
 
-<img alt="Example of changing the line height to 1.8" src="https://stuff.charm.sh/vhs/examples/line-height.gif" width="600" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/line-height.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/line-height.gif">
+  <img width="600" alt="Example of changing the line height to 1.8" src="https://stuff.charm.sh/vhs/examples/line-height.gif">
+</picture>
 
 #### Set Typing Speed
 
@@ -312,7 +365,11 @@ Type "100ms delay per character"
 Type@500ms "500ms delay per character"
 ```
 
-<img alt="Example of changing the typing speed to type different words" src="https://stuff.charm.sh/vhs/examples/typing-speed.gif" width="600" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/typing-speed.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/typing-speed.gif">
+  <img width="600" alt="Example of changing the typing speed to type different words" src="https://stuff.charm.sh/vhs/examples/typing-speed.gif">
+</picture>
 
 #### Set Theme
 
@@ -342,7 +399,11 @@ command.
 Set Padding 0
 ```
 
-<img alt="Example of setting padding to 0" src="https://stuff.charm.sh/vhs/examples/padding.gif" width="600" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/padding.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/padding.gif">
+  <img width="600" alt="Example of setting the padding" src="https://stuff.charm.sh/vhs/examples/padding.gif">
+</picture>
 
 #### Set Framerate
 
@@ -380,7 +441,11 @@ Type "Whatever you want"
 Type@500ms "Slow down there, partner."
 ```
 
-<img alt="Example of using the Type command in VHS" src="https://stuff.charm.sh/vhs/examples/type.gif" width="600" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/type.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/type.gif">
+  <img width="600" alt="Example of using the Type command in VHS" src="https://stuff.charm.sh/vhs/examples/type.gif">
+</picture>
 
 ### Keys
 
@@ -399,7 +464,11 @@ Press the backspace key with the `Backspace` command.
 Backspace 18
 ```
 
-<img alt="Example of pressing the Backspace key 18 times" src="https://stuff.charm.sh/vhs/examples/backspace.gif" width="600" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/backspace.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/backspace.gif">
+  <img width="600" alt="Example of pressing the Backspace key 18 times" src="https://stuff.charm.sh/vhs/examples/backspace.gif">
+</picture>
 
 #### Ctrl
 
@@ -410,7 +479,11 @@ command.
 Ctrl+R
 ```
 
-<img alt="Example of pressing the Ctrl+R key to reverse search" src="https://stuff.charm.sh/vhs/examples/ctrl.gif" width="600" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/ctrl.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/ctrl.gif">
+  <img width="600" alt="Example of pressing the Ctrl+R key to reverse search" src="https://stuff.charm.sh/vhs/examples/ctrl.gif">
+</picture>
 
 #### Enter
 
@@ -420,7 +493,11 @@ Press the enter key with the `Enter` command.
 Enter 2
 ```
 
-<img alt="Example of pressing the Enter key twice" src="https://stuff.charm.sh/vhs/examples/enter.gif" width="600" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/enter.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/enter.gif">
+  <img width="600" alt="Example of pressing the Enter key twice" src="https://stuff.charm.sh/vhs/examples/enter.gif">
+</picture>
 
 #### Arrow Keys
 
@@ -437,7 +514,11 @@ Type "B"
 Type "A"
 ```
 
-<img alt="Example of pressing the arrow keys to navigate text" src="https://stuff.charm.sh/vhs/examples/arrow.gif" width="600" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/arrow.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/arrow.gif">
+  <img width="600" alt="Example of pressing the arrow keys to navigate text" src="https://stuff.charm.sh/vhs/examples/arrow.gif">
+</picture>
 
 #### Tab
 
@@ -447,7 +528,11 @@ Enter a tab with the `Tab` command.
 Tab@500ms 2
 ```
 
-<img alt="Example of pressing the tab key twice for autocomplete" src="https://stuff.charm.sh/vhs/examples/tab.gif" width="600" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/tab.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/tab.gif">
+  <img width="600" alt="Example of pressing the tab key twice for autocomplete" src="https://stuff.charm.sh/vhs/examples/tab.gif">
+</picture>
 
 #### Space
 
@@ -457,7 +542,20 @@ Press the space bar with the `Space` command.
 Space 10
 ```
 
-<img alt="Example of pressing the space key" src="https://stuff.charm.sh/vhs/examples/space.gif" width="600" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/space.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/space.gif">
+  <img width="600" alt="Example of pressing the space key" src="https://stuff.charm.sh/vhs/examples/space.gif">
+</picture>
+
+#### Page Up / Down
+
+Press the Page Up / Down keys with the `PageUp` or `PageDown` commands.
+
+```elixir
+PageUp 3
+PageDown 5
+```
 
 ### Sleep
 
@@ -517,7 +615,11 @@ Show
 Type "You will see this being typed."
 ```
 
-<img alt="Example of typing something while hidden" src="https://stuff.charm.sh/vhs/examples/hide.gif" width="600" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/hide.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/hide.gif">
+  <img width="600" alt="Example of typing something while hidden" src="https://stuff.charm.sh/vhs/examples/hide.gif">
+</picture>
 
 ***
 

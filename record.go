@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"regexp"
 	"strings"
 	"time"
 
@@ -29,6 +30,8 @@ var EscapeSequences = map[string]string{
 	"\x1b[2~": INSERT,
 	"\x1b[3~": DELETE,
 	"\x1b[4~": END,
+	"\x1b[5~": PAGEUP,
+	"\x1b[6~": PAGEDOWN,
 	"\x01":    CTRL + "+A",
 	"\x02":    CTRL + "+B",
 	"\x03":    CTRL + "+C",
@@ -110,6 +113,9 @@ func Record(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+var cursorResponse = regexp.MustCompile(`\x1b\[\d+;\d+R`)
+var oscResponse = regexp.MustCompile(`\x1b\]\d+;rgb:....\/....\/....(\x07|\x1b\\)`)
+
 // inputToTape takes input from a PTY stdin and converts it into a tape file.
 func inputToTape(input string) string {
 	// If the user exited the shell by typing exit don't record this in the
@@ -119,6 +125,12 @@ func inputToTape(input string) string {
 	// correctly and the exit will show up. In this case, the user should edit the
 	// tape file.
 	s := strings.TrimSuffix(strings.TrimSpace(input), "exit")
+
+	// Remove cursor / osc responses
+	s = cursorResponse.ReplaceAllString(s, "")
+	s = oscResponse.ReplaceAllString(s, "")
+
+	// Substitute escape sequences for commands
 	for sequence, command := range EscapeSequences {
 		s = strings.ReplaceAll(s, sequence, "\n"+command+"\n")
 	}
@@ -163,6 +175,9 @@ func inputToTape(input string) string {
 
 // quote wraps a string in (single or double) quotes
 func quote(s string) string {
+	if strings.ContainsRune(s, '"') && strings.ContainsRune(s, '\'') {
+		return fmt.Sprintf("`%s`", s)
+	}
 	if strings.ContainsRune(s, '"') {
 		return fmt.Sprintf(`'%s'`, s)
 	}

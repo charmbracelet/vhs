@@ -33,12 +33,13 @@ var (
 	FaintStyle      = lipgloss.NewStyle().Foreground(lipgloss.AdaptiveColor{Light: "242", Dark: "238"})
 	NoneStyle       = lipgloss.NewStyle()
 	KeywordStyle    = lipgloss.NewStyle()
+	URLStyle        = lipgloss.NewStyle().Foreground(lipgloss.Color("3"))
 	NumberStyle     = lipgloss.NewStyle().Foreground(lipgloss.Color("3"))
 	StringStyle     = lipgloss.NewStyle().Foreground(lipgloss.Color("10"))
 	TimeStyle       = lipgloss.NewStyle().Foreground(lipgloss.Color("11"))
 	LineNumberStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("8"))
 	ErrorStyle      = lipgloss.NewStyle().Foreground(lipgloss.Color("1"))
-	FileStyle       = lipgloss.NewStyle().Foreground(lipgloss.Color("8"))
+	GrayStyle       = lipgloss.NewStyle().Foreground(lipgloss.Color("8"))
 	ErrorFileStyle  = lipgloss.NewStyle().
 			Border(lipgloss.NormalBorder()).
 			BorderForeground(lipgloss.Color("8")).

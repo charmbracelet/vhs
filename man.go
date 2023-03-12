@@ -37,6 +37,8 @@ The following is a list of all possible commands in VHS:
 * %Right% [repeat]
 * %Tab% [repeat]
 * %Up% [repeat]
+* %PageUp% [repeat]
+* %PageDown% [repeat]
 * %Hide%
 * %Show%
 * %MatchLine% "<regexp>"

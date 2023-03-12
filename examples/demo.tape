@@ -38,6 +38,8 @@
 #   Right[@<time>] [number]         Press the Right Arrow key
 #   Up[@<time>] [number]            Press the Up Arrow key
 #   Down[@<time>] [number]          Press the Down Arrow key
+#   PageUp[@<time>] [number]        Press the Page Up key
+#   PageDown[@<time>] [number]      Press the Page Down key
 #   Ctrl+<key>                      Press the Control key + <key> (e.g. Ctrl+C)
 #
 # Display:
@@ -48,10 +50,10 @@ Output examples/demo.gif
 
 Require echo
 
+Set Shell "bash"
 Set FontSize 32
 Set Width 1200
 Set Height 600
-Set LoopOffset 50%
 
 Type "echo 'Welcome to VHS!'" Sleep 500ms  Enter
 
