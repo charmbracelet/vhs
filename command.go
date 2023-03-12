@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"os/exec"
@@ -48,10 +47,6 @@ func (c CommandType) String() string { return toCamel(string(c)) }
 // CommandFunc is a function that executes a command on a running
 // instance of vhs.
 type CommandFunc func(c Command, v *VHS)
-
-// ContextCommandFunc is an interuptable function that executes a command on a
-// running instance of vhs.
-type ContextCommandFunc func(ctx context.Context, c Command, v *VHS)
 
 // CommandFuncs maps command types to their executable functions.
 var CommandFuncs = map[CommandType]CommandFunc{
