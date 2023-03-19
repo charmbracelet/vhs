@@ -160,6 +160,11 @@ func inputToTape(input string) string {
 				sanitized.WriteString("Ctrl" + strings.TrimPrefix(lines[i], CTRL) + "\n")
 			}
 			continue
+		} else if strings.HasPrefix(lines[i], ALT) {
+			for j := 0; j < repeat; j++ {
+				sanitized.WriteString("Alt" + strings.TrimPrefix(lines[i], ALT) + "\n")
+			}
+			continue
 		} else if IsCommand(TokenType(lines[i])) {
 			sanitized.WriteString(fmt.Sprint(TokenType(lines[i])))
 			if repeat > 1 {

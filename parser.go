@@ -56,6 +56,8 @@ func (p *Parser) parseCommand() Command {
 		return p.parseType()
 	case CTRL:
 		return p.parseCtrl()
+	case ALT:
+		return p.parseAlt()
 	case HIDE:
 		return p.parseHide()
 	case REQUIRE:
@@ -138,6 +140,24 @@ func (p *Parser) parseCtrl() Command {
 
 	p.errors = append(p.errors, NewError(p.cur, "Expected control character, got "+p.cur.Literal))
 	return Command{Type: CTRL}
+}
+
+// parseAlt parses an alt command.
+// An alt command takes a character to type while the modifier is held down.
+//
+// Alt+<character>
+func (p *Parser) parseAlt() Command {
+	if p.peek.Type == PLUS {
+		p.nextToken()
+		if p.peek.Type == STRING {
+			c := p.peek.Literal
+			p.nextToken()
+			return Command{Type: ALT, Args: c}
+		}
+	}
+
+	p.errors = append(p.errors, NewError(p.cur, "Expected alt character, got "+p.cur.Literal))
+	return Command{Type: ALT}
 }
 
 // parseKeypress parses a repeatable and time adjustable keypress command.

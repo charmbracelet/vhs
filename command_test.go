@@ -6,7 +6,7 @@ import (
 )
 
 func TestCommand(t *testing.T) {
-	const numberOfCommands = 20
+	const numberOfCommands = 21
 	if len(CommandTypes) != numberOfCommands {
 		t.Errorf("Expected %d commands, got %d", numberOfCommands, len(CommandTypes))
 	}

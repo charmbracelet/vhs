@@ -200,6 +200,7 @@ There are a few basic types of VHS commands:
 * [`Left`](#arrow-keys) [`Right`](#arrow-keys) [`Up`](#arrow-keys) [`Down`](#arrow-keys): arrow keys
 * [`Backspace`](#backspace) [`Enter`](#enter) [`Tab`](#tab) [`Space`](#space): special keys
 * [`Ctrl+<char>`](#ctrl): press control + key
+* `Alt+<char>`: press alt + key
 * [`Sleep <time>`](#sleep): wait for a certain amount of time
 * [`Hide`](#hide): hide commands from output
 * [`Show`](#show): stop hiding commands from output
