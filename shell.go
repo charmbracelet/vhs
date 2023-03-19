@@ -5,6 +5,7 @@ const (
 	bash       = "bash"
 	cmdexe     = "cmd"
 	fish       = "fish"
+	nushell    = "nushell"
 	powershell = "powershell"
 	pwsh       = "pwsh"
 	zsh        = "zsh"
@@ -60,5 +61,8 @@ var Shells = map[string]Shell{
 	},
 	cmdexe: {
 		Command: []string{"cmd.exe", "/k", "prompt=^> "},
+	},
+	nushell: {
+		Command: []string{"nu", "--interactive"},
 	},
 }
