@@ -9,7 +9,7 @@ require (
 	github.com/charmbracelet/keygen v0.3.0
 	github.com/charmbracelet/lipgloss v0.7.1
 	github.com/charmbracelet/ssh v0.0.0-20221117183211-483d43d97103
-	github.com/charmbracelet/wish v1.0.0
+	github.com/charmbracelet/wish v1.1.0
 	github.com/creack/pty v1.1.18
 	github.com/go-rod/rod v0.112.6
 	github.com/hashicorp/go-version v1.6.0
@@ -26,11 +26,12 @@ require (
 require (
 	github.com/alecthomas/chroma v0.10.0 // indirect
 	github.com/anmitsu/go-shlex v0.0.0-20200514113438-38f4b401e2be // indirect
-	github.com/aymanbagabas/go-osc52 v1.2.2 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/caarlos0/sshmarshal v0.1.0 // indirect
+	github.com/charmbracelet/log v0.1.2 // indirect
 	github.com/dlclark/regexp2 v1.8.1 // indirect
+	github.com/go-logfmt/logfmt v0.6.0 // indirect
 	github.com/gorilla/css v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
