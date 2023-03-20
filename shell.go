@@ -5,7 +5,7 @@ const (
 	bash       = "bash"
 	cmdexe     = "cmd"
 	fish       = "fish"
-	nushell    = "nushell"
+	nushell    = "nu"
 	powershell = "powershell"
 	pwsh       = "pwsh"
 	zsh        = "zsh"
