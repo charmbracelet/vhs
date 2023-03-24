@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"os/exec"
 	"os/signal"
@@ -35,10 +36,7 @@ var (
 	publishFlag bool
 	outputs     *[]string
 
-	// Logging flags
-	verboseFlag bool
-	quietFlag   bool
-	output      outputMode = outputVerbose
+	quietFlag bool
 
 	rootCmd = &cobra.Command{
 		Use:           "vhs <file>",
@@ -46,14 +44,13 @@ var (
 		Args:          cobra.MaximumNArgs(1),
 		SilenceUsage:  true,
 		SilenceErrors: true, // we print our own errors
-		RunE: func(cmd *cobra.Command, args []string) error {
-			// Init output
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			log.SetFlags(0)
 			if quietFlag {
-				output = outputQuiet
+				log.SetOutput(io.Discard)
 			}
-
-			initOutput(output)
-
+		},
+		RunE: func(cmd *cobra.Command, args []string) error {
 			err := ensureDependencies()
 			if err != nil {
 				return err
@@ -67,7 +64,7 @@ var (
 				if err != nil {
 					return err
 				}
-				logger.Println(GrayStyle.Render("File: " + args[0]))
+				log.Println(GrayStyle.Render("File: " + args[0]))
 			} else {
 				stat, _ := os.Stdin.Stat()
 				if (stat.Mode() & os.ModeCharDevice) != 0 {
@@ -87,10 +84,14 @@ var (
 
 			publishEnv, publishEnvSet := os.LookupEnv("VHS_PUBLISH")
 			if !publishEnvSet && !publishFlag {
-				logger.Println(FaintStyle.Render("Host your GIF on vhs.charm.sh: vhs publish <file>.gif"))
+				log.Println(FaintStyle.Render("Host your GIF on vhs.charm.sh: vhs publish <file>.gif"))
 			}
 
 			var publishFile string
+			out := cmd.OutOrStdout()
+			if quietFlag {
+				out = io.Discard
+			}
 			errs := Evaluate(cmd.Context(), string(input), out, func(v *VHS) {
 				// Output is being overridden, prevent all outputs
 				if len(*outputs) <= 0 {
@@ -118,7 +119,7 @@ var (
 
 			if (publishFlag || publishEnv == "true") && publishFile != "" {
 				if isatty.IsTerminal(os.Stdout.Fd()) {
-					logger.Printf(GrayStyle.Render("Publishing %s... "), publishFile)
+					log.Printf(GrayStyle.Render("Publishing %s... "), publishFile)
 				}
 
 				url, err := Publish(cmd.Context(), publishFile)
@@ -126,13 +127,13 @@ var (
 					return err
 				}
 				if isatty.IsTerminal(os.Stdout.Fd()) {
-					logger.Println(StringStyle.Render("Done!"))
+					log.Println(StringStyle.Render("Done!"))
 					publishShareInstructions(url)
 				}
 
-				logger.Println(URLStyle.Render(url))
+				log.Println(URLStyle.Render(url))
 				if isatty.IsTerminal(os.Stdout.Fd()) {
-					logger.Println()
+					log.Println()
 				}
 			}
 
@@ -146,16 +147,9 @@ var (
 		Short: "List all the available themes, one per line",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			// Init output
-			if quietFlag {
-				output = outputQuiet
-			}
-
-			initOutput(output)
-
 			var prefix, suffix string
 			if markdown {
-				logger.Printf("# Themes\n\n")
+				log.Printf("# Themes\n\n")
 				prefix, suffix = "* `", "`"
 			}
 			themes, err := sortedThemeNames()
@@ -163,7 +157,7 @@ var (
 				return err
 			}
 			for _, theme := range themes {
-				logger.Printf("%s%s%s\n", prefix, theme, suffix)
+				log.Printf("%s%s%s\n", prefix, theme, suffix)
 			}
 			return nil
 		},
@@ -182,13 +176,6 @@ var (
 		Short: "Create a new tape file with example tape file contents and documentation",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			// Init output
-			if quietFlag {
-				output = outputQuiet
-			}
-
-			initOutput(output)
-
 			fileName := strings.TrimSuffix(args[0], extension) + extension
 
 			f, err := os.Create(fileName)
@@ -201,7 +188,7 @@ var (
 				return err
 			}
 
-			logger.Println("Created " + fileName)
+			log.Println("Created " + fileName)
 
 			return nil
 		},
@@ -212,13 +199,6 @@ var (
 		Short: "Validate a glob file path and parses all the files to ensure they are valid without running them.",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			// Init output
-			if quietFlag {
-				output = outputQuiet
-			}
-
-			initOutput(output)
-
 			valid := true
 
 			for _, file := range args {
@@ -235,7 +215,7 @@ var (
 				errs := p.Errors()
 
 				if len(errs) != 0 {
-					logger.Println(ErrorFileStyle.Render(file))
+					log.Println(ErrorFileStyle.Render(file))
 
 					for _, err := range errs {
 						printParserError(os.Stderr, string(b), err)
@@ -268,7 +248,6 @@ func main() {
 
 func init() {
 	rootCmd.Flags().BoolVarP(&publishFlag, "publish", "p", false, "publish your GIF to vhs.charm.sh and get a shareable URL")
-	rootCmd.Flags().BoolVarP(&verboseFlag, "verbose", "v", true, "verbose display all log messages")
 	rootCmd.Flags().BoolVarP(&quietFlag, "quiet", "q", false, "quiet do not log messages. If publish flag is provided, it will log shareable URL")
 
 	outputs = rootCmd.Flags().StringSliceP("output", "o", []string{}, "file name(s) of video output")

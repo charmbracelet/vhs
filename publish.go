@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net"
 	"os"
 	"path/filepath"
@@ -30,8 +31,6 @@ var publishCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true, // we print our own errors
 	RunE: func(cmd *cobra.Command, args []string) error {
-		initOutput(output)
-
 		file := args[0]
 
 		if strings.HasSuffix(file, ".tape") {
@@ -51,9 +50,9 @@ var publishCmd = &cobra.Command{
 		if isatty.IsTerminal(os.Stdout.Fd()) {
 			publishShareInstructions(url)
 		}
-		logger.Println(URLStyle.Render(url))
+		log.Println(URLStyle.Render(url))
 		if isatty.IsTerminal(os.Stdout.Fd()) {
-			logger.Println()
+			log.Println()
 		}
 		return nil
 	},
@@ -138,27 +137,15 @@ func sshSession() (*ssh.Session, error) {
 // publishShareInstructions log shareable URL
 // If log level is set to `logLevelQuiet` the log message will be forced
 func publishShareInstructions(url string) {
-	// Set log level to verbose if current mode is quiet
-	forcedLog := false
-	if output == outputQuiet {
-		forcedLog = true
-		setOutputMode(outputVerbose)
-	}
-
-	logger.Println("\n" + GrayStyle.Render("  Share your GIF with Markdown:"))
-	logger.Println(CommandStyle.Render("  ![Made with VHS]") + URLStyle.Render("("+url+")"))
-	logger.Println(GrayStyle.Render("\n  Or HTML (with badge):"))
-	logger.Println(CommandStyle.Render("  <img ") + CommandStyle.Render("src=") + URLStyle.Render(`"`+url+`"`) + CommandStyle.Render(" alt=") + URLStyle.Render(`"Made with VHS"`) + CommandStyle.Render(">"))
-	logger.Println(CommandStyle.Render("  <a ") + CommandStyle.Render("href=") + URLStyle.Render(`"https://vhs.charm.sh"`) + CommandStyle.Render(">"))
-	logger.Println(CommandStyle.Render("    <img ") + CommandStyle.Render("src=") + URLStyle.Render(`"https://stuff.charm.sh/vhs/badge.svg"`) + CommandStyle.Render(">"))
-	logger.Println(CommandStyle.Render("  </a>"))
-	logger.Println(GrayStyle.Render("\n  Or link to it:"))
-	logger.Printf("  ")
-
-	// If log was forced restore original log level quiet
-	if forcedLog {
-		setOutputMode(outputQuiet)
-	}
+	log.Println("\n" + GrayStyle.Render("  Share your GIF with Markdown:"))
+	log.Println(CommandStyle.Render("  ![Made with VHS]") + URLStyle.Render("("+url+")"))
+	log.Println(GrayStyle.Render("\n  Or HTML (with badge):"))
+	log.Println(CommandStyle.Render("  <img ") + CommandStyle.Render("src=") + URLStyle.Render(`"`+url+`"`) + CommandStyle.Render(" alt=") + URLStyle.Render(`"Made with VHS"`) + CommandStyle.Render(">"))
+	log.Println(CommandStyle.Render("  <a ") + CommandStyle.Render("href=") + URLStyle.Render(`"https://vhs.charm.sh"`) + CommandStyle.Render(">"))
+	log.Println(CommandStyle.Render("    <img ") + CommandStyle.Render("src=") + URLStyle.Render(`"https://stuff.charm.sh/vhs/badge.svg"`) + CommandStyle.Render(">"))
+	log.Println(CommandStyle.Render("  </a>"))
+	log.Println(GrayStyle.Render("\n  Or link to it:"))
+	log.Printf("  ")
 }
 
 // Publish publishes the given GIF file to the web.

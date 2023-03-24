@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"math"
 	"os"
 	"os/exec"
@@ -190,7 +191,7 @@ func (vhs *VHS) Render() error {
 		}
 		out, err := cmd.CombinedOutput()
 		if err != nil {
-			logger.Println(string(out))
+			log.Println(string(out))
 		}
 	}
 

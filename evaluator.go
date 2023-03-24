@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log"
 )
 
 // EvaluatorOption is a function that can be used to modify the VHS instance.
@@ -80,7 +81,7 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	// Log errors from the recording process.
 	go func() {
 		for err := range ch {
-			logger.Print(err.Error())
+			log.Print(err.Error())
 		}
 	}()
 
