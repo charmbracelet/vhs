@@ -86,7 +86,7 @@ func Record(cmd *cobra.Command, args []string) error {
 	// We'll need to display the stdin on the screen but we'll also need a copy to
 	// analyze later and create a tape file.
 	tape := &bytes.Buffer{}
-	in := io.MultiWriter(tape, nil)
+	in := io.MultiWriter(tape, terminal)
 
 	go func() {
 		var length int
