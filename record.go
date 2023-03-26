@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"os/exec"
 	"regexp"
@@ -66,8 +67,6 @@ var EscapeSequences = map[string]string{
 //
 // vhs record > file.tape
 func Record(cmd *cobra.Command, args []string) error {
-	initOutput(output)
-
 	command := exec.Command(shell)
 
 	terminal, err := pty.Start(command)
@@ -76,7 +75,7 @@ func Record(cmd *cobra.Command, args []string) error {
 	}
 
 	if err := pty.InheritSize(os.Stdin, terminal); err != nil {
-		logger.Printf("error resizing pty: %s", err)
+		log.Printf("error resizing pty: %s", err)
 	}
 
 	prevState, err := term.MakeRaw(int(os.Stdin.Fd()))
@@ -86,7 +85,7 @@ func Record(cmd *cobra.Command, args []string) error {
 
 	// We'll need to display the stdin on the screen but we'll also need a copy to
 	// analyze later and create a tape file.
-	var tape = &bytes.Buffer{}
+	tape := &bytes.Buffer{}
 	in := io.MultiWriter(tape, nil)
 
 	go func() {
@@ -110,12 +109,14 @@ func Record(cmd *cobra.Command, args []string) error {
 	_ = terminal.Close()
 	_ = term.Restore(int(os.Stdin.Fd()), prevState)
 
-	logger.Println(inputToTape(tape.String()))
+	log.Println(inputToTape(tape.String()))
 	return nil
 }
 
-var cursorResponse = regexp.MustCompile(`\x1b\[\d+;\d+R`)
-var oscResponse = regexp.MustCompile(`\x1b\]\d+;rgb:....\/....\/....(\x07|\x1b\\)`)
+var (
+	cursorResponse = regexp.MustCompile(`\x1b\[\d+;\d+R`)
+	oscResponse    = regexp.MustCompile(`\x1b\]\d+;rgb:....\/....\/....(\x07|\x1b\\)`)
+)
 
 // inputToTape takes input from a PTY stdin and converts it into a tape file.
 func inputToTape(input string) string {
