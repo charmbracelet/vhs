@@ -20,6 +20,7 @@ Up@50ms
 Down 2
 Ctrl+C
 Ctrl+L
+Alt+.
 Sleep 100ms
 Sleep 3`
 
@@ -37,6 +38,7 @@ Sleep 3`
 		{Type: DOWN, Options: "", Args: "2"},
 		{Type: CTRL, Options: "", Args: "C"},
 		{Type: CTRL, Options: "", Args: "L"},
+		{Type: ALT, Options: "", Args: "."},
 		{Type: SLEEP, Args: "100ms"},
 		{Type: SLEEP, Args: "3s"},
 	}
@@ -163,6 +165,9 @@ func TestParseTapeFile(t *testing.T) {
 		{Type: CTRL, Options: "", Args: "C"},
 		{Type: CTRL, Options: "", Args: "L"},
 		{Type: CTRL, Options: "", Args: "R"},
+		{Type: ALT, Options: "", Args: "."},
+		{Type: ALT, Options: "", Args: "L"},
+		{Type: ALT, Options: "", Args: "i"},
 		{Type: HIDE, Options: "", Args: ""},
 		{Type: SHOW, Options: "", Args: ""},
 	}

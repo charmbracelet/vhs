@@ -18,6 +18,7 @@ type CommandType TokenType
 var CommandTypes = []CommandType{ //nolint: deadcode
 	BACKSPACE,
 	CTRL,
+	ALT,
 	DOWN,
 	ENTER,
 	ESCAPE,
@@ -72,6 +73,7 @@ var CommandFuncs = map[CommandType]CommandFunc{
 	SLEEP:     ExecuteSleep,
 	TYPE:      ExecuteType,
 	CTRL:      ExecuteCtrl,
+	ALT:       ExecuteAlt,
 	ILLEGAL:   ExecuteNoop,
 }
 
@@ -137,6 +139,18 @@ func ExecuteCtrl(c Command, v *VHS) {
 		}
 	}
 	_ = v.Page.Keyboard.Release(input.ControlLeft)
+}
+
+// ExecuteAlt is a CommandFunc that presses the argument key with the alt key
+// held down on the running instance of vhs.
+func ExecuteAlt(c Command, v *VHS) {
+	_ = v.Page.Keyboard.Press(input.AltLeft)
+	for _, r := range c.Args {
+		if k, ok := keymap[r]; ok {
+			_ = v.Page.Keyboard.Type(k)
+		}
+	}
+	_ = v.Page.Keyboard.Release(input.AltLeft)
 }
 
 // ExecuteHide is a CommandFunc that starts or stops the recording of the vhs.
