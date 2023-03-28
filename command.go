@@ -102,7 +102,7 @@ func (c Command) Execute(v *VHS) {
 // ExecuteNoop is a no-op command that does nothing.
 // Generally, this is used for Unknown commands when dealing with
 // commands that are not recognized.
-func ExecuteNoop(c Command, v *VHS) {}
+func ExecuteNoop(_ Command, _ *VHS) {}
 
 // ExecuteKey is a higher-order function that returns a CommandFunc to execute
 // a key press for a given key. This is so that the logic for key pressing
@@ -140,7 +140,7 @@ func ExecuteCtrl(c Command, v *VHS) {
 }
 
 // ExecuteHide is a CommandFunc that starts or stops the recording of the vhs.
-func ExecuteHide(c Command, v *VHS) {
+func ExecuteHide(_ Command, v *VHS) {
 	v.PauseRecording()
 }
 
@@ -154,13 +154,13 @@ func ExecuteRequire(c Command, v *VHS) {
 }
 
 // ExecuteShow is a CommandFunc that resumes the recording of the vhs.
-func ExecuteShow(c Command, v *VHS) {
+func ExecuteShow(_ Command, v *VHS) {
 	v.ResumeRecording()
 }
 
 // ExecuteSleep sleeps for the desired time specified through the argument of
 // the Sleep command.
-func ExecuteSleep(c Command, v *VHS) {
+func ExecuteSleep(c Command, _ *VHS) {
 	dur, err := time.ParseDuration(c.Args)
 	if err != nil {
 		return

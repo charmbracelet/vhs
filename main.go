@@ -44,7 +44,7 @@ var (
 		Args:          cobra.MaximumNArgs(1),
 		SilenceUsage:  true,
 		SilenceErrors: true, // we print our own errors
-		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		PersistentPreRun: func(_ *cobra.Command, _ []string) {
 			log.SetFlags(0)
 			if quietFlag {
 				log.SetOutput(io.Discard)
@@ -149,7 +149,7 @@ var (
 		Use:   "themes",
 		Short: "List all the available themes, one per line",
 		Args:  cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			var prefix, suffix string
 			if markdown {
 				log.Printf("# Themes\n\n")
@@ -178,7 +178,7 @@ var (
 		Use:   "new <name>",
 		Short: "Create a new tape file with example tape file contents and documentation",
 		Args:  cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			fileName := strings.TrimSuffix(args[0], extension) + extension
 
 			f, err := os.Create(fileName)
@@ -201,11 +201,10 @@ var (
 		Use:   "validate <file>...",
 		Short: "Validate a glob file path and parses all the files to ensure they are valid without running them.",
 		Args:  cobra.MinimumNArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			valid := true
 
 			for _, file := range args {
-
 				b, err := os.ReadFile(file)
 				if err != nil {
 					continue
