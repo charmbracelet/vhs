@@ -39,7 +39,7 @@ type VideoOutputs struct {
 	MP4  string
 }
 
-// Options is the set of options for converting frames to a GIF.
+// VideoOptions is the set of options for converting frames to a GIF.
 type VideoOptions struct {
 	CleanupFrames   bool
 	Framerate       int

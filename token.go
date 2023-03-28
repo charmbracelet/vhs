@@ -2,7 +2,7 @@ package main
 
 import "strings"
 
-// Type represents a token's type.
+// TokenType represents a token's type.
 type TokenType string
 
 // Token represents a lexer token.
