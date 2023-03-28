@@ -37,7 +37,7 @@ type config struct {
 var serveCmd = &cobra.Command{
 	Use:   "serve",
 	Short: "Start the VHS SSH server",
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(cmd *cobra.Command, _ []string) error {
 		var cfg config
 		if err := env.Parse(&cfg, env.Options{
 			Prefix: "VHS_",

@@ -75,7 +75,7 @@ var manCmd = &cobra.Command{
 	Short:   "Generate man pages",
 	Args:    cobra.NoArgs,
 	Hidden:  true,
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, _ []string) error {
 		if isatty.IsTerminal(os.Stdout.Fd()) {
 			renderer, err := glamour.NewTermRenderer(
 				glamour.WithStyles(GlamourTheme),

@@ -66,7 +66,7 @@ var EscapeSequences = map[string]string{
 // Tape commands.
 //
 // vhs record > file.tape
-func Record(cmd *cobra.Command, args []string) error {
+func Record(_ *cobra.Command, _ []string) error {
 	command := exec.Command(shell)
 
 	terminal, err := pty.Start(command)
