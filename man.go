@@ -41,6 +41,9 @@ The following is a list of all possible commands in VHS:
 * %PageDown% [repeat]
 * %Hide%
 * %Show%
+* %Escape%
+* %Alt%+<key>
+* %Space% [repeat]
 `
 
 	manOutput = `The Output command instructs VHS where to save the output of the recording.
