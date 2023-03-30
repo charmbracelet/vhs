@@ -366,9 +366,9 @@ Type@500ms "500ms delay per character"
 ```
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/typing-speed.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/typing-speed.gif">
-  <img width="600" alt="Example of changing the typing speed to type different words" src="https://stuff.charm.sh/vhs/examples/typing-speed.gif">
+  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/type.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/type.gif">
+  <img width="600" alt="Example of using the Type command in VHS" src="https://stuff.charm.sh/vhs/examples/type.gif">
 </picture>
 
 #### Set Theme
@@ -450,7 +450,7 @@ Set BorderRadius 10
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://vhs.charm.sh/vhs-4nYoy6IsUKmleJANG7N1BH.gif">
   <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-4nYoy6IsUKmleJANG7N1BH.gif">
-  <img width="600" alt="Example of setting the margin" src="https://vhs.charm.sh/vhs-4nYoy6IsUKmleJANG7N1BH.gif">
+  <img width="400" alt="Example of setting the margin" src="https://vhs.charm.sh/vhs-4nYoy6IsUKmleJANG7N1BH.gif">
 </picture>
 
 
@@ -491,9 +491,9 @@ Type@500ms "Slow down there, partner."
 ```
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/type.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/type.gif">
-  <img width="600" alt="Example of using the Type command in VHS" src="https://stuff.charm.sh/vhs/examples/type.gif">
+  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/typing-speed.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/typing-speed.gif">
+  <img width="600" alt="Example of using the Type command in VHS" src="https://stuff.charm.sh/vhs/examples/typing-speed.gif">
 </picture>
 
 ### Keys
