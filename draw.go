@@ -244,7 +244,7 @@ func makeColorfulBar(termWidth int, termHeight int, isRight bool, opts VideoOpti
 	// Space between dots and edge
 	dotGap := (opts.WindowBarSize - dotDia) / 2
 	// Space between dot centers
-	dotSpace := (2 * dotDia) + opts.WindowBarSize/barToDotRatio
+	dotSpace := dotDia + opts.WindowBarSize/barToDotRatio
 
 	// Dimensions of bar image
 	width := termWidth
