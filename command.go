@@ -236,7 +236,7 @@ var Settings = map[string]CommandFunc{
 	"Margin":        ExecuteSetMargin,
 	"WindowBar":     ExecuteSetWindowBar,
 	"WindowBarSize": ExecuteSetWindowBarSize,
-	"CornerRadius":  ExecuteSetCornerRadius,
+	"BorderRadius":  ExecuteSetBorderRadius,
 }
 
 // ExecuteSet applies the settings on the running vhs specified by the
@@ -385,8 +385,8 @@ func ExecuteSetWindowBarSize(c Command, v *VHS) {
 }
 
 // ExecuteSetWindowBar sets corner radius
-func ExecuteSetCornerRadius(c Command, v *VHS) {
-	v.Options.Video.CornerRadius, _ = strconv.Atoi(c.Args)
+func ExecuteSetBorderRadius(c Command, v *VHS) {
+	v.Options.Video.BorderRadius, _ = strconv.Atoi(c.Args)
 }
 
 func getTheme(s string) (Theme, error) {

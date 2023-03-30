@@ -9,7 +9,7 @@ Set Margin 80
 Set MarginFill "#674EFF"
 Set WindowBar Colorful
 Set WindowBarSize 40
-Set CornerRadius 8
+Set BorderRadius 8
 
 Type "I can't believe it's not margin."
 Sleep 2s

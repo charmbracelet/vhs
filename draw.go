@@ -162,7 +162,7 @@ func (r *roundedrect) At(x, y int) color.Color {
 }
 
 // Make a mask to round a terminal's corners
-func MakeCornerMask(width, height, radius int, targetpng string) {
+func MakeBorderRadiusMask(width, height, radius int, targetpng string) {
 	img := image.NewGray(
 		image.Rectangle{
 			image.Point{0, 0},
@@ -186,13 +186,13 @@ func MakeCornerMask(width, height, radius int, targetpng string) {
 
 	f, err := os.Create(targetpng)
 	if err != nil {
-		fmt.Println(ErrorStyle.Render("Couldn't draw CornerMask: unable to save file."))
+		fmt.Println(ErrorStyle.Render("Could not draw Border Mask: unable to save file."))
 	} else {
 		err = png.Encode(f, img)
 	}
 
 	if err != nil {
-		fmt.Println(ErrorStyle.Render("Couldn't draw CornerMask: encoding failed."))
+		fmt.Println(ErrorStyle.Render("Could not draw Border Mask: encoding failed."))
 	}
 }
 
@@ -329,7 +329,7 @@ func makeRingBar(termWidth int, termHeight int, isRight bool, opts VideoOptions,
 		},
 	)
 
-	bg := color.RGBA{0x11, 0x11, 0x11, 0xFF}
+	bg := color.RGBA{0x17, 0x17, 0x17, 0xFF}
 	ring := color.RGBA{0x33, 0x33, 0x33, 0xFF}
 
 	draw.DrawMask(

@@ -151,12 +151,12 @@ Sleep 2s
 ```
 
 
-### Corner Radius
+### Border Radius
 
-<img width="600" src="./set-corner-radius.gif">
+<img width="600" src="./set-border-radius.gif">
 
 ```
-Output "examples/settings/set-corner-radius.gif"
+Output "examples/settings/set-border-radius.gif"
 Set FontSize 25
 Set Width 600
 Set Height 300
@@ -165,7 +165,7 @@ Set Padding 20
 Set MarginFill "#79B8C3"
 Set Margin 20
 
-Set CornerRadius 20
+Set BorderRadius 20
 
 Type "I have round corners."
 Sleep 2s

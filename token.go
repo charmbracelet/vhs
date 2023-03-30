@@ -74,7 +74,7 @@ const (
 	MARGIN          = "MARGIN"          //nolint:revive
 	WINDOW_BAR      = "WINDOW_BAR"      //nolint:revive
 	WINDOW_BAR_SIZE = "WINDOW_BAR_SIZE" //nolint:revive
-	CORNER_RADIUS   = "CORNER_RADIUS"   //nolint:revive
+	BORDER_RADIUS   = "CORNER_RADIUS"   //nolint:revive
 )
 
 var keywords = map[string]TokenType{
@@ -110,7 +110,7 @@ var keywords = map[string]TokenType{
 	"Margin":        MARGIN,
 	"WindowBar":     WINDOW_BAR,
 	"WindowBarSize": WINDOW_BAR_SIZE,
-	"CornerRadius":  CORNER_RADIUS,
+	"BorderRadius":  BORDER_RADIUS,
 	"FontSize":      FONT_SIZE,
 	"Framerate":     FRAMERATE,
 	"Height":        HEIGHT,
@@ -130,7 +130,7 @@ func IsSetting(t TokenType) bool {
 	case SHELL, FONT_FAMILY, FONT_SIZE, LETTER_SPACING, LINE_HEIGHT,
 		FRAMERATE, TYPING_SPEED, THEME, PLAYBACK_SPEED, HEIGHT, WIDTH,
 		PADDING, LOOP_OFFSET, MARGIN_FILL, MARGIN, WINDOW_BAR,
-		WINDOW_BAR_SIZE, CORNER_RADIUS:
+		WINDOW_BAR_SIZE, BORDER_RADIUS:
 		return true
 	default:
 		return false

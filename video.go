@@ -58,7 +58,7 @@ type VideoOptions struct {
 	MarginIsColor   bool
 	WindowBar       string
 	WindowBarSize   int
-	CornerRadius    int
+	BorderRadius    int
 }
 
 const (
@@ -81,7 +81,7 @@ func DefaultVideoOptions() VideoOptions {
 		Margin:          0,
 		WindowBar:       "",
 		WindowBarSize:   defaultWindowBarSize,
-		CornerRadius:    0,
+		BorderRadius:    0,
 		CleanupFrames:   true,
 		Framerate:       defaultFramerate,
 		Input:           randomDir(),
@@ -186,16 +186,16 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 
 	// Create and add rounded-corner mask if necessary
 	var cornerMaskStream int
-	if opts.CornerRadius != 0 {
-		cornerMaskPath := filepath.Join(opts.Input, "mask.png")
+	if opts.BorderRadius != 0 {
+		borderMaskPath := filepath.Join(opts.Input, "mask.png")
 		if opts.WindowBar != "" {
-			MakeCornerMask(termWidth, termHeight+opts.WindowBarSize, opts.CornerRadius, cornerMaskPath)
+			MakeBorderRadiusMask(termWidth, termHeight+opts.WindowBarSize, opts.BorderRadius, borderMaskPath)
 		} else {
-			MakeCornerMask(termWidth, termHeight, opts.CornerRadius, cornerMaskPath)
+			MakeBorderRadiusMask(termWidth, termHeight, opts.BorderRadius, borderMaskPath)
 		}
 
 		args = append(args,
-			"-i", cornerMaskPath,
+			"-i", borderMaskPath,
 		)
 		cornerMaskStream = streamCounter
 		//streamCounter++
@@ -246,7 +246,7 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 		prevStageName = "withbar"
 	}
 
-	if opts.CornerRadius != 0 {
+	if opts.BorderRadius != 0 {
 		filterCode.WriteString(";")
 		filterCode.WriteString(
 			fmt.Sprintf(`

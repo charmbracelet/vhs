@@ -422,6 +422,37 @@ Set MarginFill "#6B50FF"
   <img width="600" alt="Example of setting the margin" src="https://vhs.charm.sh/vhs-1miKMtNHenh7O4sv76TMwG.gif">
 </picture>
 
+#### Set Window Bar
+
+Set the type of window bar (Colorful, Rings) of the terminal window with the `Set WindowBar` command.
+
+```elixir
+Set WindowBar Colorful
+```
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://vhs.charm.sh/vhs-4VgviCu38DbaGtbRzhtOUI.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-4VgviCu38DbaGtbRzhtOUI.gif">
+  <img width="600" alt="Example of setting the margin" src="https://vhs.charm.sh/vhs-4VgviCu38DbaGtbRzhtOUI.gif">
+</picture>
+
+#### Set Border Radius
+
+Set the border radius (in pixels) of the terminal window with the `Set BorderRadius` command.
+
+```elixir
+# You'll likely want to add a Margin + MarginFill if you use BorderRadius.
+Set Margin 20
+Set MarginFill "#674EFF"
+Set BorderRadius 10
+```
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://vhs.charm.sh/vhs-4nYoy6IsUKmleJANG7N1BH.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-4nYoy6IsUKmleJANG7N1BH.gif">
+  <img width="600" alt="Example of setting the margin" src="https://vhs.charm.sh/vhs-4nYoy6IsUKmleJANG7N1BH.gif">
+</picture>
+
 
 #### Set Framerate
 
