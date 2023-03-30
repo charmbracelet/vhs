@@ -61,7 +61,6 @@ type VideoOptions struct {
 	StartingFrame   int
 	MarginFill      string
 	Margin          int
-	MarginIsColor   bool
 	WindowBar       string
 	WindowBarSize   int
 	BorderRadius    int
@@ -83,7 +82,6 @@ const (
 func DefaultVideoOptions() VideoOptions {
 	return VideoOptions{
 		MarginFill:      DefaultTheme.Background,
-		MarginIsColor:   true,
 		Margin:          0,
 		WindowBar:       "",
 		WindowBarSize:   defaultWindowBarSize,
@@ -100,6 +98,10 @@ func DefaultVideoOptions() VideoOptions {
 		BackgroundColor: DefaultTheme.Background,
 		StartingFrame:   defaultStartingFrame,
 	}
+}
+
+func marginFillIsColor(marginFill string) bool {
+	return strings.HasPrefix(marginFill, "#")
 }
 
 // ensureDir ensures that the file path of the output can be created by
@@ -146,7 +148,7 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 	// Add margin stream if one is provided
 	var marginStream int
 	if opts.MarginFill != "" {
-		if opts.MarginIsColor {
+		if marginFillIsColor(opts.MarginFill) {
 			// Create plain color stream
 			args = append(args,
 				"-f", "lavfi",
