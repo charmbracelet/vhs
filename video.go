@@ -22,6 +22,12 @@ const (
 	cursorFrameFormat = "frame-cursor-%05d.png"
 )
 
+const (
+	mp4  = ".mp4"
+	webm = ".webm"
+	gif  = ".gif"
+)
+
 // randomDir returns a random temporary directory to be used for storing frames
 // from screenshots of the terminal.
 func randomDir() string {
@@ -280,7 +286,7 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 	}
 
 	// Format-specific options
-	if filepath.Ext(targetFile) == ".gif" {
+	if filepath.Ext(targetFile) == gif {
 		filterCode.WriteString(";")
 		filterCode.WriteString(
 			fmt.Sprintf(`
@@ -291,14 +297,14 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 			),
 		)
 		prevStageName = "palette"
-	} else if filepath.Ext(targetFile) == ".webm" {
+	} else if filepath.Ext(targetFile) == webm {
 		args = append(args,
 			"-pix_fmt", "yuv420p",
 			"-an",
 			"-crf", "30",
 			"-b:v", "0",
 		)
-	} else if filepath.Ext(targetFile) == ".mp4" {
+	} else if filepath.Ext(targetFile) == mp4 {
 		args = append(args,
 			"-vcodec", "libx264",
 			"-pix_fmt", "yuv420p",

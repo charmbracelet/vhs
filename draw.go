@@ -15,6 +15,9 @@ type circle struct {
 	r int
 }
 
+const white = 0xFF
+const black = 0x17
+
 func (c *circle) ColorModel() color.Model {
 	return color.AlphaModel
 }
@@ -28,12 +31,14 @@ func (c *circle) Bounds() image.Rectangle {
 	)
 }
 
+const halfPixel = 0.5
+
 func (c *circle) At(x, y int) color.Color {
 	// Prepare points for circle calculations.
 	// We subtract 1 from the radius to leave space for
 	// antialiased pixels.
-	xx := float64(x-c.p.X) + 0.5
-	yy := float64(y-c.p.Y) + 0.5
+	xx := float64(x-c.p.X) + halfPixel
+	yy := float64(y-c.p.Y) + halfPixel
 	rr := float64(c.r) - 1
 
 	// The distance from this pixel to the closest point
@@ -42,12 +47,12 @@ func (c *circle) At(x, y int) color.Color {
 
 	if dist < 0 {
 		// This pixel is inside the circle
-		return color.Alpha{0xFF}
+		return color.Alpha{white}
 	} else if dist <= 1 {
 		// This pixel is partly inside the circle
 		// and needs antialiasing
 		return color.Alpha{
-			uint8((1 - dist) * 0xFF),
+			uint8((1 - dist) * white),
 		}
 	}
 
@@ -74,7 +79,7 @@ func (r *rect) At(x, y int) color.Color {
 		(x < r.pb.X) &&
 		(y >= r.pa.Y) &&
 		(y < r.pb.Y) {
-		return color.Alpha{0xFF}
+		return color.Alpha{white}
 	}
 	return color.Alpha{0x00}
 }
@@ -158,7 +163,7 @@ func (r *roundedrect) At(x, y int) color.Color {
 		return c.At(x, y)
 	}
 
-	return color.Alpha{0xFF}
+	return color.Alpha{white}
 }
 
 // Make a mask to round a terminal's corners
@@ -179,7 +184,7 @@ func MakeBorderRadiusMask(width, height, radius int, targetpng string) {
 
 	// Put mask in white on top
 	draw.DrawMask(
-		img, img.Bounds(), &image.Uniform{color.Gray{0xFF}}, image.Point{0, 0},
+		img, img.Bounds(), &image.Uniform{color.Gray{white}}, image.Point{0, 0},
 		&roundedrect{image.Point{0, 0}, image.Point{width, height}, radius},
 		image.Point{0, 0}, draw.Over,
 	)
@@ -229,13 +234,17 @@ func MakeBar(termWidth, termHeight int, opts VideoOptions, targetpng string) {
 	}
 }
 
+const barToDotRatio = 6
+const barToDotBorderRatio = 5
+
 func makeColorfulBar(termWidth int, termHeight int, isRight bool, opts VideoOptions, targetpng string) error {
 	// Radius of dots
-	dotrad := opts.WindowBarSize / 6
+	dotRad := opts.WindowBarSize / barToDotRatio
+	dotDia := 2 * dotRad
 	// Space between dots and edge
-	dotgap := (opts.WindowBarSize - 2*dotrad) / 2
+	dotGap := (opts.WindowBarSize - dotDia) / 2
 	// Space between dot centers
-	dotspace := (2 * dotrad) + opts.WindowBarSize/6
+	dotSpace := (2 * dotDia) + opts.WindowBarSize/barToDotRatio
 
 	// Dimensions of bar image
 	width := termWidth
@@ -248,20 +257,20 @@ func makeColorfulBar(termWidth int, termHeight int, isRight bool, opts VideoOpti
 		},
 	)
 
-	bg := color.RGBA{0x17, 0x17, 0x17, 0xFF}
-	dota := color.RGBA{0xFF, 0x4F, 0x4D, 0xFF}
-	dotb := color.RGBA{0xFE, 0xBB, 0x00, 0xFF}
-	dotc := color.RGBA{0x00, 0xCC, 0x1D, 0xFF}
+	bg := color.RGBA{black, black, black, white}
+	dotA := color.RGBA{white, 0x4F, 0x4D, white}
+	dotB := color.RGBA{0xFE, 0xBB, 0x00, white}
+	dotC := color.RGBA{0x00, 0xCC, 0x1D, white}
 
 	var pta, ptb, ptc image.Point
 	if isRight {
-		pta = image.Point{termWidth - (dotgap + dotrad), dotrad + dotgap}
-		ptb = image.Point{termWidth - (dotgap + dotrad + dotspace), dotrad + dotgap}
-		ptc = image.Point{termWidth - (dotgap + dotrad + 2*dotspace), dotrad + dotgap}
+		pta = image.Point{termWidth - (dotGap + dotRad), dotRad + dotGap}
+		ptb = image.Point{termWidth - (dotGap + dotRad + dotSpace), dotRad + dotGap}
+		ptc = image.Point{termWidth - (dotGap + dotRad + 2*dotSpace), dotRad + dotGap}
 	} else {
-		pta = image.Point{dotgap + dotrad, dotrad + dotgap}
-		ptb = image.Point{dotgap + dotrad + dotspace, dotrad + dotgap}
-		ptc = image.Point{dotgap + dotrad + 2*dotspace, dotrad + dotgap}
+		pta = image.Point{dotGap + dotRad, dotRad + dotGap}
+		ptb = image.Point{dotGap + dotRad + dotSpace, dotRad + dotGap}
+		ptc = image.Point{dotGap + dotRad + 2*dotSpace, dotRad + dotGap}
 	}
 
 	draw.DrawMask(
@@ -273,19 +282,9 @@ func makeColorfulBar(termWidth int, termHeight int, isRight bool, opts VideoOpti
 	draw.DrawMask(
 		img,
 		img.Bounds(),
-		&image.Uniform{dota},
+		&image.Uniform{dotA},
 		image.Point{0, 0},
-		&circle{pta, dotrad},
-		image.Point{0, 0},
-		draw.Over,
-	)
-
-	draw.DrawMask(
-		img,
-		img.Bounds(),
-		&image.Uniform{dotb},
-		image.Point{0, 0},
-		&circle{ptb, dotrad},
+		&circle{pta, dotRad},
 		image.Point{0, 0},
 		draw.Over,
 	)
@@ -293,9 +292,19 @@ func makeColorfulBar(termWidth int, termHeight int, isRight bool, opts VideoOpti
 	draw.DrawMask(
 		img,
 		img.Bounds(),
-		&image.Uniform{dotc},
+		&image.Uniform{dotB},
 		image.Point{0, 0},
-		&circle{ptc, dotrad},
+		&circle{ptb, dotRad},
+		image.Point{0, 0},
+		draw.Over,
+	)
+
+	draw.DrawMask(
+		img,
+		img.Bounds(),
+		&image.Uniform{dotC},
+		image.Point{0, 0},
+		&circle{ptc, dotRad},
 		image.Point{0, 0},
 		draw.Over,
 	)
@@ -311,12 +320,12 @@ func makeColorfulBar(termWidth int, termHeight int, isRight bool, opts VideoOpti
 
 func makeRingBar(termWidth int, termHeight int, isRight bool, opts VideoOptions, targetpng string) error {
 	// Radius of dots
-	outerrad := opts.WindowBarSize / 5
-	innerrad := (4 * outerrad) / 5
+	outerRad := opts.WindowBarSize / barToDotBorderRatio
+	innerRad := (4 * outerRad) / barToDotBorderRatio
 	// Space between dots and edge
-	ringgap := (opts.WindowBarSize - 2*outerrad) / 2
+	ringGap := (opts.WindowBarSize - 2*outerRad) / 2
 	// Space between dot centers
-	ringspace := (2 * outerrad) + opts.WindowBarSize/6
+	ringSpace := (2 * outerRad) + opts.WindowBarSize/barToDotRatio
 
 	// Dimensions of bar image
 	width := termWidth
@@ -329,8 +338,8 @@ func makeRingBar(termWidth int, termHeight int, isRight bool, opts VideoOptions,
 		},
 	)
 
-	bg := color.RGBA{0x17, 0x17, 0x17, 0xFF}
-	ring := color.RGBA{0x33, 0x33, 0x33, 0xFF}
+	bg := color.RGBA{black, black, black, white}
+	ring := color.RGBA{0x33, 0x33, 0x33, white}
 
 	draw.DrawMask(
 		img, img.Bounds(), &image.Uniform{bg}, image.Point{0, 0},
@@ -342,13 +351,13 @@ func makeRingBar(termWidth int, termHeight int, isRight bool, opts VideoOptions,
 		var pt image.Point
 		if isRight {
 			pt = image.Point{
-				termWidth - (ringgap + outerrad + i*ringspace),
-				outerrad + ringgap,
+				termWidth - (ringGap + outerRad + i*ringSpace),
+				outerRad + ringGap,
 			}
 		} else {
 			pt = image.Point{
-				ringgap + outerrad + i*ringspace,
-				outerrad + ringgap,
+				ringGap + outerRad + i*ringSpace,
+				outerRad + ringGap,
 			}
 		}
 
@@ -357,7 +366,7 @@ func makeRingBar(termWidth int, termHeight int, isRight bool, opts VideoOptions,
 			img.Bounds(),
 			&image.Uniform{ring},
 			image.Point{0, 0},
-			&circle{pt, outerrad},
+			&circle{pt, outerRad},
 			image.Point{0, 0},
 			draw.Over,
 		)
@@ -367,7 +376,7 @@ func makeRingBar(termWidth int, termHeight int, isRight bool, opts VideoOptions,
 			img.Bounds(),
 			&image.Uniform{bg},
 			image.Point{0, 0},
-			&circle{pt, innerrad},
+			&circle{pt, innerRad},
 			image.Point{0, 0},
 			draw.Over,
 		)
