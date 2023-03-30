@@ -52,12 +52,15 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	// Make sure image is big enough to fit padding, bar, and margins
 	video := v.Options.Video
 	minWidth := (2 * video.Padding) + (2 * video.Margin)
-	minHeight := (2 * video.Padding) + (2 * video.Margin) + video.WindowBarSize
+	minHeight := (2 * video.Padding) + (2 * video.Margin)
+	if video.WindowBar != "" {
+		minHeight += video.WindowBarSize
+	}
 	if video.Height < minHeight || video.Width < minWidth {
 		v.Errors = append(
 			v.Errors,
 			fmt.Errorf(
-				"output must be at least %dx%d to account for padding, margin, and window bar",
+				"Dimensions must be at least %d x %d",
 				minWidth, minHeight,
 			),
 		)

@@ -399,11 +399,29 @@ command.
 Set Padding 0
 ```
 
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/padding.gif">
   <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/padding.gif">
   <img width="600" alt="Example of setting the padding" src="https://stuff.charm.sh/vhs/examples/padding.gif">
 </picture>
+
+
+#### Set Margin
+
+Set the margin (in pixels) of the video with the `Set Margin` command.
+
+```elixir
+Set Margin 60
+Set MarginFill "#6B50FF"
+```
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://vhs.charm.sh/vhs-1miKMtNHenh7O4sv76TMwG.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-1miKMtNHenh7O4sv76TMwG.gif">
+  <img width="600" alt="Example of setting the margin" src="https://vhs.charm.sh/vhs-1miKMtNHenh7O4sv76TMwG.gif">
+</picture>
+
 
 #### Set Framerate
 

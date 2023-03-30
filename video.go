@@ -65,7 +65,8 @@ const (
 	defaultFramerate     = 50
 	defaultHeight        = 600
 	defaultMaxColors     = 256
-	defaultPadding       = 72
+	defaultPadding       = 60
+	defaultWindowBarSize = 30
 	defaultPlaybackSpeed = 1.0
 	defaultWidth         = 1200
 	defaultStartingFrame = 1
@@ -75,12 +76,12 @@ const (
 // to a GIF, which are used if they are not overridden.
 func DefaultVideoOptions() VideoOptions {
 	return VideoOptions{
-		MarginFill:      "",
-		Margin:          25,
+		MarginFill:      DefaultTheme.Background,
+		MarginIsColor:   true,
+		Margin:          0,
 		WindowBar:       "",
-		WindowBarSize:   40,
+		WindowBarSize:   defaultWindowBarSize,
 		CornerRadius:    0,
-		MarginIsColor:   false,
 		CleanupFrames:   true,
 		Framerate:       defaultFramerate,
 		Input:           randomDir(),

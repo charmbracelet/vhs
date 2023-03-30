@@ -1,13 +1,13 @@
-Output "examples/settings/set-margin.gif"
-Set FontSize 20
-Set Width 600
-Set Height 300
-Set Padding 20
+Output examples/settings/set-margin.gif
 
-# You can also use an image:
-# Set MarginFill "path/to/image.png"
-Set MarginFill "#79B8C3"
-Set Margin 20
+Set FontSize 24
+Set Width 800
+Set Height 400
+Set Padding 40
 
-Type "I have a margin!"
+Set Margin 60
+Set MarginFill "#6B50FF"
+
+Type "I have some margin! \" Enter
+Type "Do you want some?"
 Sleep 2s
