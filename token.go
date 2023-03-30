@@ -71,7 +71,7 @@ const (
 	PAGEDOWN        = "PAGEDOWN"
 	LOOP_OFFSET     = "LOOP_OFFSET"     //nolint:revive
 	MARGIN_FILL     = "MARGIN_FILL"     //nolint:revive
-	MARGIN_SIZE     = "MARGIN_SIZE"     //nolint:revive
+	MARGIN          = "MARGIN"          //nolint:revive
 	WINDOW_BAR      = "WINDOW_BAR"      //nolint:revive
 	WINDOW_BAR_SIZE = "WINDOW_BAR_SIZE" //nolint:revive
 	CORNER_RADIUS   = "CORNER_RADIUS"   //nolint:revive
@@ -107,7 +107,7 @@ var keywords = map[string]TokenType{
 	"Shell":         SHELL,
 	"FontFamily":    FONT_FAMILY,
 	"MarginFill":    MARGIN_FILL,
-	"MarginSize":    MARGIN_SIZE,
+	"Margin":        MARGIN,
 	"WindowBar":     WINDOW_BAR,
 	"WindowBarSize": WINDOW_BAR_SIZE,
 	"CornerRadius":  CORNER_RADIUS,
@@ -129,7 +129,7 @@ func IsSetting(t TokenType) bool {
 	switch t {
 	case SHELL, FONT_FAMILY, FONT_SIZE, LETTER_SPACING, LINE_HEIGHT,
 		FRAMERATE, TYPING_SPEED, THEME, PLAYBACK_SPEED, HEIGHT, WIDTH,
-		PADDING, LOOP_OFFSET, MARGIN_FILL, MARGIN_SIZE, WINDOW_BAR,
+		PADDING, LOOP_OFFSET, MARGIN_FILL, MARGIN, WINDOW_BAR,
 		WINDOW_BAR_SIZE, CORNER_RADIUS:
 		return true
 	default:

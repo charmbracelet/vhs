@@ -136,7 +136,7 @@ func (vhs *VHS) Setup() {
 	padding := vhs.Options.Video.Padding
 	margin := 0
 	if vhs.Options.Video.MarginFill != "" {
-		margin = vhs.Options.Video.MarginSize
+		margin = vhs.Options.Video.Margin
 	}
 	bar := 0
 	if vhs.Options.Video.WindowBar != "" {

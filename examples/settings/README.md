@@ -125,7 +125,7 @@ Set Padding 20
 # You can also use an image:
 # Set MarginFill "path/to/image.png"
 Set MarginFill "#79B8C3"
-Set MarginSize 20
+Set Margin 20
 
 Type "I'm on top of an image!"
 Sleep 2s
@@ -163,7 +163,7 @@ Set Height 300
 Set Padding 20
 
 Set MarginFill "#79B8C3"
-Set MarginSize 20
+Set Margin 20
 
 Set CornerRadius 20
 

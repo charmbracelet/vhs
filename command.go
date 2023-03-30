@@ -233,7 +233,7 @@ var Settings = map[string]CommandFunc{
 	"Shell":         ExecuteSetShell,
 	"LoopOffset":    ExecuteLoopOffset,
 	"MarginFill":    ExecuteSetMarginFill,
-	"MarginSize":    ExecuteSetMarginSize,
+	"Margin":        ExecuteSetMargin,
 	"WindowBar":     ExecuteSetWindowBar,
 	"WindowBarSize": ExecuteSetWindowBarSize,
 	"CornerRadius":  ExecuteSetCornerRadius,
@@ -369,9 +369,9 @@ func ExecuteSetMarginFill(c Command, v *VHS) {
 	}
 }
 
-// ExecuteSetMarginSize sets vhs margin size
-func ExecuteSetMarginSize(c Command, v *VHS) {
-	v.Options.Video.MarginSize, _ = strconv.Atoi(c.Args)
+// ExecuteSetMargin sets vhs margin size
+func ExecuteSetMargin(c Command, v *VHS) {
+	v.Options.Video.Margin, _ = strconv.Atoi(c.Args)
 }
 
 // ExecuteSetWindowBar sets window bar type

@@ -10,7 +10,7 @@ Set Padding 20
 # but not all output formats support transparency.
 # (gif does, mp4 and webm do not)
 Set MarginFill "#79B8C3"
-Set MarginSize 20
+Set Margin 20
 
 Set CornerRadius 20
 
