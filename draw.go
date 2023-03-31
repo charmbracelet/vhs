@@ -32,6 +32,10 @@ func (c *circle) Bounds() image.Rectangle {
 }
 
 const halfPixel = 0.5
+const doublingFactor = 2
+
+func double(i int) int { return i * doublingFactor }
+func half(i int) int   { return i / doublingFactor }
 
 func (c *circle) At(x, y int) color.Color {
 	// Prepare points for circle calculations.
@@ -202,7 +206,7 @@ func MakeBorderRadiusMask(width, height, radius int, targetpng string) {
 }
 
 // Check if a given windowbar type is valid
-func CheckBar(windowbar string) bool {
+func isValidWindowBar(windowbar string) bool {
 	switch windowbar {
 	case
 		"",
@@ -240,9 +244,9 @@ const barToDotBorderRatio = 5
 func makeColorfulBar(termWidth int, termHeight int, isRight bool, opts VideoOptions, targetpng string) error {
 	// Radius of dots
 	dotRad := opts.WindowBarSize / barToDotRatio
-	dotDia := 2 * dotRad
+	dotDia := double(dotRad)
 	// Space between dots and edge
-	dotGap := (opts.WindowBarSize - dotDia) / 2
+	dotGap := half(opts.WindowBarSize - dotDia)
 	// Space between dot centers
 	dotSpace := dotDia + opts.WindowBarSize/barToDotRatio
 
@@ -321,11 +325,12 @@ func makeColorfulBar(termWidth int, termHeight int, isRight bool, opts VideoOpti
 func makeRingBar(termWidth int, termHeight int, isRight bool, opts VideoOptions, targetpng string) error {
 	// Radius of dots
 	outerRad := opts.WindowBarSize / barToDotBorderRatio
-	innerRad := (4 * outerRad) / barToDotBorderRatio
+	outerDia := double(outerRad)
+	innerRad := double(outerDia) / barToDotBorderRatio
 	// Space between dots and edge
-	ringGap := (opts.WindowBarSize - 2*outerRad) / 2
+	ringGap := half(opts.WindowBarSize - outerDia)
 	// Space between dot centers
-	ringSpace := (2 * outerRad) + opts.WindowBarSize/barToDotRatio
+	ringSpace := outerDia + opts.WindowBarSize/barToDotRatio
 
 	// Dimensions of bar image
 	width := termWidth
