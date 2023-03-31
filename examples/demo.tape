@@ -20,6 +20,11 @@
 #   Set Padding <number>            Set the padding of the terminal
 #   Set Framerate <number>          Set the framerate of the recording
 #   Set PlaybackSpeed <float>       Set the playback speed of the recording
+#   Set MarginFill <file|#000000>   Set the file or color the margin will be filled with.
+#   Set Margin <number>             Set the size of the margin. Has no effect if MarginFill isn't set.
+#   Set BorderRadius <number>       Set terminal border radius, in pixels.
+#   Set WindowBar <string>          Set window bar type. (one of: Rings, Colorful)
+#   Set WindowBarSize <number>      Set window bar size, in pixels. Default is 40.
 #
 # Sleep:
 #   Sleep <time>                    Sleep for a set amount of <time> in seconds

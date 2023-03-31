@@ -96,13 +96,13 @@ var serveCmd = &cobra.Command{
 							var gif, mp4, webm string
 							switch {
 							case v.Options.Video.Output.MP4 != "":
-								tempFile += ".mp4"
+								tempFile += mp4
 								mp4 = tempFile
 							case v.Options.Video.Output.WebM != "":
-								tempFile += ".webm"
+								tempFile += webm
 								webm = tempFile
 							default:
-								tempFile += ".gif"
+								tempFile += gif
 								gif = tempFile
 							}
 							v.Options.Video.Output.GIF = gif

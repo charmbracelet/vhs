@@ -100,11 +100,11 @@ var (
 				}
 
 				for _, output := range *outputs {
-					if strings.HasSuffix(output, ".gif") {
+					if strings.HasSuffix(output, gif) {
 						v.Options.Video.Output.GIF = output
-					} else if strings.HasSuffix(output, ".webm") {
+					} else if strings.HasSuffix(output, webm) {
 						v.Options.Video.Output.WebM = output
-					} else if strings.HasSuffix(output, ".mp4") {
+					} else if strings.HasSuffix(output, mp4) {
 						v.Options.Video.Output.MP4 = output
 					}
 				}

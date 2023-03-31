@@ -36,7 +36,7 @@ var publishCmd = &cobra.Command{
 			log.Printf("Use vhs %s --publish flag to publish tapes\n", file)
 			return errors.New("must pass a GIF file")
 		}
-		if !strings.HasSuffix(file, ".gif") {
+		if !strings.HasSuffix(file, gif) {
 			return errors.New("must pass a GIF file")
 		}
 

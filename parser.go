@@ -2,6 +2,7 @@ package main
 
 import (
 	"path/filepath"
+	"strconv"
 	"strings"
 )
 
@@ -233,6 +234,38 @@ func (p *Parser) parseSet() Command {
 		} else if cmd.Options == "TypingSpeed" {
 			cmd.Args += "s"
 		}
+	case WINDOW_BAR:
+		cmd.Args = p.peek.Literal
+		p.nextToken()
+
+		windowBar := p.cur.Literal
+		if !isValidWindowBar(windowBar) {
+			p.errors = append(
+				p.errors,
+				NewError(p.cur, windowBar+" is not valid. Must be one of Colorful or Rings."),
+			)
+		}
+	case MARGIN_FILL:
+		cmd.Args = p.peek.Literal
+		p.nextToken()
+
+		marginFill := p.cur.Literal
+
+		// Check if margin color is a valid hex string
+		if strings.HasPrefix(marginFill, "#") {
+			_, err := strconv.ParseUint(marginFill[1:], 16, 64)
+
+			if err != nil || len(marginFill) != 7 {
+				p.errors = append(
+					p.errors,
+					NewError(
+						p.cur,
+						"\""+marginFill+"\" is not a valid color.",
+					),
+				)
+			}
+		}
+
 	default:
 		cmd.Args = p.peek.Literal
 		p.nextToken()

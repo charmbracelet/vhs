@@ -368,7 +368,7 @@ Type@500ms "500ms delay per character"
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/typing-speed.gif">
   <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/typing-speed.gif">
-  <img width="600" alt="Example of changing the typing speed to type different words" src="https://stuff.charm.sh/vhs/examples/typing-speed.gif">
+  <img width="600" alt="Example of using the Type command in VHS" src="https://stuff.charm.sh/vhs/examples/typing-speed.gif">
 </picture>
 
 #### Set Theme
@@ -399,11 +399,60 @@ command.
 Set Padding 0
 ```
 
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/padding.gif">
   <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/padding.gif">
   <img width="600" alt="Example of setting the padding" src="https://stuff.charm.sh/vhs/examples/padding.gif">
 </picture>
+
+
+#### Set Margin
+
+Set the margin (in pixels) of the video with the `Set Margin` command.
+
+```elixir
+Set Margin 60
+Set MarginFill "#6B50FF"
+```
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://vhs.charm.sh/vhs-1miKMtNHenh7O4sv76TMwG.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-1miKMtNHenh7O4sv76TMwG.gif">
+  <img width="600" alt="Example of setting the margin" src="https://vhs.charm.sh/vhs-1miKMtNHenh7O4sv76TMwG.gif">
+</picture>
+
+#### Set Window Bar
+
+Set the type of window bar (Colorful, Rings) of the terminal window with the `Set WindowBar` command.
+
+```elixir
+Set WindowBar Colorful
+```
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://vhs.charm.sh/vhs-4VgviCu38DbaGtbRzhtOUI.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-4VgviCu38DbaGtbRzhtOUI.gif">
+  <img width="600" alt="Example of setting the margin" src="https://vhs.charm.sh/vhs-4VgviCu38DbaGtbRzhtOUI.gif">
+</picture>
+
+#### Set Border Radius
+
+Set the border radius (in pixels) of the terminal window with the `Set BorderRadius` command.
+
+```elixir
+# You'll likely want to add a Margin + MarginFill if you use BorderRadius.
+Set Margin 20
+Set MarginFill "#674EFF"
+Set BorderRadius 10
+```
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://vhs.charm.sh/vhs-4nYoy6IsUKmleJANG7N1BH.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-4nYoy6IsUKmleJANG7N1BH.gif">
+  <img width="400" alt="Example of setting the margin" src="https://vhs.charm.sh/vhs-4nYoy6IsUKmleJANG7N1BH.gif">
+</picture>
+
 
 #### Set Framerate
 

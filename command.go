@@ -232,6 +232,11 @@ var Settings = map[string]CommandFunc{
 	"Width":         ExecuteSetWidth,
 	"Shell":         ExecuteSetShell,
 	"LoopOffset":    ExecuteLoopOffset,
+	"MarginFill":    ExecuteSetMarginFill,
+	"Margin":        ExecuteSetMargin,
+	"WindowBar":     ExecuteSetWindowBar,
+	"WindowBarSize": ExecuteSetWindowBarSize,
+	"BorderRadius":  ExecuteSetBorderRadius,
 }
 
 // ExecuteSet applies the settings on the running vhs specified by the
@@ -308,6 +313,7 @@ func ExecuteSetTheme(c Command, v *VHS) {
 	bts, _ := json.Marshal(v.Options.Theme)
 	_, _ = v.Page.Eval(fmt.Sprintf("() => term.options.theme = %s", string(bts)))
 	v.Options.Video.BackgroundColor = v.Options.Theme.Background
+	v.Options.Video.WindowBarColor = v.Options.Theme.Background
 }
 
 // ExecuteSetTypingSpeed applies the default typing speed on the vhs.
@@ -349,6 +355,31 @@ func ExecuteLoopOffset(c Command, v *VHS) {
 		return
 	}
 	v.Options.LoopOffset = loopOffset
+}
+
+// ExecuteSetMarginFill sets vhs margin fill
+func ExecuteSetMarginFill(c Command, v *VHS) {
+	v.Options.Video.MarginFill = c.Args
+}
+
+// ExecuteSetMargin sets vhs margin size
+func ExecuteSetMargin(c Command, v *VHS) {
+	v.Options.Video.Margin, _ = strconv.Atoi(c.Args)
+}
+
+// ExecuteSetWindowBar sets window bar type
+func ExecuteSetWindowBar(c Command, v *VHS) {
+	v.Options.Video.WindowBar = c.Args
+}
+
+// ExecuteSetWindowBar sets window bar size
+func ExecuteSetWindowBarSize(c Command, v *VHS) {
+	v.Options.Video.WindowBarSize, _ = strconv.Atoi(c.Args)
+}
+
+// ExecuteSetWindowBar sets corner radius
+func ExecuteSetBorderRadius(c Command, v *VHS) {
+	v.Options.Video.BorderRadius, _ = strconv.Atoi(c.Args)
 }
 
 func getTheme(s string) (Theme, error) {
