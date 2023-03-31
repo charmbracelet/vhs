@@ -220,7 +220,7 @@ func isValidWindowBar(windowbar string) bool {
 }
 
 // Make a window bar and save it to a file
-func MakeBar(termWidth, termHeight int, opts VideoOptions, targetpng string) {
+func MakeWindowBar(termWidth, termHeight int, opts VideoOptions, targetpng string) {
 	var err error
 	switch opts.WindowBar {
 	case "Colorful":

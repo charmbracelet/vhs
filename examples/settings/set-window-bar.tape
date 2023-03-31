@@ -5,7 +5,7 @@ Set Width 800
 Set Height 400
 Set Padding 20
 
-Set WindowBar Rings
+Set WindowBar Colorful
 Set WindowBarSize 40
 
 Type "This terminal has window controls."

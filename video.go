@@ -125,8 +125,8 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 	termWidth := opts.Width
 	termHeight := opts.Height
 	if opts.MarginFill != "" {
-		termWidth = termWidth - (opts.Margin * 2)
-		termHeight = termHeight - (opts.Margin * 2)
+		termWidth = termWidth - double(opts.Margin)
+		termHeight = termHeight - double(opts.Margin)
 	}
 	if opts.WindowBar != "" {
 		termHeight = termHeight - opts.WindowBarSize
@@ -183,7 +183,7 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 	var barStream int
 	if opts.WindowBar != "" {
 		barPath := filepath.Join(opts.Input, "bar.png")
-		MakeBar(termWidth, termHeight, opts, barPath)
+		MakeWindowBar(termWidth, termHeight, opts, barPath)
 
 		args = append(args,
 			"-i", barPath,
@@ -218,8 +218,8 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 		[speed]pad=%d:%d:(ow-iw)/2:(oh-ih)/2:%s[padded];
 		[padded]fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s[padded]
 		`,
-			termWidth-(2*opts.Padding),
-			termHeight-(2*opts.Padding),
+			termWidth-double(opts.Padding),
+			termHeight-double(opts.Padding),
 
 			opts.Framerate,
 			opts.PlaybackSpeed,
