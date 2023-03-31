@@ -417,7 +417,6 @@ func parseHexColor(s string) (c color.RGBA, err error) {
 		c.B *= 17
 	default:
 		err = fmt.Errorf("%s color of invalid length", s)
-
 	}
 	return
 }

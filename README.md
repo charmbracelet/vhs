@@ -366,9 +366,9 @@ Type@500ms "500ms delay per character"
 ```
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/type.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/type.gif">
-  <img width="600" alt="Example of using the Type command in VHS" src="https://stuff.charm.sh/vhs/examples/type.gif">
+  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/typing-speed.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/typing-speed.gif">
+  <img width="600" alt="Example of using the Type command in VHS" src="https://stuff.charm.sh/vhs/examples/typing-speed.gif">
 </picture>
 
 #### Set Theme
@@ -491,9 +491,9 @@ Type@500ms "Slow down there, partner."
 ```
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/typing-speed.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/typing-speed.gif">
-  <img width="600" alt="Example of using the Type command in VHS" src="https://stuff.charm.sh/vhs/examples/typing-speed.gif">
+  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/type.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/type.gif">
+  <img width="600" alt="Example of using the Type command in VHS" src="https://stuff.charm.sh/vhs/examples/type.gif">
 </picture>
 
 ### Keys
