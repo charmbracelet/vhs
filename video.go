@@ -63,6 +63,7 @@ type VideoOptions struct {
 	Margin          int
 	WindowBar       string
 	WindowBarSize   int
+	WindowBarColor  string
 	BorderRadius    int
 }
 
@@ -85,6 +86,7 @@ func DefaultVideoOptions() VideoOptions {
 		Margin:          0,
 		WindowBar:       "",
 		WindowBarSize:   defaultWindowBarSize,
+		WindowBarColor:  DefaultTheme.Background,
 		BorderRadius:    0,
 		CleanupFrames:   true,
 		Framerate:       defaultFramerate,

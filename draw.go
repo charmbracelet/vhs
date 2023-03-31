@@ -220,17 +220,17 @@ func isValidWindowBar(windowbar string) bool {
 }
 
 // Make a window bar and save it to a file
-func MakeWindowBar(termWidth, termHeight int, opts VideoOptions, targetpng string) {
+func MakeWindowBar(termWidth, termHeight int, opts VideoOptions, file string) {
 	var err error
 	switch opts.WindowBar {
 	case "Colorful":
-		err = makeColorfulBar(termWidth, termHeight, false, opts, targetpng)
+		err = makeColorfulBar(termWidth, termHeight, false, opts, file)
 	case "ColorfulRight":
-		err = makeColorfulBar(termWidth, termHeight, true, opts, targetpng)
+		err = makeColorfulBar(termWidth, termHeight, true, opts, file)
 	case "Rings":
-		err = makeRingBar(termWidth, termHeight, false, opts, targetpng)
+		err = makeRingBar(termWidth, termHeight, false, opts, file)
 	case "RingsRight":
-		err = makeRingBar(termWidth, termHeight, true, opts, targetpng)
+		err = makeRingBar(termWidth, termHeight, true, opts, file)
 	}
 
 	if err != nil {
@@ -261,7 +261,7 @@ func makeColorfulBar(termWidth int, termHeight int, isRight bool, opts VideoOpti
 		},
 	)
 
-	bg := color.RGBA{black, black, black, white}
+	bg, _ := parseHexColor(opts.WindowBarColor)
 	dotA := color.RGBA{white, 0x4F, 0x4D, white}
 	dotB := color.RGBA{0xFE, 0xBB, 0x00, white}
 	dotC := color.RGBA{0x00, 0xCC, 0x1D, white}
@@ -343,7 +343,7 @@ func makeRingBar(termWidth int, termHeight int, isRight bool, opts VideoOptions,
 		},
 	)
 
-	bg := color.RGBA{black, black, black, white}
+	bg, _ := parseHexColor(opts.WindowBarColor)
 	ring := color.RGBA{0x33, 0x33, 0x33, white}
 
 	draw.DrawMask(
@@ -394,4 +394,30 @@ func makeRingBar(termWidth int, termHeight int, isRight bool, opts VideoOptions,
 		err = png.Encode(f, img)
 	}
 	return err
+}
+
+func parseHexColor(s string) (c color.RGBA, err error) {
+	c.R, c.G, c.B, c.A = black, black, black, white
+	switch len(s) {
+	case 7:
+		_, err = fmt.Sscanf(s, "#%02x%02x%02x", &c.R, &c.G, &c.B)
+	case 6:
+		_, err = fmt.Sscanf(s, "%02x%02x%02x", &c.R, &c.G, &c.B)
+	case 4:
+		_, err = fmt.Sscanf(s, "#%1x%1x%1x", &c.R, &c.G, &c.B)
+		// Double the hex digits:
+		c.R *= 17
+		c.G *= 17
+		c.B *= 17
+	case 3:
+		_, err = fmt.Sscanf(s, "%1x%1x%1x", &c.R, &c.G, &c.B)
+		// Double the hex digits:
+		c.R *= 17
+		c.G *= 17
+		c.B *= 17
+	default:
+		err = fmt.Errorf("%s color of invalid length", s)
+
+	}
+	return
 }

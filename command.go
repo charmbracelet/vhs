@@ -313,6 +313,7 @@ func ExecuteSetTheme(c Command, v *VHS) {
 	bts, _ := json.Marshal(v.Options.Theme)
 	_, _ = v.Page.Eval(fmt.Sprintf("() => term.options.theme = %s", string(bts)))
 	v.Options.Video.BackgroundColor = v.Options.Theme.Background
+	v.Options.Video.WindowBarColor = v.Options.Theme.Background
 }
 
 // ExecuteSetTypingSpeed applies the default typing speed on the vhs.
