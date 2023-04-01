@@ -15,46 +15,56 @@ type Token struct {
 
 // Tokens for the VHS language
 const (
-	AT              = "@"
-	EQUAL           = "="
-	PLUS            = "+"
-	PERCENT         = "%"
-	SLASH           = "/"
-	DOT             = "."
-	DASH            = "-"
-	PX              = "PX"
-	EM              = "EM"
-	EOF             = "EOF"
-	ILLEGAL         = "ILLEGAL"
-	SPACE           = "SPACE"
-	BACKSPACE       = "BACKSPACE"
-	ALT             = "ALT"
-	CTRL            = "CTRL"
-	ENTER           = "ENTER"
-	NUMBER          = "NUMBER"
-	SET             = "SET"
-	SLEEP           = "SLEEP"
-	STRING          = "STRING"
-	JSON            = "JSON"
-	TYPE            = "TYPE"
-	DOWN            = "DOWN"
-	LEFT            = "LEFT"
-	RIGHT           = "RIGHT"
-	UP              = "UP"
-	TAB             = "TAB"
-	ESCAPE          = "ESCAPE"
-	DELETE          = "DELETE"
-	HOME            = "HOME"
-	INSERT          = "INSERT"
-	END             = "END"
-	HIDE            = "HIDE"
-	REQUIRE         = "REQUIRE"
-	SHOW            = "SHOW"
-	OUTPUT          = "OUTPUT"
-	MILLISECONDS    = "MILLISECONDS"
-	SECONDS         = "SECONDS"
-	MINUTES         = "MINUTES"
-	COMMENT         = "COMMENT"
+	AT      = "@"
+	EQUAL   = "="
+	PLUS    = "+"
+	PERCENT = "%"
+	SLASH   = "/"
+	DOT     = "."
+	DASH    = "-"
+
+	EM           = "EM"
+	MILLISECONDS = "MILLISECONDS"
+	MINUTES      = "MINUTES"
+	PX           = "PX"
+	SECONDS      = "SECONDS"
+
+	EOF     = "EOF"
+	ILLEGAL = "ILLEGAL"
+
+	ALT       = "ALT"
+	BACKSPACE = "BACKSPACE"
+	CTRL      = "CTRL"
+	DELETE    = "DELETE"
+	END       = "END"
+	ENTER     = "ENTER"
+	ESCAPE    = "ESCAPE"
+	HOME      = "HOME"
+	INSERT    = "INSERT"
+	PAGEDOWN  = "PAGEDOWN"
+	PAGEUP    = "PAGEUP"
+	SLEEP     = "SLEEP"
+	SPACE     = "SPACE"
+	TAB       = "TAB"
+
+	COMMENT = "COMMENT"
+	NUMBER  = "NUMBER"
+	STRING  = "STRING"
+	JSON    = "JSON"
+
+	DOWN  = "DOWN"
+	LEFT  = "LEFT"
+	RIGHT = "RIGHT"
+	UP    = "UP"
+
+	HIDE    = "HIDE"
+	OUTPUT  = "OUTPUT"
+	REQUIRE = "REQUIRE"
+	SET     = "SET"
+	SHOW    = "SHOW"
+	SOURCE  = "SOURCE"
+	TYPE    = "TYPE"
+
 	SHELL           = "SHELL"
 	FONT_FAMILY     = "FONT_FAMILY" //nolint:revive
 	FONT_SIZE       = "FONT_SIZE"   //nolint:revive
@@ -67,8 +77,6 @@ const (
 	TYPING_SPEED    = "TYPING_SPEED"   //nolint:revive
 	PADDING         = "PADDING"
 	THEME           = "THEME"
-	PAGEUP          = "PAGEUP"
-	PAGEDOWN        = "PAGEDOWN"
 	LOOP_OFFSET     = "LOOP_OFFSET"     //nolint:revive
 	MARGIN_FILL     = "MARGIN_FILL"     //nolint:revive
 	MARGIN          = "MARGIN"          //nolint:revive
@@ -122,6 +130,7 @@ var keywords = map[string]TokenType{
 	"Theme":         THEME,
 	"Width":         WIDTH,
 	"LoopOffset":    LOOP_OFFSET,
+	"Source":        SOURCE,
 }
 
 // IsSetting returns whether a token is a setting.
@@ -143,7 +152,7 @@ func IsCommand(t TokenType) bool {
 	case TYPE, SLEEP,
 		UP, DOWN, RIGHT, LEFT, PAGEUP, PAGEDOWN,
 		ENTER, BACKSPACE, DELETE, TAB,
-		ESCAPE, HOME, INSERT, END, CTRL:
+		ESCAPE, HOME, INSERT, END, CTRL, SOURCE:
 		return true
 	default:
 		return false
