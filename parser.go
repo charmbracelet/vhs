@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -65,6 +67,8 @@ func (p *Parser) parseCommand() Command {
 		return p.parseRequire()
 	case SHOW:
 		return p.parseShow()
+	case SOURCE:
+		return p.parseSource()
 	default:
 		p.errors = append(p.errors, NewError(p.cur, "Invalid command: "+p.cur.Literal))
 		return Command{Type: ILLEGAL}
@@ -349,6 +353,81 @@ func (p *Parser) parseType() Command {
 		}
 	}
 
+	return cmd
+}
+
+// parseSource parses source command.
+// Source command takes a tape path to include in current tape.
+//
+// Source <path>
+func (p *Parser) parseSource() Command {
+	cmd := Command{Type: SOURCE}
+
+	if p.peek.Type != STRING {
+		p.errors = append(p.errors, NewError(p.cur, "Expected path after Source"))
+		p.nextToken()
+		return cmd
+	}
+
+	srcPath := p.peek.Literal
+
+	// Check if path has .tape extension
+	ext := filepath.Ext(srcPath)
+	if ext != ".tape" {
+		p.errors = append(p.errors, NewError(p.peek, "Expected file with .tape extension"))
+		p.nextToken()
+		return cmd
+	}
+
+	// Check if tape exist
+	if _, err := os.Stat(srcPath); os.IsNotExist(err) {
+		notFoundErr := fmt.Sprintf("File %s not found", srcPath)
+		p.errors = append(p.errors, NewError(p.peek, notFoundErr))
+		p.nextToken()
+		return cmd
+	}
+
+	// Check if source tape contains nested Source command
+	d, err := os.ReadFile(srcPath)
+	if err != nil {
+		readErr := fmt.Sprintf("Unable to read file: %s", srcPath)
+		p.errors = append(p.errors, NewError(p.peek, readErr))
+		p.nextToken()
+		return cmd
+	}
+
+	srcTape := string(d)
+	// Check source tape is NOT empty
+	if len(srcTape) == 0 {
+		readErr := fmt.Sprintf("Source tape: %s is empty", srcPath)
+		p.errors = append(p.errors, NewError(p.peek, readErr))
+		p.nextToken()
+		return cmd
+	}
+
+	srcLexer := NewLexer(srcTape)
+	srcParser := NewParser(srcLexer)
+
+	// Check not nested source
+	srcCmds := srcParser.Parse()
+	for _, cmd := range srcCmds {
+		if cmd.Type == SOURCE {
+			p.errors = append(p.errors, NewError(p.peek, "Nested Source detected"))
+			p.nextToken()
+			return cmd
+		}
+	}
+
+	// Check src errors
+	srcErrors := srcParser.Errors()
+	if len(srcErrors) > 0 {
+		p.errors = append(p.errors, NewError(p.peek, fmt.Sprintf("%s has %d errors", srcPath, len(srcErrors))))
+		p.nextToken()
+		return cmd
+	}
+
+	cmd.Args = p.peek.Literal
+	p.nextToken()
 	return cmd
 }
 
