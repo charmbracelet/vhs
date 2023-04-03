@@ -58,7 +58,7 @@ Sleep 5s
 Once you've finished, save the file and feed it into VHS.
 
 ```sh
-vhs < demo.tape
+vhs demo.tape
 ```
 
 All done! You should see a new file called `demo.gif` (or whatever you named
@@ -151,7 +151,7 @@ recording. You may want to manually edit the generated `.tape` file to add
 settings or modify actions. Then, you can generate the GIF:
 
 ```bash
-vhs < cassette.tape
+vhs cassette.tape
 ```
 
 
