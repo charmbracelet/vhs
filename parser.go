@@ -242,7 +242,7 @@ func (p *Parser) parseSet() Command {
 		if !isValidWindowBar(windowBar) {
 			p.errors = append(
 				p.errors,
-				NewError(p.cur, windowBar+" is not valid. Must be one of Colorful or Rings."),
+				NewError(p.cur, windowBar+" is not a valid bar style."),
 			)
 		}
 	case MARGIN_FILL:

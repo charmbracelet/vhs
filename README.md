@@ -424,7 +424,7 @@ Set MarginFill "#6B50FF"
 
 #### Set Window Bar
 
-Set the type of window bar (Colorful, Rings) of the terminal window with the `Set WindowBar` command.
+Set the type of window bar (Colorful, ColorfulRight, Rings, RingsRight) on the terminal window with the `Set WindowBar` command.
 
 ```elixir
 Set WindowBar Colorful

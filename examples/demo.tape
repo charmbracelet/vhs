@@ -23,7 +23,7 @@
 #   Set MarginFill <file|#000000>   Set the file or color the margin will be filled with.
 #   Set Margin <number>             Set the size of the margin. Has no effect if MarginFill isn't set.
 #   Set BorderRadius <number>       Set terminal border radius, in pixels.
-#   Set WindowBar <string>          Set window bar type. (one of: Rings, Colorful)
+#   Set WindowBar <string>          Set window bar type. (one of: Rings, RingsRight, Colorful, ColorfulRight)
 #   Set WindowBarSize <number>      Set window bar size, in pixels. Default is 40.
 #
 # Sleep:
