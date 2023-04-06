@@ -80,13 +80,17 @@ func Record(_ *cobra.Command, _ []string) error {
 
 	prevState, err := term.MakeRaw(int(os.Stdin.Fd()))
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	// We'll need to display the stdin on the screen but we'll also need a copy to
 	// analyze later and create a tape file.
 	tape := &bytes.Buffer{}
 	in := io.MultiWriter(tape, terminal)
+
+	if shell != defaultShell {
+		tape.WriteString(fmt.Sprintf("%s Shell %s\n", SET, shell))
+	}
 
 	go func() {
 		var length int
@@ -165,13 +169,17 @@ func inputToTape(input string) string {
 				sanitized.WriteString("Alt" + strings.TrimPrefix(lines[i], ALT) + "\n")
 			}
 			continue
+		} else if strings.HasPrefix(lines[i], SET) {
+			sanitized.WriteString("Set" + strings.TrimPrefix(lines[i], SET))
 		} else if IsCommand(TokenType(lines[i])) {
 			sanitized.WriteString(fmt.Sprint(TokenType(lines[i])))
 			if repeat > 1 {
 				sanitized.WriteString(fmt.Sprint(" ", repeat))
 			}
 		} else {
-			sanitized.WriteString(fmt.Sprintln(TokenType(TYPE), quote(lines[i])))
+			if lines[i] != "" {
+				sanitized.WriteString(fmt.Sprintln(TokenType(TYPE), quote(lines[i])))
+			}
 			continue
 		}
 		sanitized.WriteRune('\n')
