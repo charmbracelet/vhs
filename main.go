@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
+	"path/filepath"
 	"regexp"
 	"runtime/debug"
 	"strings"
@@ -255,7 +256,11 @@ func init() {
 	outputs = rootCmd.Flags().StringSliceP("output", "o", []string{}, "file name(s) of video output")
 	themesCmd.Flags().BoolVar(&markdown, "markdown", false, "output as markdown")
 	_ = themesCmd.Flags().MarkHidden("markdown")
-	recordCmd.Flags().StringVarP(&shell, "shell", "s", "bash", "shell for recording")
+	recordShell := filepath.Base(os.Getenv("SHELL"))
+	if recordShell == "" {
+		recordShell = defaultShell
+	}
+	recordCmd.Flags().StringVarP(&shell, "shell", "s", recordShell, "shell for recording")
 	rootCmd.AddCommand(
 		recordCmd,
 		newCmd,
