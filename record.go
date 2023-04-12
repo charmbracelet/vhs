@@ -66,7 +66,7 @@ var EscapeSequences = map[string]string{
 // Tape commands.
 //
 // vhs record > file.tape
-func Record(cmd *cobra.Command, args []string) error {
+func Record(_ *cobra.Command, _ []string) error {
 	command := exec.Command(shell)
 
 	terminal, err := pty.Start(command)
@@ -80,13 +80,17 @@ func Record(cmd *cobra.Command, args []string) error {
 
 	prevState, err := term.MakeRaw(int(os.Stdin.Fd()))
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	// We'll need to display the stdin on the screen but we'll also need a copy to
 	// analyze later and create a tape file.
-	var tape = &bytes.Buffer{}
+	tape := &bytes.Buffer{}
 	in := io.MultiWriter(tape, terminal)
+
+	if shell != defaultShell {
+		tape.WriteString(fmt.Sprintf("%s Shell %s\n", SET, shell))
+	}
 
 	go func() {
 		var length int
@@ -109,12 +113,14 @@ func Record(cmd *cobra.Command, args []string) error {
 	_ = terminal.Close()
 	_ = term.Restore(int(os.Stdin.Fd()), prevState)
 
-	fmt.Println(inputToTape(tape.String()))
+	log.Println(inputToTape(tape.String()))
 	return nil
 }
 
-var cursorResponse = regexp.MustCompile(`\x1b\[\d+;\d+R`)
-var oscResponse = regexp.MustCompile(`\x1b\]\d+;rgb:....\/....\/....(\x07|\x1b\\)`)
+var (
+	cursorResponse = regexp.MustCompile(`\x1b\[\d+;\d+R`)
+	oscResponse    = regexp.MustCompile(`\x1b\]\d+;rgb:....\/....\/....(\x07|\x1b\\)`)
+)
 
 // inputToTape takes input from a PTY stdin and converts it into a tape file.
 func inputToTape(input string) string {
@@ -158,13 +164,22 @@ func inputToTape(input string) string {
 				sanitized.WriteString("Ctrl" + strings.TrimPrefix(lines[i], CTRL) + "\n")
 			}
 			continue
+		} else if strings.HasPrefix(lines[i], ALT) {
+			for j := 0; j < repeat; j++ {
+				sanitized.WriteString("Alt" + strings.TrimPrefix(lines[i], ALT) + "\n")
+			}
+			continue
+		} else if strings.HasPrefix(lines[i], SET) {
+			sanitized.WriteString("Set" + strings.TrimPrefix(lines[i], SET))
 		} else if IsCommand(TokenType(lines[i])) {
 			sanitized.WriteString(fmt.Sprint(TokenType(lines[i])))
 			if repeat > 1 {
 				sanitized.WriteString(fmt.Sprint(" ", repeat))
 			}
 		} else {
-			sanitized.WriteString(fmt.Sprintln(TokenType(TYPE), quote(lines[i])))
+			if lines[i] != "" {
+				sanitized.WriteString(fmt.Sprintln(TokenType(TYPE), quote(lines[i])))
+			}
 			continue
 		}
 		sanitized.WriteRune('\n')

@@ -25,6 +25,7 @@ CTRL+C
 CTRL+W
 CTRL+A
 CTRL+E
+ALT+.
 exit
 `
 
@@ -43,6 +44,7 @@ Ctrl+C
 Ctrl+W
 Ctrl+A
 Ctrl+E
+Alt+.
 `
 
 	got := inputToTape(input)

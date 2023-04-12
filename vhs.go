@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"math"
 	"os"
 	"os/exec"
@@ -133,8 +134,16 @@ func (vhs *VHS) Setup() {
 	// Set Viewport to the correct size, accounting for the padding that will be
 	// added during the render.
 	padding := vhs.Options.Video.Padding
-	width := vhs.Options.Video.Width - padding - padding
-	height := vhs.Options.Video.Height - padding - padding
+	margin := 0
+	if vhs.Options.Video.MarginFill != "" {
+		margin = vhs.Options.Video.Margin
+	}
+	bar := 0
+	if vhs.Options.Video.WindowBar != "" {
+		bar = vhs.Options.Video.WindowBarSize
+	}
+	width := vhs.Options.Video.Width - double(padding) - double(margin)
+	height := vhs.Options.Video.Height - double(padding) - double(margin) - bar
 	vhs.Page = vhs.Page.MustSetViewport(width, height, 0, false)
 
 	// Let's wait until we can access the window.term variable.
@@ -201,14 +210,14 @@ func (vhs *VHS) Render() error {
 		}
 		out, err := cmd.CombinedOutput()
 		if err != nil {
-			fmt.Println(string(out))
+			log.Println(string(out))
 		}
 	}
 
 	return nil
 }
 
-// Apply Loop Offset by modifying frame sequence
+// ApplyLoopOffset by modifying frame sequence
 func (vhs *VHS) ApplyLoopOffset() error {
 	if vhs.totalFrames <= 0 {
 		return errors.New("no frames")

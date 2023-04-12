@@ -12,6 +12,7 @@ package main
 import (
 	"fmt"
 	"net"
+	"os"
 	"os/exec"
 )
 
@@ -32,6 +33,7 @@ func buildTtyCmd(port int, shell Shell) *exec.Cmd {
 		"-t", "cursorBlink=true",
 		"-t", "enableSixel=true",
 		"-t", "customGlyphs=true",
+		"--once", // will allow one connection and exit
 	}
 
 	args = append(args, shell.Command...)
@@ -39,7 +41,7 @@ func buildTtyCmd(port int, shell Shell) *exec.Cmd {
 	//nolint:gosec
 	cmd := exec.Command("ttyd", args...)
 	if shell.Env != nil {
-		cmd.Env = append(shell.Env, cmd.Env...)
+		cmd.Env = append(shell.Env, os.Environ()...)
 	}
 	return cmd
 }

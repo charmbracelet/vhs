@@ -1,8 +1,6 @@
 package main
 
-import (
-	_ "embed"
-)
+import _ "embed"
 
 //go:embed examples/demo.tape
 var DemoTape []byte

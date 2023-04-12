@@ -19,6 +19,7 @@ type CommandType TokenType
 var CommandTypes = []CommandType{ //nolint: deadcode
 	BACKSPACE,
 	CTRL,
+	ALT,
 	DOWN,
 	ENTER,
 	ESCAPE,
@@ -69,6 +70,7 @@ var CommandFuncs = map[CommandType]CommandFunc{
 	SLEEP:        ExecuteSleep,
 	TYPE:         ExecuteType,
 	CTRL:         ExecuteCtrl,
+	ALT:          ExecuteAlt,
 	ILLEGAL:      ExecuteNoop,
 	MATCH_LINE:   ExecuteMatchLine,
 	MATCH_SCREEN: ExecuteMatchScreen,
@@ -101,7 +103,7 @@ func (c Command) Execute(v *VHS) {
 // ExecuteNoop is a no-op command that does nothing.
 // Generally, this is used for Unknown commands when dealing with
 // commands that are not recognized.
-func ExecuteNoop(c Command, v *VHS) {}
+func ExecuteNoop(_ Command, _ *VHS) {}
 
 // ExecuteKey is a higher-order function that returns a CommandFunc to execute
 // a key press for a given key. This is so that the logic for key pressing
@@ -178,8 +180,20 @@ func ExecuteCtrl(c Command, v *VHS) {
 	_ = v.Page.Keyboard.Release(input.ControlLeft)
 }
 
+// ExecuteAlt is a CommandFunc that presses the argument key with the alt key
+// held down on the running instance of vhs.
+func ExecuteAlt(c Command, v *VHS) {
+	_ = v.Page.Keyboard.Press(input.AltLeft)
+	for _, r := range c.Args {
+		if k, ok := keymap[r]; ok {
+			_ = v.Page.Keyboard.Type(k)
+		}
+	}
+	_ = v.Page.Keyboard.Release(input.AltLeft)
+}
+
 // ExecuteHide is a CommandFunc that starts or stops the recording of the vhs.
-func ExecuteHide(c Command, v *VHS) {
+func ExecuteHide(_ Command, v *VHS) {
 	v.PauseRecording()
 }
 
@@ -193,13 +207,13 @@ func ExecuteRequire(c Command, v *VHS) {
 }
 
 // ExecuteShow is a CommandFunc that resumes the recording of the vhs.
-func ExecuteShow(c Command, v *VHS) {
+func ExecuteShow(_ Command, v *VHS) {
 	v.ResumeRecording()
 }
 
 // ExecuteSleep sleeps for the desired time specified through the argument of
 // the Sleep command.
-func ExecuteSleep(c Command, v *VHS) {
+func ExecuteSleep(c Command, _ *VHS) {
 	dur, err := time.ParseDuration(c.Args)
 	if err != nil {
 		return
@@ -257,6 +271,11 @@ var Settings = map[string]CommandFunc{
 	"Width":         ExecuteSetWidth,
 	"Shell":         ExecuteSetShell,
 	"LoopOffset":    ExecuteLoopOffset,
+	"MarginFill":    ExecuteSetMarginFill,
+	"Margin":        ExecuteSetMargin,
+	"WindowBar":     ExecuteSetWindowBar,
+	"WindowBarSize": ExecuteSetWindowBarSize,
+	"BorderRadius":  ExecuteSetBorderRadius,
 }
 
 // ExecuteSet applies the settings on the running vhs specified by the
@@ -333,6 +352,7 @@ func ExecuteSetTheme(c Command, v *VHS) {
 	bts, _ := json.Marshal(v.Options.Theme)
 	_, _ = v.Page.Eval(fmt.Sprintf("() => term.options.theme = %s", string(bts)))
 	v.Options.Video.BackgroundColor = v.Options.Theme.Background
+	v.Options.Video.WindowBarColor = v.Options.Theme.Background
 }
 
 // ExecuteSetTypingSpeed applies the default typing speed on the vhs.
@@ -374,6 +394,31 @@ func ExecuteLoopOffset(c Command, v *VHS) {
 		return
 	}
 	v.Options.LoopOffset = loopOffset
+}
+
+// ExecuteSetMarginFill sets vhs margin fill
+func ExecuteSetMarginFill(c Command, v *VHS) {
+	v.Options.Video.MarginFill = c.Args
+}
+
+// ExecuteSetMargin sets vhs margin size
+func ExecuteSetMargin(c Command, v *VHS) {
+	v.Options.Video.Margin, _ = strconv.Atoi(c.Args)
+}
+
+// ExecuteSetWindowBar sets window bar type
+func ExecuteSetWindowBar(c Command, v *VHS) {
+	v.Options.Video.WindowBar = c.Args
+}
+
+// ExecuteSetWindowBar sets window bar size
+func ExecuteSetWindowBarSize(c Command, v *VHS) {
+	v.Options.Video.WindowBarSize, _ = strconv.Atoi(c.Args)
+}
+
+// ExecuteSetWindowBar sets corner radius
+func ExecuteSetBorderRadius(c Command, v *VHS) {
+	v.Options.Video.BorderRadius, _ = strconv.Atoi(c.Args)
 }
 
 func getTheme(s string) (Theme, error) {

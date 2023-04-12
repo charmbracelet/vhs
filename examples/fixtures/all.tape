@@ -85,6 +85,11 @@ Ctrl+C
 Ctrl+L
 Ctrl+R
 
+# Alt:
+Alt+.
+Alt+L
+Alt+i
+
 # Display:
 Hide
 Show

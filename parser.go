@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -58,6 +59,8 @@ func (p *Parser) parseCommand() Command {
 		return p.parseType()
 	case CTRL:
 		return p.parseCtrl()
+	case ALT:
+		return p.parseAlt()
 	case HIDE:
 		return p.parseHide()
 	case REQUIRE:
@@ -183,6 +186,24 @@ func (p *Parser) parseCtrl() Command {
 	return Command{Type: CTRL}
 }
 
+// parseAlt parses an alt command.
+// An alt command takes a character to type while the modifier is held down.
+//
+// Alt+<character>
+func (p *Parser) parseAlt() Command {
+	if p.peek.Type == PLUS {
+		p.nextToken()
+		if p.peek.Type == STRING {
+			c := p.peek.Literal
+			p.nextToken()
+			return Command{Type: ALT, Args: c}
+		}
+	}
+
+	p.errors = append(p.errors, NewError(p.cur, "Expected alt character, got "+p.cur.Literal))
+	return Command{Type: ALT}
+}
+
 // parseKeypress parses a repeatable and time adjustable keypress command.
 // A keypress command takes an optional typing speed and optional count.
 //
@@ -256,6 +277,38 @@ func (p *Parser) parseSet() Command {
 		} else if cmd.Options == "TypingSpeed" {
 			cmd.Args += "s"
 		}
+	case WINDOW_BAR:
+		cmd.Args = p.peek.Literal
+		p.nextToken()
+
+		windowBar := p.cur.Literal
+		if !isValidWindowBar(windowBar) {
+			p.errors = append(
+				p.errors,
+				NewError(p.cur, windowBar+" is not a valid bar style."),
+			)
+		}
+	case MARGIN_FILL:
+		cmd.Args = p.peek.Literal
+		p.nextToken()
+
+		marginFill := p.cur.Literal
+
+		// Check if margin color is a valid hex string
+		if strings.HasPrefix(marginFill, "#") {
+			_, err := strconv.ParseUint(marginFill[1:], 16, 64)
+
+			if err != nil || len(marginFill) != 7 {
+				p.errors = append(
+					p.errors,
+					NewError(
+						p.cur,
+						"\""+marginFill+"\" is not a valid color.",
+					),
+				)
+			}
+		}
+
 	default:
 		cmd.Args = p.peek.Literal
 		p.nextToken()
