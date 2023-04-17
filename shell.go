@@ -40,12 +40,11 @@ var Shells = map[string]Shell{
 	powershell: {
 		Command: []string{
 			"powershell",
-			"-Login",
 			"-NoLogo",
 			"-NoExit",
 			"-NoProfile",
 			"-Command",
-			`Set-PSReadLineOption -HistorySaveStyle SaveNothing; Function prompt { Write-Host -ForegroundColor Blue -NoNewLine '>'; return ' ' }`,
+			`Set-PSReadLineOption -HistorySaveStyle SaveNothing; function prompt { Write-Host '>' -NoNewLine -ForegroundColor Blue; return ' ' }`,
 		},
 	},
 	pwsh: {
