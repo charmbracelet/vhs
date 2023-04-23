@@ -113,7 +113,7 @@ func Record(_ *cobra.Command, _ []string) error {
 	_ = terminal.Close()
 	_ = term.Restore(int(os.Stdin.Fd()), prevState)
 
-	log.Println(inputToTape(tape.String()))
+	fmt.Println(inputToTape(tape.String()))
 	return nil
 }
 
