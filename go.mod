@@ -6,7 +6,7 @@ require (
 	github.com/agnivade/levenshtein v1.1.1
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/charmbracelet/glamour v0.6.0
-	github.com/charmbracelet/keygen v0.4.1
+	github.com/charmbracelet/keygen v0.4.2
 	github.com/charmbracelet/lipgloss v0.7.1
 	github.com/charmbracelet/ssh v0.0.0-20221117183211-483d43d97103
 	github.com/charmbracelet/wish v1.1.1-0.20230412142535-b02fea5b2633
