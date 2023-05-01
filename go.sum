@@ -25,8 +25,8 @@ github.com/charmbracelet/log v0.2.1 h1:1z7jpkk4yKyjwlmKmKMM5qnEDSpV32E7XtWhuv0mT
 github.com/charmbracelet/log v0.2.1/go.mod h1:GwFfjewhcVDWLrpAbY5A0Hin9YOlEn40eWT4PNaxFT4=
 github.com/charmbracelet/ssh v0.0.0-20221117183211-483d43d97103 h1:wpHMERIN0pQZE635jWwT1dISgfjbpUcEma+fbPKSMCU=
 github.com/charmbracelet/ssh v0.0.0-20221117183211-483d43d97103/go.mod h1:0Vm2/8yBljiLDnGJHU8ehswfawrEybGk33j5ssqKQVM=
-github.com/charmbracelet/wish v1.1.1-0.20230412142535-b02fea5b2633 h1:39rtZkUFcDgFfmgejfKYmBvsFYbEXEaFF2JmB28o2vY=
-github.com/charmbracelet/wish v1.1.1-0.20230412142535-b02fea5b2633/go.mod h1:Q8b4DURo6cmQ4G3LnyoxDlWmN3LHYdiXfOjEw8oZcEM=
+github.com/charmbracelet/wish v1.1.1 h1:KdICASKd2oh2JPvk1Z4CJtAi97cFErXF7NKienPICO4=
+github.com/charmbracelet/wish v1.1.1/go.mod h1:xh4KZpSULw+Xqb9bcbhw92QAinVB75CVLWrFuyY6IVs=
 github.com/cpuguy83/go-md2man/v2 v2.0.2/go.mod h1:tgQtvFlXSQOSOSIRvRPT7W67SCa46tRHOmNcaadrF8o=
 github.com/creack/pty v1.1.18 h1:n56/Zwd5o6whRC5PMGretI4IdRLlmBXYNjScPaBgsbY=
 github.com/creack/pty v1.1.18/go.mod h1:MOBLtS5ELjhRRrroQr9kyvTxUAFNvYEK993ew/Vr4O4=
