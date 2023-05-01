@@ -9,7 +9,7 @@ require (
 	github.com/charmbracelet/keygen v0.4.2
 	github.com/charmbracelet/lipgloss v0.7.1
 	github.com/charmbracelet/ssh v0.0.0-20221117183211-483d43d97103
-	github.com/charmbracelet/wish v1.1.1-0.20230412142535-b02fea5b2633
+	github.com/charmbracelet/wish v1.1.1
 	github.com/creack/pty v1.1.18
 	github.com/go-rod/rod v0.112.8
 	github.com/hashicorp/go-version v1.6.0
