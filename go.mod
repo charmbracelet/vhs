@@ -11,7 +11,7 @@ require (
 	github.com/charmbracelet/ssh v0.0.0-20221117183211-483d43d97103
 	github.com/charmbracelet/wish v1.1.1
 	github.com/creack/pty v1.1.18
-	github.com/go-rod/rod v0.112.8
+	github.com/go-rod/rod v0.112.9
 	github.com/hashicorp/go-version v1.6.0
 	github.com/mattn/go-isatty v0.0.18
 	github.com/muesli/go-app-paths v0.2.2
@@ -44,6 +44,7 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/ysmood/fetchup v0.2.2 // indirect
 	github.com/ysmood/goob v0.4.0 // indirect
 	github.com/ysmood/gson v0.7.3 // indirect
 	github.com/ysmood/leakless v0.8.0 // indirect
