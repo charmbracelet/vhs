@@ -158,7 +158,11 @@ func inputToTape(input string) string {
 		// characters.
 		if TokenType(lines[i]) == SLEEP {
 			sleep := sleepThreshold * time.Duration(repeat)
-			sanitized.WriteString(fmt.Sprintf("%s %s", TokenType(SLEEP), sleep))
+			if sleep >= 60*time.Second {
+				sanitized.WriteString(fmt.Sprintf("%s %gs", TokenType(SLEEP), sleep.Seconds()))
+			} else {
+				sanitized.WriteString(fmt.Sprintf("%s %s", TokenType(SLEEP), sleep))
+			}
 		} else if strings.HasPrefix(lines[i], CTRL) {
 			for j := 0; j < repeat; j++ {
 				sanitized.WriteString("Ctrl" + strings.TrimPrefix(lines[i], CTRL) + "\n")
