@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strings"
 	"testing"
 )
 
@@ -25,7 +26,10 @@ CTRL+C
 CTRL+W
 CTRL+A
 CTRL+E
+SLEEP
+SLEEP
 ALT+.
+SLEEP
 exit
 `
 
@@ -44,9 +48,19 @@ Ctrl+C
 Ctrl+W
 Ctrl+A
 Ctrl+E
+Sleep 1s
 Alt+.
+Sleep 500ms
 `
+	got := inputToTape(input)
+	if want != got {
+		t.Fatalf("want:\n%s\ngot:\n%s\n", want, got)
+	}
+}
 
+func TestInputToTapeLongSleep(t *testing.T) {
+	input := strings.Repeat("SLEEP\n", 121) + "exit"
+	want := "Sleep 60.5s\n"
 	got := inputToTape(input)
 	if want != got {
 		t.Fatalf("want:\n%s\ngot:\n%s\n", want, got)
