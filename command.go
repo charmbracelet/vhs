@@ -208,8 +208,7 @@ func ExecuteOutput(c Command, v *VHS) {
 	case ".test", ".ascii", ".txt":
 		v.Options.Test.Output = c.Args
 	case ".png":
-		v.Options.Video.Input = c.Args
-		v.Options.Video.CleanupFrames = false
+		v.Options.Video.Output.Frames = c.Args
 	case ".webm":
 		v.Options.Video.Output.WebM = c.Args
 	default:

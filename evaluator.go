@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"os"
 )
 
 // EvaluatorOption is a function that can be used to modify the VHS instance.
@@ -92,7 +93,14 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	ch := v.Record(ctx)
 
 	// Clean up temporary files at the end.
-	defer func() { _ = v.Cleanup() }()
+	defer func() {
+		if v.Options.Video.Output.Frames != "" {
+			// Move the frames to the output directory.
+			_ = os.Rename(v.Options.Video.Input, v.Options.Video.Output.Frames)
+		}
+
+		_ = v.Cleanup()
+	}()
 
 	teardown := func() {
 		// Stop recording frames.
