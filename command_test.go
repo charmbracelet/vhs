@@ -6,12 +6,12 @@ import (
 )
 
 func TestCommand(t *testing.T) {
-	const numberOfCommands = 22
+	const numberOfCommands = 24
 	if len(CommandTypes) != numberOfCommands {
 		t.Errorf("Expected %d commands, got %d", numberOfCommands, len(CommandTypes))
 	}
 
-	const numberOfCommandFuncs = 21
+	const numberOfCommandFuncs = 23
 	if len(CommandFuncs) != numberOfCommandFuncs {
 		t.Errorf("Expected %d commands, got %d", numberOfCommands, len(CommandTypes))
 	}
@@ -50,6 +50,40 @@ func TestExecuteSetTheme(t *testing.T) {
 		theme, err := getTheme("foobar")
 		requireErr(t, err)
 		requireDefaultTheme(t, theme)
+	})
+}
+
+func TestExecutePause(t *testing.T) {
+	t.Run("Should create hiddenTerm if NOT exist and stop the execution", func(t *testing.T) {
+		vhs := New()
+		vhs.currentTerm = &Terminal{}
+
+		ExecutePause(Command{Type: PAUSE}, &vhs)
+
+		if vhs.executing {
+			t.Errorf("Pause command has not stopped the execution")
+		}
+
+		if vhs.hiddenTerm == nil {
+			t.Errorf("Pause command has not initialized hiddenTerm")
+		}
+	})
+}
+
+func TestExecuteResume(t *testing.T) {
+	t.Run("Should use mainTerm as currentTerm and restart the execution", func(t *testing.T) {
+		vhs := New()
+		vhs.mainTerm = &Terminal{}
+
+		ExecuteResume(Command{Type: RESUME}, &vhs)
+
+		if !vhs.executing {
+			t.Errorf("Resume command has not restared the execution")
+		}
+
+		if vhs.currentTerm != vhs.mainTerm {
+			t.Errorf("Resume has not set mainTerm as currentTerm")
+		}
 	})
 }
 

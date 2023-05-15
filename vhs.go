@@ -20,18 +20,57 @@ import (
 
 // VHS is the object that controls the setup.
 type VHS struct {
-	Options      *Options
-	Errors       []error
+	Options     *Options
+	Errors      []error
+	mutex       *sync.Mutex
+	started     bool
+	recording   bool
+	executing   bool
+	totalFrames int
+	currentTerm *Terminal
+	mainTerm    *Terminal
+	hiddenTerm  *Terminal
+}
+
+// Terminal is the ttyd terminal where commands are executed.
+type Terminal struct {
 	Page         *rod.Page
 	browser      *rod.Browser
-	TextCanvas   *rod.Element
-	CursorCanvas *rod.Element
-	mutex        *sync.Mutex
-	started      bool
-	recording    bool
+	textCanvas   *rod.Element
+	cursorCanvas *rod.Element
 	tty          *exec.Cmd
-	totalFrames  int
 	close        func() error
+}
+
+// New returns new instance of Terminal.
+func NewTerminal(shell Shell) (*Terminal, error) {
+	port := randomPort()
+
+	tty := buildTtyCmd(port, shell)
+	if err := tty.Start(); err != nil {
+		return nil, fmt.Errorf("could not start tty: %w", err)
+	}
+
+	path, _ := launcher.LookPath()
+	enableNoSandbox := os.Getenv("VHS_NO_SANDBOX") != ""
+	u, err := launcher.New().Leakless(false).Bin(path).NoSandbox(enableNoSandbox).Launch()
+	if err != nil {
+		return nil, fmt.Errorf("could not launch browser: %w", err)
+	}
+	browser := rod.New().ControlURL(u).MustConnect()
+	page, err := browser.Page(proto.TargetCreateTarget{URL: fmt.Sprintf("http://localhost:%d", port)})
+	if err != nil {
+		return nil, fmt.Errorf("could not open ttyd: %w", err)
+	}
+
+	t := &Terminal{
+		browser: browser,
+		Page:    page,
+		tty:     tty,
+		close:   browser.Close,
+	}
+
+	return t, nil
 }
 
 // Options is the set of options for the setup.
@@ -90,6 +129,7 @@ func New() VHS {
 	return VHS{
 		Options:   &opts,
 		recording: true,
+		executing: true,
 		mutex:     mu,
 	}
 }
@@ -103,28 +143,14 @@ func (vhs *VHS) Start() error {
 		return fmt.Errorf("vhs is already started")
 	}
 
-	port := randomPort()
-	vhs.tty = buildTtyCmd(port, vhs.Options.Shell)
-	if err := vhs.tty.Start(); err != nil {
-		return fmt.Errorf("could not start tty: %w", err)
+	// Initialice mainTerm and set it as currentTerm
+	t, err := NewTerminal(vhs.Options.Shell)
+	if err != nil {
+		return err
 	}
 
-	path, _ := launcher.LookPath()
-	enableNoSandbox := os.Getenv("VHS_NO_SANDBOX") != ""
-	u, err := launcher.New().Leakless(false).Bin(path).NoSandbox(enableNoSandbox).Launch()
-	if err != nil {
-		return fmt.Errorf("could not launch browser: %w", err)
-	}
-	browser := rod.New().ControlURL(u).MustConnect()
-	page, err := browser.Page(proto.TargetCreateTarget{URL: fmt.Sprintf("http://localhost:%d", port)})
-	if err != nil {
-		return fmt.Errorf("could not open ttyd: %w", err)
-	}
+	vhs.mainTerm, vhs.currentTerm = t, t
 
-	vhs.browser = browser
-	vhs.Page = page
-	vhs.close = vhs.browser.Close
-	vhs.started = true
 	return nil
 }
 
@@ -144,23 +170,23 @@ func (vhs *VHS) Setup() {
 	}
 	width := vhs.Options.Video.Width - double(padding) - double(margin)
 	height := vhs.Options.Video.Height - double(padding) - double(margin) - bar
-	vhs.Page = vhs.Page.MustSetViewport(width, height, 0, false)
+	vhs.mainTerm.Page = vhs.mainTerm.Page.MustSetViewport(width, height, 0, false)
 
 	// Let's wait until we can access the window.term variable.
-	vhs.Page = vhs.Page.MustWait("() => window.term != undefined")
+	vhs.mainTerm.Page = vhs.mainTerm.Page.MustWait("() => window.term != undefined")
 
 	// Find xterm.js canvases for the text and cursor layer for recording.
-	vhs.TextCanvas, _ = vhs.Page.Element("canvas.xterm-text-layer")
-	vhs.CursorCanvas, _ = vhs.Page.Element("canvas.xterm-cursor-layer")
+	vhs.mainTerm.textCanvas, _ = vhs.mainTerm.Page.Element("canvas.xterm-text-layer")
+	vhs.mainTerm.cursorCanvas, _ = vhs.mainTerm.Page.Element("canvas.xterm-cursor-layer")
 
 	// Apply options to the terminal
 	// By this point the setting commands have been executed, so the `opts` struct is up to date.
-	vhs.Page.MustEval(fmt.Sprintf("() => { term.options = { fontSize: %d, fontFamily: '%s', letterSpacing: %f, lineHeight: %f, theme: %s } }",
+	vhs.mainTerm.Page.MustEval(fmt.Sprintf("() => { term.options = { fontSize: %d, fontFamily: '%s', letterSpacing: %f, lineHeight: %f, theme: %s } }",
 		vhs.Options.FontSize, vhs.Options.FontFamily, vhs.Options.LetterSpacing,
 		vhs.Options.LineHeight, vhs.Options.Theme.String()))
 
 	// Fit the terminal into the window
-	vhs.Page.MustEval("term.fit")
+	vhs.mainTerm.Page.MustEval("term.fit")
 
 	_ = os.RemoveAll(vhs.Options.Video.Input)
 	_ = os.MkdirAll(vhs.Options.Video.Input, os.ModePerm)
@@ -178,8 +204,15 @@ func (vhs *VHS) terminate() error {
 	time.Sleep(cleanupWaitTime)
 
 	// Tear down the processes we started.
-	vhs.browser.MustClose()
-	return vhs.tty.Process.Kill()
+	vhs.mainTerm.browser.MustClose()
+	vhs.hiddenTerm.browser.MustClose()
+
+	err := vhs.mainTerm.tty.Process.Kill()
+	if err != nil {
+		return err
+	}
+
+	return vhs.hiddenTerm.tty.Process.Kill()
 }
 
 // Cleanup individual frames.
@@ -313,18 +346,19 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 				if !vhs.recording {
 					continue
 				}
-				if vhs.Page == nil {
+				if vhs.mainTerm.Page == nil {
 					continue
 				}
 
-				cursor, cursorErr := vhs.CursorCanvas.CanvasToImage("image/png", quality)
-				text, textErr := vhs.TextCanvas.CanvasToImage("image/png", quality)
+				cursor, cursorErr := vhs.mainTerm.cursorCanvas.CanvasToImage("image/png", quality)
+				text, textErr := vhs.mainTerm.textCanvas.CanvasToImage("image/png", quality)
 				if textErr != nil || cursorErr != nil {
 					ch <- fmt.Errorf("error: %v, %v", textErr, cursorErr)
 					continue
 				}
 
 				counter++
+
 				if err := os.WriteFile(
 					filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(cursorFrameFormat, counter)),
 					cursor,
@@ -348,6 +382,14 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 	return ch
 }
 
+func (vhs *VHS) Close() {
+	vhs.mutex.Lock()
+	defer vhs.mutex.Unlock()
+
+	vhs.mainTerm.close()
+	vhs.hiddenTerm.close()
+}
+
 // ResumeRecording indicates to VHS that the recording should be resumed.
 func (vhs *VHS) ResumeRecording() {
 	vhs.mutex.Lock()
@@ -362,4 +404,37 @@ func (vhs *VHS) PauseRecording() {
 	defer vhs.mutex.Unlock()
 
 	vhs.recording = false
+}
+
+// ResumeExecuting indicates to VHS that the executing should be resumed.
+// When called mainTerminal will be setted as main terminal.
+func (vhs *VHS) ResumeExecuting() {
+	vhs.mutex.Lock()
+	defer vhs.mutex.Unlock()
+
+	vhs.currentTerm = vhs.mainTerm
+	vhs.executing = true
+}
+
+// PauseExecuting indicates to VHS that the executing should be paused.
+// When called hiddenTerm will be setted as currentTerm.
+// When executing = false, commands are executed into hidden terminal
+// in order to avoid adding those frames into the output.
+func (vhs *VHS) PauseExecuting() {
+	vhs.mutex.Lock()
+	defer vhs.mutex.Unlock()
+
+	// If hidden term initialice it.
+	// It need page, textCanvas and cursorCanvas in order to execute all commands
+	// in hidden ttyd terminal.
+	if vhs.hiddenTerm == nil {
+		vhs.hiddenTerm, _ = NewTerminal(vhs.Options.Shell)
+
+		vhs.hiddenTerm.Page = vhs.hiddenTerm.Page.MustWait("() => window.term != undefined")
+		vhs.hiddenTerm.textCanvas, _ = vhs.hiddenTerm.Page.Element("canvas.xterm-text-layer")
+		vhs.hiddenTerm.cursorCanvas, _ = vhs.hiddenTerm.Page.Element("canvas.xterm-cursor-layer")
+	}
+
+	vhs.currentTerm = vhs.hiddenTerm
+	vhs.executing = false
 }
