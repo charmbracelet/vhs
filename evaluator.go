@@ -99,7 +99,7 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 			_ = os.Rename(v.Options.Video.Input, v.Options.Video.Output.Frames)
 		}
 
-		// _ = v.Cleanup()
+		_ = v.Cleanup()
 	}()
 
 	teardown := func() {

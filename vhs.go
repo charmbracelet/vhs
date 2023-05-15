@@ -382,12 +382,16 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 	return ch
 }
 
+// Close closes mainTerm and hiddenTerm sessions.
 func (vhs *VHS) Close() {
 	vhs.mutex.Lock()
 	defer vhs.mutex.Unlock()
 
 	_ = vhs.mainTerm.close()
-	_ = vhs.hiddenTerm.close()
+
+	if vhs.hiddenTerm != nil {
+		_ = vhs.hiddenTerm.close()
+	}
 }
 
 // ResumeRecording indicates to VHS that the recording should be resumed.
@@ -424,8 +428,8 @@ func (vhs *VHS) PauseExecuting() {
 	vhs.mutex.Lock()
 	defer vhs.mutex.Unlock()
 
-	// If hidden term initialice it.
-	// It need page, textCanvas and cursorCanvas in order to execute all commands
+	// If hidden term is nill, initialice it.
+	// It needs page, textCanvas and cursorCanvas in order to execute all commands
 	// in hidden ttyd terminal.
 	if vhs.hiddenTerm == nil {
 		vhs.hiddenTerm, _ = NewTerminal(vhs.Options.Shell)
