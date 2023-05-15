@@ -386,8 +386,8 @@ func (vhs *VHS) Close() {
 	vhs.mutex.Lock()
 	defer vhs.mutex.Unlock()
 
-	vhs.mainTerm.close()
-	vhs.hiddenTerm.close()
+	_ = vhs.mainTerm.close()
+	_ = vhs.hiddenTerm.close()
 }
 
 // ResumeRecording indicates to VHS that the recording should be resumed.
