@@ -201,8 +201,10 @@ There are a few basic types of VHS commands:
 * [`Backspace`](#backspace) [`Enter`](#enter) [`Tab`](#tab) [`Space`](#space): special keys
 * [`Ctrl+<char>`](#ctrl): press control + key
 * [`Sleep <time>`](#sleep): wait for a certain amount of time
-* [`Hide`](#hide): hide commands from output
-* [`Show`](#show): stop hiding commands from output
+* [`Hide`](#hide): hide frames from being recorded
+* [`Show`](#show): stop hiding frames
+* [`Pause`](#pause-resume): stop executing commands in output
+* [`Resume`](#pause-resume): start executing commands in output
 
 ### Output
 
@@ -671,6 +673,34 @@ Type "You will see this being typed."
 </picture>
 
 ***
+
+### Pause-Resume
+
+The `Pause` command instructs VHS to execute a command without including in output.
+You can exit from this mode by adding `Resume` command.
+
+```elixir
+Pause
+
+Type "mkdir folder"
+Enter
+
+Resume
+
+Type "echo 'See secret folder'"
+Sleep 1s
+Enter
+
+Type "ls | grep folder"
+Sleep 1s
+Enter
+
+Sleep 2.5s
+```
+
+<picture>
+  <img width="600" alt="Example of pause and resume" src="examples/pause-resume.gif">
+</picture>
 
 ## Continuous Integration
 
