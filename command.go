@@ -154,11 +154,19 @@ func ExecuteCtrl(c Command, v *VHS) {
 // held down on the running instance of vhs.
 func ExecuteAlt(c Command, v *VHS) {
 	_ = v.Page.Keyboard.Press(input.AltLeft)
-	for _, r := range c.Args {
-		if k, ok := keymap[r]; ok {
-			_ = v.Page.Keyboard.Type(k)
+	if k, ok := keywords[c.Args]; ok {
+		switch k {
+		case ENTER:
+			_ = v.Page.Keyboard.Type(input.Enter)
+		}
+	} else {
+		for _, r := range c.Args {
+			if k, ok := keymap[r]; ok {
+				_ = v.Page.Keyboard.Type(k)
+			}
 		}
 	}
+
 	_ = v.Page.Keyboard.Release(input.AltLeft)
 }
 
