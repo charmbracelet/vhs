@@ -158,7 +158,7 @@ func (p *Parser) parseCtrl() Command {
 func (p *Parser) parseAlt() Command {
 	if p.peek.Type == PLUS {
 		p.nextToken()
-		if p.peek.Type == STRING {
+		if p.peek.Type == STRING || p.peek.Type == ENTER {
 			c := p.peek.Literal
 			p.nextToken()
 			return Command{Type: ALT, Args: c}
