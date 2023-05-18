@@ -34,7 +34,7 @@ var Shells = map[string]Shell{
 			"--no-config",
 			"--private",
 			"-C", "function fish_greeting; end",
-			"-C", `function fish_prompt; echo -e "$(set_color 5B56E0)> $(set_color normal)"; end`,
+			"-C", `function fish_prompt; set_color 5B56E0; echo -n "> "; set_color normal; end`,
 		},
 	},
 	powershell: {
