@@ -41,6 +41,7 @@ var CommandTypes = []CommandType{ //nolint: deadcode
 	TYPE,
 	UP,
 	SOURCE,
+	SCREENSHOT,
 }
 
 // String returns the string representation of the command.
@@ -58,27 +59,28 @@ type CommandFunc func(c Command, v *VHS)
 
 // CommandFuncs maps command types to their executable functions.
 var CommandFuncs = map[CommandType]CommandFunc{
-	BACKSPACE: ExecuteKey(input.Backspace),
-	DOWN:      ExecuteKey(input.ArrowDown),
-	ENTER:     ExecuteKey(input.Enter),
-	LEFT:      ExecuteKey(input.ArrowLeft),
-	RIGHT:     ExecuteKey(input.ArrowRight),
-	SPACE:     ExecuteKey(input.Space),
-	UP:        ExecuteKey(input.ArrowUp),
-	TAB:       ExecuteKey(input.Tab),
-	ESCAPE:    ExecuteKey(input.Escape),
-	PAGEUP:    ExecuteKey(input.PageUp),
-	PAGEDOWN:  ExecuteKey(input.PageDown),
-	HIDE:      ExecuteHide,
-	REQUIRE:   ExecuteRequire,
-	SHOW:      ExecuteShow,
-	SET:       ExecuteSet,
-	OUTPUT:    ExecuteOutput,
-	SLEEP:     ExecuteSleep,
-	TYPE:      ExecuteType,
-	CTRL:      ExecuteCtrl,
-	ALT:       ExecuteAlt,
-	ILLEGAL:   ExecuteNoop,
+	BACKSPACE:  ExecuteKey(input.Backspace),
+	DOWN:       ExecuteKey(input.ArrowDown),
+	ENTER:      ExecuteKey(input.Enter),
+	LEFT:       ExecuteKey(input.ArrowLeft),
+	RIGHT:      ExecuteKey(input.ArrowRight),
+	SPACE:      ExecuteKey(input.Space),
+	UP:         ExecuteKey(input.ArrowUp),
+	TAB:        ExecuteKey(input.Tab),
+	ESCAPE:     ExecuteKey(input.Escape),
+	PAGEUP:     ExecuteKey(input.PageUp),
+	PAGEDOWN:   ExecuteKey(input.PageDown),
+	HIDE:       ExecuteHide,
+	REQUIRE:    ExecuteRequire,
+	SHOW:       ExecuteShow,
+	SET:        ExecuteSet,
+	OUTPUT:     ExecuteOutput,
+	SLEEP:      ExecuteSleep,
+	TYPE:       ExecuteType,
+	CTRL:       ExecuteCtrl,
+	ALT:        ExecuteAlt,
+	ILLEGAL:    ExecuteNoop,
+	SCREENSHOT: ExecuteScreenshot,
 }
 
 // Command represents a command with options and arguments.
@@ -476,6 +478,11 @@ func ExecuteSourceTape(c Command, v *VHS) {
 		fmt.Fprintf(out, "%s %s\n", GrayStyle.Render(displayPath+":"), cmd.Highlight(false))
 		CommandFuncs[cmd.Type](cmd, v)
 	}
+}
+
+// ExecuteScreenshot is a CommandFunc that indicates a new screenshot must be taken.
+func ExecuteScreenshot(c Command, v *VHS) {
+	v.ScreenshotNextFrame(c.Args)
 }
 
 func getTheme(s string) (Theme, error) {

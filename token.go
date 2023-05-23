@@ -61,13 +61,14 @@ const (
 	RIGHT = "RIGHT"
 	UP    = "UP"
 
-	HIDE    = "HIDE"
-	OUTPUT  = "OUTPUT"
-	REQUIRE = "REQUIRE"
-	SET     = "SET"
-	SHOW    = "SHOW"
-	SOURCE  = "SOURCE"
-	TYPE    = "TYPE"
+	HIDE       = "HIDE"
+	OUTPUT     = "OUTPUT"
+	REQUIRE    = "REQUIRE"
+	SET        = "SET"
+	SHOW       = "SHOW"
+	SOURCE     = "SOURCE"
+	TYPE       = "TYPE"
+	SCREENSHOT = "SCREENSHOT"
 
 	SHELL           = "SHELL"
 	FONT_FAMILY     = "FONT_FAMILY" //nolint:revive
@@ -140,6 +141,7 @@ var keywords = map[string]TokenType{
 	"CursorBlink":   CURSOR_BLINK,
 	"true":          BOOLEAN,
 	"false":         BOOLEAN,
+	"Screenshot":    SCREENSHOT,
 }
 
 // IsSetting returns whether a token is a setting.
@@ -161,7 +163,7 @@ func IsCommand(t TokenType) bool {
 	case TYPE, SLEEP,
 		UP, DOWN, RIGHT, LEFT, PAGEUP, PAGEDOWN,
 		ENTER, BACKSPACE, DELETE, TAB,
-		ESCAPE, HOME, INSERT, END, CTRL, SOURCE:
+		ESCAPE, HOME, INSERT, END, CTRL, SOURCE, SCREENSHOT:
 		return true
 	default:
 		return false

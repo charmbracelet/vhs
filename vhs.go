@@ -47,6 +47,7 @@ type Options struct {
 	Video         VideoOptions
 	LoopOffset    float64
 	CursorBlink   bool
+	Screenshot    ScreenshotOptions
 }
 
 const (
@@ -81,6 +82,8 @@ func withSymbolsFallback(font string) string {
 
 // DefaultVHSOptions returns the default set of options to use for the setup function.
 func DefaultVHSOptions() Options {
+	videoOpts := DefaultVideoOptions()
+
 	return Options{
 		FontFamily:    defaultFontFamily,
 		FontSize:      defaultFontSize,
@@ -89,7 +92,8 @@ func DefaultVHSOptions() Options {
 		TypingSpeed:   defaultTypingSpeed,
 		Shell:         Shells[defaultShell],
 		Theme:         DefaultTheme,
-		Video:         DefaultVideoOptions(),
+		Video:         videoOpts,
+		Screenshot:    NewScreenshotOptions(videoOpts.Input),
 		CursorBlink:   defaultCursorBlink,
 	}
 }
@@ -210,6 +214,7 @@ func (vhs *VHS) Render() error {
 	cmds = append(cmds, MakeGIF(vhs.Options.Video))
 	cmds = append(cmds, MakeMP4(vhs.Options.Video))
 	cmds = append(cmds, MakeWebM(vhs.Options.Video))
+	cmds = append(cmds, MakeScreenshots(vhs.Options.Screenshot)...)
 
 	for _, cmd := range cmds {
 		if cmd == nil {
@@ -352,6 +357,11 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 					ch <- fmt.Errorf("error writing text frame: %w", err)
 					continue
 				}
+
+				// Capture current frame and disable frame capturing
+				if vhs.Options.Screenshot.frameCapture {
+					vhs.Options.Screenshot.makeScreenshot(counter)
+				}
 			}
 		}
 	}()
@@ -373,4 +383,9 @@ func (vhs *VHS) PauseRecording() {
 	defer vhs.mutex.Unlock()
 
 	vhs.recording = false
+}
+
+// ScreenshotNextFrame indicates to VHS that screenshot of next frame must be taken.
+func (vhs *VHS) ScreenshotNextFrame(path string) {
+	vhs.Options.Screenshot.enableFrameCapture(path)
 }
