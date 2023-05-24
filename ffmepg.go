@@ -14,7 +14,6 @@ type FilterComplexBuilder struct {
 	termWidth     int
 	termHeight    int
 	prevStageName string
-	input         string
 }
 
 // NewVideoFilterBuilder returns instance of FilterComplexBuilder with video config.
