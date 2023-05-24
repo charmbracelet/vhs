@@ -34,18 +34,17 @@ var Shells = map[string]Shell{
 			"--no-config",
 			"--private",
 			"-C", "function fish_greeting; end",
-			"-C", `function fish_prompt; echo -e "$(set_color 5B56E0)> $(set_color normal)"; end`,
+			"-C", `function fish_prompt; set_color 5B56E0; echo -n "> "; set_color normal; end`,
 		},
 	},
 	powershell: {
 		Command: []string{
 			"powershell",
-			"-Login",
 			"-NoLogo",
 			"-NoExit",
 			"-NoProfile",
 			"-Command",
-			`Set-PSReadLineOption -HistorySaveStyle SaveNothing; Function prompt { Write-Host -ForegroundColor Blue -NoNewLine '>'; return ' ' }`,
+			`Set-PSReadLineOption -HistorySaveStyle SaveNothing; function prompt { Write-Host '>' -NoNewLine -ForegroundColor Blue; return ' ' }`,
 		},
 	},
 	pwsh: {

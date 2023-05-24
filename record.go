@@ -113,7 +113,7 @@ func Record(_ *cobra.Command, _ []string) error {
 	_ = terminal.Close()
 	_ = term.Restore(int(os.Stdin.Fd()), prevState)
 
-	log.Println(inputToTape(tape.String()))
+	fmt.Println(inputToTape(tape.String()))
 	return nil
 }
 
@@ -158,7 +158,11 @@ func inputToTape(input string) string {
 		// characters.
 		if TokenType(lines[i]) == SLEEP {
 			sleep := sleepThreshold * time.Duration(repeat)
-			sanitized.WriteString(fmt.Sprintf("%s %s", TokenType(SLEEP), sleep))
+			if sleep >= time.Minute {
+				sanitized.WriteString(fmt.Sprintf("%s %gs", TokenType(SLEEP), sleep.Seconds()))
+			} else {
+				sanitized.WriteString(fmt.Sprintf("%s %s", TokenType(SLEEP), sleep))
+			}
 		} else if strings.HasPrefix(lines[i], CTRL) {
 			for j := 0; j < repeat; j++ {
 				sanitized.WriteString("Ctrl" + strings.TrimPrefix(lines[i], CTRL) + "\n")

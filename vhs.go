@@ -184,10 +184,6 @@ func (vhs *VHS) terminate() error {
 
 // Cleanup individual frames.
 func (vhs *VHS) Cleanup() error {
-	if !vhs.Options.Video.CleanupFrames {
-		return nil
-	}
-
 	return os.RemoveAll(vhs.Options.Video.Input)
 }
 

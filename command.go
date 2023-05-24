@@ -3,6 +3,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"os"
 	"os/exec"
 	"regexp"
 	"strconv"
@@ -10,6 +12,7 @@ import (
 	"time"
 
 	"github.com/go-rod/rod/lib/input"
+	"github.com/mattn/go-runewidth"
 )
 
 // CommandType is a type that represents a command.
@@ -40,6 +43,7 @@ var CommandTypes = []CommandType{ //nolint: deadcode
 	UP,
 	MATCH_LINE,
 	MATCH_SCREEN,
+	SOURCE,
 }
 
 // String returns the string representation of the command.
@@ -94,7 +98,12 @@ func (c Command) String() string {
 
 // Execute executes a command on a running instance of vhs.
 func (c Command) Execute(v *VHS) {
-	CommandFuncs[c.Type](c, v)
+	if c.Type == SOURCE {
+		ExecuteSourceTape(c, v)
+	} else {
+		CommandFuncs[c.Type](c, v)
+	}
+
 	if v.recording && v.Options.Test.Output != "" {
 		v.SaveOutput()
 	}
@@ -184,11 +193,19 @@ func ExecuteCtrl(c Command, v *VHS) {
 // held down on the running instance of vhs.
 func ExecuteAlt(c Command, v *VHS) {
 	_ = v.Page.Keyboard.Press(input.AltLeft)
-	for _, r := range c.Args {
-		if k, ok := keymap[r]; ok {
-			_ = v.Page.Keyboard.Type(k)
+	if k, ok := keywords[c.Args]; ok {
+		switch k {
+		case ENTER:
+			_ = v.Page.Keyboard.Type(input.Enter)
+		}
+	} else {
+		for _, r := range c.Args {
+			if k, ok := keymap[r]; ok {
+				_ = v.Page.Keyboard.Type(k)
+			}
 		}
 	}
+
 	_ = v.Page.Keyboard.Release(input.AltLeft)
 }
 
@@ -247,8 +264,7 @@ func ExecuteOutput(c Command, v *VHS) {
 	case ".test", ".ascii", ".txt":
 		v.Options.Test.Output = c.Args
 	case ".png":
-		v.Options.Video.Input = c.Args
-		v.Options.Video.CleanupFrames = false
+		v.Options.Video.Output.Frames = c.Args
 	case ".webm":
 		v.Options.Video.Output.WebM = c.Args
 	default:
@@ -419,6 +435,52 @@ func ExecuteSetWindowBarSize(c Command, v *VHS) {
 // ExecuteSetWindowBar sets corner radius
 func ExecuteSetBorderRadius(c Command, v *VHS) {
 	v.Options.Video.BorderRadius, _ = strconv.Atoi(c.Args)
+}
+
+const sourceDisplayMaxLength = 10
+
+// ExecuteSourceTape is a CommandFunc that executes all commands of source tape.
+func ExecuteSourceTape(c Command, v *VHS) {
+	tapePath := c.Args
+	var out io.Writer = os.Stdout
+	if quietFlag {
+		out = io.Discard
+	}
+
+	// read tape file
+	tape, err := os.ReadFile(tapePath)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	l := NewLexer(string(tape))
+	p := NewParser(l)
+
+	cmds := p.Parse()
+
+	errs := []error{}
+	for _, parsedErr := range p.Errors() {
+		errs = append(errs, parsedErr)
+	}
+
+	if len(errs) != 0 {
+		fmt.Fprintln(out, ErrorStyle.Render(fmt.Sprintf("tape %s has errors", tapePath)))
+		printErrors(out, tapePath, errs)
+		return
+	}
+
+	displayPath := runewidth.Truncate(strings.TrimSuffix(tapePath, extension), sourceDisplayMaxLength, "…")
+
+	// Run all commands from the sourced tape file.
+	for _, cmd := range cmds {
+		// Output have to be avoid in order to not overwrite output of the original tape.
+		if cmd.Type == SOURCE || cmd.Type == OUTPUT {
+			continue
+		}
+		fmt.Fprintf(out, "%s %s\n", GrayStyle.Render(displayPath+":"), cmd.Highlight(false))
+		CommandFuncs[cmd.Type](cmd, v)
+	}
 }
 
 func getTheme(s string) (Theme, error) {

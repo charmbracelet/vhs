@@ -106,7 +106,7 @@ func sshSession() (*ssh.Session, error) {
 	if err != nil {
 		return nil, err
 	}
-	kp, err := keygen.NewWithWrite(filepath.Join(dp, "vhs"), nil, keygen.Ed25519)
+	kp, err := keygen.New(filepath.Join(dp, "vhs_ed25519"), keygen.WithKeyType(keygen.Ed25519), keygen.WithWrite())
 	if err != nil {
 		return nil, err
 	}
