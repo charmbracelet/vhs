@@ -25,7 +25,15 @@ const (
 	Indigo        = "#5B56E0"
 )
 
-const defaultColumns = 80
+const (
+	defaultColumns       = 80
+	defaultHeight        = 600
+	defaultMaxColors     = 256
+	defaultPadding       = 60
+	defaultWindowBarSize = 30
+	defaultPlaybackSpeed = 1.0
+	defaultWidth         = 1200
+)
 
 // Styles for syntax highlighting
 var (
@@ -47,3 +55,31 @@ var (
 			Padding(0, 1).
 			Width(defaultColumns)
 )
+
+type StyleOptions struct {
+	Width           int
+	Height          int
+	Padding         int
+	BackgroundColor string
+	MarginFill      string
+	Margin          int
+	WindowBar       string
+	WindowBarSize   int
+	WindowBarColor  string
+	BorderRadius    int
+}
+
+func DefaultStyleOptions() *StyleOptions {
+	return &StyleOptions{
+		Width:           defaultWidth,
+		Height:          defaultHeight,
+		Padding:         defaultPadding,
+		MarginFill:      DefaultTheme.Background,
+		Margin:          0,
+		WindowBar:       "",
+		WindowBarSize:   defaultWindowBarSize,
+		WindowBarColor:  DefaultTheme.Background,
+		BorderRadius:    0,
+		BackgroundColor: DefaultTheme.Background,
+	}
+}

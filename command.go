@@ -309,12 +309,12 @@ func ExecuteSetFontFamily(c Command, v *VHS) {
 
 // ExecuteSetHeight applies the height on the vhs.
 func ExecuteSetHeight(c Command, v *VHS) {
-	v.Options.Video.Height, _ = strconv.Atoi(c.Args)
+	v.Options.Video.Style.Height, _ = strconv.Atoi(c.Args)
 }
 
 // ExecuteSetWidth applies the width on the vhs.
 func ExecuteSetWidth(c Command, v *VHS) {
-	v.Options.Video.Width, _ = strconv.Atoi(c.Args)
+	v.Options.Video.Style.Width, _ = strconv.Atoi(c.Args)
 }
 
 // ExecuteSetShell applies the shell on the vhs.
@@ -355,8 +355,8 @@ func ExecuteSetTheme(c Command, v *VHS) {
 
 	bts, _ := json.Marshal(v.Options.Theme)
 	_, _ = v.Page.Eval(fmt.Sprintf("() => term.options.theme = %s", string(bts)))
-	v.Options.Video.BackgroundColor = v.Options.Theme.Background
-	v.Options.Video.WindowBarColor = v.Options.Theme.Background
+	v.Options.Video.Style.BackgroundColor = v.Options.Theme.Background
+	v.Options.Video.Style.WindowBarColor = v.Options.Theme.Background
 }
 
 // ExecuteSetTypingSpeed applies the default typing speed on the vhs.
@@ -370,7 +370,7 @@ func ExecuteSetTypingSpeed(c Command, v *VHS) {
 
 // ExecuteSetPadding applies the padding on the vhs.
 func ExecuteSetPadding(c Command, v *VHS) {
-	v.Options.Video.Padding, _ = strconv.Atoi(c.Args)
+	v.Options.Video.Style.Padding, _ = strconv.Atoi(c.Args)
 }
 
 // ExecuteSetFramerate applies the framerate on the vhs.
@@ -402,27 +402,27 @@ func ExecuteLoopOffset(c Command, v *VHS) {
 
 // ExecuteSetMarginFill sets vhs margin fill
 func ExecuteSetMarginFill(c Command, v *VHS) {
-	v.Options.Video.MarginFill = c.Args
+	v.Options.Video.Style.MarginFill = c.Args
 }
 
 // ExecuteSetMargin sets vhs margin size
 func ExecuteSetMargin(c Command, v *VHS) {
-	v.Options.Video.Margin, _ = strconv.Atoi(c.Args)
+	v.Options.Video.Style.Margin, _ = strconv.Atoi(c.Args)
 }
 
 // ExecuteSetWindowBar sets window bar type
 func ExecuteSetWindowBar(c Command, v *VHS) {
-	v.Options.Video.WindowBar = c.Args
+	v.Options.Video.Style.WindowBar = c.Args
 }
 
 // ExecuteSetWindowBar sets window bar size
 func ExecuteSetWindowBarSize(c Command, v *VHS) {
-	v.Options.Video.WindowBarSize, _ = strconv.Atoi(c.Args)
+	v.Options.Video.Style.WindowBarSize, _ = strconv.Atoi(c.Args)
 }
 
 // ExecuteSetWindowBar sets corner radius
 func ExecuteSetBorderRadius(c Command, v *VHS) {
-	v.Options.Video.BorderRadius, _ = strconv.Atoi(c.Args)
+	v.Options.Video.Style.BorderRadius, _ = strconv.Atoi(c.Args)
 }
 
 // ExecuteSetCursorBlink sets cursor blinking

@@ -49,32 +49,17 @@ type VideoOutputs struct {
 
 // VideoOptions is the set of options for converting frames to a GIF.
 type VideoOptions struct {
-	Framerate       int
-	PlaybackSpeed   float64
-	Input           string
-	MaxColors       int
-	Output          VideoOutputs
-	Width           int
-	Height          int
-	Padding         int
-	BackgroundColor string
-	StartingFrame   int
-	MarginFill      string
-	Margin          int
-	WindowBar       string
-	WindowBarSize   int
-	WindowBarColor  string
-	BorderRadius    int
+	Framerate     int
+	PlaybackSpeed float64
+	Input         string
+	MaxColors     int
+	Output        VideoOutputs
+	StartingFrame int
+	Style         *StyleOptions
 }
 
 const (
 	defaultFramerate     = 50
-	defaultHeight        = 600
-	defaultMaxColors     = 256
-	defaultPadding       = 60
-	defaultWindowBarSize = 30
-	defaultPlaybackSpeed = 1.0
-	defaultWidth         = 1200
 	defaultStartingFrame = 1
 )
 
@@ -82,22 +67,12 @@ const (
 // to a GIF, which are used if they are not overridden.
 func DefaultVideoOptions() VideoOptions {
 	return VideoOptions{
-		MarginFill:      DefaultTheme.Background,
-		Margin:          0,
-		WindowBar:       "",
-		WindowBarSize:   defaultWindowBarSize,
-		WindowBarColor:  DefaultTheme.Background,
-		BorderRadius:    0,
-		Framerate:       defaultFramerate,
-		Input:           randomDir(),
-		MaxColors:       defaultMaxColors,
-		Output:          VideoOutputs{GIF: "", WebM: "", MP4: "", Frames: ""},
-		Width:           defaultWidth,
-		Height:          defaultHeight,
-		Padding:         defaultPadding,
-		PlaybackSpeed:   defaultPlaybackSpeed,
-		BackgroundColor: DefaultTheme.Background,
-		StartingFrame:   defaultStartingFrame,
+		Framerate:     defaultFramerate,
+		Input:         randomDir(),
+		MaxColors:     defaultMaxColors,
+		Output:        VideoOutputs{GIF: "", WebM: "", MP4: "", Frames: ""},
+		PlaybackSpeed: defaultPlaybackSpeed,
+		StartingFrame: defaultStartingFrame,
 	}
 }
 
@@ -123,14 +98,14 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 	streamCounter := 2
 
 	// Compute dimensions of terminal
-	termWidth := opts.Width
-	termHeight := opts.Height
-	if opts.MarginFill != "" {
-		termWidth = termWidth - double(opts.Margin)
-		termHeight = termHeight - double(opts.Margin)
+	termWidth := opts.Style.Width
+	termHeight := opts.Style.Height
+	if opts.Style.MarginFill != "" {
+		termWidth = termWidth - double(opts.Style.Margin)
+		termHeight = termHeight - double(opts.Style.Margin)
 	}
-	if opts.WindowBar != "" {
-		termHeight = termHeight - opts.WindowBarSize
+	if opts.Style.WindowBar != "" {
+		termHeight = termHeight - opts.Style.WindowBarSize
 	}
 
 	// Input frame options, used no matter what
@@ -148,32 +123,32 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 
 	// Add margin stream if one is provided
 	var marginStream int
-	if opts.MarginFill != "" {
-		if marginFillIsColor(opts.MarginFill) {
+	if opts.Style.MarginFill != "" {
+		if marginFillIsColor(opts.Style.MarginFill) {
 			// Create plain color stream
 			args = append(args,
 				"-f", "lavfi",
 				"-i",
 				fmt.Sprintf(
 					"color=%s:s=%dx%d",
-					opts.MarginFill,
-					opts.Width,
-					opts.Height,
+					opts.Style.MarginFill,
+					opts.Style.Width,
+					opts.Style.Height,
 				),
 			)
 			marginStream = streamCounter
 			streamCounter++
 		} else {
 			// Check for existence first.
-			_, err := os.Stat(opts.MarginFill)
+			_, err := os.Stat(opts.Style.MarginFill)
 			if err != nil {
-				fmt.Println(ErrorStyle.Render("Unable to read margin file: "), opts.MarginFill)
+				fmt.Println(ErrorStyle.Render("Unable to read margin file: "), opts.Style.MarginFill)
 			}
 
 			// Add image stream
 			args = append(args,
 				"-loop", "1",
-				"-i", opts.MarginFill,
+				"-i", opts.Style.MarginFill,
 			)
 			marginStream = streamCounter
 			streamCounter++
@@ -182,9 +157,9 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 
 	// Create and add a window bar stream if necessary
 	var barStream int
-	if opts.WindowBar != "" {
+	if opts.Style.WindowBar != "" {
 		barPath := filepath.Join(opts.Input, "bar.png")
-		MakeWindowBar(termWidth, termHeight, opts, barPath)
+		MakeWindowBar(termWidth, termHeight, *opts.Style, barPath)
 
 		args = append(args,
 			"-i", barPath,
@@ -195,12 +170,12 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 
 	// Create and add rounded-corner mask if necessary
 	var cornerMaskStream int
-	if opts.BorderRadius != 0 {
+	if opts.Style.BorderRadius != 0 {
 		borderMaskPath := filepath.Join(opts.Input, "mask.png")
-		if opts.WindowBar != "" {
-			MakeBorderRadiusMask(termWidth, termHeight+opts.WindowBarSize, opts.BorderRadius, borderMaskPath)
+		if opts.Style.WindowBar != "" {
+			MakeBorderRadiusMask(termWidth, termHeight+opts.Style.WindowBarSize, opts.Style.BorderRadius, borderMaskPath)
 		} else {
-			MakeBorderRadiusMask(termWidth, termHeight, opts.BorderRadius, borderMaskPath)
+			MakeBorderRadiusMask(termWidth, termHeight, opts.Style.BorderRadius, borderMaskPath)
 		}
 
 		args = append(args,
@@ -219,28 +194,28 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 		[speed]pad=%d:%d:(ow-iw)/2:(oh-ih)/2:%s[padded];
 		[padded]fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s[padded]
 		`,
-			termWidth-double(opts.Padding),
-			termHeight-double(opts.Padding),
+			termWidth-double(opts.Style.Padding),
+			termHeight-double(opts.Style.Padding),
 
 			opts.Framerate,
 			opts.PlaybackSpeed,
 
 			termWidth,
 			termHeight,
-			opts.BackgroundColor,
+			opts.Style.BackgroundColor,
 
-			opts.Padding,
-			opts.Padding,
-			opts.Padding,
-			opts.Padding,
-			opts.BackgroundColor,
+			opts.Style.Padding,
+			opts.Style.Padding,
+			opts.Style.Padding,
+			opts.Style.Padding,
+			opts.Style.BackgroundColor,
 		),
 	)
 	prevStageName = "padded"
 
 	// Add a bar to the terminal and mask the output.
 	// This allows us to round the corners of the terminal.
-	if opts.WindowBar != "" {
+	if opts.Style.WindowBar != "" {
 		filterCode.WriteString(";")
 		filterCode.WriteString(
 			fmt.Sprintf(`
@@ -249,13 +224,13 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 			`,
 				barStream,
 				prevStageName,
-				opts.WindowBarSize,
+				opts.Style.WindowBarSize,
 			),
 		)
 		prevStageName = "withbar"
 	}
 
-	if opts.BorderRadius != 0 {
+	if opts.Style.BorderRadius != 0 {
 		filterCode.WriteString(";")
 		filterCode.WriteString(
 			fmt.Sprintf(`
@@ -270,7 +245,7 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 	}
 
 	// Overlay terminal on margin
-	if opts.MarginFill != "" {
+	if opts.Style.MarginFill != "" {
 		// ffmpeg will complain if the final filter ends with a semicolon,
 		// so we add one BEFORE we start adding filters.
 		filterCode.WriteString(";")
@@ -280,8 +255,8 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 			[bg][%s]overlay=(W-w)/2:(H-h)/2:shortest=1[withbg]
 			`,
 				marginStream,
-				opts.Width,
-				opts.Height,
+				opts.Style.Width,
+				opts.Style.Height,
 				prevStageName,
 			),
 		)
@@ -325,7 +300,7 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 	return args
 }
 
-// MakeGIF takes a list of images (as frames) and converts them to a GIF.
+// MakeGIF takes a list of images (as frames) and converts them to a GIF. func MakeGIF(opts VideoOptions) *exec.Cmd {
 func MakeGIF(opts VideoOptions) *exec.Cmd {
 	targetFile := opts.Output.GIF
 
@@ -337,6 +312,8 @@ func MakeGIF(opts VideoOptions) *exec.Cmd {
 
 	log.Println(GrayStyle.Render("Creating " + opts.Output.GIF + "..."))
 	ensureDir(opts.Output.GIF)
+
+	fmt.Println(buildFFopts(opts, targetFile))
 
 	//nolint:gosec
 	return exec.Command(

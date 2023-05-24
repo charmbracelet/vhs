@@ -48,6 +48,7 @@ type Options struct {
 	LoopOffset    float64
 	CursorBlink   bool
 	Screenshot    ScreenshotOptions
+	Style         StyleOptions
 }
 
 const (
@@ -82,7 +83,10 @@ func withSymbolsFallback(font string) string {
 
 // DefaultVHSOptions returns the default set of options to use for the setup function.
 func DefaultVHSOptions() Options {
-	videoOpts := DefaultVideoOptions()
+	style := DefaultStyleOptions()
+	video := DefaultVideoOptions()
+	video.Style = style
+	screenshot := NewScreenshotOptions(video.Input, style)
 
 	return Options{
 		FontFamily:    defaultFontFamily,
@@ -92,9 +96,9 @@ func DefaultVHSOptions() Options {
 		TypingSpeed:   defaultTypingSpeed,
 		Shell:         Shells[defaultShell],
 		Theme:         DefaultTheme,
-		Video:         videoOpts,
-		Screenshot:    NewScreenshotOptions(videoOpts.Input),
 		CursorBlink:   defaultCursorBlink,
+		Video:         video,
+		Screenshot:    screenshot,
 	}
 }
 
@@ -148,17 +152,17 @@ func (vhs *VHS) Start() error {
 func (vhs *VHS) Setup() {
 	// Set Viewport to the correct size, accounting for the padding that will be
 	// added during the render.
-	padding := vhs.Options.Video.Padding
+	padding := vhs.Options.Video.Style.Padding
 	margin := 0
-	if vhs.Options.Video.MarginFill != "" {
-		margin = vhs.Options.Video.Margin
+	if vhs.Options.Video.Style.MarginFill != "" {
+		margin = vhs.Options.Video.Style.Margin
 	}
 	bar := 0
-	if vhs.Options.Video.WindowBar != "" {
-		bar = vhs.Options.Video.WindowBarSize
+	if vhs.Options.Video.Style.WindowBar != "" {
+		bar = vhs.Options.Video.Style.WindowBarSize
 	}
-	width := vhs.Options.Video.Width - double(padding) - double(margin)
-	height := vhs.Options.Video.Height - double(padding) - double(margin) - bar
+	width := vhs.Options.Video.Style.Width - double(padding) - double(margin)
+	height := vhs.Options.Video.Style.Height - double(padding) - double(margin) - bar
 	vhs.Page = vhs.Page.MustSetViewport(width, height, 0, false)
 
 	// Let's wait until we can access the window.term variable.
@@ -199,7 +203,8 @@ func (vhs *VHS) terminate() error {
 
 // Cleanup individual frames.
 func (vhs *VHS) Cleanup() error {
-	return os.RemoveAll(vhs.Options.Video.Input)
+	// return os.RemoveAll(vhs.Options.Video.Input)
+	return nil
 }
 
 // Render starts rendering the individual frames into a video.
