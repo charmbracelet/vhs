@@ -123,13 +123,10 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 	switch filepath.Ext(targetFile) {
 	case gif:
 		filterBuilder = filterBuilder.WithGIF()
-		break
 	case webm:
 		streamBuilder = streamBuilder.WithWebm()
-		break
 	case mp4:
 		streamBuilder = streamBuilder.WithMP4()
-		break
 	}
 
 	args = append(args, streamBuilder.Build()...)
