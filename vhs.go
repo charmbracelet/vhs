@@ -203,8 +203,7 @@ func (vhs *VHS) terminate() error {
 
 // Cleanup individual frames.
 func (vhs *VHS) Cleanup() error {
-	// return os.RemoveAll(vhs.Options.Video.Input)
-	return nil
+	return os.RemoveAll(vhs.Options.Video.Input)
 }
 
 // Render starts rendering the individual frames into a video.
@@ -392,5 +391,8 @@ func (vhs *VHS) PauseRecording() {
 
 // ScreenshotNextFrame indicates to VHS that screenshot of next frame must be taken.
 func (vhs *VHS) ScreenshotNextFrame(path string) {
+	vhs.mutex.Lock()
+	defer vhs.mutex.Unlock()
+
 	vhs.Options.Screenshot.enableFrameCapture(path)
 }

@@ -91,27 +91,15 @@ func ensureDir(output string) {
 
 // buildFFopts assembles an ffmpeg command from some VideoOptions
 func buildFFopts(opts VideoOptions, targetFile string) []string {
-	// Variables used for building ffmpeg command
-	var filterCode strings.Builder
 	var args []string
-	var prevStageName string
 	streamCounter := 2
 
-	// Compute dimensions of terminal
-	termWidth := opts.Style.Width
-	termHeight := opts.Style.Height
-	if opts.Style.MarginFill != "" {
-		termWidth = termWidth - double(opts.Style.Margin)
-		termHeight = termHeight - double(opts.Style.Margin)
-	}
-	if opts.Style.WindowBar != "" {
-		termHeight = termHeight - opts.Style.WindowBarSize
-	}
+	streamBuilder := NewStreamBuilder(streamCounter, opts.Style)
 
 	// Input frame options, used no matter what
 	// Stream 0: text frames
 	// Stream 1: cursor frames
-	args = append(args,
+	streamBuilder.args = append(streamBuilder.args,
 		"-y",
 		"-r", fmt.Sprint(opts.Framerate),
 		"-start_number", fmt.Sprint(opts.StartingFrame),
@@ -121,186 +109,37 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 		"-i", filepath.Join(opts.Input, cursorFrameFormat),
 	)
 
-	// Add margin stream if one is provided
-	var marginStream int
-	if opts.Style.MarginFill != "" {
-		if marginFillIsColor(opts.Style.MarginFill) {
-			// Create plain color stream
-			args = append(args,
-				"-f", "lavfi",
-				"-i",
-				fmt.Sprintf(
-					"color=%s:s=%dx%d",
-					opts.Style.MarginFill,
-					opts.Style.Width,
-					opts.Style.Height,
-				),
-			)
-			marginStream = streamCounter
-			streamCounter++
-		} else {
-			// Check for existence first.
-			_, err := os.Stat(opts.Style.MarginFill)
-			if err != nil {
-				fmt.Println(ErrorStyle.Render("Unable to read margin file: "), opts.Style.MarginFill)
-			}
+	streamBuilder = streamBuilder.
+		WithMargin().
+		WithBar().
+		WithCorner()
 
-			// Add image stream
-			args = append(args,
-				"-loop", "1",
-				"-i", opts.Style.MarginFill,
-			)
-			marginStream = streamCounter
-			streamCounter++
-		}
-	}
-
-	// Create and add a window bar stream if necessary
-	var barStream int
-	if opts.Style.WindowBar != "" {
-		barPath := filepath.Join(opts.Input, "bar.png")
-		MakeWindowBar(termWidth, termHeight, *opts.Style, barPath)
-
-		args = append(args,
-			"-i", barPath,
-		)
-		barStream = streamCounter
-		streamCounter++
-	}
-
-	// Create and add rounded-corner mask if necessary
-	var cornerMaskStream int
-	if opts.Style.BorderRadius != 0 {
-		borderMaskPath := filepath.Join(opts.Input, "mask.png")
-		if opts.Style.WindowBar != "" {
-			MakeBorderRadiusMask(termWidth, termHeight+opts.Style.WindowBarSize, opts.Style.BorderRadius, borderMaskPath)
-		} else {
-			MakeBorderRadiusMask(termWidth, termHeight, opts.Style.BorderRadius, borderMaskPath)
-		}
-
-		args = append(args,
-			"-i", borderMaskPath,
-		)
-		cornerMaskStream = streamCounter
-		//streamCounter++
-	}
-
-	// The following filters are always used
-	filterCode.WriteString(
-		fmt.Sprintf(`
-		[0][1]overlay[merged];
-		[merged]scale=%d:%d:force_original_aspect_ratio=1[scaled];
-		[scaled]fps=%d,setpts=PTS/%f[speed];
-		[speed]pad=%d:%d:(ow-iw)/2:(oh-ih)/2:%s[padded];
-		[padded]fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s[padded]
-		`,
-			termWidth-double(opts.Style.Padding),
-			termHeight-double(opts.Style.Padding),
-
-			opts.Framerate,
-			opts.PlaybackSpeed,
-
-			termWidth,
-			termHeight,
-			opts.Style.BackgroundColor,
-
-			opts.Style.Padding,
-			opts.Style.Padding,
-			opts.Style.Padding,
-			opts.Style.Padding,
-			opts.Style.BackgroundColor,
-		),
-	)
-	prevStageName = "padded"
-
-	// Add a bar to the terminal and mask the output.
-	// This allows us to round the corners of the terminal.
-	if opts.Style.WindowBar != "" {
-		filterCode.WriteString(";")
-		filterCode.WriteString(
-			fmt.Sprintf(`
-			[%d]loop=-1[loopbar];
-			[loopbar][%s]overlay=0:%d[withbar]
-			`,
-				barStream,
-				prevStageName,
-				opts.Style.WindowBarSize,
-			),
-		)
-		prevStageName = "withbar"
-	}
-
-	if opts.Style.BorderRadius != 0 {
-		filterCode.WriteString(";")
-		filterCode.WriteString(
-			fmt.Sprintf(`
-				[%d]loop=-1[loopmask];
-				[%s][loopmask]alphamerge[rounded]
-				`,
-				cornerMaskStream,
-				prevStageName,
-			),
-		)
-		prevStageName = "rounded"
-	}
-
-	// Overlay terminal on margin
-	if opts.Style.MarginFill != "" {
-		// ffmpeg will complain if the final filter ends with a semicolon,
-		// so we add one BEFORE we start adding filters.
-		filterCode.WriteString(";")
-		filterCode.WriteString(
-			fmt.Sprintf(`
-			[%d]scale=%d:%d[bg];
-			[bg][%s]overlay=(W-w)/2:(H-h)/2:shortest=1[withbg]
-			`,
-				marginStream,
-				opts.Style.Width,
-				opts.Style.Height,
-				prevStageName,
-			),
-		)
-		prevStageName = "withbg"
-	}
+	filterBuilder := NewVideoFilterBuilder(&opts).
+		WithWindowBar(streamBuilder.barStream).
+		WithBorderRadius(streamBuilder.cornerStream).
+		WithMarginFill(streamBuilder.marginStream)
 
 	// Format-specific options
-	if filepath.Ext(targetFile) == gif {
-		filterCode.WriteString(";")
-		filterCode.WriteString(
-			fmt.Sprintf(`
-			[%s]split[plt_a][plt_b];
-			[plt_a]palettegen=max_colors=256[plt];
-			[plt_b][plt]paletteuse[palette]`,
-				prevStageName,
-			),
-		)
-		prevStageName = "palette"
-	} else if filepath.Ext(targetFile) == webm {
-		args = append(args,
-			"-pix_fmt", "yuv420p",
-			"-an",
-			"-crf", "30",
-			"-b:v", "0",
-		)
-	} else if filepath.Ext(targetFile) == mp4 {
-		args = append(args,
-			"-vcodec", "libx264",
-			"-pix_fmt", "yuv420p",
-			"-an",
-			"-crf", "20",
-		)
+	switch filepath.Ext(targetFile) {
+	case gif:
+		filterBuilder = filterBuilder.WithGIF()
+		break
+	case webm:
+		streamBuilder = streamBuilder.WithWebm()
+		break
+	case mp4:
+		streamBuilder = streamBuilder.WithMP4()
+		break
 	}
 
-	args = append(args,
-		"-filter_complex", filterCode.String(),
-		"-map", "["+prevStageName+"]",
-		targetFile,
-	)
+	args = append(args, streamBuilder.Build()...)
+	args = append(args, filterBuilder.Build()...)
+	args = append(args, targetFile)
 
 	return args
 }
 
-// MakeGIF takes a list of images (as frames) and converts them to a GIF. func MakeGIF(opts VideoOptions) *exec.Cmd {
+// MakeGIF takes a list of images (as frames) and converts them to a GIF.
 func MakeGIF(opts VideoOptions) *exec.Cmd {
 	targetFile := opts.Output.GIF
 
@@ -312,8 +151,6 @@ func MakeGIF(opts VideoOptions) *exec.Cmd {
 
 	log.Println(GrayStyle.Render("Creating " + opts.Output.GIF + "..."))
 	ensureDir(opts.Output.GIF)
-
-	fmt.Println(buildFFopts(opts, targetFile))
 
 	//nolint:gosec
 	return exec.Command(

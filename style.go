@@ -1,6 +1,12 @@
 package main
 
-import "github.com/charmbracelet/lipgloss"
+import (
+	"fmt"
+	"os"
+	"strings"
+
+	"github.com/charmbracelet/lipgloss"
+)
 
 // Theme colors.
 const (
@@ -82,4 +88,134 @@ func DefaultStyleOptions() *StyleOptions {
 		BorderRadius:    0,
 		BackgroundColor: DefaultTheme.Background,
 	}
+}
+
+func buildFFMarginFilter(opts *StyleOptions) []string {
+	var filter []string
+
+	if opts.MarginFill != "" {
+		if marginFillIsColor(opts.MarginFill) {
+			// Create plain color stream
+			filter = append(filter,
+				"-f", "lavfi",
+				"-i",
+				fmt.Sprintf(
+					"color=%s:s=%dx%d",
+					opts.MarginFill,
+					opts.Width,
+					opts.Height,
+				),
+			)
+		} else {
+			// Check for existence first.
+			_, err := os.Stat(opts.MarginFill)
+			if err != nil {
+				fmt.Println(ErrorStyle.Render("Unable to read margin file: "), opts.MarginFill)
+			}
+
+			// Add image stream
+			filter = append(filter,
+				"-loop", "1",
+				"-i", opts.MarginFill,
+			)
+		}
+	}
+
+	return filter
+}
+
+func buildFFBarFilter(opts *StyleOptions, termWidth, termHeight int, barPath string) []string {
+	var filter []string
+
+	if opts.WindowBar != "" {
+		MakeWindowBar(termWidth, termHeight, *opts, barPath)
+
+		filter = append(filter,
+			"-i", barPath,
+		)
+	}
+
+	return filter
+}
+
+func buildFFCornerMarkFilter(opts *StyleOptions, maskPath string, termWidth, termHeight int) []string {
+	var filter []string
+
+	if opts.BorderRadius != 0 {
+		if opts.WindowBar != "" {
+			MakeBorderRadiusMask(termWidth, termHeight+opts.WindowBarSize, opts.BorderRadius, maskPath)
+		} else {
+			MakeBorderRadiusMask(termWidth, termHeight, opts.BorderRadius, maskPath)
+		}
+
+		filter = append(filter,
+			"-i", maskPath,
+		)
+	}
+
+	return filter
+}
+
+func addWindowBarFilterCode(filterCode *strings.Builder, opts *StyleOptions, barStream int, prevStageName string) (*strings.Builder, string) {
+	if opts.WindowBar != "" {
+		// if filterCode.Len() > 0 {
+		// filterCode.WriteString(";")
+		// }
+
+		filterCode.WriteString(";")
+		filterCode.WriteString(
+			fmt.Sprintf(`
+			[%d]loop=-1[loopbar];
+			[loopbar][%s]overlay=0:%d[withbar]
+			`,
+				barStream,
+				prevStageName,
+				opts.WindowBarSize,
+			),
+		)
+
+		prevStageName = "withbar"
+	}
+
+	return filterCode, prevStageName
+}
+
+func addBorderRadiusFilterCode(filterCode *strings.Builder, opts *StyleOptions, streamId int, prevStageName string) (*strings.Builder, string) {
+	if opts.BorderRadius != 0 {
+		filterCode.WriteString(";")
+		filterCode.WriteString(
+			fmt.Sprintf(`
+				[%d]loop=-1[loopmask];
+				[%s][loopmask]alphamerge[rounded]
+				`,
+				streamId,
+				prevStageName,
+			),
+		)
+		prevStageName = "rounded"
+	}
+
+	return filterCode, prevStageName
+}
+
+func addMarginFillFilterCode(filterCode *strings.Builder, opts *StyleOptions, streamId int, prevStageName string) (*strings.Builder, string) {
+	// Overlay terminal on margin
+	if opts.MarginFill != "" {
+		// ffmpeg will complain if the final filter ends with a semicolon,
+		// so we add one BEFORE we start adding filters.
+		filterCode.WriteString(";")
+		filterCode.WriteString(
+			fmt.Sprintf(`
+			[%d]scale=%d:%d[bg];
+			[bg][%s]overlay=(W-w)/2:(H-h)/2:shortest=1[withbg]
+			`,
+				streamId,
+				opts.Width,
+				opts.Height,
+				prevStageName,
+			),
+		)
+		prevStageName = "withbg"
+	}
+	return filterCode, prevStageName
 }
