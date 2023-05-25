@@ -52,6 +52,7 @@ func (v *VHS) SaveOutput() {
 	_, _ = file.WriteString(separator + "\n")
 }
 
+// Buffer returns the current buffer.
 func (v *VHS) Buffer() ([]string, error) {
 	// Get the current buffer.
 	buf, err := v.Page.Eval("() => Array(term.rows).fill(0).map((e, i) => term.buffer.active.getLine(i).translateToString().trimEnd())")
