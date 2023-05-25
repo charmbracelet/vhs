@@ -69,10 +69,6 @@ func (p *Parser) parseCommand() Command {
 		return p.parseRequire()
 	case SHOW:
 		return p.parseShow()
-	case MATCH_LINE:
-		return p.parseMatchLine()
-	case MATCH_SCREEN:
-		return p.parseMatchScreen()
 	case WAIT:
 		return p.parseWait()
 	case SOURCE:
@@ -119,43 +115,6 @@ func (p *Parser) parseWait() Command {
 
 	cmd.Args += " " + p.cur.Literal
 
-	return cmd
-}
-
-func (p *Parser) parseMatchLine() Command {
-	cmd := Command{Type: MATCH_LINE}
-
-	if p.peek.Type != STRING {
-		p.errors = append(p.errors, NewError(p.peek, p.cur.Literal+" expects string"))
-		return cmd
-	}
-
-	p.nextToken()
-	if _, err := regexp.Compile(p.cur.Literal); err != nil {
-		p.errors = append(p.errors, NewError(p.cur, fmt.Sprintf("Invalid regular expression '%s': %v", p.cur.Literal, err)))
-		return cmd
-	}
-
-	cmd.Args = p.cur.Literal
-
-	return cmd
-}
-
-func (p *Parser) parseMatchScreen() Command {
-	cmd := Command{Type: MATCH_SCREEN}
-
-	if p.peek.Type != STRING {
-		p.errors = append(p.errors, NewError(p.peek, p.cur.Literal+" expects string"))
-		return cmd
-	}
-
-	p.nextToken()
-	if _, err := regexp.Compile(p.cur.Literal); err != nil {
-		p.errors = append(p.errors, NewError(p.cur, fmt.Sprintf("Invalid regular expression '%s': %v", p.cur.Literal, err)))
-		return cmd
-	}
-
-	cmd.Args = p.cur.Literal
 	return cmd
 }
 

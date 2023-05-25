@@ -41,8 +41,7 @@ var CommandTypes = []CommandType{ //nolint: deadcode
 	TAB,
 	TYPE,
 	UP,
-	MATCH_LINE,
-	MATCH_SCREEN,
+	WAIT,
 	SOURCE,
 }
 
@@ -55,29 +54,28 @@ type CommandFunc func(c Command, v *VHS)
 
 // CommandFuncs maps command types to their executable functions.
 var CommandFuncs = map[CommandType]CommandFunc{
-	BACKSPACE:    ExecuteKey(input.Backspace),
-	DOWN:         ExecuteKey(input.ArrowDown),
-	ENTER:        ExecuteKey(input.Enter),
-	LEFT:         ExecuteKey(input.ArrowLeft),
-	RIGHT:        ExecuteKey(input.ArrowRight),
-	SPACE:        ExecuteKey(input.Space),
-	UP:           ExecuteKey(input.ArrowUp),
-	TAB:          ExecuteKey(input.Tab),
-	ESCAPE:       ExecuteKey(input.Escape),
-	PAGEUP:       ExecuteKey(input.PageUp),
-	PAGEDOWN:     ExecuteKey(input.PageDown),
-	HIDE:         ExecuteHide,
-	REQUIRE:      ExecuteRequire,
-	SHOW:         ExecuteShow,
-	SET:          ExecuteSet,
-	OUTPUT:       ExecuteOutput,
-	SLEEP:        ExecuteSleep,
-	TYPE:         ExecuteType,
-	CTRL:         ExecuteCtrl,
-	ALT:          ExecuteAlt,
-	ILLEGAL:      ExecuteNoop,
-	MATCH_LINE:   ExecuteMatchLine,
-	MATCH_SCREEN: ExecuteMatchScreen,
+	BACKSPACE: ExecuteKey(input.Backspace),
+	DOWN:      ExecuteKey(input.ArrowDown),
+	ENTER:     ExecuteKey(input.Enter),
+	LEFT:      ExecuteKey(input.ArrowLeft),
+	RIGHT:     ExecuteKey(input.ArrowRight),
+	SPACE:     ExecuteKey(input.Space),
+	UP:        ExecuteKey(input.ArrowUp),
+	TAB:       ExecuteKey(input.Tab),
+	ESCAPE:    ExecuteKey(input.Escape),
+	PAGEUP:    ExecuteKey(input.PageUp),
+	PAGEDOWN:  ExecuteKey(input.PageDown),
+	HIDE:      ExecuteHide,
+	REQUIRE:   ExecuteRequire,
+	SHOW:      ExecuteShow,
+	SET:       ExecuteSet,
+	OUTPUT:    ExecuteOutput,
+	SLEEP:     ExecuteSleep,
+	TYPE:      ExecuteType,
+	CTRL:      ExecuteCtrl,
+	ALT:       ExecuteAlt,
+	ILLEGAL:   ExecuteNoop,
+	WAIT:      ExecuteWait,
 }
 
 // Command represents a command with options and arguments.
@@ -195,46 +193,6 @@ func ExecuteWait(c Command, v *VHS) {
 			continue
 		case <-timeoutT.C:
 			panic(fmt.Errorf("timeout waiting for %q", c.Args))
-		}
-	}
-}
-
-// ExecuteMatchLine is a CommandFunc that waits for the current
-// line to match the given regex.
-func ExecuteMatchLine(c Command, v *VHS) {
-	rx := regexp.MustCompile(c.Args)
-
-	t := time.NewTicker(10 * time.Millisecond)
-	defer t.Stop()
-
-	for range t.C {
-		line, err := v.CurrentLine()
-		if err != nil {
-			return
-		}
-
-		if rx.MatchString(line) {
-			return
-		}
-	}
-}
-
-// ExecuteMatchScreen is a CommandFunc that waits for the given regex
-// to match any line on the screen.
-func ExecuteMatchScreen(c Command, v *VHS) {
-	rx := regexp.MustCompile(c.Args)
-
-	t := time.NewTicker(10 * time.Millisecond)
-	defer t.Stop()
-
-	for range t.C {
-		lines, err := v.Buffer()
-		if err != nil {
-			return
-		}
-
-		if rx.MatchString(strings.Join(lines, "\n")) {
-			return
 		}
 	}
 }

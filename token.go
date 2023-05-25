@@ -84,9 +84,9 @@ const (
 	WINDOW_BAR      = "WINDOW_BAR"      //nolint:revive
 	WINDOW_BAR_SIZE = "WINDOW_BAR_SIZE" //nolint:revive
 	BORDER_RADIUS   = "CORNER_RADIUS"   //nolint:revive
-	MATCH_LINE      = "MATCH_LINE"      //nolint:revive
-	MATCH_SCREEN    = "MATCH_SCREEN"    //nolint:revive
 	WAIT            = "WAIT"            //nolint:revive
+	WAIT_TIMEOUT    = "WAIT_TIMEOUT"    //nolint:revive
+	WAIT_PATTERN    = "WAIT_PATTERN"    //nolint:revive
 )
 
 var keywords = map[string]TokenType{
@@ -134,8 +134,8 @@ var keywords = map[string]TokenType{
 	"Theme":         THEME,
 	"Width":         WIDTH,
 	"LoopOffset":    LOOP_OFFSET,
-	"MatchLine":     MATCH_LINE,
-	"MatchScreen":   MATCH_SCREEN,
+	"WaitTimeout":   WAIT_TIMEOUT,
+	"WaitPattern":   WAIT_PATTERN,
 	"Wait":          WAIT,
 	"Source":        SOURCE,
 }
@@ -146,7 +146,7 @@ func IsSetting(t TokenType) bool {
 	case SHELL, FONT_FAMILY, FONT_SIZE, LETTER_SPACING, LINE_HEIGHT,
 		FRAMERATE, TYPING_SPEED, THEME, PLAYBACK_SPEED, HEIGHT, WIDTH,
 		PADDING, LOOP_OFFSET, MARGIN_FILL, MARGIN, WINDOW_BAR,
-		WINDOW_BAR_SIZE, BORDER_RADIUS:
+		WINDOW_BAR_SIZE, BORDER_RADIUS, WAIT_TIMEOUT, WAIT_PATTERN:
 		return true
 	default:
 		return false
@@ -159,7 +159,7 @@ func IsCommand(t TokenType) bool {
 	case TYPE, SLEEP,
 		UP, DOWN, RIGHT, LEFT, PAGEUP, PAGEDOWN,
 		ENTER, BACKSPACE, DELETE, TAB,
-		ESCAPE, HOME, INSERT, END, CTRL, MATCH_LINE, MATCH_SCREEN, SOURCE:
+		ESCAPE, HOME, INSERT, END, CTRL, SOURCE, WAIT:
 		return true
 	default:
 		return false
