@@ -51,6 +51,7 @@ const (
 	NUMBER  = "NUMBER"
 	STRING  = "STRING"
 	JSON    = "JSON"
+	REGEX   = "REGEX"
 
 	DOWN  = "DOWN"
 	LEFT  = "LEFT"
@@ -85,6 +86,7 @@ const (
 	BORDER_RADIUS   = "CORNER_RADIUS"   //nolint:revive
 	MATCH_LINE      = "MATCH_LINE"      //nolint:revive
 	MATCH_SCREEN    = "MATCH_SCREEN"    //nolint:revive
+	WAIT            = "WAIT"            //nolint:revive
 )
 
 var keywords = map[string]TokenType{
@@ -134,6 +136,7 @@ var keywords = map[string]TokenType{
 	"LoopOffset":    LOOP_OFFSET,
 	"MatchLine":     MATCH_LINE,
 	"MatchScreen":   MATCH_SCREEN,
+	"Wait":          WAIT,
 	"Source":        SOURCE,
 }
 
