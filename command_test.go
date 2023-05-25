@@ -7,12 +7,12 @@ import (
 )
 
 func TestCommand(t *testing.T) {
-	const numberOfCommands = 24
+	const numberOfCommands = 22
 	if len(CommandTypes) != numberOfCommands {
 		t.Errorf("Expected %d commands, got %d", numberOfCommands, len(CommandTypes))
 	}
 
-	const numberOfCommandFuncs = 23
+	const numberOfCommandFuncs = 21
 	if len(CommandFuncs) != numberOfCommandFuncs {
 		t.Errorf("Expected %d commands, got %d", numberOfCommands, len(CommandTypes))
 	}
@@ -54,8 +54,8 @@ func TestExecuteSetTheme(t *testing.T) {
 	})
 }
 
-func TestExecutePause(t *testing.T) {
-	t.Run("Should create hiddenTerm if NOT exist and stop the execution", func(t *testing.T) {
+func TestExecuteHide(t *testing.T) {
+	t.Run("Should create hiddenTerm if NOT exist and stop the recording", func(t *testing.T) {
 		vhs := &VHS{
 			currentTerm: &Terminal{},
 			hiddenTerm:  &Terminal{},
@@ -63,20 +63,20 @@ func TestExecutePause(t *testing.T) {
 			mutex:       &sync.Mutex{},
 		}
 
-		ExecutePause(Command{Type: PAUSE}, vhs)
+		ExecuteHide(Command{Type: HIDE}, vhs)
 
-		if vhs.executing {
-			t.Errorf("Pause command has not stopped the execution")
+		if vhs.recording {
+			t.Errorf("Hide command has not stopped the recording")
 		}
 
 		if vhs.hiddenTerm == nil {
-			t.Errorf("Pause command has not initialized hiddenTerm")
+			t.Errorf("Hide command has not initialized hiddenTerm")
 		}
 	})
 }
 
-func TestExecuteResume(t *testing.T) {
-	t.Run("Should use mainTerm as currentTerm and restart the execution", func(t *testing.T) {
+func TestExecuteShow(t *testing.T) {
+	t.Run("Should use mainTerm as currentTerm and restart the recording", func(t *testing.T) {
 		vhs := &VHS{
 			currentTerm: &Terminal{},
 			hiddenTerm:  &Terminal{},
@@ -84,14 +84,14 @@ func TestExecuteResume(t *testing.T) {
 			mutex:       &sync.Mutex{},
 		}
 
-		ExecuteResume(Command{Type: RESUME}, vhs)
+		ExecuteShow(Command{Type: SHOW}, vhs)
 
-		if !vhs.executing {
-			t.Errorf("Resume command has not restared the execution")
+		if !vhs.recording {
+			t.Errorf("Show command has not restared the recording")
 		}
 
 		if vhs.currentTerm != vhs.mainTerm {
-			t.Errorf("Resume has not set mainTerm as currentTerm")
+			t.Errorf("Show has not set mainTerm as currentTerm")
 		}
 	})
 }

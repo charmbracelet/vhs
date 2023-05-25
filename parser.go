@@ -69,10 +69,6 @@ func (p *Parser) parseCommand() Command {
 		return p.parseShow()
 	case SOURCE:
 		return p.parseSource()
-	case PAUSE:
-		return p.parsePause()
-	case RESUME:
-		return p.parseResume()
 	default:
 		p.errors = append(p.errors, NewError(p.cur, "Invalid command: "+p.cur.Literal))
 		return Command{Type: ILLEGAL}
@@ -432,22 +428,6 @@ func (p *Parser) parseSource() Command {
 
 	cmd.Args = p.peek.Literal
 	p.nextToken()
-	return cmd
-}
-
-// parsePause parses a Pause command.
-//
-// Pause
-func (p *Parser) parsePause() Command {
-	cmd := Command{Type: PAUSE}
-	return cmd
-}
-
-// parseResume parses a Resume command.
-//
-// Resume
-func (p *Parser) parseResume() Command {
-	cmd := Command{Type: RESUME}
 	return cmd
 }
 

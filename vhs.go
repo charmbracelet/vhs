@@ -25,7 +25,6 @@ type VHS struct {
 	mutex       *sync.Mutex
 	started     bool
 	recording   bool
-	executing   bool
 	totalFrames int
 	currentTerm *Terminal
 	mainTerm    *Terminal
@@ -129,7 +128,6 @@ func New() VHS {
 	return VHS{
 		Options:   &opts,
 		recording: true,
-		executing: true,
 		mutex:     mu,
 	}
 }
@@ -203,16 +201,15 @@ func (vhs *VHS) terminate() error {
 	// to finish.
 	time.Sleep(cleanupWaitTime)
 
-	// Tear down the processes we started.
-	vhs.mainTerm.browser.MustClose()
-	vhs.hiddenTerm.browser.MustClose()
-
-	err := vhs.mainTerm.tty.Process.Kill()
-	if err != nil {
-		return err
+	// Tear down hiddenTerm process if exists
+	if vhs.hiddenTerm != nil {
+		vhs.hiddenTerm.browser.MustClose()
+		_ = vhs.hiddenTerm.tty.Process.Kill()
 	}
 
-	return vhs.hiddenTerm.tty.Process.Kill()
+	// Tear down mainTerm process.
+	vhs.mainTerm.browser.MustClose()
+	return vhs.mainTerm.tty.Process.Kill()
 }
 
 // Cleanup individual frames.
@@ -343,9 +340,6 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 				// record last attempt
 				start = time.Now()
 
-				if !vhs.recording {
-					continue
-				}
 				if vhs.mainTerm.Page == nil {
 					continue
 				}
@@ -394,37 +388,21 @@ func (vhs *VHS) Close() {
 	}
 }
 
-// ResumeRecording indicates to VHS that the recording should be resumed.
+// ResumeRecording indicates to VHS that the executing should be resumed.
+// When called mainTerminal will be setted as main terminal.
 func (vhs *VHS) ResumeRecording() {
 	vhs.mutex.Lock()
 	defer vhs.mutex.Unlock()
 
+	vhs.currentTerm = vhs.mainTerm
 	vhs.recording = true
 }
 
-// PauseRecording indicates to VHS that the recording should be paused.
-func (vhs *VHS) PauseRecording() {
-	vhs.mutex.Lock()
-	defer vhs.mutex.Unlock()
-
-	vhs.recording = false
-}
-
-// ResumeExecuting indicates to VHS that the executing should be resumed.
-// When called mainTerminal will be setted as main terminal.
-func (vhs *VHS) ResumeExecuting() {
-	vhs.mutex.Lock()
-	defer vhs.mutex.Unlock()
-
-	vhs.currentTerm = vhs.mainTerm
-	vhs.executing = true
-}
-
-// PauseExecuting indicates to VHS that the executing should be paused.
+// PauseRecording indicates to VHS that the executing should be paused.
 // When called hiddenTerm will be setted as currentTerm.
 // When executing = false, commands are executed into hidden terminal
 // in order to avoid adding those frames into the output.
-func (vhs *VHS) PauseExecuting() {
+func (vhs *VHS) PauseRecording() {
 	vhs.mutex.Lock()
 	defer vhs.mutex.Unlock()
 
@@ -440,5 +418,5 @@ func (vhs *VHS) PauseExecuting() {
 	}
 
 	vhs.currentTerm = vhs.hiddenTerm
-	vhs.executing = false
+	vhs.recording = false
 }

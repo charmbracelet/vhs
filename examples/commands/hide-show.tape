@@ -1,11 +1,14 @@
-Output pause-resume.gif
+Output examples/commands/hide-show.gif
 
-Pause
+Set FontSize 42
+Set Height 425
+
+Hide
 
 Type "mkdir folder"
 Enter
 
-Resume
+Show
 
 Type "echo 'See secret folder'"
 Sleep 1s

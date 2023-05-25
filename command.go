@@ -41,8 +41,6 @@ var CommandTypes = []CommandType{ //nolint: deadcode
 	TYPE,
 	UP,
 	SOURCE,
-	PAUSE,
-	RESUME,
 }
 
 // String returns the string representation of the command.
@@ -81,8 +79,6 @@ var CommandFuncs = map[CommandType]CommandFunc{
 	CTRL:      ExecuteCtrl,
 	ALT:       ExecuteAlt,
 	ILLEGAL:   ExecuteNoop,
-	PAUSE:     ExecutePause,
-	RESUME:    ExecuteResume,
 }
 
 // Command represents a command with options and arguments.
@@ -447,16 +443,6 @@ func ExecuteSourceTape(c Command, v *VHS) {
 		fmt.Fprintf(out, "%s %s\n", GrayStyle.Render(displayPath+":"), cmd.Highlight(false))
 		CommandFuncs[cmd.Type](cmd, v)
 	}
-}
-
-// ExecutePause is a CommandFunc that disables the executing of the vhs.
-func ExecutePause(_ Command, v *VHS) {
-	v.PauseExecuting()
-}
-
-// ExecuteResume is a CommandFunc that enables the executing of the vhs.
-func ExecuteResume(_ Command, v *VHS) {
-	v.ResumeExecuting()
 }
 
 func getTheme(s string) (Theme, error) {

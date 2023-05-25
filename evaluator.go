@@ -136,9 +136,7 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 			continue
 		}
 
-		notExecuting := cmd.Type == PAUSE || cmd.Type == RESUME || !v.executing
-
-		fmt.Fprintln(out, cmd.Highlight(!v.recording || cmd.Type == SHOW || cmd.Type == HIDE || isSetting || notExecuting))
+		fmt.Fprintln(out, cmd.Highlight(!v.recording || cmd.Type == SHOW || cmd.Type == HIDE || isSetting))
 
 		cmd.Execute(&v)
 	}

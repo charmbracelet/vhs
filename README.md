@@ -201,10 +201,7 @@ There are a few basic types of VHS commands:
 * [`Backspace`](#backspace) [`Enter`](#enter) [`Tab`](#tab) [`Space`](#space): special keys
 * [`Ctrl+<char>`](#ctrl): press control + key
 * [`Sleep <time>`](#sleep): wait for a certain amount of time
-* [`Hide`](#hide): hide frames from being recorded
-* [`Show`](#show): stop hiding frames
-* [`Pause`](#pause-resume): stop executing commands in output
-* [`Resume`](#pause-resume): start executing commands in output
+* [`Hide & Show`](#hide-show): hide/show executed commands in output
 
 ### Output
 
@@ -622,70 +619,20 @@ Sleep 100ms # 100ms
 Sleep 1s    # 1s
 ```
 
-### Hide
-
-The `Hide` command instructs VHS to stop capturing frames. It's useful to pause
-a recording to perform hidden commands.
-
-```elixir
-Hide
-```
-
-This command is helpful for performing any setup and cleanup required to record
-a GIF, such as building the latest version of a binary and removing the binary
-once the demo is recorded.
-
-```elixir
-Output example.gif
-
-# Setup
-Hide
-Type "go build -o example . && clear"
-Enter
-Show
-
-# Recording...
-Type 'Running ./example'
-...
-Enter
-
-# Cleanup
-Hide
-Type 'rm example'
-```
-
-### Show
-
-The `Show` command instructs VHS to begin capturing frames, again. It's useful
-after a `Hide` command to resume frame recording for the output.
-
-```elixir
-Hide
-Type "You won't see this being typed."
-Show
-Type "You will see this being typed."
-```
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/hide.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/hide.gif">
-  <img width="600" alt="Example of typing something while hidden" src="https://stuff.charm.sh/vhs/examples/hide.gif">
-</picture>
-
 ***
 
-### Pause-Resume
+### Hide-Show 
 
-The `Pause` command instructs VHS to execute a command without including in output.
-You can exit from this mode by adding `Resume` command.
+The `Hide` command instructs VHS to execute a command without including in output.
+You can exit from this mode by executing `Show` command.
 
 ```elixir
-Pause
+Hide
 
 Type "mkdir folder"
 Enter
 
-Resume
+Show
 
 Type "echo 'See secret folder'"
 Sleep 1s
@@ -699,7 +646,7 @@ Sleep 2.5s
 ```
 
 <picture>
-  <img width="600" alt="Example of pause and resume" src="examples/pause-resume.gif">
+  <img width="600" alt="Example of pause and resume" src="examples/commands/hide-show.gif">
 </picture>
 
 ## Continuous Integration

@@ -65,9 +65,6 @@ const (
 	SOURCE  = "SOURCE"
 	TYPE    = "TYPE"
 
-	PAUSE  = "PAUSE"
-	RESUME = "RESUME"
-
 	SHELL           = "SHELL"
 	FONT_FAMILY     = "FONT_FAMILY" //nolint:revive
 	FONT_SIZE       = "FONT_SIZE"   //nolint:revive
@@ -134,8 +131,6 @@ var keywords = map[string]TokenType{
 	"Width":         WIDTH,
 	"LoopOffset":    LOOP_OFFSET,
 	"Source":        SOURCE,
-	"Pause":         PAUSE,
-	"Resume":        RESUME,
 }
 
 // IsSetting returns whether a token is a setting.
@@ -157,7 +152,7 @@ func IsCommand(t TokenType) bool {
 	case TYPE, SLEEP,
 		UP, DOWN, RIGHT, LEFT, PAGEUP, PAGEDOWN,
 		ENTER, BACKSPACE, DELETE, TAB,
-		ESCAPE, HOME, INSERT, END, CTRL, SOURCE, PAUSE, RESUME:
+		ESCAPE, HOME, INSERT, END, CTRL, SOURCE:
 		return true
 	default:
 		return false
