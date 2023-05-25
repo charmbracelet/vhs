@@ -354,6 +354,8 @@ var Settings = map[string]CommandFunc{
 	"WindowBar":     ExecuteSetWindowBar,
 	"WindowBarSize": ExecuteSetWindowBarSize,
 	"BorderRadius":  ExecuteSetBorderRadius,
+	"WaitPattern":   ExecuteSetWaitPattern,
+	"WaitTimeout":   ExecuteSetWaitTimeout,
 }
 
 // ExecuteSet applies the settings on the running vhs specified by the
@@ -440,6 +442,24 @@ func ExecuteSetTypingSpeed(c Command, v *VHS) {
 		return
 	}
 	v.Options.TypingSpeed = typingSpeed
+}
+
+// ExecuteSetWaitTimeout applies the default wait timeout on the vhs.
+func ExecuteSetWaitTimeout(c Command, v *VHS) {
+	waitTimeout, err := time.ParseDuration(c.Args)
+	if err != nil {
+		return
+	}
+	v.Options.WaitTimeout = waitTimeout
+}
+
+// ExecuteSetWaitPattern applies the default wait pattern on the vhs.
+func ExecuteSetWaitPattern(c Command, v *VHS) {
+	rx, err := regexp.Compile(c.Args)
+	if err != nil {
+		return
+	}
+	v.Options.WaitPattern = rx
 }
 
 // ExecuteSetPadding applies the padding on the vhs.
