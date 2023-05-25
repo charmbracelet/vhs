@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // Parser is the structure that manages the parsing of tokens.
@@ -72,12 +73,53 @@ func (p *Parser) parseCommand() Command {
 		return p.parseMatchLine()
 	case MATCH_SCREEN:
 		return p.parseMatchScreen()
+	case WAIT:
+		return p.parseWait()
 	case SOURCE:
 		return p.parseSource()
 	default:
 		p.errors = append(p.errors, NewError(p.cur, "Invalid command: "+p.cur.Literal))
 		return Command{Type: ILLEGAL}
 	}
+}
+
+func (p *Parser) parseWait() Command {
+	cmd := Command{Type: WAIT}
+
+	if p.peek.Type == PLUS {
+		p.nextToken()
+		if p.peek.Type != STRING || (p.peek.Literal != "Line" && p.peek.Literal != "Screen") {
+			p.errors = append(p.errors, NewError(p.peek, "Wait+ expects Line or Screen"))
+			return cmd
+		}
+		cmd.Args = p.peek.Literal
+		p.nextToken()
+	} else {
+		cmd.Args = "Line"
+	}
+
+	cmd.Options = p.parseSpeed()
+	if cmd.Options != "" {
+		dur, _ := time.ParseDuration(cmd.Options)
+		if dur <= 0 {
+			p.errors = append(p.errors, NewError(p.peek, "Wait expects positive duration"))
+			return cmd
+		}
+	}
+
+	if p.peek.Type != REGEX {
+		p.errors = append(p.errors, NewError(p.peek, "Wait expects regular expression"))
+		return cmd
+	}
+	p.nextToken()
+	if _, err := regexp.Compile(p.cur.Literal); err != nil {
+		p.errors = append(p.errors, NewError(p.cur, fmt.Sprintf("Invalid regular expression '%s': %v", p.cur.Literal, err)))
+		return cmd
+	}
+
+	cmd.Args += " " + p.cur.Literal
+
+	return cmd
 }
 
 func (p *Parser) parseMatchLine() Command {
