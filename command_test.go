@@ -2,6 +2,7 @@ package main
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 )
 
@@ -55,10 +56,14 @@ func TestExecuteSetTheme(t *testing.T) {
 
 func TestExecutePause(t *testing.T) {
 	t.Run("Should create hiddenTerm if NOT exist and stop the execution", func(t *testing.T) {
-		vhs := New()
-		vhs.currentTerm = &Terminal{}
+		vhs := &VHS{
+			currentTerm: &Terminal{},
+			hiddenTerm:  &Terminal{},
+			mainTerm:    &Terminal{},
+			mutex:       &sync.Mutex{},
+		}
 
-		ExecutePause(Command{Type: PAUSE}, &vhs)
+		ExecutePause(Command{Type: PAUSE}, vhs)
 
 		if vhs.executing {
 			t.Errorf("Pause command has not stopped the execution")
@@ -72,10 +77,14 @@ func TestExecutePause(t *testing.T) {
 
 func TestExecuteResume(t *testing.T) {
 	t.Run("Should use mainTerm as currentTerm and restart the execution", func(t *testing.T) {
-		vhs := New()
-		vhs.mainTerm = &Terminal{}
+		vhs := &VHS{
+			currentTerm: &Terminal{},
+			hiddenTerm:  &Terminal{},
+			mainTerm:    &Terminal{},
+			mutex:       &sync.Mutex{},
+		}
 
-		ExecuteResume(Command{Type: RESUME}, &vhs)
+		ExecuteResume(Command{Type: RESUME}, vhs)
 
 		if !vhs.executing {
 			t.Errorf("Resume command has not restared the execution")
