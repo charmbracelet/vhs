@@ -137,6 +137,68 @@ func ExecuteKey(k input.Key) CommandFunc {
 	}
 }
 
+// WaitTick is the amount of time to wait between checking for a match.
+const WaitTick = 10 * time.Millisecond
+
+// ExecuteWait is a CommandFunc that waits for a regex match for the given amount of time.
+func ExecuteWait(c Command, v *VHS) {
+	scope, rxStr, ok := strings.Cut(c.Args, " ")
+	rx := v.Options.WaitPattern
+	if ok {
+		// This is validated on parse so using MustCompile reduces noise.
+		rx = regexp.MustCompile(rxStr)
+	}
+
+	timeout := v.Options.WaitTimeout
+	if c.Options != "" {
+		t, err := time.ParseDuration(c.Options)
+		if err != nil {
+			// Shouldn't be possible due to parse validation.
+			panic(err)
+		}
+		timeout = t
+	}
+
+	checkT := time.NewTicker(WaitTick)
+	defer checkT.Stop()
+	timeoutT := time.NewTimer(timeout)
+	defer timeoutT.Stop()
+
+	for {
+		switch scope {
+		case "Line":
+			line, err := v.CurrentLine()
+			if err != nil {
+				panic(err)
+			}
+
+			if rx.MatchString(line) {
+				return
+			}
+		case "Screen":
+			lines, err := v.Buffer()
+			if err != nil {
+				panic(err)
+			}
+
+			if rx.MatchString(strings.Join(lines, "\n")) {
+				return
+			}
+		default:
+			// Should be impossible due to parse validation, but we don't want to
+			// hang if it does happen due to a bug.
+			panic(fmt.Errorf("invalid scope %q", scope))
+		}
+
+		select {
+		case <-checkT.C:
+			continue
+		case <-timeoutT.C:
+			panic(fmt.Errorf("timeout waiting for %q", c.Args))
+		}
+	}
+}
+
 // ExecuteMatchLine is a CommandFunc that waits for the current
 // line to match the given regex.
 func ExecuteMatchLine(c Command, v *VHS) {
