@@ -196,7 +196,7 @@ func ExecuteSleep(c Command, _ *VHS) {
 	if err != nil {
 		return
 	}
-	time.Sleep(dur)
+	time.Sleep(dur * time.Second)
 }
 
 // ExecuteType types the argument string on the running instance of vhs.
