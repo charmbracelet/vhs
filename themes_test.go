@@ -16,18 +16,18 @@ func TestFindAllThemes(t *testing.T) {
 }
 
 func TestFindTheme(t *testing.T) {
-	theme, err := findTheme("Catppuccin Latte")
+	_, err := findTheme("Catppuccin Latte")
 	if err != nil {
 		t.Error(err)
 	}
 
-	theme, err = findTheme("caTppuccin ltt")
+	theme, err := findTheme("caTppuccin ltt")
 	te, ok := err.(ThemeNotFoundError)
 	if !ok {
 		t.Fatal("expected to not be found:", theme)
 	}
 	if len(te.Suggestions) != 1 {
-		t.Fatal("expected 1 suggestions, got:", te.Suggestions)
+		t.Fatal("expected 1 suggestion, got:", te.Suggestions)
 	}
 	if sg := te.Suggestions[0]; sg != "Catppuccin Latte" {
 		t.Fatal("wrong suggestion:", te.Suggestions[0])
