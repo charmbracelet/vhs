@@ -1,6 +1,8 @@
 package main
 
-import "strings"
+import (
+	"strings"
+)
 
 // TokenType represents a token's type.
 type TokenType string
@@ -46,6 +48,7 @@ const (
 	SLEEP     = "SLEEP"
 	SPACE     = "SPACE"
 	TAB       = "TAB"
+	SHIFT     = "SHIFT"
 
 	COMMENT = "COMMENT"
 	NUMBER  = "NUMBER"
@@ -99,6 +102,7 @@ var keywords = map[string]TokenType{
 	"Backspace":     BACKSPACE,
 	"Ctrl":          CTRL,
 	"Alt":           ALT,
+	"Shift":         SHIFT,
 	"Down":          DOWN,
 	"Left":          LEFT,
 	"Right":         RIGHT,
@@ -146,7 +150,7 @@ func IsSetting(t TokenType) bool {
 	}
 }
 
-// IsCommand returns whether the string is a command
+// IsCommand returns whether the string is a command.
 func IsCommand(t TokenType) bool {
 	switch t {
 	case TYPE, SLEEP,
@@ -157,6 +161,11 @@ func IsCommand(t TokenType) bool {
 	default:
 		return false
 	}
+}
+
+// IsModifier returns whether the token is a modifier.
+func IsModifier(t TokenType) bool {
+	return t == ALT || t == SHIFT
 }
 
 // String converts a token to it's human readable string format.
