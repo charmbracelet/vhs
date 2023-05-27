@@ -146,7 +146,7 @@ func ExecuteCtrl(c Command, v *VHS) {
 	keys := strings.Split(c.Args, " ")
 
 	for i, key := range keys {
-		var inputKey *input.Key = nil
+		var inputKey *input.Key
 
 		switch key {
 		case "Shift":

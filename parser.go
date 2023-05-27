@@ -134,8 +134,8 @@ func (p *Parser) parseTime() string {
 //
 // Ctrl+N<modifier|character>
 // E.g:
-//	Ctrl+Shift+O
-//	Ctrl+Alt+Shift+P
+// Ctrl+Shift+O
+// Ctrl+Alt+Shift+P
 func (p *Parser) parseCtrl() Command {
 	var args []string
 
