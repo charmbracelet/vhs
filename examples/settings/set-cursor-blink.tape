@@ -1,7 +1,6 @@
 Output examples/settings/set-cursor-blink.gif
-
-Set Height 175
-
+Set FontSize 42
+Set Height 225
 Set CursorBlink false
 
 Type "Never blink..."
