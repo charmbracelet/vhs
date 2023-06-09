@@ -474,7 +474,7 @@ Set PlaybackSpeed 2.0 # Make output 2 times faster
 
 #### Set Cursor Blink
 
-Enable/Disable cursor blinking. Enabled by default.
+Set whether the cursor should blink. Enabled by default.
 
 ```elixir
 Set CursorBlink false
