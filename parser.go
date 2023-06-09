@@ -276,7 +276,7 @@ func (p *Parser) parseSet() Command {
 		if p.peek.Type != BOOL {
 			p.errors = append(
 				p.errors,
-				NewError(p.cur, "expected boolean value (true or false)"),
+				NewError(p.cur, "expected boolean value."),
 			)
 		}
 
