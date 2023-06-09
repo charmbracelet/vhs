@@ -472,6 +472,14 @@ Set PlaybackSpeed 1.0 # Keep output at normal speed (default)
 Set PlaybackSpeed 2.0 # Make output 2 times faster
 ```
 
+#### Set Cursor Blink
+
+Set whether the cursor should blink. Enabled by default.
+
+```elixir
+Set CursorBlink false
+```
+
 ### Type
 
 Use `Type` to emulate key presses. That is, you can use `Type` to script typing
