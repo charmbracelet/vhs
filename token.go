@@ -51,7 +51,7 @@ const (
 	NUMBER  = "NUMBER"
 	STRING  = "STRING"
 	JSON    = "JSON"
-	BOOL    = "BOOL"
+	BOOLEAN = "BOOL"
 
 	DOWN  = "DOWN"
 	LEFT  = "LEFT"
@@ -134,8 +134,8 @@ var keywords = map[string]TokenType{
 	"LoopOffset":    LOOP_OFFSET,
 	"Source":        SOURCE,
 	"CursorBlink":   CURSOR_BLINK,
-	"true":          BOOL,
-	"false":         BOOL,
+	"true":          BOOLEAN,
+	"false":         BOOLEAN,
 }
 
 // IsSetting returns whether a token is a setting.

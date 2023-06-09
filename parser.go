@@ -273,7 +273,7 @@ func (p *Parser) parseSet() Command {
 		cmd.Args = p.peek.Literal
 		p.nextToken()
 
-		if p.peek.Literal != BOOL {
+		if p.peek.Literal != BOOLEAN {
 			p.errors = append(
 				p.errors,
 				NewError(p.cur, "expected boolean value (true or false)"),
