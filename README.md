@@ -480,6 +480,12 @@ Set whether the cursor should blink. Enabled by default.
 Set CursorBlink false
 ```
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://vhs.charm.sh/vhs-6nO3iwTDVytOsQicNc7kZD.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-6nO3iwTDVytOsQicNc7kZD.gif">
+  <img width="600" alt="Example of setting the cursor blink." src="https://vhs.charm.sh/vhs-6nO3iwTDVytOsQicNc7kZD.gif">
+</picture>
+
 ### Type
 
 Use `Type` to emulate key presses. That is, you can use `Type` to script typing
