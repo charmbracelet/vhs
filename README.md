@@ -478,7 +478,6 @@ Set whether the cursor should blink. Enabled by default.
 
 ```elixir
 Set CursorBlink false
-Set CursorBlink true
 ```
 
 ### Type
