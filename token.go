@@ -83,6 +83,7 @@ const (
 	WINDOW_BAR      = "WINDOW_BAR"      //nolint:revive
 	WINDOW_BAR_SIZE = "WINDOW_BAR_SIZE" //nolint:revive
 	BORDER_RADIUS   = "CORNER_RADIUS"   //nolint:revive
+	CURSOR_BLINK    = "CURSOR_BLINK"    //nolint:revive
 )
 
 var keywords = map[string]TokenType{
@@ -131,6 +132,7 @@ var keywords = map[string]TokenType{
 	"Width":         WIDTH,
 	"LoopOffset":    LOOP_OFFSET,
 	"Source":        SOURCE,
+	"CursorBlink":   CURSOR_BLINK,
 }
 
 // IsSetting returns whether a token is a setting.
@@ -139,7 +141,7 @@ func IsSetting(t TokenType) bool {
 	case SHELL, FONT_FAMILY, FONT_SIZE, LETTER_SPACING, LINE_HEIGHT,
 		FRAMERATE, TYPING_SPEED, THEME, PLAYBACK_SPEED, HEIGHT, WIDTH,
 		PADDING, LOOP_OFFSET, MARGIN_FILL, MARGIN, WINDOW_BAR,
-		WINDOW_BAR_SIZE, BORDER_RADIUS:
+		WINDOW_BAR_SIZE, BORDER_RADIUS, CURSOR_BLINK:
 		return true
 	default:
 		return false

@@ -46,6 +46,7 @@ type Options struct {
 	Test          TestOptions
 	Video         VideoOptions
 	LoopOffset    float64
+	CursorBlink   bool
 }
 
 const (
@@ -54,6 +55,7 @@ const (
 	defaultLineHeight    = 1.0
 	defaultLetterSpacing = 1.0
 	fontsSeparator       = ","
+	defaultCursorBlink   = true
 )
 
 var defaultFontFamily = strings.Join([]string{
@@ -80,6 +82,7 @@ func DefaultVHSOptions() Options {
 		Shell:         Shells[defaultShell],
 		Theme:         DefaultTheme,
 		Video:         DefaultVideoOptions(),
+		CursorBlink:   defaultCursorBlink,
 	}
 }
 
@@ -155,9 +158,9 @@ func (vhs *VHS) Setup() {
 
 	// Apply options to the terminal
 	// By this point the setting commands have been executed, so the `opts` struct is up to date.
-	vhs.Page.MustEval(fmt.Sprintf("() => { term.options = { fontSize: %d, fontFamily: '%s', letterSpacing: %f, lineHeight: %f, theme: %s } }",
+	vhs.Page.MustEval(fmt.Sprintf("() => { term.options = { fontSize: %d, fontFamily: '%s', letterSpacing: %f, lineHeight: %f, theme: %s, cursorBlink: %t } }",
 		vhs.Options.FontSize, vhs.Options.FontFamily, vhs.Options.LetterSpacing,
-		vhs.Options.LineHeight, vhs.Options.Theme.String()))
+		vhs.Options.LineHeight, vhs.Options.Theme.String(), vhs.Options.CursorBlink))
 
 	// Fit the terminal into the window
 	vhs.Page.MustEval("term.fit")
