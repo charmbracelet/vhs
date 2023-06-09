@@ -269,6 +269,16 @@ func (p *Parser) parseSet() Command {
 				)
 			}
 		}
+	case CURSOR_BLINK:
+		cmd.Args = p.peek.Literal
+		p.nextToken()
+
+		if p.peek.Literal != BOOL {
+			p.errors = append(
+				p.errors,
+				NewError(p.cur, "expected boolean value (true or false)"),
+			)
+		}
 
 	default:
 		cmd.Args = p.peek.Literal
