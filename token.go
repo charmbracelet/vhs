@@ -51,7 +51,7 @@ const (
 	NUMBER  = "NUMBER"
 	STRING  = "STRING"
 	JSON    = "JSON"
-	BOOL    = "BOOL"
+	BOOLEAN    = "BOOLEAN"
 
 	DOWN  = "DOWN"
 	LEFT  = "LEFT"
