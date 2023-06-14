@@ -130,21 +130,48 @@ func (p *Parser) parseTime() string {
 }
 
 // parseCtrl parses a control command.
-// A control command takes a character to type while the modifier is held down.
+// A control command takes one or multiples characters and/or modifiers to type while ctrl is held down.
 //
-// Ctrl+<character>
+// Ctrl[+Alt][+Shift]+<char>
+// E.g:
+// Ctrl+Shift+O
+// Ctrl+Alt+Shift+P
 func (p *Parser) parseCtrl() Command {
-	if p.peek.Type == PLUS {
+	var args []string
+
+	for p.peek.Type == PLUS {
 		p.nextToken()
-		if p.peek.Type == STRING {
-			c := p.peek.Literal
+		peek := p.peek
+
+		// Get key from keywords and check if it's a valid modifier
+		if k, ok := keywords[peek.Literal]; ok {
 			p.nextToken()
-			return Command{Type: CTRL, Args: c}
+			if IsModifier(k) {
+				args = append(args, peek.Literal)
+			} else {
+				p.errors = append(p.errors, NewError(p.cur, "not a valid modifier"))
+			}
+		}
+
+		// Add key argument
+		if peek.Type == STRING && len(peek.Literal) == 1 {
+			p.nextToken()
+			args = append(args, peek.Literal)
+		}
+
+		// Key arguments with len > 1 are not valid
+		if peek.Type == STRING && len(peek.Literal) > 1 {
+			p.nextToken()
+			p.errors = append(p.errors, NewError(p.cur, "Invalid control argument: "+p.cur.Literal))
 		}
 	}
 
-	p.errors = append(p.errors, NewError(p.cur, "Expected control character, got "+p.cur.Literal))
-	return Command{Type: CTRL}
+	if len(args) == 0 {
+		p.errors = append(p.errors, NewError(p.cur, "Expected control character with args, got "+p.cur.Literal))
+	}
+
+	ctrlArgs := strings.Join(args, " ")
+	return Command{Type: CTRL, Args: ctrlArgs}
 }
 
 // parseAlt parses an alt command.
