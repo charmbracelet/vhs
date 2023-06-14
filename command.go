@@ -138,16 +138,40 @@ func ExecuteKey(k input.Key) CommandFunc {
 	}
 }
 
-// ExecuteCtrl is a CommandFunc that presses the argument key with the ctrl key
-// held down on the running instance of vhs.
+// ExecuteCtrl is a CommandFunc that presses the argument keys and/or modifiers
+// with the ctrl key held down on the running instance of vhs.
 func ExecuteCtrl(c Command, v *VHS) {
-	_ = v.Page.Keyboard.Press(input.ControlLeft)
-	for _, r := range c.Args {
-		if k, ok := keymap[r]; ok {
-			_ = v.Page.Keyboard.Type(k)
+	// Create key combination by holding ControlLeft
+	action := v.Page.KeyActions().Press(input.ControlLeft)
+	keys := strings.Split(c.Args, " ")
+
+	for i, key := range keys {
+		var inputKey *input.Key
+
+		switch key {
+		case "Shift":
+			inputKey = &input.ShiftLeft
+		case "Alt":
+			inputKey = &input.AltLeft
+		default:
+			r := rune(key[0])
+			if k, ok := keymap[r]; ok {
+				inputKey = &k
+			}
+		}
+
+		// Press or hold key in case it's valid
+		if inputKey != nil {
+			if i != len(keys)-1 {
+				action.Press(*inputKey)
+			} else {
+				// Other keys will remain pressed until the combination reaches the end
+				action.Type(*inputKey)
+			}
 		}
 	}
-	_ = v.Page.Keyboard.Release(input.ControlLeft)
+
+	action.MustDo()
 }
 
 // ExecuteAlt is a CommandFunc that presses the argument key with the alt key

@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -193,4 +194,51 @@ func TestParseTapeFile(t *testing.T) {
 			t.Errorf("Expected command %d to have options %s, got %s", i, expected[i].Options, cmd.Options)
 		}
 	}
+}
+
+func TestParseCtrl(t *testing.T) {
+	t.Run("should parse with multiple modifiers", func(t *testing.T) {
+		tape := "Ctrl+Shift+Alt+C"
+		l := NewLexer(tape)
+		p := NewParser(l)
+
+		cmd := p.parseCtrl()
+
+		expectedArgs := []string{"Shift", "Alt", "C"}
+		args := strings.Split(cmd.Args, " ")
+
+		if len(expectedArgs) != len(args) {
+			t.Fatalf("Unable to parse args, expected args %d, got %d", len(expectedArgs), len(args))
+		}
+
+		for i, arg := range args {
+			if expectedArgs[i] != arg {
+				t.Errorf("Arg %d is wrong, expected %s, got %s", i, expectedArgs[i], arg)
+			}
+		}
+	})
+
+	t.Run("should parse with errors when using unknown modifier", func(t *testing.T) {
+		tape := "Ctrl+AltRight"
+		l := NewLexer(tape)
+		p := NewParser(l)
+
+		_ = p.parseCtrl()
+
+		if len(p.errors) == 0 {
+			t.Errorf("Expected to parse with errors but was success")
+		}
+	})
+
+	t.Run("should parse with errors when using keyword as modifier", func(t *testing.T) {
+		tape := "Ctrl+Backspace"
+		l := NewLexer(tape)
+		p := NewParser(l)
+
+		_ = p.parseCtrl()
+
+		if len(p.errors) == 0 {
+			t.Errorf("Expected to parse with errors but was success")
+		}
+	})
 }
