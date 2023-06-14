@@ -132,7 +132,7 @@ func (p *Parser) parseTime() string {
 // parseCtrl parses a control command.
 // A control command takes one or multiples characters and/or modifiers to type while ctrl is held down.
 //
-// Ctrl+N<modifier|character>
+// Ctrl[+Alt][+Shift]+<char>
 // E.g:
 // Ctrl+Shift+O
 // Ctrl+Alt+Shift+P
