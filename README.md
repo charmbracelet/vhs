@@ -471,6 +471,20 @@ Set PlaybackSpeed 1.0 # Keep output at normal speed (default)
 Set PlaybackSpeed 2.0 # Make output 2 times faster
 ```
 
+#### Set Cursor Blink
+
+Set whether the cursor should blink. Enabled by default.
+
+```elixir
+Set CursorBlink false
+```
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://vhs.charm.sh/vhs-3rMCb80VEkaDdTOJMCrxKy.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-3rMCb80VEkaDdTOJMCrxKy.gif">
+  <img width="600" alt="Example of setting the cursor blink." src="https://vhs.charm.sh/vhs-3rMCb80VEkaDdTOJMCrxKy.gif">
+</picture>
+
 ### Type
 
 Use `Type` to emulate key presses. That is, you can use `Type` to script typing

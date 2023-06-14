@@ -254,6 +254,7 @@ var Settings = map[string]CommandFunc{
 	"WindowBar":     ExecuteSetWindowBar,
 	"WindowBarSize": ExecuteSetWindowBarSize,
 	"BorderRadius":  ExecuteSetBorderRadius,
+	"CursorBlink":   ExecuteSetCursorBlink,
 }
 
 // ExecuteSet applies the settings on the running vhs specified by the
@@ -397,6 +398,15 @@ func ExecuteSetWindowBarSize(c Command, v *VHS) {
 // ExecuteSetWindowBar sets corner radius
 func ExecuteSetBorderRadius(c Command, v *VHS) {
 	v.Options.Video.BorderRadius, _ = strconv.Atoi(c.Args)
+}
+
+// ExecuteSetCursorBlink sets cursor blinking
+func ExecuteSetCursorBlink(c Command, v *VHS) {
+	var err error
+	v.Options.CursorBlink, err = strconv.ParseBool(c.Args)
+	if err != nil {
+		return
+	}
 }
 
 const sourceDisplayMaxLength = 10
