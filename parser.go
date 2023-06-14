@@ -149,8 +149,7 @@ func (p *Parser) parseCtrl() Command {
 			if IsModifier(k) {
 				args = append(args, peek.Literal)
 			} else {
-				msg := fmt.Sprintf("Keyword : '%s' can not be used as control argument", p.cur.Literal)
-				p.errors = append(p.errors, NewError(p.cur, msg))
+				p.errors = append(p.errors, NewError(p.cur, "not a valid modifier"))
 			}
 		}
 
