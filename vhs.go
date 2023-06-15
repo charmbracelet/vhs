@@ -58,7 +58,7 @@ const (
 	defaultCursorBlink   = true
 )
 
-var defaultFontFamily = strings.Join([]string{
+var defaultFontFamily = withSymbolsFallback(strings.Join([]string{
 	"JetBrains Mono",
 	"DejaVu Sans Mono",
 	"Menlo",
@@ -69,7 +69,15 @@ var defaultFontFamily = strings.Join([]string{
 	"Consolas",
 	"ui-monospace",
 	"monospace",
-}, fontsSeparator)
+}, fontsSeparator))
+
+var symbolsFallback = []string{
+	"Apple Symbols",
+}
+
+func withSymbolsFallback(font string) string {
+	return font + fontsSeparator + strings.Join(symbolsFallback, fontsSeparator)
+}
 
 // DefaultVHSOptions returns the default set of options to use for the setup function.
 func DefaultVHSOptions() Options {
