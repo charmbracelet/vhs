@@ -302,7 +302,7 @@ func ExecuteSetFontSize(c Command, v *VHS) {
 // ExecuteSetFontFamily applies the font family on the vhs.
 func ExecuteSetFontFamily(c Command, v *VHS) {
 	v.Options.FontFamily = c.Args
-	_, _ = v.Page.Eval(fmt.Sprintf("() => term.options.fontFamily = '%s'", c.Args))
+	_, _ = v.Page.Eval(fmt.Sprintf("() => term.options.fontFamily = '%s'", withSymbolsFallback(c.Args)))
 }
 
 // ExecuteSetHeight applies the height on the vhs.
