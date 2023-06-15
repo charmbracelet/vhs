@@ -142,7 +142,7 @@ func ExecuteKey(k input.Key) CommandFunc {
 // with the ctrl key held down on the running instance of vhs.
 func ExecuteCtrl(c Command, v *VHS) {
 	// Create key combination by holding ControlLeft
-	action := v.Page.KeyActions().Press(input.ControlLeft)
+	action := v.currentTerm.Page.KeyActions().Press(input.ControlLeft)
 	keys := strings.Split(c.Args, " ")
 
 	for i, key := range keys {
