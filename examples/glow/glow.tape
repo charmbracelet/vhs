@@ -1,23 +1,26 @@
-Output examples/glow/vhs-glow.gif
-Output examples/glow/glow.ascii
+Output vhs-glow.gif
+Output glow.ascii
 
+Set Framerate 40
 Set Width 1600
 Set Height 1040
 
 Sleep 1s
 
 Type "glow"
-
 Sleep 100ms
-
 Enter
 
 Sleep 1s
 
 Hide
-Tab
+Sleep 5s
+Show
+
+Hide
 Type "/artichoke"
 Enter
+Sleep 2s
 Down 2
 Show
 
@@ -37,6 +40,7 @@ Up@400ms 5
 Hide
 Type "/ulysses"
 Enter
+Sleep 2s
 Show
 
 Sleep 0.5s
@@ -50,13 +54,20 @@ Show
 
 Sleep 0.5s
 
-Type@500ms "todo"
+Type@500ms "Readme"
 Sleep 1
+Enter
+Sleep 1
+Type "s"
+Sleep 1
+Enter
+Sleep 2
 
 Hide
 Escape
 Type "/ulysses"
 Enter
+Sleep 2s
 Show
 
 Sleep 0.5s
@@ -64,9 +75,12 @@ Sleep 0.5s
 Type@750ms "????"
 
 Hide
+Sleep 1s
 Escape
+Sleep 1s
 Type "/artichoke"
 Enter
+Sleep 2s
 Type "m"
 Ctrl+A
 Right 4
@@ -78,7 +92,30 @@ Sleep 1s
 
 Hide
 Escape
-Down 5
+Type "a"
+Sleep 1
+Show
+
+Type "j"
+Sleep 1
+Type "k"
+Sleep 1
+Enter
+Sleep 2
+Escape
+
+Sleep 1
+Tab
+Sleep 1
+Type@200ms "jjjjjj"
+Sleep 1
+Enter
+Sleep 2
+
+Hide
+Escape
+Escape
+Type "G"
 Type "m"
 Ctrl+U
 Show
