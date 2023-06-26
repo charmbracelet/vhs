@@ -203,7 +203,11 @@ func (vhs *VHS) terminate() error {
 
 // Cleanup individual frames.
 func (vhs *VHS) Cleanup() error {
-	return os.RemoveAll(vhs.Options.Video.Input)
+	err := os.RemoveAll(vhs.Options.Video.Input)
+	if err != nil {
+		return err
+	}
+	return os.RemoveAll(vhs.Options.Screenshot.input)
 }
 
 // Render starts rendering the individual frames into a video.

@@ -210,7 +210,7 @@ type StreamBuilder struct {
 }
 
 // NewStreamBuilder returns instance of StreamBuilder.
-func NewStreamBuilder(streamCounter int, style *StyleOptions) *StreamBuilder {
+func NewStreamBuilder(streamCounter int, input string, style *StyleOptions) *StreamBuilder {
 	termWidth, termHeight := calcTermDimensions(*style)
 
 	return &StreamBuilder{
@@ -219,6 +219,7 @@ func NewStreamBuilder(streamCounter int, style *StyleOptions) *StreamBuilder {
 		style:      style,
 		termWidth:  termWidth,
 		termHeight: termHeight,
+		input:      input,
 	}
 }
 

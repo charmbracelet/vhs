@@ -74,7 +74,7 @@ func (opts *ScreenshotOptions) buildFFopts(targetFile, textStream, cursorStream 
 	var args []string
 	streamCounter := 2
 
-	streamBuilder := NewStreamBuilder(streamCounter, opts.style)
+	streamBuilder := NewStreamBuilder(streamCounter, opts.input, opts.style)
 	// Input frame options, used no matter what
 	// Stream 0: text frames
 	// Stream 1: cursor frames

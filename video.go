@@ -94,7 +94,7 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 	var args []string
 	streamCounter := 2
 
-	streamBuilder := NewStreamBuilder(streamCounter, opts.Style)
+	streamBuilder := NewStreamBuilder(streamCounter, opts.Input, opts.Style)
 
 	// Input frame options, used no matter what
 	// Stream 0: text frames
