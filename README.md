@@ -167,9 +167,9 @@ vhs publish demo.gif
 
 ## The VHS Server
 
-VHS has an SSH server built in! When you self host VHS you can access it as
+VHS has an SSH server built in! When you self-host VHS you can access it as
 though it were installed locally. VHS will have access to commands and
-applications on the host so you don't need to install them on your machine.
+applications on the host, so you don't need to install them on your machine.
 
 To start the server run:
 
@@ -231,7 +231,7 @@ Output frames/ # a directory of frames as a PNG sequence
 
 The `Require` command allows you to specify dependencies for your tape file.
 These are useful to fail early if a required program is missing from the
-`$PATH` and it is certain that the VHS execution will not work as expected.
+`$PATH`, and it is certain that the VHS execution will not work as expected.
 
 Require commands must be defined at the top of a tape file, before any non-
 setting or non-output command.
