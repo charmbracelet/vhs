@@ -157,7 +157,7 @@ vhs cassette.tape
 ## Publish Tapes
 
 VHS allows you to publish your GIFs to our servers for easy sharing with your
-friends and colleagues. Just specify which file you want to share, then use the
+friends and colleagues. Specify which file you want to share, then use the
 `publish` sub-command to host it on `vhs.charm.sh`. The output will provide you
 with links to share your GIF via browser, HTML, and Markdown. 
 
