@@ -154,12 +154,22 @@ settings or modify actions. Then, you can generate the GIF:
 vhs cassette.tape
 ```
 
+## Publish Tapes
+
+VHS allows you to publish your GIFs to our servers for easy sharing with your
+friends and colleagues. Specify which file you want to share, then use the
+`publish` sub-command to host it on `vhs.charm.sh`. The output will provide you
+with links to share your GIF via browser, HTML, and Markdown. 
+
+```bash
+vhs publish demo.gif
+```
 
 ## The VHS Server
 
-VHS has an SSH server built in! When you self host VHS you can access it as
+VHS has an SSH server built in! When you self-host VHS you can access it as
 though it were installed locally. VHS will have access to commands and
-applications on the host so you don't need to install them on your machine.
+applications on the host, so you don't need to install them on your machine.
 
 To start the server run:
 
@@ -221,7 +231,7 @@ Output frames/ # a directory of frames as a PNG sequence
 
 The `Require` command allows you to specify dependencies for your tape file.
 These are useful to fail early if a required program is missing from the
-`$PATH` and it is certain that the VHS execution will not work as expected.
+`$PATH`, and it is certain that the VHS execution will not work as expected.
 
 Require commands must be defined at the top of a tape file, before any non-
 setting or non-output command.
