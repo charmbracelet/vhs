@@ -105,6 +105,8 @@ var (
 						v.Options.Video.Output.GIF = output
 					} else if strings.HasSuffix(output, webm) {
 						v.Options.Video.Output.WebM = output
+					} else if strings.HasSuffix(output, webp) {
+						v.Options.Video.Output.WebP = output
 					} else if strings.HasSuffix(output, mp4) {
 						v.Options.Video.Output.MP4 = output
 					}

@@ -4,6 +4,7 @@
 #   Output <path>.gif               Create a GIF output at the given <path>
 #   Output <path>.mp4               Create an MP4 output at the given <path>
 #   Output <path>.webm              Create a WebM output at the given <path>
+#   Output <path>.webp              Create a WebP output at the given <path>
 #
 # Require:
 #   Require <string>                Ensure a program is on the $PATH to proceed
@@ -63,4 +64,4 @@ Set Height 600
 
 Type "echo 'Welcome to VHS!'" Sleep 500ms  Enter
 
-Sleep 5s
+Sleep 1s

@@ -106,6 +106,7 @@ func TestParseTapeFile(t *testing.T) {
 		{Type: OUTPUT, Options: ".gif", Args: "examples/fixtures/all.gif"},
 		{Type: OUTPUT, Options: ".mp4", Args: "examples/fixtures/all.mp4"},
 		{Type: OUTPUT, Options: ".webm", Args: "examples/fixtures/all.webm"},
+		{Type: OUTPUT, Options: ".webp", Args: "examples/fixtures/all.webp"},
 		{Type: SET, Options: "Shell", Args: "fish"},
 		{Type: SET, Options: "FontSize", Args: "22"},
 		{Type: SET, Options: "FontFamily", Args: "DejaVu Sans Mono"},

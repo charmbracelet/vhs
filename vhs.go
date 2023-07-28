@@ -210,6 +210,7 @@ func (vhs *VHS) Render() error {
 	cmds = append(cmds, MakeGIF(vhs.Options.Video))
 	cmds = append(cmds, MakeMP4(vhs.Options.Video))
 	cmds = append(cmds, MakeWebM(vhs.Options.Video))
+	cmds = append(cmds, MakeWebP(vhs.Options.Video))
 
 	for _, cmd := range cmds {
 		if cmd == nil {
