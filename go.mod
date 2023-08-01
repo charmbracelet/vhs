@@ -11,10 +11,10 @@ require (
 	github.com/charmbracelet/ssh v0.0.0-20221117183211-483d43d97103
 	github.com/charmbracelet/wish v1.1.1
 	github.com/creack/pty v1.1.18
-	github.com/go-rod/rod v0.114.0
+	github.com/go-rod/rod v0.114.2
 	github.com/hashicorp/go-version v1.6.0
 	github.com/mattn/go-isatty v0.0.19
-	github.com/mattn/go-runewidth v0.0.14
+	github.com/mattn/go-runewidth v0.0.15
 	github.com/muesli/go-app-paths v0.2.2
 	github.com/muesli/mango-cobra v1.2.0
 	github.com/muesli/roff v0.1.0
