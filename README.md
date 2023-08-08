@@ -482,6 +482,16 @@ Set PlaybackSpeed 1.0 # Keep output at normal speed (default)
 Set PlaybackSpeed 2.0 # Make output 2 times faster
 ```
 
+#### Set Loop Offset
+
+Set the offset for when the GIF loop should begin. This allows you to make the
+first frame of the GIF (generally used for previews) more interesting.
+
+```elixir
+Set LoopOffset 5 # Start the GIF at the 5th frame
+Set LoopOffset 50% # Start the GIF halfway through
+```
+
 #### Set Cursor Blink
 
 Set whether the cursor should blink. Enabled by default.
