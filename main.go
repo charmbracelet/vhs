@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	_ "embed"
 	"errors"
@@ -180,14 +181,15 @@ var (
 		Short: "Create a new tape file with example tape file contents and documentation",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(_ *cobra.Command, args []string) error {
-			fileName := strings.TrimSuffix(args[0], extension) + extension
+			name := strings.TrimSuffix(args[0], extension)
+			fileName := name + extension
 
 			f, err := os.Create(fileName)
 			if err != nil {
 				return err
 			}
 
-			_, err = f.Write(DemoTape)
+			_, err = f.Write(bytes.Replace(DemoTape, []byte("examples/demo.gif"), []byte(name+".gif"), 1))
 			if err != nil {
 				return err
 			}
