@@ -35,6 +35,7 @@
 #                                   <time> delay between each character
 #
 # Keys:
+#   Escape[@<time>] [number]        Press the Escape key
 #   Backspace[@<time>] [number]     Press the Backspace key
 #   Down[@<time>] [number]          Press the Down key
 #   Enter[@<time>] [number]         Press the Enter key
