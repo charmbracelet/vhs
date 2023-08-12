@@ -312,9 +312,9 @@ func ensureDependencies() error {
 	if ttydErr != nil {
 		return fmt.Errorf("ttyd is not installed. Install it from: https://github.com/tsl0922/ttyd")
 	}
-	_, bashErr := exec.LookPath("bash")
-	if bashErr != nil {
-		return fmt.Errorf("bash is not installed")
+	_, shellErr := exec.LookPath(defaultShell)
+	if shellErr != nil {
+		return fmt.Errorf("%v is not installed", defaultShell)
 	}
 
 	ttydVersion := getVersion("ttyd")
