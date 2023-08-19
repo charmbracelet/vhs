@@ -104,6 +104,8 @@ func TestLexTapeFile(t *testing.T) {
 		{STRING, "examples/fixtures/all.mp4"},
 		{OUTPUT, "Output"},
 		{STRING, "examples/fixtures/all.webm"},
+		{OUTPUT, "Output"},
+		{STRING, "examples/fixtures/all.webp"},
 		{COMMENT, " Settings:"},
 		{SET, "Set"},
 		{SHELL, "Shell"},

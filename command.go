@@ -252,6 +252,8 @@ func ExecuteOutput(c Command, v *VHS) {
 		v.Options.Video.Output.Frames = c.Args
 	case ".webm":
 		v.Options.Video.Output.WebM = c.Args
+	case ".webp":
+		v.Options.Video.Output.WebP = c.Args
 	default:
 		v.Options.Video.Output.GIF = c.Args
 	}

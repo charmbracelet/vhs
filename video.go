@@ -1,6 +1,6 @@
 // Package vhs video.go spawns the ffmpeg process to convert the frames,
 // collected by go-rod's  screenshots into the input folder, to a GIF, WebM,
-// MP4.
+// WebP, MP4.
 //
 // MakeGIF takes several options to modify the behaviour of the ffmpeg process,
 // which can be configured through the Set command.
@@ -25,6 +25,7 @@ const (
 const (
 	mp4  = ".mp4"
 	webm = ".webm"
+	webp = ".webp"
 	gif  = ".gif"
 )
 
@@ -43,6 +44,7 @@ func randomDir() string {
 type VideoOutputs struct {
 	GIF    string
 	WebM   string
+	WebP   string
 	MP4    string
 	Frames string
 }
@@ -91,7 +93,7 @@ func DefaultVideoOptions() VideoOptions {
 		Framerate:       defaultFramerate,
 		Input:           randomDir(),
 		MaxColors:       defaultMaxColors,
-		Output:          VideoOutputs{GIF: "", WebM: "", MP4: "", Frames: ""},
+		Output:          VideoOutputs{GIF: "", WebM: "", WebP:"", MP4: "", Frames: ""},
 		Width:           defaultWidth,
 		Height:          defaultHeight,
 		Padding:         defaultPadding,
@@ -307,6 +309,16 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 			"-crf", "30",
 			"-b:v", "0",
 		)
+	} else if filepath.Ext(targetFile) == webp {
+		args = append(args,
+			"-vcodec", "libwebp",
+			"-pix_fmt", "yuv444p",
+			"-loop", "0",
+			"-lossless","0",
+			"-an",
+			"-crf", "30",
+			"-b:v", "0",
+		)
 	} else if filepath.Ext(targetFile) == mp4 {
 		args = append(args,
 			"-vcodec", "libx264",
@@ -329,7 +341,7 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 func MakeGIF(opts VideoOptions) *exec.Cmd {
 	targetFile := opts.Output.GIF
 
-	if opts.Output.GIF == "" && opts.Output.WebM == "" && opts.Output.MP4 == "" {
+	if opts.Output.GIF == "" && opts.Output.WebM == "" && opts.Output.WebP == "" && opts.Output.MP4 == "" {
 		targetFile = "out.gif"
 	} else if opts.Output.GIF == "" {
 		return nil
@@ -374,5 +386,22 @@ func MakeMP4(opts VideoOptions) *exec.Cmd {
 	return exec.Command(
 		"ffmpeg",
 		buildFFopts(opts, opts.Output.MP4)...,
+	)
+}
+
+
+// MakeWebP takes a list of images (as frames) and converts them to an WebP.
+func MakeWebP(opts VideoOptions) *exec.Cmd {
+	if opts.Output.WebP == "" {
+		return nil
+	}
+
+	log.Println(GrayStyle.Render("Creating " + opts.Output.WebP + "..."))
+	ensureDir(opts.Output.WebP)
+
+	//nolint:gosec
+	return exec.Command(
+		"ffmpeg",
+		buildFFopts(opts, opts.Output.WebP)...,
 	)
 }

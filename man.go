@@ -24,7 +24,7 @@ A tape file is a script made up of commands describing what actions to perform i
 
 The following is a list of all possible commands in VHS:
 
-* %Output% <path>.(gif|webm|mp4)
+* %Output% <path>.(gif|webm|webp|mp4)
 * %Require% <program>
 * %Set% <setting> <value>
 * %Sleep% <time>
@@ -48,7 +48,7 @@ The following is a list of all possible commands in VHS:
 `
 
 	manOutput = `The Output command instructs VHS where to save the output of the recording.
-File names with the extension %.gif%, %.webm%, %.mp4% will have the respective file types.
+File names with the extension %.gif%, %.webm%, %.webp%, %.mp4% will have the respective file types.
 `
 
 	manSettings = `The Set command allows VHS to adjust settings in the terminal, such as fonts, dimensions, and themes.
