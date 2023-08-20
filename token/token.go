@@ -90,6 +90,7 @@ const (
 	WINDOW_BAR_SIZE = "WINDOW_BAR_SIZE" //nolint:revive
 	BORDER_RADIUS   = "CORNER_RADIUS"   //nolint:revive
 	CURSOR_BLINK    = "CURSOR_BLINK"    //nolint:revive
+	DISABLE_RENDER  = "DISABLE_RENDER"  //nolint:revive
 )
 
 // Keywords maps keyword strings to tokens.
@@ -137,6 +138,7 @@ var Keywords = map[string]Type{
 	"LineHeight":    LINE_HEIGHT,
 	"PlaybackSpeed": PLAYBACK_SPEED,
 	"TypingSpeed":   TYPING_SPEED,
+	"DisableRender": DISABLE_RENDER,
 	"Padding":       PADDING,
 	"Theme":         THEME,
 	"Width":         WIDTH,
@@ -156,7 +158,7 @@ func IsSetting(t Type) bool {
 	case SHELL, FONT_FAMILY, FONT_SIZE, LETTER_SPACING, LINE_HEIGHT,
 		FRAMERATE, TYPING_SPEED, THEME, PLAYBACK_SPEED, HEIGHT, WIDTH,
 		PADDING, LOOP_OFFSET, MARGIN_FILL, MARGIN, WINDOW_BAR,
-		WINDOW_BAR_SIZE, BORDER_RADIUS, CURSOR_BLINK:
+		WINDOW_BAR_SIZE, BORDER_RADIUS, CURSOR_BLINK, DISABLE_RENDER:
 		return true
 	default:
 		return false

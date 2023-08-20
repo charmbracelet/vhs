@@ -411,6 +411,7 @@ func (p *Parser) parseSet() Command {
 		} else if cmd.Options == "TypingSpeed" {
 			cmd.Args += "s"
 		}
+
 	case token.WINDOW_BAR:
 		cmd.Args = p.peek.Literal
 		p.nextToken()
@@ -422,6 +423,7 @@ func (p *Parser) parseSet() Command {
 				NewError(p.cur, windowBar+" is not a valid bar style."),
 			)
 		}
+
 	case token.MARGIN_FILL:
 		cmd.Args = p.peek.Literal
 		p.nextToken()
@@ -442,6 +444,7 @@ func (p *Parser) parseSet() Command {
 				)
 			}
 		}
+
 	case token.CURSOR_BLINK:
 		cmd.Args = p.peek.Literal
 		p.nextToken()
@@ -453,6 +456,16 @@ func (p *Parser) parseSet() Command {
 			)
 		}
 
+	case token.DISABLE_RENDER:
+		cmd.Args = p.peek.Literal
+		p.nextToken()
+
+		if p.cur.Type != token.BOOLEAN {
+			p.errors = append(
+				p.errors,
+				NewError(p.cur, "expected boolean value."),
+			)
+		}
 	default:
 		cmd.Args = p.peek.Literal
 		p.nextToken()
