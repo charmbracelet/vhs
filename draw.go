@@ -220,7 +220,7 @@ func isValidWindowBar(windowbar string) bool {
 }
 
 // Make a window bar and save it to a file
-func MakeWindowBar(termWidth, termHeight int, opts VideoOptions, file string) {
+func MakeWindowBar(termWidth, termHeight int, opts StyleOptions, file string) {
 	var err error
 	switch opts.WindowBar {
 	case "Colorful":
@@ -241,7 +241,7 @@ func MakeWindowBar(termWidth, termHeight int, opts VideoOptions, file string) {
 const barToDotRatio = 6
 const barToDotBorderRatio = 5
 
-func makeColorfulBar(termWidth int, termHeight int, isRight bool, opts VideoOptions, targetpng string) error {
+func makeColorfulBar(termWidth int, termHeight int, isRight bool, opts StyleOptions, targetpng string) error {
 	// Radius of dots
 	dotRad := opts.WindowBarSize / barToDotRatio
 	dotDia := double(dotRad)
@@ -322,7 +322,7 @@ func makeColorfulBar(termWidth int, termHeight int, isRight bool, opts VideoOpti
 	return err
 }
 
-func makeRingBar(termWidth int, termHeight int, isRight bool, opts VideoOptions, targetpng string) error {
+func makeRingBar(termWidth int, termHeight int, isRight bool, opts StyleOptions, targetpng string) error {
 	// Radius of dots
 	outerRad := opts.WindowBarSize / barToDotBorderRatio
 	outerDia := double(outerRad)

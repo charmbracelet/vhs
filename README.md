@@ -213,6 +213,7 @@ There are a few basic types of VHS commands:
 * [`Sleep <time>`](#sleep): wait for a certain amount of time
 * [`Hide`](#hide): hide commands from output
 * [`Show`](#show): stop hiding commands from output
+* [`Screenshot`](#screenshot): screenshot the current frame
 
 ### Output
 
@@ -703,6 +704,15 @@ Type "You will see this being typed."
   <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/hide.gif">
   <img width="600" alt="Example of typing something while hidden" src="https://stuff.charm.sh/vhs/examples/hide.gif">
 </picture>
+
+### Screenshot
+
+The `Screenshot` command captures the current frame (png format).
+
+```elixir
+# At any point...
+Screenshot examples/screenshot.png
+```
 
 ***
 

@@ -69,6 +69,8 @@ func (p *Parser) parseCommand() Command {
 		return p.parseShow()
 	case SOURCE:
 		return p.parseSource()
+	case SCREENSHOT:
+		return p.parseScreenshot()
 	default:
 		p.errors = append(p.errors, NewError(p.cur, "Invalid command: "+p.cur.Literal))
 		return Command{Type: ILLEGAL}
@@ -465,6 +467,35 @@ func (p *Parser) parseSource() Command {
 
 	cmd.Args = p.peek.Literal
 	p.nextToken()
+	return cmd
+}
+
+// parseScreenshot parses screenshot command.
+// Screenshot command takes a file path for storing screenshot.
+//
+// Screenshot <path>
+func (p *Parser) parseScreenshot() Command {
+	cmd := Command{Type: SCREENSHOT}
+
+	if p.peek.Type != STRING {
+		p.errors = append(p.errors, NewError(p.cur, "Expected path after Screenshot"))
+		p.nextToken()
+		return cmd
+	}
+
+	path := p.peek.Literal
+
+	// Check if path has .png extension
+	ext := filepath.Ext(path)
+	if ext != ".png" {
+		p.errors = append(p.errors, NewError(p.peek, "Expected file with .png extension"))
+		p.nextToken()
+		return cmd
+	}
+
+	cmd.Args = path
+	p.nextToken()
+
 	return cmd
 }
 
