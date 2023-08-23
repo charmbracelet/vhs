@@ -132,7 +132,7 @@ func ExecuteKey(k input.Key) CommandFunc {
 			repeat = 1
 		}
 		for i := 0; i < repeat; i++ {
-			_ = v.Page.Keyboard.Type(k)
+			_ = v.currentTerm.Page.Keyboard.Type(k)
 			time.Sleep(typingSpeed)
 		}
 	}
@@ -142,7 +142,7 @@ func ExecuteKey(k input.Key) CommandFunc {
 // with the ctrl key held down on the running instance of vhs.
 func ExecuteCtrl(c Command, v *VHS) {
 	// Create key combination by holding ControlLeft
-	action := v.Page.KeyActions().Press(input.ControlLeft)
+	action := v.currentTerm.Page.KeyActions().Press(input.ControlLeft)
 	keys := strings.Split(c.Args, " ")
 
 	for i, key := range keys {
@@ -177,21 +177,21 @@ func ExecuteCtrl(c Command, v *VHS) {
 // ExecuteAlt is a CommandFunc that presses the argument key with the alt key
 // held down on the running instance of vhs.
 func ExecuteAlt(c Command, v *VHS) {
-	_ = v.Page.Keyboard.Press(input.AltLeft)
+	_ = v.currentTerm.Page.Keyboard.Press(input.AltLeft)
 	if k, ok := keywords[c.Args]; ok {
 		switch k {
 		case ENTER:
-			_ = v.Page.Keyboard.Type(input.Enter)
+			_ = v.currentTerm.Page.Keyboard.Type(input.Enter)
 		}
 	} else {
 		for _, r := range c.Args {
 			if k, ok := keymap[r]; ok {
-				_ = v.Page.Keyboard.Type(k)
+				_ = v.currentTerm.Page.Keyboard.Type(k)
 			}
 		}
 	}
 
-	_ = v.Page.Keyboard.Release(input.AltLeft)
+	_ = v.currentTerm.Page.Keyboard.Release(input.AltLeft)
 }
 
 // ExecuteHide is a CommandFunc that starts or stops the recording of the vhs.
@@ -229,13 +229,14 @@ func ExecuteType(c Command, v *VHS) {
 	if err != nil {
 		typingSpeed = v.Options.TypingSpeed
 	}
+
 	for _, r := range c.Args {
 		k, ok := keymap[r]
 		if ok {
-			_ = v.Page.Keyboard.Type(k)
+			_ = v.currentTerm.Page.Keyboard.Type(k)
 		} else {
-			_ = v.Page.MustElement("textarea").Input(string(r))
-			v.Page.MustWaitIdle()
+			_ = v.currentTerm.Page.MustElement("textarea").Input(string(r))
+			v.currentTerm.Page.MustWaitIdle()
 		}
 		time.Sleep(typingSpeed)
 	}
@@ -286,23 +287,23 @@ func ExecuteSet(c Command, v *VHS) {
 	Settings[c.Options](c, v)
 }
 
-// ExecuteSetFontSize applies the font size on the vhs.
+// ExecuteSetFontSize applies the font size on the vhs mainTerm.
 func ExecuteSetFontSize(c Command, v *VHS) {
 	fontSize, _ := strconv.Atoi(c.Args)
 	v.Options.FontSize = fontSize
-	_, _ = v.Page.Eval(fmt.Sprintf("() => term.options.fontSize = %d", fontSize))
+	_, _ = v.mainTerm.Page.Eval(fmt.Sprintf("() => term.options.fontSize = %d", fontSize))
 
 	// When changing the font size only the canvas dimensions change which are
 	// scaled back during the render to fit the aspect ration and dimensions.
 	//
 	// We need to call term.fit to ensure that everything is resized properly.
-	_, _ = v.Page.Eval("term.fit")
+	_, _ = v.mainTerm.Page.Eval("term.fit")
 }
 
-// ExecuteSetFontFamily applies the font family on the vhs.
+// ExecuteSetFontFamily applies the font family on the vhs mainTerm.
 func ExecuteSetFontFamily(c Command, v *VHS) {
 	v.Options.FontFamily = c.Args
-	_, _ = v.Page.Eval(fmt.Sprintf("() => term.options.fontFamily = '%s'", withSymbolsFallback(c.Args)))
+	_, _ = v.mainTerm.Page.Eval(fmt.Sprintf("() => term.options.fontFamily = '%s'", withSymbolsFallback(c.Args)))
 }
 
 // ExecuteSetHeight applies the height on the vhs.
@@ -328,21 +329,21 @@ const (
 )
 
 // ExecuteSetLetterSpacing applies letter spacing (also known as tracking) on
-// the vhs.
+// the vhs mainTerm.
 func ExecuteSetLetterSpacing(c Command, v *VHS) {
 	letterSpacing, _ := strconv.ParseFloat(c.Args, bitSize)
 	v.Options.LetterSpacing = letterSpacing
-	_, _ = v.Page.Eval(fmt.Sprintf("() => term.options.letterSpacing = %f", letterSpacing))
+	_, _ = v.mainTerm.Page.Eval(fmt.Sprintf("() => term.options.letterSpacing = %f", letterSpacing))
 }
 
-// ExecuteSetLineHeight applies the line height on the vhs.
+// ExecuteSetLineHeight applies the line height on the vhs mainTerm.
 func ExecuteSetLineHeight(c Command, v *VHS) {
 	lineHeight, _ := strconv.ParseFloat(c.Args, bitSize)
 	v.Options.LineHeight = lineHeight
-	_, _ = v.Page.Eval(fmt.Sprintf("() => term.options.lineHeight = %f", lineHeight))
+	_, _ = v.mainTerm.Page.Eval(fmt.Sprintf("() => term.options.lineHeight = %f", lineHeight))
 }
 
-// ExecuteSetTheme applies the theme on the vhs.
+// ExecuteSetTheme applies the theme on the vhs mainTerm.
 func ExecuteSetTheme(c Command, v *VHS) {
 	var err error
 	v.Options.Theme, err = getTheme(c.Args)
@@ -352,7 +353,7 @@ func ExecuteSetTheme(c Command, v *VHS) {
 	}
 
 	bts, _ := json.Marshal(v.Options.Theme)
-	_, _ = v.Page.Eval(fmt.Sprintf("() => term.options.theme = %s", string(bts)))
+	_, _ = v.currentTerm.Page.Eval(fmt.Sprintf("() => term.options.theme = %s", string(bts)))
 	v.Options.Video.BackgroundColor = v.Options.Theme.Background
 	v.Options.Video.WindowBarColor = v.Options.Theme.Background
 }

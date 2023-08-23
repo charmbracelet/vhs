@@ -34,7 +34,7 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	if err := v.Start(); err != nil {
 		return []error{err}
 	}
-	defer func() { _ = v.close() }()
+	defer func() { v.Close() }()
 
 	// Run Output and Set commands as they only modify options on the VHS instance.
 	var offset int
@@ -135,7 +135,9 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 			fmt.Fprintln(out, cmd.Highlight(true))
 			continue
 		}
+
 		fmt.Fprintln(out, cmd.Highlight(!v.recording || cmd.Type == SHOW || cmd.Type == HIDE || isSetting))
+
 		cmd.Execute(&v)
 	}
 

@@ -40,7 +40,7 @@ func (v *VHS) SaveOutput() {
 	})
 
 	// Get the current buffer.
-	buf, err := v.Page.Eval("() => Array(term.rows).fill(0).map((e, i) => term.buffer.active.getLine(i).translateToString().trimEnd())")
+	buf, err := v.mainTerm.Page.Eval("() => Array(term.rows).fill(0).map((e, i) => term.buffer.active.getLine(i).translateToString().trimEnd())")
 	if err != nil {
 		return
 	}

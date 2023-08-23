@@ -2,6 +2,7 @@ package main
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 )
 
@@ -50,6 +51,48 @@ func TestExecuteSetTheme(t *testing.T) {
 		theme, err := getTheme("foobar")
 		requireErr(t, err)
 		requireDefaultTheme(t, theme)
+	})
+}
+
+func TestExecuteHide(t *testing.T) {
+	t.Run("Should create hiddenTerm if NOT exist and stop the recording", func(t *testing.T) {
+		vhs := &VHS{
+			currentTerm: &Terminal{},
+			hiddenTerm:  &Terminal{},
+			mainTerm:    &Terminal{},
+			mutex:       &sync.Mutex{},
+		}
+
+		ExecuteHide(Command{Type: HIDE}, vhs)
+
+		if vhs.recording {
+			t.Errorf("Hide command has not stopped the recording")
+		}
+
+		if vhs.hiddenTerm == nil {
+			t.Errorf("Hide command has not initialized hiddenTerm")
+		}
+	})
+}
+
+func TestExecuteShow(t *testing.T) {
+	t.Run("Should use mainTerm as currentTerm and restart the recording", func(t *testing.T) {
+		vhs := &VHS{
+			currentTerm: &Terminal{},
+			hiddenTerm:  &Terminal{},
+			mainTerm:    &Terminal{},
+			mutex:       &sync.Mutex{},
+		}
+
+		ExecuteShow(Command{Type: SHOW}, vhs)
+
+		if !vhs.recording {
+			t.Errorf("Show command has not restared the recording")
+		}
+
+		if vhs.currentTerm != vhs.mainTerm {
+			t.Errorf("Show has not set mainTerm as currentTerm")
+		}
 	})
 }
 
