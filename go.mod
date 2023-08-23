@@ -7,11 +7,11 @@ require (
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/charmbracelet/glamour v0.6.0
 	github.com/charmbracelet/keygen v0.4.3
-	github.com/charmbracelet/lipgloss v0.7.1
+	github.com/charmbracelet/lipgloss v0.8.0
 	github.com/charmbracelet/ssh v0.0.0-20221117183211-483d43d97103
 	github.com/charmbracelet/wish v1.1.1
 	github.com/creack/pty v1.1.18
-	github.com/go-rod/rod v0.114.2
+	github.com/go-rod/rod v0.114.3
 	github.com/hashicorp/go-version v1.6.0
 	github.com/mattn/go-isatty v0.0.19
 	github.com/mattn/go-runewidth v0.0.15
