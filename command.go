@@ -265,16 +265,13 @@ func ExecuteOutput(c Command, v *VHS) {
 }
 
 func ExecuteCopy(c Command, _ *VHS) {
-	err := clipboard.WriteAll(c.Args)
-	if err != nil {
-		fmt.Println(err)
-	}
+	_ = clipboard.WriteAll(c.Args)
 }
 
 func ExecutePaste(_ Command, v *VHS) {
 	clip, err := clipboard.ReadAll()
 	if err != nil {
-		fmt.Println(err)
+		return
 	}
 	for _, r := range clip {
 		k, ok := keymap[r]
