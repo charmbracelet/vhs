@@ -61,15 +61,16 @@ const (
 	RIGHT = "RIGHT"
 	UP    = "UP"
 
-	HIDE       = "HIDE"
-	OUTPUT     = "OUTPUT"
-	REQUIRE    = "REQUIRE"
-	SET        = "SET"
-	SHOW       = "SHOW"
-	SOURCE     = "SOURCE"
-	TYPE       = "TYPE"
-	SCREENSHOT = "SCREENSHOT"
-
+	HIDE            = "HIDE"
+	OUTPUT          = "OUTPUT"
+	REQUIRE         = "REQUIRE"
+	SET             = "SET"
+	SHOW            = "SHOW"
+	SOURCE          = "SOURCE"
+	TYPE            = "TYPE"
+	SCREENSHOT      = "SCREENSHOT"
+	COPY            = "COPY"
+	PASTE           = "PASTE"
 	SHELL           = "SHELL"
 	FONT_FAMILY     = "FONT_FAMILY" //nolint:revive
 	FONT_SIZE       = "FONT_SIZE"   //nolint:revive
@@ -142,6 +143,8 @@ var keywords = map[string]TokenType{
 	"true":          BOOLEAN,
 	"false":         BOOLEAN,
 	"Screenshot":    SCREENSHOT,
+	"Copy":          COPY,
+	"Paste":         PASTE,
 }
 
 // IsSetting returns whether a token is a setting.
@@ -163,7 +166,7 @@ func IsCommand(t TokenType) bool {
 	case TYPE, SLEEP,
 		UP, DOWN, RIGHT, LEFT, PAGEUP, PAGEDOWN,
 		ENTER, BACKSPACE, DELETE, TAB,
-		ESCAPE, HOME, INSERT, END, CTRL, SOURCE, SCREENSHOT:
+		ESCAPE, HOME, INSERT, END, CTRL, SOURCE, SCREENSHOT, COPY, PASTE:
 		return true
 	default:
 		return false

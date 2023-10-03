@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/atotto/clipboard"
 	"io"
 	"os"
 	"os/exec"
@@ -42,6 +43,8 @@ var CommandTypes = []CommandType{ //nolint: deadcode
 	UP,
 	SOURCE,
 	SCREENSHOT,
+	COPY,
+	PASTE,
 }
 
 // String returns the string representation of the command.
@@ -81,6 +84,8 @@ var CommandFuncs = map[CommandType]CommandFunc{
 	ALT:        ExecuteAlt,
 	ILLEGAL:    ExecuteNoop,
 	SCREENSHOT: ExecuteScreenshot,
+	COPY:       ExecuteCopy,
+	PASTE:      ExecutePaste,
 }
 
 // Command represents a command with options and arguments.
@@ -256,6 +261,26 @@ func ExecuteOutput(c Command, v *VHS) {
 		v.Options.Video.Output.WebM = c.Args
 	default:
 		v.Options.Video.Output.GIF = c.Args
+	}
+}
+
+func ExecuteCopy(c Command, _ *VHS) {
+	_ = clipboard.WriteAll(c.Args)
+}
+
+func ExecutePaste(_ Command, v *VHS) {
+	clip, err := clipboard.ReadAll()
+	if err != nil {
+		return
+	}
+	for _, r := range clip {
+		k, ok := keymap[r]
+		if ok {
+			_ = v.Page.Keyboard.Type(k)
+		} else {
+			_ = v.Page.MustElement("textarea").Input(string(r))
+			v.Page.MustWaitIdle()
+		}
 	}
 }
 

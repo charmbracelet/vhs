@@ -71,6 +71,10 @@ func (p *Parser) parseCommand() Command {
 		return p.parseSource()
 	case SCREENSHOT:
 		return p.parseScreenshot()
+	case COPY:
+		return p.parseCopy()
+	case PASTE:
+		return p.parsePaste()
 	default:
 		p.errors = append(p.errors, NewError(p.cur, "Invalid command: "+p.cur.Literal))
 		return Command{Type: ILLEGAL}
@@ -392,6 +396,44 @@ func (p *Parser) parseType() Command {
 		}
 	}
 
+	return cmd
+}
+
+// parseCopy parses a copy command
+// A copy command takes a string to the clipboard
+//
+// Copy "string"
+func (p *Parser) parseCopy() Command {
+	cmd := Command{Type: COPY}
+
+	if p.peek.Type != STRING {
+		p.errors = append(p.errors, NewError(p.peek, p.cur.Literal+" expects string"))
+	}
+	for p.peek.Type == STRING {
+		p.nextToken()
+		cmd.Args += p.cur.Literal
+
+		// If the next token is a string, add a space between them.
+		// Since tokens must be separated by a whitespace, this is most likely
+		// what the user intended.
+		//
+		// Although it is possible that there may be multiple spaces / tabs between
+		// the tokens, however if the user was intending to type multiple spaces
+		// they would need to use a string literal.
+
+		if p.peek.Type == STRING {
+			cmd.Args += " "
+		}
+	}
+	return cmd
+}
+
+// parsePaste parses paste command
+// Paste Command the string from the clipboard buffer.
+//
+// Paste
+func (p *Parser) parsePaste() Command {
+	cmd := Command{Type: PASTE}
 	return cmd
 }
 

@@ -214,6 +214,7 @@ There are a few basic types of VHS commands:
 * [`Hide`](#hide): hide commands from output
 * [`Show`](#show): stop hiding commands from output
 * [`Screenshot`](#screenshot): screenshot the current frame
+* [`Copy/Paste`](#copy--paste): copy and paste text from clipboard.
 
 ### Output
 
@@ -712,6 +713,17 @@ The `Screenshot` command captures the current frame (png format).
 ```elixir
 # At any point...
 Screenshot examples/screenshot.png
+```
+
+### Copy / Paste
+
+The `Copy` and `Paste` copy and paste the string from clipboard.
+
+```elixir
+Copy "https://github.com/charmbracelet"
+Type "open "
+Sleep 500ms
+Paste
 ```
 
 ***
