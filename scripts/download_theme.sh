@@ -6,5 +6,4 @@ curl $1 |
 		-e 's/"brightPurple":/"brightMagenta":/g' \
 		-e 's/selectionBackground/selection/g' \
 		-e 's/cursorColor/cursor/g' |
-	jq 'map(del(.meta.credits,.cursor,.selection))' >$2.json
-
+	jq >$2.json

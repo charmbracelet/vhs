@@ -19,8 +19,16 @@
     "brightWhite": "#f7f7f7",
     "background": "#f7f7f7",
     "foreground": "#4a4543",
+    "cursor": "#4a4543",
+    "selection": "#a5a2a2",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": [
+        {
+          "name": "0x3024",
+          "link": "https://github.com/0x3024"
+        }
+      ]
     }
   },
   {
@@ -43,8 +51,16 @@
     "brightWhite": "#f7f7f7",
     "background": "#090300",
     "foreground": "#a5a2a2",
+    "cursor": "#a5a2a2",
+    "selection": "#4a4543",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "0x3024",
+          "link": "https://github.com/0x3024"
+        }
+      ]
     }
   },
   {
@@ -67,8 +83,11 @@
     "brightWhite": "#f7f7f7",
     "background": "#102040",
     "foreground": "#dddddd",
+    "cursor": "#007acc",
+    "selection": "#bfdbfe",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -91,8 +110,11 @@
     "brightWhite": "#ffffff",
     "background": "#111416",
     "foreground": "#eeeeec",
+    "cursor": "#bbbbbb",
+    "selection": "#eeeeec",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -115,8 +137,16 @@
     "brightWhite": "#e4d5c7",
     "background": "#040404",
     "foreground": "#feffff",
+    "cursor": "#feffff",
+    "selection": "#606060",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "hongzimao",
+          "link": "https://github.com/hongzimao/iTerm2-Color-Schemes"
+        }
+      ]
     }
   },
   {
@@ -139,8 +169,16 @@
     "brightWhite": "#f6f5fb",
     "background": "#1f1d45",
     "foreground": "#f8dcc0",
+    "cursor": "#efbf38",
+    "selection": "#706b4e",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
@@ -163,8 +201,16 @@
     "brightWhite": "#f5f5f5",
     "background": "#212121",
     "foreground": "#d0d0d0",
+    "cursor": "#d0d0d0",
+    "selection": "#303030",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "yabatadesign",
+          "link": "https://github.com/YabataDesign/afterglow-itermcolors"
+        }
+      ]
     }
   },
   {
@@ -187,8 +233,11 @@
     "brightWhite": "#f7f7f7",
     "background": "#f7f7f7",
     "foreground": "#000000",
+    "cursor": "#007acc",
+    "selection": "#bfdbfe",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": null
     }
   },
   {
@@ -211,8 +260,16 @@
     "brightWhite": "#73fa91",
     "background": "#0f1610",
     "foreground": "#637d75",
+    "cursor": "#73fa91",
+    "selection": "#1d4125",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
@@ -235,8 +292,20 @@
     "brightWhite": "#e5e5e5",
     "background": "#262a33",
     "foreground": "#e5e5e5",
+    "cursor": "#f8f8f0",
+    "selection": "#5a5c62",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "memije",
+          "link": "https://github.com/memije"
+        },
+        {
+          "name": "EliverLara",
+          "link": "https://github.com/EliverLara/"
+        }
+      ]
     }
   },
   {
@@ -259,8 +328,11 @@
     "brightWhite": "#ffffff",
     "background": "#2c2b2b",
     "foreground": "#d5a200",
+    "cursor": "#c7c7c7",
+    "selection": "#6b5b02",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -283,8 +355,11 @@
     "brightWhite": "#efefef",
     "background": "#201f1e",
     "foreground": "#eee4d9",
+    "cursor": "#7a1c1c",
+    "selection": "#25524a",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -307,8 +382,16 @@
     "brightWhite": "#ffffff",
     "background": "#0e1019",
     "foreground": "#fffaf4",
+    "cursor": "#ff0018",
+    "selection": "#002a3b",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "effkay",
+          "link": "https://github.com/effkay/iTerm-argonaut"
+        }
+      ]
     }
   },
   {
@@ -331,8 +414,16 @@
     "brightWhite": "#ddccbb",
     "background": "#1c1c1c",
     "foreground": "#ddeedd",
+    "cursor": "#e2bbef",
+    "selection": "#4d4d4d",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "baskerville",
+          "link": "https://github.com/baskerville/iTerm-2-Color-Themes"
+        }
+      ]
     }
   },
   {
@@ -355,8 +446,16 @@
     "brightWhite": "#f5f7ff",
     "background": "#202746",
     "foreground": "#979db4",
+    "cursor": "#979db4",
+    "selection": "#5e6687",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "atelierbram",
+          "link": "http://atelierbram.github.io/syntax-highlighting/atelier-schemes/sulphurpool/"
+        }
+      ]
     }
   },
   {
@@ -379,8 +478,16 @@
     "brightWhite": "#e0e0e0",
     "background": "#161719",
     "foreground": "#c5c8c6",
+    "cursor": "#d0d0d0",
+    "selection": "#444444",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "bahlo",
+          "link": "https://github.com/bahlo/iterm-colors"
+        }
+      ]
     }
   },
   {
@@ -403,8 +510,16 @@
     "brightWhite": "#ffffff",
     "background": "#f9f9f9",
     "foreground": "#2a2c33",
+    "cursor": "#bbbbbb",
+    "selection": "#ededed",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": [
+        {
+          "name": "iamstarkov",
+          "link": "https://github.com/iamstarkov"
+        }
+      ]
     }
   },
   {
@@ -427,8 +542,16 @@
     "brightWhite": "#c74ded",
     "background": "#23262e",
     "foreground": "#ffca28",
+    "cursor": "#ee5d43",
+    "selection": "#292e38",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "fcsmJS",
+          "link": "https://github.com/fcsmJS/iTerm2-Color-Schemes"
+        }
+      ]
     }
   },
   {
@@ -451,8 +574,16 @@
     "brightWhite": "#ffffff",
     "background": "#0f1419",
     "foreground": "#e6e1cf",
+    "cursor": "#f29718",
+    "selection": "#253340",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "alebcay",
+          "link": "https://github.com/alebcay"
+        }
+      ]
     }
   },
   {
@@ -475,8 +606,11 @@
     "brightWhite": "#ffffff",
     "background": "#1f2430",
     "foreground": "#cbccc6",
+    "cursor": "#ffcc66",
+    "selection": "#33415e",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -499,8 +633,16 @@
     "brightWhite": "#ffffff",
     "background": "#fafafa",
     "foreground": "#5c6773",
+    "cursor": "#ff6a00",
+    "selection": "#f0eee4",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": [
+        {
+          "name": "alebcay",
+          "link": "https://github.com/alebcay"
+        }
+      ]
     }
   },
   {
@@ -523,8 +665,16 @@
     "brightWhite": "#ffffff",
     "background": "#191323",
     "foreground": "#cccccc",
+    "cursor": "#e07d13",
+    "selection": "#220525",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "ReagentX",
+          "link": "https://github.com/ReagentX"
+        }
+      ]
     }
   },
   {
@@ -547,8 +697,16 @@
     "brightWhite": "#dadbd6",
     "background": "#1b1d1e",
     "foreground": "#6f6f6f",
+    "cursor": "#fcef0c",
+    "selection": "#4d504c",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "pyrophos",
+          "link": "https://github.com/pyrophos"
+        }
+      ]
     }
   },
   {
@@ -571,8 +729,16 @@
     "brightWhite": "#d5ccba",
     "background": "#d5ccba",
     "foreground": "#45373c",
+    "cursor": "#45373c",
+    "selection": "#968c83",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": [
+        {
+          "name": "idleberg",
+          "link": "https://github.com/idleberg"
+        }
+      ]
     }
   },
   {
@@ -595,8 +761,16 @@
     "brightWhite": "#d5ccba",
     "background": "#20111b",
     "foreground": "#968c83",
+    "cursor": "#968c83",
+    "selection": "#45373c",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "idleberg",
+          "link": "https://github.com/idleberg"
+        }
+      ]
     }
   },
   {
@@ -619,8 +793,16 @@
     "brightWhite": "#fff9d5",
     "background": "#2a1f1d",
     "foreground": "#e0dbb7",
+    "cursor": "#573d26",
+    "selection": "#563c27",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
@@ -643,8 +825,11 @@
     "brightWhite": "#ffffff",
     "background": "#0d1926",
     "foreground": "#d9e6f2",
+    "cursor": "#d9e6f2",
+    "selection": "#c1ddff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -667,8 +852,16 @@
     "brightWhite": "#ffffff",
     "background": "#101116",
     "foreground": "#00a2ff",
+    "cursor": "#76ff9f",
+    "selection": "#c1deff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "ReagentX",
+          "link": "https://github.com/ReagentX"
+        }
+      ]
     }
   },
   {
@@ -691,8 +884,20 @@
     "brightWhite": "#0a6c7e",
     "background": "#1c0c28",
     "foreground": "#babab9",
+    "cursor": "#fcfad6",
+    "selection": "#606060",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "murmurlilia",
+          "link": "https://www.instagram.com/the.julias"
+        },
+        {
+          "name": "fitz123",
+          "link": "https://github.com/fitz123"
+        }
+      ]
     }
   },
   {
@@ -715,8 +920,11 @@
     "brightWhite": "#ffffff",
     "background": "#006984",
     "foreground": "#c5f2ff",
+    "cursor": "#ffcc00",
+    "selection": "#2baeca",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -739,8 +947,11 @@
     "brightWhite": "#ffffff",
     "background": "#282c34",
     "foreground": "#b9c0cb",
+    "cursor": "#ffcc00",
+    "selection": "#b9c0ca",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -763,8 +974,11 @@
     "brightWhite": "#d3d3d3",
     "background": "#f9f9f9",
     "foreground": "#373a41",
+    "cursor": "#f32759",
+    "selection": "#daf0ff",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": null
     }
   },
   {
@@ -787,8 +1001,16 @@
     "brightWhite": "#ffffff",
     "background": "#0000a4",
     "foreground": "#ffff4e",
+    "cursor": "#ffa560",
+    "selection": "#a4a4a4",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "delip",
+          "link": "https://gist.github.com/delip/9e16c606d9331d69d681"
+        }
+      ]
     }
   },
   {
@@ -811,8 +1033,20 @@
     "brightWhite": "#fcfcfc",
     "background": "#31363b",
     "foreground": "#eff0f1",
+    "cursor": "#eff0f1",
+    "selection": "#eff0f1",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "KDE",
+          "link": "https://kde.org"
+        },
+        {
+          "name": "nieltg",
+          "link": "https://github.com/nieltg"
+        }
+      ]
     }
   },
   {
@@ -835,8 +1069,16 @@
     "brightWhite": "#c2c8d7",
     "background": "#191919",
     "foreground": "#b3c9d7",
+    "cursor": "#f34b00",
+    "selection": "#b3c9d7",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "tw15egan",
+          "link": "https://github.com/tw15egan"
+        }
+      ]
     }
   },
   {
@@ -859,8 +1101,16 @@
     "brightWhite": "#ffffff",
     "background": "#2b2b2b",
     "foreground": "#e6e1dc",
+    "cursor": "#ffffff",
+    "selection": "#5a647e",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "vinkla",
+          "link": "https://github.com/vinkla/broadcast-theme"
+        }
+      ]
     }
   },
   {
@@ -883,8 +1133,16 @@
     "brightWhite": "#ffffff",
     "background": "#131313",
     "foreground": "#d6dbe5",
+    "cursor": "#b9b9b9",
+    "selection": "#1f1f1f",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "bahlo",
+          "link": "https://github.com/bahlo/iterm-colors"
+        }
+      ]
     }
   },
   {
@@ -900,15 +1158,23 @@
     "brightRed": "#FA8C8F",
     "brightWhite": "#FFFFFF",
     "brightYellow": "#FFFF55",
+    "cursor": "#BBBBBB",
     "cyan": "#1F9EE7",
     "foreground": "#FFFFFF",
     "green": "#21B089",
     "magenta": "#944D95",
     "red": "#F9555F",
+    "selection": "#B5D5FF",
     "white": "#BBBBBB",
     "yellow": "#FEF02A",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "jos3s",
+          "link": "https://github.com/jos3s"
+        }
+      ]
     }
   },
   {
@@ -931,8 +1197,11 @@
     "brightWhite": "#ffffff",
     "background": "#000000",
     "foreground": "#bbbbbb",
+    "cursor": "#bbbbbb",
+    "selection": "#b5d5ff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -955,8 +1224,11 @@
     "brightWhite": "#ffffff",
     "background": "#ffffff",
     "foreground": "#000000",
+    "cursor": "#000000",
+    "selection": "#b5d5ff",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": null
     }
   },
   {
@@ -979,8 +1251,11 @@
     "brightWhite": "#ffffff",
     "background": "#000000",
     "foreground": "#bbbbbb",
+    "cursor": "#ffa560",
+    "selection": "#363983",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -1003,8 +1278,16 @@
     "brightWhite": "#fdf6e3",
     "background": "#002b36",
     "foreground": "#839496",
+    "cursor": "#839496",
+    "selection": "#073642",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Solarized web site",
+          "link": "http://ethanschoonover.com/solarized"
+        }
+      ]
     }
   },
   {
@@ -1027,8 +1310,16 @@
     "brightWhite": "#fdf6e3",
     "background": "#fdf6e3",
     "foreground": "#657b83",
+    "cursor": "#657b83",
+    "selection": "#eee8d5",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": [
+        {
+          "name": "Solarized web site",
+          "link": "http://ethanschoonover.com/solarized"
+        }
+      ]
     }
   },
   {
@@ -1051,8 +1342,11 @@
     "brightWhite": "#eeeeec",
     "background": "#000000",
     "foreground": "#ffffff",
+    "cursor": "#ffffff",
+    "selection": "#b5d5ff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -1075,8 +1369,11 @@
     "brightWhite": "#eeeeec",
     "background": "#ffffff",
     "foreground": "#000000",
+    "cursor": "#000000",
+    "selection": "#b5d5ff",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": null
     }
   },
   {
@@ -1099,8 +1396,16 @@
     "brightWhite": "#f7f7f7",
     "background": "#40318d",
     "foreground": "#7869c4",
+    "cursor": "#7869c4",
+    "selection": "#7869c4",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "idleberg",
+          "link": "https://github.com/idleberg"
+        }
+      ]
     }
   },
   {
@@ -1123,8 +1428,16 @@
     "brightWhite": "#ffffff",
     "background": "#2f2833",
     "foreground": "#d5ced9",
+    "cursor": "#d5ced9",
+    "selection": "#7e6c88",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Pustur",
+          "link": "https://github.com/Pustur"
+        }
+      ]
     }
   },
   {
@@ -1147,8 +1460,11 @@
     "brightWhite": "#a5adce",
     "background": "#303446",
     "foreground": "#c6d0f5",
+    "selection": "#626880",
+    "cursor": "#f2d5cf",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -1171,8 +1487,11 @@
     "brightWhite": "#bcc0cc",
     "background": "#eff1f5",
     "foreground": "#4c4f69",
+    "selection": "#acb0be",
+    "cursor": "#dc8a78",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": null
     }
   },
   {
@@ -1195,8 +1514,11 @@
     "brightWhite": "#b8c0e0",
     "background": "#24273a",
     "foreground": "#cad3f5",
+    "selection": "#5b6078",
+    "cursor": "#f4dbd6",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -1219,8 +1541,11 @@
     "brightWhite": "#a6adc8",
     "background": "#1e1e2e",
     "foreground": "#cdd6f4",
+    "selection": "#585b70",
+    "cursor": "#f5e0dc",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -1243,8 +1568,11 @@
     "brightWhite": "#a5adce",
     "background": "#303446",
     "foreground": "#c6d0f5",
+    "cursor": "#f2d5cf",
+    "selection": "#626880",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -1267,8 +1595,11 @@
     "brightWhite": "#bcc0cc",
     "background": "#eff1f5",
     "foreground": "#4c4f69",
+    "cursor": "#dc8a78",
+    "selection": "#acb0be",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": null
     }
   },
   {
@@ -1291,8 +1622,11 @@
     "brightWhite": "#a5adcb",
     "background": "#24273a",
     "foreground": "#cad3f5",
+    "cursor": "#f4dbd6",
+    "selection": "#5b6078",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -1315,8 +1649,11 @@
     "brightWhite": "#a6adc8",
     "background": "#1e1e2e",
     "foreground": "#cdd6f4",
+    "cursor": "#f5e0dc",
+    "selection": "#585b70",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -1339,8 +1676,11 @@
     "brightWhite": "#ffffff",
     "background": "#000000",
     "foreground": "#aaaaaa",
+    "cursor": "#b8b8b8",
+    "selection": "#c1deff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -1363,8 +1703,16 @@
     "brightWhite": "#d2d8d9",
     "background": "#2b2d2e",
     "foreground": "#d2d8d9",
+    "cursor": "#708284",
+    "selection": "#e4e8ed",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "achalv",
+          "link": "https://github.com/achalv/chalk"
+        }
+      ]
     }
   },
   {
@@ -1387,8 +1735,11 @@
     "brightWhite": "#ffffff",
     "background": "#29262f",
     "foreground": "#d9e6f2",
+    "cursor": "#d9e6f2",
+    "selection": "#073642",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -1411,8 +1762,20 @@
     "brightWhite": "#cbe3e7",
     "background": "#1e1c31",
     "foreground": "#cbe1e7",
+    "cursor": "#fbfcfc",
+    "selection": "#cbe1e7",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "challenger-deep-theme",
+          "link": "https://github.com/challenger-deep-theme/vim"
+        },
+        {
+          "name": "eendroroy",
+          "link": "https://github.com/eendroroy"
+        }
+      ]
     }
   },
   {
@@ -1435,8 +1798,16 @@
     "brightWhite": "#ffffff",
     "background": "#2c3643",
     "foreground": "#ffffff",
+    "cursor": "#b4b1b1",
+    "selection": "#67747c",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "KH",
+          "link": "https://github.com/spectralkh"
+        }
+      ]
     }
   },
   {
@@ -1459,8 +1830,16 @@
     "brightWhite": "#f4f4f4",
     "background": "#191c27",
     "foreground": "#aea47a",
+    "cursor": "#92805b",
+    "selection": "#172539",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
@@ -1483,8 +1862,16 @@
     "brightWhite": "#eeeeec",
     "background": "#ffffff",
     "foreground": "#262626",
+    "cursor": "#6fd3fc",
+    "selection": "#6fd3fc",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": [
+        {
+          "name": "jasonlong",
+          "link": "https://github.com/jasonlong/iterm-clrs"
+        }
+      ]
     }
   },
   {
@@ -1507,8 +1894,16 @@
     "brightWhite": "#8ff586",
     "background": "#142838",
     "foreground": "#8ff586",
+    "cursor": "#c4206f",
+    "selection": "#094fb1",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "vazquez",
+          "link": "https://github.com/vazquez/cobalt-neon-iterm"
+        }
+      ]
     }
   },
   {
@@ -1531,8 +1926,16 @@
     "brightWhite": "#ffffff",
     "background": "#132738",
     "foreground": "#ffffff",
+    "cursor": "#f0cc09",
+    "selection": "#18354f",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "wesbos",
+          "link": "https://github.com/wesbos/Cobalt2-iterm"
+        }
+      ]
     }
   },
   {
@@ -1555,8 +1958,16 @@
     "brightWhite": "#ffffff",
     "background": "#f5deb3",
     "foreground": "#000000",
+    "cursor": "#c7c7c7",
+    "selection": "#c1deff",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": [
+        {
+          "name": "cbitterfield",
+          "link": "https://github.com/cbitterfield"
+        }
+      ]
     }
   },
   {
@@ -1571,16 +1982,19 @@
     "brightRed": "#FF0000",
     "brightWhite": "#FFFFFF",
     "brightYellow": "#A39B46",
+    "cursor": "#000000",
     "cyan": "#41C2D0",
     "foreground": "#051840",
     "green": "#77B01B",
     "name": "Contrast Light",
     "magenta": "#8700FF",
     "red": "#BF0000",
+    "selection": "#B5D5FF",
     "white": "#E6E6E6",
     "yellow": "#857E39",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": null
     }
   },
   {
@@ -1595,16 +2009,19 @@
     "brightRed": "#FF54B0",
     "brightWhite": "#60FBBF",
     "brightYellow": "#FCF5AE",
+    "cursor": "#38FF9D",
     "cyan": "#FF5ED4",
     "foreground": "#ECDEF4",
     "green": "#52FFD0",
     "name": "coolnight",
     "magenta": "#C792EA",
     "red": "#FF3A3A",
+    "selection": "#38FF9C",
     "white": "#16FDA2",
     "yellow": "#FFF383",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -1627,8 +2044,16 @@
     "brightWhite": "#b0949d",
     "background": "#150707",
     "foreground": "#68525a",
+    "cursor": "#68525a",
+    "selection": "#2b1b1d",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
@@ -1643,16 +2068,19 @@
     "brightRed": "#F7768E",
     "brightWhite": "#ACB0D0",
     "brightYellow": "#E0AF68",
+    "cursor": "#2DB9E6",
     "cyan": "#2DB9E6",
     "foreground": "#737DA0",
     "green": "#32CD87",
     "name": "Crystal Violet",
     "magenta": "#6E14EB",
     "red": "#E63232",
+    "selection": "#5050E6",
     "white": "#D2D2D2",
     "yellow": "#EBA041",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -1667,16 +2095,19 @@
     "brightRed": "#FF8484",
     "brightWhite": "#D5DAFF",
     "brightYellow": "#FFCC5C",
+    "cursor": "#C5D1EB",
     "cyan": "#2DE2B2",
     "foreground": "#A4B1CD",
     "green": "#9FEF00",
     "name": "Cyber Cube",
     "magenta": "#9F00FF",
     "red": "#FF3E3E",
+    "selection": "#C5D1EB",
     "white": "#D5E0FF",
     "yellow": "#FFAF00",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -1699,8 +2130,16 @@
     "brightWhite": "#ffffff",
     "background": "#151144",
     "foreground": "#00ff92",
+    "cursor": "#00ff9c",
+    "selection": "#454d96",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "ReagentX",
+          "link": "https://github.com/ReagentX"
+        }
+      ]
     }
   },
   {
@@ -1723,8 +2162,16 @@
     "brightWhite": "#ffffff",
     "background": "#332a57",
     "foreground": "#e5e5e5",
+    "cursor": "#21f6bc",
+    "selection": "#c1deff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Murderlon",
+          "link": "https://github.com/Murderlon/cyberpunk-iterm"
+        }
+      ]
     }
   },
   {
@@ -1740,15 +2187,18 @@
     "brightRed": "#C71515",
     "brightWhite": "#C1DEFF",
     "brightYellow": "#fff955",
+    "cursor": "#FDF500",
     "cyan": "#00D0DB",
     "foreground": "#E455AE",
     "green": "#1AC5B0",
     "magenta": "#742D8B",
     "red": "#710000",
+    "selection": "#742D8B",
     "white": "#D1C5C0",
     "yellow": "#FDF500",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -1771,8 +2221,11 @@
     "brightWhite": "#ffffff",
     "background": "#000000",
     "foreground": "#ffffff",
+    "cursor": "#bbbbbb",
+    "selection": "#b5d5ff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -1795,8 +2248,11 @@
     "brightWhite": "#e5e5e5",
     "background": "#1e1e1e",
     "foreground": "#cccccc",
+    "cursor": "#ffffff",
+    "selection": "#3a3d41",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -1819,8 +2275,11 @@
     "brightWhite": "#00381e",
     "background": "#070c0e",
     "foreground": "#28380d",
+    "cursor": "#373a26",
+    "selection": "#0f191c",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -1843,8 +2302,11 @@
     "brightWhite": "#006536",
     "background": "#070c0e",
     "foreground": "#3e5715",
+    "cursor": "#9fa86e",
+    "selection": "#0f191c",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -1867,8 +2329,16 @@
     "brightWhite": "#bababa",
     "background": "#222324",
     "foreground": "#bababa",
+    "cursor": "#bbbbbb",
+    "selection": "#303333",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "bahlo",
+          "link": "https://github.com/bahlo/iterm-colors"
+        }
+      ]
     }
   },
   {
@@ -1891,8 +2361,16 @@
     "brightWhite": "#ffffff",
     "background": "#090909",
     "foreground": "#cdcdcd",
+    "cursor": "#d0d0d0",
+    "selection": "#780002",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "ADoyle",
+          "link": "https://github.com/adoyle-h"
+        }
+      ]
     }
   },
   {
@@ -1915,8 +2393,11 @@
     "brightWhite": "#ffffff",
     "background": "#333333",
     "foreground": "#ffffff",
+    "cursor": "#00ff00",
+    "selection": "#b5d5ff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -1939,8 +2420,16 @@
     "brightWhite": "#fdffb9",
     "background": "#1f1f1f",
     "foreground": "#b9bcba",
+    "cursor": "#f83e19",
+    "selection": "#2a2d32",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
@@ -1963,8 +2452,20 @@
     "brightWhite": "#ffffff",
     "background": "#0b2f20",
     "foreground": "#f8f8f8",
+    "cursor": "#336442",
+    "selection": "#245032",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Jannis Leidel",
+          "link": "https://code.djangoproject.com/wiki/TextMate"
+        },
+        {
+          "name": "threespot.com",
+          "link": "https://threespot.com"
+        }
+      ]
     }
   },
   {
@@ -1987,8 +2488,20 @@
     "brightWhite": "#ffffff",
     "background": "#051f14",
     "foreground": "#dadedc",
+    "cursor": "#ffcc00",
+    "selection": "#203727",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "christopherscott",
+          "link": "https://github.com/christopherscott/django-reborn"
+        },
+        {
+          "name": "Jannis Leidel",
+          "link": "https://code.djangoproject.com/wiki/TextMate"
+        }
+      ]
     }
   },
   {
@@ -2011,8 +2524,20 @@
     "brightWhite": "#ffffff",
     "background": "#245032",
     "foreground": "#f8f8f8",
+    "cursor": "#336442",
+    "selection": "#336442",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Jannis Leidel",
+          "link": "https://code.djangoproject.com/wiki/TextMate"
+        },
+        {
+          "name": "threespot.com",
+          "link": "https://threespot.com"
+        }
+      ]
     }
   },
   {
@@ -2035,8 +2560,16 @@
     "brightWhite": "#dfdfdf",
     "background": "#2b2a27",
     "foreground": "#ede0ce",
+    "cursor": "#9c9c9d",
+    "selection": "#a60033",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Emacs Doom Peacock theme",
+          "link": "https://github.com/hlissner/emacs-doom-themes"
+        }
+      ]
     }
   },
   {
@@ -2059,8 +2592,16 @@
     "brightWhite": "#bfbfbf",
     "background": "#282c34",
     "foreground": "#bbc2cf",
+    "cursor": "#51afef",
+    "selection": "#42444b",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Emacs Doom default theme",
+          "link": "https://github.com/hlissner/emacs-doom-themes"
+        }
+      ]
     }
   },
   {
@@ -2083,8 +2624,16 @@
     "brightWhite": "#ffffff",
     "background": "#262c35",
     "foreground": "#ebebeb",
+    "cursor": "#d9002f",
+    "selection": "#1a4080",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "U.S. Web Design Standards",
+          "link": "https://standards.usa.gov/visual-style/"
+        }
+      ]
     }
   },
   {
@@ -2107,8 +2656,16 @@
     "brightWhite": "#ffffff",
     "background": "#1e1f29",
     "foreground": "#f8f8f2",
+    "cursor": "#bbbbbb",
+    "selection": "#44475a",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zenorocha",
+          "link": "https://github.com/zenorocha/dracula-theme"
+        }
+      ]
     }
   },
   {
@@ -2131,8 +2688,16 @@
     "brightWhite": "#f8f8f2",
     "background": "#212121",
     "foreground": "#f8f8f2",
+    "cursor": "#eceff4",
+    "selection": "#f8f8f2",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zenorocha",
+          "link": "https://github.com/zenorocha/dracula-theme"
+        }
+      ]
     }
   },
   {
@@ -2156,7 +2721,13 @@
     "brightWhite": "#F8F8F2",
     "brightYellow": "#ffcb6b",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "jos3s",
+          "link": "https://github.com/jos3s"
+        }
+      ]
     }
   },
   {
@@ -2179,8 +2750,11 @@
     "brightWhite": "#b3b692",
     "background": "#0e101a",
     "foreground": "#ebefc0",
+    "cursor": "#edf2c2",
+    "selection": "#37382d",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -2203,8 +2777,20 @@
     "brightWhite": "#eae5ff",
     "background": "#1f1d27",
     "foreground": "#b7a1ff",
+    "cursor": "#ff9839",
+    "selection": "#353147",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "chibicode",
+          "link": "http://chibicode.com"
+        },
+        {
+          "name": "simurai",
+          "link": "https://github.com/simurai"
+        }
+      ]
     }
   },
   {
@@ -2227,8 +2813,16 @@
     "brightWhite": "#f6f7ec",
     "background": "#292520",
     "foreground": "#e5c7a9",
+    "cursor": "#f6f7ec",
+    "selection": "#121418",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
@@ -2251,8 +2845,16 @@
     "brightWhite": "#fff1e9",
     "background": "#22211d",
     "foreground": "#807a74",
+    "cursor": "#facb80",
+    "selection": "#413829",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
@@ -2275,8 +2877,20 @@
     "brightWhite": "#8c00ec",
     "background": "#181818",
     "foreground": "#efefef",
+    "cursor": "#bbbbbb",
+    "selection": "#b5d5ff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "elementary.io",
+          "link": "https://elementary.io/"
+        },
+        {
+          "name": "987poiuytrewq",
+          "link": "https://github.com/987poiuytrewq"
+        }
+      ]
     }
   },
   {
@@ -2299,8 +2913,16 @@
     "brightWhite": "#ffffff",
     "background": "#000000",
     "foreground": "#00a595",
+    "cursor": "#bbbbbb",
+    "selection": "#00a48c",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Josh Braun",
+          "link": "http://wideaperture.net"
+        }
+      ]
     }
   },
   {
@@ -2323,8 +2945,11 @@
     "brightWhite": "#ffffff",
     "background": "#323232",
     "foreground": "#ffffff",
+    "cursor": "#d6d6d6",
+    "selection": "#5b5b5b",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -2347,8 +2972,16 @@
     "brightWhite": "#eeeeec",
     "background": "#2a211c",
     "foreground": "#b8a898",
+    "cursor": "#ffffff",
+    "selection": "#c3dcff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "jurgemaister",
+          "link": "https://github.com/jurgemaister/Espresso-Libre"
+        }
+      ]
     }
   },
   {
@@ -2371,8 +3004,11 @@
     "brightWhite": "#bdc3c2",
     "background": "#141b1e",
     "foreground": "#dadada",
+    "cursor": "#dadada",
+    "selection": "#141b1e",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -2395,8 +3031,20 @@
     "brightWhite": "#ffffff",
     "background": "#000000",
     "foreground": "#ffffce",
+    "cursor": "#bbbbbb",
+    "selection": "#4e739f",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "jonascarpay",
+          "link": "https://github.com/jonascarpay"
+        },
+        {
+          "name": "fcpg",
+          "link": "https://github.com/fcpg"
+        }
+      ]
     }
   },
   {
@@ -2419,8 +3067,11 @@
     "brightWhite": "#f8f8f0",
     "background": "#5a5475",
     "foreground": "#f8f8f2",
+    "cursor": "#f8f8f0",
+    "selection": "#8077a8",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -2443,8 +3094,16 @@
     "brightWhite": "#fcf4df",
     "background": "#292f33",
     "foreground": "#dbdae0",
+    "cursor": "#d4605a",
+    "selection": "#efb8ac",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Fideloper",
+          "link": "http://fideloper.com/"
+        }
+      ]
     }
   },
   {
@@ -2467,8 +3126,16 @@
     "brightWhite": "#e2e2e2",
     "background": "#0e1011",
     "foreground": "#7c8fa4",
+    "cursor": "#708284",
+    "selection": "#163c61",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Or3stis",
+          "link": "https://github.com/Or3stis"
+        }
+      ]
     }
   },
   {
@@ -2491,8 +3158,24 @@
     "brightWhite": "#e6e5ff",
     "background": "#1e2027",
     "foreground": "#9ba2b2",
+    "cursor": "#f6f7ec",
+    "selection": "#2f363e",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Sebastian Szturo",
+          "link": "https://github.com/SebastianSzturo"
+        },
+        {
+          "name": "Ben Styles",
+          "link": "https://github.com/leeds-ebooks"
+        },
+        {
+          "name": "Firewatch game",
+          "link": "http://www.firewatchgame.com/"
+        }
+      ]
     }
   },
   {
@@ -2515,8 +3198,16 @@
     "brightWhite": "#f6ffec",
     "background": "#232537",
     "foreground": "#ecf0fe",
+    "cursor": "#fecd5e",
+    "selection": "#fcf7e9",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
@@ -2539,8 +3230,16 @@
     "brightWhite": "#e7eced",
     "background": "#002240",
     "foreground": "#2cc55d",
+    "cursor": "#e5be0c",
+    "selection": "#792b9c",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "ahmetsulek",
+          "link": "https://github.com/ahmetsulek/flat-terminal"
+        }
+      ]
     }
   },
   {
@@ -2563,8 +3262,16 @@
     "brightWhite": "#ffffff",
     "background": "#1d1f21",
     "foreground": "#b8dbef",
+    "cursor": "#708284",
+    "selection": "#2b2a24",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "realchaseadams",
+          "link": "http://www.snip2code.com/Snippet/148193/Flatland-color-scheme-for-iTerm2"
+        }
+      ]
     }
   },
   {
@@ -2587,8 +3294,16 @@
     "brightWhite": "#fff5db",
     "background": "#0e0d15",
     "foreground": "#dbd1b9",
+    "cursor": "#bbbbbb",
+    "selection": "#f3e0b8",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "papayakitty",
+          "link": "http://floraverse.com/"
+        }
+      ]
     }
   },
   {
@@ -2611,8 +3326,16 @@
     "brightWhite": "#e2d8cd",
     "background": "#051519",
     "foreground": "#e2d8cd",
+    "cursor": "#9e9ecb",
+    "selection": "#4d4d4d",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "olkinn",
+          "link": "https://github.com/olkinn/forest-blue-iTerm"
+        }
+      ]
     }
   },
   {
@@ -2635,8 +3358,20 @@
     "brightWhite": "#ffffff",
     "background": "#111111",
     "foreground": "#777777",
+    "cursor": "#fcdc08",
+    "selection": "#666666",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "markogresak",
+          "link": "https://github.com/markogresak"
+        },
+        {
+          "name": "Framer",
+          "link": "https://framer.com"
+        }
+      ]
     }
   },
   {
@@ -2659,8 +3394,16 @@
     "brightWhite": "#8c735b",
     "background": "#1b1c1d",
     "foreground": "#adadad",
+    "cursor": "#cdcdcd",
+    "selection": "#ea6154",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
@@ -2683,8 +3426,16 @@
     "brightWhite": "#ffeaa3",
     "background": "#251200",
     "foreground": "#dec165",
+    "cursor": "#e5591c",
+    "selection": "#e5591c",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
@@ -2707,8 +3458,16 @@
     "brightWhite": "#ffffff",
     "background": "#1d2837",
     "foreground": "#ffffff",
+    "cursor": "#bbbbbb",
+    "selection": "#b5d5ff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "jglovier",
+          "link": "https://github.com/jglovier/galaxy-theme-iterm"
+        }
+      ]
     }
   },
   {
@@ -2731,14 +3490,24 @@
     "brightWhite": "#bbccdd",
     "background": "#071317",
     "foreground": "#ddeeff",
+    "cursor": "#ddeeff",
+    "selection": "#071317",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Raziel Anarki",
+          "link": "https://github.com/razielanarki"
+        }
+      ]
     }
   },
   {
     "name": "Ganyu",
+    "cursor": "#AC5487",
     "background": "#221b2f",
     "foreground": "#5055C2",
+    "selection": "#d7c6a4",
     "black": "#12061B",
     "brightBlack": "#322a51",
     "blue": "#5256c3",
@@ -2756,7 +3525,13 @@
     "yellow": "#f8b433",
     "brightYellow": "#f1d661",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "resyfer",
+          "link": "https://github.com/resyfer"
+        }
+      ]
     }
   },
   {
@@ -2779,8 +3554,16 @@
     "brightWhite": "#ffffff",
     "background": "#f4f4f4",
     "foreground": "#3e3e3e",
+    "cursor": "#3f3f3f",
+    "selection": "#a9c1e2",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": [
+        {
+          "name": "Github",
+          "link": "https://github.com/"
+        }
+      ]
     }
   },
   {
@@ -2803,8 +3586,11 @@
     "brightWhite": "#ffffff",
     "background": "#101216",
     "foreground": "#8b949e",
+    "cursor": "#c9d1d9",
+    "selection": "#3b5070",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -2827,8 +3613,16 @@
     "brightWhite": "#ffffff",
     "background": "#0c1115",
     "foreground": "#ffffff",
+    "cursor": "#6c6c6c",
+    "selection": "#bd2523",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "bahlo",
+          "link": "https://github.com/bahlo/iterm-colors"
+        }
+      ]
     }
   },
   {
@@ -2852,7 +3646,13 @@
     "background": "#201d27",
     "foreground": "#c8c8c9",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "alex",
+          "link": "https://github.com/AlexMailo"
+        }
+      ]
     }
   },
   {
@@ -2875,8 +3675,16 @@
     "brightWhite": "#a288f7",
     "background": "#171423",
     "foreground": "#9f9fa1",
+    "cursor": "#a288f7",
+    "selection": "#493d70",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
@@ -2899,8 +3707,11 @@
     "brightWhite": "#ffffff",
     "background": "#13773d",
     "foreground": "#fff0a5",
+    "cursor": "#8c2800",
+    "selection": "#b64926",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -2923,8 +3734,11 @@
     "brightWhite": "#f5ecec",
     "background": "#002a1a",
     "foreground": "#ffffff",
+    "cursor": "#fff400",
+    "selection": "#517e50",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -2947,8 +3761,20 @@
     "brightWhite": "#7c6f64",
     "background": "#fbf1c7",
     "foreground": "#282828",
+    "cursor": "#282828",
+    "selection": "#d5c4a1",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": [
+        {
+          "name": "morhetz",
+          "link": "https://github.com/morhetz"
+        },
+        {
+          "name": "reynn",
+          "link": "https://github.com/reynn"
+        }
+      ]
     }
   },
   {
@@ -2971,8 +3797,11 @@
     "brightWhite": "#ebdbb2",
     "background": "#282828",
     "foreground": "#ebdbb2",
+    "cursor": "#ebdbb2",
+    "selection": "#665c54",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -2995,8 +3824,11 @@
     "brightWhite": "#ebdbb2",
     "background": "#1b1b1b",
     "foreground": "#ebdbb2",
+    "cursor": "#ebdbb2",
+    "selection": "#665c54",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -3019,8 +3851,16 @@
     "brightWhite": "#dadada",
     "background": "#1c1c1c",
     "foreground": "#d0d0d0",
+    "cursor": "#eeeeee",
+    "selection": "#005f5f",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Egor Lem",
+          "link": "https://github.com/guesswhozzz/guezwhoz-iterm2-theme"
+        }
+      ]
     }
   },
   {
@@ -3035,16 +3875,19 @@
     "brightRed": "#CB4B16",
     "brightWhite": "#FFFFFF",
     "brightYellow": "#657B83",
+    "cursor": "#FFFFFF",
     "cyan": "#B0D1BA",
     "foreground": "#839496",
     "green": "#849900",
     "name": "h4rithd",
     "magenta": "#D33682",
     "red": "#C94B16",
+    "selection": "#FFFFFF",
     "white": "#FFFFFF",
     "yellow": "#B58900",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -3059,16 +3902,19 @@
     "brightRed": "#EE282B",
     "brightWhite": "#D3D7CF",
     "brightYellow": "#FDE94E",
+    "cursor": "#FFFFFF",
     "cyan": "#06989A",
     "foreground": "#FFFEFF",
     "green": "#4E9B07",
     "name": "h4rithd.com",
     "magenta": "#75517A",
     "red": "#CC0000",
+    "selection": "#FFFFFF",
     "white": "#D3D7CF",
     "yellow": "#C4A000",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -3091,8 +3937,11 @@
     "brightWhite": "#ffffff",
     "background": "#141414",
     "foreground": "#c9c9c9",
+    "cursor": "#c9c9c9",
+    "selection": "#141414",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -3115,8 +3964,16 @@
     "brightWhite": "#f8f8f2",
     "background": "#121212",
     "foreground": "#a0a0a0",
+    "cursor": "#bbbbbb",
+    "selection": "#453b39",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "hardcore",
+          "link": "https://github.com/hardcore/iTerm-colors"
+        }
+      ]
     }
   },
   {
@@ -3139,8 +3996,16 @@
     "brightWhite": "#fefbea",
     "background": "#010101",
     "foreground": "#a8a49d",
+    "cursor": "#a8a49d",
+    "selection": "#5a5753",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "idleberg",
+          "link": "https://github.com/idleberg/Harper-iTerm2"
+        }
+      ]
     }
   },
   {
@@ -3163,8 +4028,11 @@
     "brightWhite": "#fefefe",
     "background": "#010515",
     "foreground": "#11b7ff",
+    "cursor": "#10b6ff",
+    "selection": "#c1e4ff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -3187,8 +4055,11 @@
     "brightWhite": "#fefefe",
     "background": "#020f01",
     "foreground": "#16b10e",
+    "cursor": "#15d00d",
+    "selection": "#d4ffc1",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -3211,8 +4082,11 @@
     "brightWhite": "#fefefe",
     "background": "#200101",
     "foreground": "#b10e0e",
+    "cursor": "#b00d0d",
+    "selection": "#ebc1ff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -3235,8 +4109,16 @@
     "brightWhite": "#ffffff",
     "background": "#222225",
     "foreground": "#ededed",
+    "cursor": "#e0d9b9",
+    "selection": "#384564",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
@@ -3259,8 +4141,16 @@
     "brightWhite": "#e5e5e5",
     "background": "#100b05",
     "foreground": "#84c138",
+    "cursor": "#23ff18",
+    "selection": "#083905",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Unkulunkulu",
+          "link": "https://github.com/Unkulunkulu"
+        }
+      ]
     }
   },
   {
@@ -3283,8 +4173,16 @@
     "brightWhite": "#f5f7ff",
     "background": "#132638",
     "foreground": "#ede4e4",
+    "cursor": "#979db4",
+    "selection": "#5e6687",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Yann Defretin",
+          "link": "https://github.com/kinoute/hivacruz-itermcolors"
+        }
+      ]
     }
   },
   {
@@ -3307,8 +4205,11 @@
     "brightWhite": "#e5e5e5",
     "background": "#000000",
     "foreground": "#00ff00",
+    "cursor": "#23ff18",
+    "selection": "#083905",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -3331,8 +4232,16 @@
     "brightWhite": "#ffffff",
     "background": "#322931",
     "foreground": "#b9b5b8",
+    "cursor": "#b9b5b8",
+    "selection": "#5c545b",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Jan T. Sott",
+          "link": "https://github.com/idleberg/Hopscotch"
+        }
+      ]
     }
   },
   {
@@ -3355,8 +4264,16 @@
     "brightWhite": "#ffffff",
     "background": "#322931",
     "foreground": "#b9b5b8",
+    "cursor": "#b9b5b8",
+    "selection": "#5c545b",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Jan T. Sott",
+          "link": "https://github.com/idleberg/Hopscotch"
+        }
+      ]
     }
   },
   {
@@ -3380,7 +4297,13 @@
     "background": "#1c1e26",
     "foreground": "#bdc0c2",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "wafelack",
+          "link": "https://github.com/wafelack"
+        }
+      ]
     }
   },
   {
@@ -3403,8 +4326,16 @@
     "brightWhite": "#dbdbdb",
     "background": "#000000",
     "foreground": "#dbdbdb",
+    "cursor": "#bbbbbb",
+    "selection": "#b5d5ff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "juanghurtado",
+          "link": "https://github.com/juanghurtado/dotfiles"
+        }
+      ]
     }
   },
   {
@@ -3427,8 +4358,16 @@
     "brightWhite": "#5a626a",
     "background": "#161719",
     "foreground": "#b7bcba",
+    "cursor": "#b7bcba",
+    "selection": "#1e1f22",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "luan",
+          "link": "https://gist.github.com/luan/6362811"
+        }
+      ]
     }
   },
   {
@@ -3443,16 +4382,24 @@
     "brightRed": "#FE0100",
     "brightWhite": "#FFFFFF",
     "brightYellow": "#FEFF00",
+    "cursor": "#FFFFFF",
     "cyan": "#00FFFF",
     "foreground": "#FFFFFF",
     "green": "#33FF00",
     "name": "Hyper",
     "magenta": "#CC00FF",
     "red": "#FE0100",
+    "selection": "#F81CE5",
     "white": "#D0D0D0",
     "yellow": "#FEFF00",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "shivang",
+          "link": "https://github.com/ShivangMathur1"
+        }
+      ]
     }
   },
   {
@@ -3475,8 +4422,20 @@
     "brightWhite": "#d2d4de",
     "background": "#161821",
     "foreground": "#c6c8d1",
+    "cursor": "#c6c8d1",
+    "selection": "#c6c8d1",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "cocopon",
+          "link": "https://github.com/cocopon/iceberg.vim"
+        },
+        {
+          "name": "pbnj",
+          "link": "https://github.com/pbnj"
+        }
+      ]
     }
   },
   {
@@ -3499,8 +4458,20 @@
     "brightWhite": "#262a3f",
     "background": "#e8e9ec",
     "foreground": "#33374c",
+    "cursor": "#33374c",
+    "selection": "#33374c",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": [
+        {
+          "name": "cocopon",
+          "link": "https://github.com/cocopon/iceberg.vim"
+        },
+        {
+          "name": "pbnj",
+          "link": "https://github.com/pbnj"
+        }
+      ]
     }
   },
   {
@@ -3523,8 +4494,16 @@
     "brightWhite": "#e0f1dc",
     "background": "#2c2c2c",
     "foreground": "#e0f1dc",
+    "cursor": "#47fa6b",
+    "selection": "#116b41",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
@@ -3547,8 +4526,16 @@
     "brightWhite": "#fafaff",
     "background": "#262626",
     "foreground": "#ffcb83",
+    "cursor": "#fc531d",
+    "selection": "#c14020",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
@@ -3571,8 +4558,11 @@
     "brightWhite": "#181818",
     "background": "#202020",
     "foreground": "#adadad",
+    "cursor": "#bbbbbb",
+    "selection": "#44475a",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -3595,8 +4585,16 @@
     "brightWhite": "#ffffff",
     "background": "#323232",
     "foreground": "#ffffff",
+    "cursor": "#d6d6d6",
+    "selection": "#5b5b5b",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "idleFingers",
+          "link": "http://www.idlefingers.co.uk/"
+        }
+      ]
     }
   },
   {
@@ -3619,8 +4617,16 @@
     "brightWhite": "#ffffff",
     "background": "#000000",
     "foreground": "#f1f1f1",
+    "cursor": "#808080",
+    "selection": "#b5d5ff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "meqif",
+          "link": "https://gist.github.com/meqif/1238378"
+        }
+      ]
     }
   },
   {
@@ -3643,8 +4649,11 @@
     "brightWhite": "#ffffff",
     "background": "#000000",
     "foreground": "#c7c7c7",
+    "cursor": "#c7c7c7",
+    "selection": "#c1deff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -3667,8 +4676,11 @@
     "brightWhite": "#ffffff",
     "background": "#000000",
     "foreground": "#ffffff",
+    "cursor": "#e5e5e5",
+    "selection": "#c1deff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -3691,8 +4703,11 @@
     "brightWhite": "#ffffff",
     "background": "#ffffff",
     "foreground": "#000000",
+    "cursor": "#000000",
+    "selection": "#c1deff",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": null
     }
   },
   {
@@ -3715,8 +4730,11 @@
     "brightWhite": "#ffffff",
     "background": "#000000",
     "foreground": "#c7c7c7",
+    "cursor": "#ffb473",
+    "selection": "#454d96",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -3739,8 +4757,11 @@
     "brightWhite": "#ffffff",
     "background": "#15191f",
     "foreground": "#dcdcdc",
+    "cursor": "#ffffff",
+    "selection": "#b3d7ff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -3763,8 +4784,11 @@
     "brightWhite": "#fdf6e3",
     "background": "#002b36",
     "foreground": "#839496",
+    "cursor": "#839496",
+    "selection": "#073642",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -3787,8 +4811,11 @@
     "brightWhite": "#fdf6e3",
     "background": "#fdf6e3",
     "foreground": "#657b83",
+    "cursor": "#657b83",
+    "selection": "#eee8d5",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": null
     }
   },
   {
@@ -3811,8 +4838,11 @@
     "brightWhite": "#f1f1f0",
     "background": "#000000",
     "foreground": "#ffffff",
+    "cursor": "#ffffff",
+    "selection": "#c1deff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -3835,8 +4865,11 @@
     "brightWhite": "#f1f1f0",
     "background": "#ffffff",
     "foreground": "#000000",
+    "cursor": "#000000",
+    "selection": "#c1deff",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": null
     }
   },
   {
@@ -3859,8 +4892,16 @@
     "brightWhite": "#e5e5e5",
     "background": "#2c1d16",
     "foreground": "#ffcc2f",
+    "cursor": "#23ff18",
+    "selection": "#af8d21",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Unkulunkulu",
+          "link": "https://github.com/Unkulunkulu"
+        }
+      ]
     }
   },
   {
@@ -3883,8 +4924,16 @@
     "brightWhite": "#b2b5ae",
     "background": "#1e1e1e",
     "foreground": "#f7f6ec",
+    "cursor": "#edcf4f",
+    "selection": "#175877",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "aereal",
+          "link": "https://github.com/aereal/dotfiles/blob/master/colors/Japanesque/Japanesque.itermcolors"
+        }
+      ]
     }
   },
   {
@@ -3907,8 +4956,16 @@
     "brightWhite": "#ffffff",
     "background": "#121212",
     "foreground": "#dedede",
+    "cursor": "#ffa560",
+    "selection": "#474e91",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "qtpi",
+          "link": "https://github.com/qtpi/Jellybeans.itermcolors"
+        }
+      ]
     }
   },
   {
@@ -3931,8 +4988,16 @@
     "brightWhite": "#eeeeee",
     "background": "#202020",
     "foreground": "#adadad",
+    "cursor": "#ffffff",
+    "selection": "#1a3272",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "vitstr",
+          "link": "https://github.com/vitstr"
+        }
+      ]
     }
   },
   {
@@ -3955,12 +5020,22 @@
     "brightWhite": "#d5e5f1",
     "background": "#262b33",
     "foreground": "#c3d3de",
+    "cursor": "#c3d3de",
+    "selection": "#5b5184",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Julia Tretel",
+          "link": "https://github.com/jutretel"
+        }
+      ]
     }
   },
   {
     "name": "Juicy Colors",
+    "cursor": "#FFFFFF",
+    "selection": "#FFFFFF",
     "background": "#292a24",
     "foreground": "#CCCCCC",
     "black": "#292a24",
@@ -3980,11 +5055,14 @@
     "brightWhite": "#F2F2F2",
     "brightYellow": "#FCC223",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
     "name": "Kanagawa",
+    "cursor": "#DCD7BA",
+    "selection": "#2A2A37",
     "background": "#1F1F28",
     "foreground": "#DCD7BA",
     "black": "#1F1F28",
@@ -4004,7 +5082,8 @@
     "brightWhite": "#DCD7BA",
     "brightYellow": "#E6C384",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -4027,8 +5106,11 @@
     "brightWhite": "#a8a48d",
     "background": "#1f1f28",
     "foreground": "#ddd8bb",
+    "cursor": "#e6e0c2",
+    "selection": "#49473e",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -4051,8 +5133,11 @@
     "brightWhite": "#ffffff",
     "background": "#0e100a",
     "foreground": "#f7f7f7",
+    "cursor": "#9fda9c",
+    "selection": "#9ba787",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -4075,8 +5160,16 @@
     "brightWhite": "#ededed",
     "background": "#1d1a1e",
     "foreground": "#efecec",
+    "cursor": "#c7c7c7",
+    "selection": "#e1925c",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "thomaspaulmann",
+          "link": "https://github.com/thomaspaulmann"
+        }
+      ]
     }
   },
   {
@@ -4099,8 +5192,11 @@
     "brightWhite": "#ffffff",
     "background": "#060606",
     "foreground": "#c8c1c1",
+    "cursor": "#c8c1c1",
+    "selection": "#060606",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -4123,8 +5219,20 @@
     "brightWhite": "#ffffff",
     "background": "#2e2e2e",
     "foreground": "#ffffff",
+    "cursor": "#7f7f7f",
+    "selection": "#cb392e",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "theatlasroom",
+          "link": "https://github.com/theatlasroom"
+        },
+        {
+          "name": "Gitlab design system",
+          "link": "https://design.gitlab.com"
+        }
+      ]
     }
   },
   {
@@ -4147,8 +5255,16 @@
     "brightWhite": "#ffffff",
     "background": "#030d18",
     "foreground": "#f106e3",
+    "cursor": "#00ff9c",
+    "selection": "#2e206a",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "ReagentX",
+          "link": "https://github.com/ReagentX"
+        }
+      ]
     }
   },
   {
@@ -4171,8 +5287,16 @@
     "brightWhite": "#c1c2c2",
     "background": "#222222",
     "foreground": "#959595",
+    "cursor": "#424242",
+    "selection": "#424242",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "vilhalmer",
+          "link": "https://github.com/vilhalmer/System/tree/master/terminal-themes"
+        }
+      ]
     }
   },
   {
@@ -4195,8 +5319,16 @@
     "brightWhite": "#8c91fa",
     "background": "#050014",
     "foreground": "#736e7d",
+    "cursor": "#8c91fa",
+    "selection": "#37323c",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
@@ -4219,8 +5351,16 @@
     "brightWhite": "#bccccc",
     "background": "#303030",
     "foreground": "#afc2c2",
+    "cursor": "#ffffff",
+    "selection": "#7dbeff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "markcho",
+          "link": "https://github.com/markcho/iTerm2_LiquidCarbon"
+        }
+      ]
     }
   },
   {
@@ -4243,8 +5383,16 @@
     "brightWhite": "#bccccc",
     "background": "#000000",
     "foreground": "#afc2c2",
+    "cursor": "#ffffff",
+    "selection": "#7dbeff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "markcho",
+          "link": "https://github.com/markcho/iTerm2_LiquidCarbon"
+        }
+      ]
     }
   },
   {
@@ -4267,8 +5415,16 @@
     "brightWhite": "#000000",
     "background": "#000000",
     "foreground": "#afc2c2",
+    "cursor": "#ffffff",
+    "selection": "#7dbeff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "markcho",
+          "link": "https://github.com/markcho/iTerm2_LiquidCarbon"
+        }
+      ]
     }
   },
   {
@@ -4291,8 +5447,20 @@
     "brightWhite": "#bebec1",
     "background": "#1d1f28",
     "foreground": "#fdfdfd",
+    "cursor": "#c574dd",
+    "selection": "#c1deff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "nalanbar",
+          "link": "https://github.com/nalanbar"
+        },
+        {
+          "name": "elenapan",
+          "link": "https://github.com/elenapan"
+        }
+      ]
     }
   },
   {
@@ -4315,8 +5483,11 @@
     "brightWhite": "#e5e5e5",
     "background": "#fef49c",
     "foreground": "#000000",
+    "cursor": "#7f7f7f",
+    "selection": "#a4c9cd",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": null
     }
   },
   {
@@ -4339,8 +5510,11 @@
     "brightWhite": "#ffffff",
     "background": "#343d46",
     "foreground": "#d8dee9",
+    "cursor": "#fcbb6a",
+    "selection": "#4e5a65",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -4363,8 +5537,16 @@
     "brightWhite": "#d9d9d9",
     "background": "#eaeaea",
     "foreground": "#232322",
+    "cursor": "#16afca",
+    "selection": "#c2c2c2",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": [
+        {
+          "name": "stoeffel",
+          "link": "https://github.com/stoeffel/material-iterm"
+        }
+      ]
     }
   },
   {
@@ -4387,8 +5569,16 @@
     "brightWhite": "#d9d9d9",
     "background": "#232322",
     "foreground": "#e5e5e5",
+    "cursor": "#16afca",
+    "selection": "#dfdfdf",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "stoeffel",
+          "link": "https://github.com/stoeffel/material-iterm"
+        }
+      ]
     }
   },
   {
@@ -4411,8 +5601,16 @@
     "brightWhite": "#ffffff",
     "background": "#212121",
     "foreground": "#eeffff",
+    "cursor": "#ffffff",
+    "selection": "#eeffff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "jos3s",
+          "link": "https://github.com/jos3s"
+        }
+      ]
     }
   },
   {
@@ -4435,8 +5633,11 @@
     "brightWhite": "#ffffff",
     "background": "#1d262a",
     "foreground": "#e7ebed",
+    "cursor": "#eaeaea",
+    "selection": "#4e6a78",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -4459,8 +5660,20 @@
     "brightWhite": "#ffffff",
     "background": "#0f111a",
     "foreground": "#8f93a2",
+    "cursor": "#ffcc00",
+    "selection": "#1f2233",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "kaicataldo",
+          "link": "https://github.com/kaicataldo/material.vim/blob/master/terminal-colors/iterm2/material-ocean.itermcolors"
+        },
+        {
+          "name": "fr3fou",
+          "link": "https://github.com/fr3fou"
+        }
+      ]
     }
   },
   {
@@ -4483,8 +5696,16 @@
     "brightWhite": "#ffffff",
     "background": "#000000",
     "foreground": "#bbbbbb",
+    "cursor": "#bbbbbb",
+    "selection": "#555555",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "mathiasbynens",
+          "link": "https://github.com/mathiasbynens/dotfiles"
+        }
+      ]
     }
   },
   {
@@ -4507,8 +5728,11 @@
     "brightWhite": "#678c61",
     "background": "#0f191c",
     "foreground": "#426644",
+    "cursor": "#384545",
+    "selection": "#18282e",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -4531,8 +5755,16 @@
     "brightWhite": "#fed698",
     "background": "#1d1908",
     "foreground": "#cac296",
+    "cursor": "#d3ba30",
+    "selection": "#626dac",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
@@ -4555,8 +5787,20 @@
     "brightWhite": "#ffffff",
     "background": "#1e1e1e",
     "foreground": "#ffffff",
+    "cursor": "#32d74b",
+    "selection": "#4a504d",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "OberstKrueger",
+          "link": "https://github.com/oberstkrueger"
+        },
+        {
+          "name": "Human Interface Guidelines",
+          "link": "https://developer.apple.com/design/human-interface-guidelines/macos/overview/themes/"
+        }
+      ]
     }
   },
   {
@@ -4579,8 +5823,20 @@
     "brightWhite": "#ffffff",
     "background": "#1b2738",
     "foreground": "#a6b2c0",
+    "cursor": "#ddb3ff",
+    "selection": "#273951",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Tristan Remy",
+          "link": "https://github.com/tristanremy/mirage"
+        },
+        {
+          "name": "Gomah",
+          "link": "https://github.com/Gomah/mirage-iterm"
+        }
+      ]
     }
   },
   {
@@ -4603,8 +5859,16 @@
     "brightWhite": "#ffffff",
     "background": "#2d3743",
     "foreground": "#e1e1e0",
+    "cursor": "#000000",
+    "selection": "#2d37ff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "flooose",
+          "link": "https://github.com/flooose/misterioso-iterm2"
+        }
+      ]
     }
   },
   {
@@ -4627,8 +5891,16 @@
     "brightWhite": "#ffffff",
     "background": "#121212",
     "foreground": "#bbbbbb",
+    "cursor": "#bbbbbb",
+    "selection": "#b5d5ff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "tomasr",
+          "link": "https://github.com/tomasr/molokai"
+        }
+      ]
     }
   },
   {
@@ -4651,12 +5923,22 @@
     "brightWhite": "#ffe598",
     "background": "#120b0d",
     "foreground": "#f7d66a",
+    "cursor": "#c46c32",
+    "selection": "#f7d66a",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
     "name": "Monokai Cmder",
+    "cursor": "#ffffff",
+    "selection": "#cccc81",
     "background": "#272822",
     "foreground": "#cacaca",
     "black": "#272822",
@@ -4676,7 +5958,13 @@
     "brightCyan": "#58c2e5",
     "brightWhite": "#ffffff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "vdurante",
+          "link": "https://github.com/vdurante/windows-terminal-monokai-cmder"
+        }
+      ]
     }
   },
   {
@@ -4692,15 +5980,23 @@
     "brightRed": "#ff6188",
     "brightWhite": "#fcfcfa",
     "brightYellow": "#ffd866",
+    "cursor": "#fcfcfa",
     "cyan": "#78dce8",
     "foreground": "#fcfcfa",
     "green": "#a9dc76",
     "magenta": "#ab9df2",
     "red": "#ff6188",
+    "selection": "#fcfcfa",
     "white": "#fcfcfa",
     "yellow": "#ffd866",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "monokai",
+          "link": "https://monokai.pro"
+        }
+      ]
     }
   },
   {
@@ -4724,7 +6020,13 @@
     "background": "#282a3a",
     "foreground": "#eaf2f1",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "monokai",
+          "link": "https://monokai.pro"
+        }
+      ]
     }
   },
   {
@@ -4740,15 +6042,18 @@
     "brightRed": "#FD6883",
     "brightWhite": "#FFF1F3",
     "brightYellow": "#F9CC6C",
+    "cursor": "#FFF1F3",
     "cyan": "#85DACC",
     "foreground": "#FFF1F3",
     "green": "#ADDA78",
     "magenta": "#A8A9EB",
     "red": "#FD6883",
+    "selection": "#C3B7B8",
     "white": "#FFF1F3",
     "yellow": "#F9CC6C",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -4771,8 +6076,11 @@
     "brightWhite": "#f6f6ef",
     "background": "#0c0c0c",
     "foreground": "#d9d9d9",
+    "cursor": "#fc971f",
+    "selection": "#343434",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -4795,8 +6103,16 @@
     "brightWhite": "#f6f6ef",
     "background": "#1a1a1a",
     "foreground": "#c4c5b5",
+    "cursor": "#f6f7ec",
+    "selection": "#343434",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "deepsweet",
+          "link": "https://github.com/deepsweet/Monokai-Soda-iTerm"
+        }
+      ]
     }
   },
   {
@@ -4819,8 +6135,16 @@
     "brightWhite": "#ffffff",
     "background": "#121212",
     "foreground": "#f9f9f9",
+    "cursor": "#fb0007",
+    "selection": "#ffffff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "vitalymak",
+          "link": "https://github.com/vitalymak/iTerm2-Color-Schemes"
+        }
+      ]
     }
   },
   {
@@ -4844,7 +6168,13 @@
     "background": "#222436",
     "foreground": "#c8d3f5",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "atomiks",
+          "link": "https://github.com/atomiks"
+        }
+      ]
     }
   },
   {
@@ -4867,8 +6197,16 @@
     "brightWhite": "#d8c8bb",
     "background": "#222222",
     "foreground": "#a0a0a0",
+    "cursor": "#aa9175",
+    "selection": "#4d4d4d",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "baskerville",
+          "link": "https://github.com/baskerville/iTerm-2-Color-Themes"
+        }
+      ]
     }
   },
   {
@@ -4891,8 +6229,11 @@
     "brightWhite": "#98a39e",
     "background": "#0f191f",
     "foreground": "#c6d5cf",
+    "cursor": "#ceddd7",
+    "selection": "#3a3e3d",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -4915,8 +6256,11 @@
     "brightWhite": "#415934",
     "background": "#e5ede6",
     "foreground": "#202e18",
+    "cursor": "#202e18",
+    "selection": "#ade48c",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": null
     }
   },
   {
@@ -4939,8 +6283,11 @@
     "brightWhite": "#ffffff",
     "background": "#14161a",
     "foreground": "#00fffc",
+    "cursor": "#c7c7c7",
+    "selection": "#0013ff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -4963,8 +6310,16 @@
     "brightWhite": "#f8f8f8",
     "background": "#271f19",
     "foreground": "#ffffff",
+    "cursor": "#ffffff",
+    "selection": "#253b76",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "daytonn",
+          "link": "https://github.com/daytonn/iTerm2-Color-Schemes"
+        }
+      ]
     }
   },
   {
@@ -4987,8 +6342,16 @@
     "brightWhite": "#ebedf2",
     "background": "#1c1e22",
     "foreground": "#e6e8ef",
+    "cursor": "#f6f7ec",
+    "selection": "#2f363e",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Ch4s3",
+          "link": "https://github.com/Ch4s3/iTerm2-Neutron"
+        }
+      ]
     }
   },
   {
@@ -5011,8 +6374,20 @@
     "brightWhite": "#989fb1",
     "background": "#ffffff",
     "foreground": "#403f53",
+    "cursor": "#403f53",
+    "selection": "#f2f2f2",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": [
+        {
+          "name": "praveenpuglia",
+          "link": "https://github.com/praveenpuglia"
+        },
+        {
+          "name": "sdras",
+          "link": "https://github.com/sdras"
+        }
+      ]
     }
   },
   {
@@ -5035,8 +6410,16 @@
     "brightWhite": "#ffffff",
     "background": "#000000",
     "foreground": "#bbbbbb",
+    "cursor": "#bbbbbb",
+    "selection": "#b5d5ff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Curvve Media",
+          "link": "http://www.curvve.com/blog/category/themes/"
+        }
+      ]
     }
   },
   {
@@ -5059,8 +6442,16 @@
     "brightWhite": "#ffffff",
     "background": "#171717",
     "foreground": "#bbbbbb",
+    "cursor": "#bbbbbb",
+    "selection": "#b5d5ff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Curvve Media",
+          "link": "http://www.curvve.com/blog/category/themes/"
+        }
+      ]
     }
   },
   {
@@ -5083,8 +6474,11 @@
     "brightWhite": "#ffffff",
     "background": "#141515",
     "foreground": "#ffffff",
+    "cursor": "#ffc663",
+    "selection": "#515151",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -5107,8 +6501,16 @@
     "brightWhite": "#ffffff",
     "background": "#0d0d17",
     "foreground": "#e6e5e5",
+    "cursor": "#e6e5e5",
+    "selection": "#adbdd0",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Shriram Balaji",
+          "link": "https://github.com/Shriram-Balaji"
+        }
+      ]
     }
   },
   {
@@ -5131,8 +6533,16 @@
     "brightWhite": "#eceff4",
     "background": "#2e3440",
     "foreground": "#d8dee9",
+    "cursor": "#eceff4",
+    "selection": "#eceff4",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Teraskull",
+          "link": "https://github.com/Teraskull"
+        }
+      ]
     }
   },
   {
@@ -5155,8 +6565,11 @@
     "brightWhite": "#eceff4",
     "background": "#e5e9f0",
     "foreground": "#414858",
+    "cursor": "#88c0d0",
+    "selection": "#d8dee9",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": null
     }
   },
   {
@@ -5179,8 +6592,11 @@
     "brightWhite": "#ffffff",
     "background": "#dfdbc3",
     "foreground": "#3b2322",
+    "cursor": "#73635a",
+    "selection": "#a4a390",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": null
     }
   },
   {
@@ -5203,8 +6619,11 @@
     "brightWhite": "#ffffff",
     "background": "#283033",
     "foreground": "#cdcdcd",
+    "cursor": "#c0cad0",
+    "selection": "#3e4c4f",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -5227,8 +6646,11 @@
     "brightWhite": "#e5e5e5",
     "background": "#224fbc",
     "foreground": "#ffffff",
+    "cursor": "#7f7f7f",
+    "selection": "#216dff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -5251,8 +6673,11 @@
     "brightWhite": "#ffffff",
     "background": "#121b21",
     "foreground": "#b3b8c3",
+    "cursor": "#b3b8c3",
+    "selection": "#3e4953",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -5275,8 +6700,16 @@
     "brightWhite": "#ffffff",
     "background": "#1c262b",
     "foreground": "#c2c8d7",
+    "cursor": "#b3b8c3",
+    "selection": "#6dc2b8",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "rahulpatel",
+          "link": "https://github.com/rahulpatel"
+        }
+      ]
     }
   },
   {
@@ -5299,8 +6732,16 @@
     "brightWhite": "#5b6ea7",
     "background": "#222125",
     "foreground": "#8a8dae",
+    "cursor": "#5b6ea7",
+    "selection": "#1e3a66",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
@@ -5324,7 +6765,13 @@
     "background": "#1e2127",
     "foreground": "#abb2bf",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "azrikahar",
+          "link": "https://github.com/azrikahar"
+        }
+      ]
     }
   },
   {
@@ -5347,8 +6794,16 @@
     "brightWhite": "#dcdfe4",
     "background": "#282c34",
     "foreground": "#dcdfe4",
+    "cursor": "#a3b3cc",
+    "selection": "#474e5d",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "sonph",
+          "link": "https://github.com/sonph"
+        }
+      ]
     }
   },
   {
@@ -5371,8 +6826,16 @@
     "brightWhite": "#ffffff",
     "background": "#fafafa",
     "foreground": "#383a42",
+    "cursor": "#bfceff",
+    "selection": "#bfceff",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": [
+        {
+          "name": "sonph",
+          "link": "https://github.com/sonph"
+        }
+      ]
     }
   },
   {
@@ -5396,7 +6859,13 @@
     "background": "#0e0e0e",
     "foreground": "#e4e4e4",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "jos3s",
+          "link": "https://github.com/jos3s"
+        }
+      ]
     }
   },
   {
@@ -5419,8 +6888,20 @@
     "brightWhite": "#fdfdf6",
     "background": "#191919",
     "foreground": "#c3cac2",
+    "cursor": "#fcdc08",
+    "selection": "#19273b",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "vharadkou",
+          "link": "https://github.com/vharadkou/OperatorMonoDarkTheme"
+        },
+        {
+          "name": "dreamyguy",
+          "link": "https://github.com/dreamyguy/iterm-theme-operator-mono-dark"
+        }
+      ]
     }
   },
   {
@@ -5443,8 +6924,20 @@
     "brightWhite": "#ffffff",
     "background": "#0e1729",
     "foreground": "#ced2d6",
+    "cursor": "#ffa7c4",
+    "selection": "#1f2b41",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Cristian Velasquez Ramos",
+          "link": "https://github.com/cevr/overnight"
+        },
+        {
+          "name": "Gomah",
+          "link": "https://github.com/Gomah/overnight-slumber-iterm"
+        }
+      ]
     }
   },
   {
@@ -5467,8 +6960,20 @@
     "brightWhite": "#999999",
     "background": "#3e4251",
     "foreground": "#cccccc",
+    "cursor": "#ffcb6b",
+    "selection": "#717cb4",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Mattia Astorino",
+          "link": "https://github.com/equinusocio"
+        },
+        {
+          "name": "Kasper",
+          "link": "https://github.com/Kasper-Liu"
+        }
+      ]
     }
   },
   {
@@ -5491,8 +6996,16 @@
     "brightWhite": "#ffffff",
     "background": "#141e43",
     "foreground": "#e1e1e1",
+    "cursor": "#43d58e",
+    "selection": "#2d37ff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "milosmatic",
+          "link": "https://github.com/milosmatic/Pandora-iterm"
+        }
+      ]
     }
   },
   {
@@ -5515,8 +7028,16 @@
     "brightWhite": "#e7e9db",
     "background": "#2f1e2e",
     "foreground": "#a39e9b",
+    "cursor": "#a39e9b",
+    "selection": "#4f424c",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "idleberg",
+          "link": "https://github.com/idleberg"
+        }
+      ]
     }
   },
   {
@@ -5539,8 +7060,16 @@
     "brightWhite": "#ffffff",
     "background": "#000000",
     "foreground": "#f2f2f2",
+    "cursor": "#4d4d4d",
+    "selection": "#414141",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "paulmillr",
+          "link": "https://github.com/paulmillr/dotfiles/tree/master/terminal"
+        }
+      ]
     }
   },
   {
@@ -5563,8 +7092,16 @@
     "brightWhite": "#f1f1f1",
     "background": "#212121",
     "foreground": "#f1f1f1",
+    "cursor": "#20bbfc",
+    "selection": "#b6d6fd",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "mattly",
+          "link": "https://github.com/mattly/iterm-colors-pencil"
+        }
+      ]
     }
   },
   {
@@ -5587,8 +7124,16 @@
     "brightWhite": "#f1f1f1",
     "background": "#f1f1f1",
     "foreground": "#424242",
+    "cursor": "#20bbfc",
+    "selection": "#b6d6fd",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": [
+        {
+          "name": "mattly",
+          "link": "https://github.com/mattly/iterm-colors-pencil"
+        }
+      ]
     }
   },
   {
@@ -5611,8 +7156,11 @@
     "brightWhite": "#dfdfdf",
     "background": "#000000",
     "foreground": "#c8c8c8",
+    "cursor": "#bbbbbb",
+    "selection": "#e6e6e6",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -5635,8 +7183,16 @@
     "brightWhite": "#f2f2f2",
     "background": "#ffffff",
     "foreground": "#414141",
+    "cursor": "#5e77c8",
+    "selection": "#706b4e",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": [
+        {
+          "name": "kovv",
+          "link": "https://github.com/kovv"
+        }
+      ]
     }
   },
   {
@@ -5659,8 +7215,16 @@
     "brightWhite": "#efefef",
     "background": "#1c1c1c",
     "foreground": "#d0d0d0",
+    "cursor": "#e4c9af",
+    "selection": "#4d4d4d",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "baskerville",
+          "link": "https://github.com/baskerville/iTerm-2-Color-Themes"
+        }
+      ]
     }
   },
   {
@@ -5683,8 +7247,20 @@
     "brightWhite": "#ebdbb2",
     "background": "#181921",
     "foreground": "#ebdbb2",
+    "cursor": "#c7c7c7",
+    "selection": "#ebdbb2",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Hedinn Eiriksson",
+          "link": "https://github.com/hedinne"
+        },
+        {
+          "name": "didierbroska",
+          "link": "https://github.com/didierbroska"
+        }
+      ]
     }
   },
   {
@@ -5707,8 +7283,20 @@
     "brightWhite": "#ffffff",
     "background": "#ffffff",
     "foreground": "#000000",
+    "cursor": "#000000",
+    "selection": "#656565",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": [
+        {
+          "name": "jayanthkoushik",
+          "link": "https://github.com/jayanthkoushik"
+        },
+        {
+          "name": "google",
+          "link": "https://github.com/google/vim-colorscheme-primary"
+        }
+      ]
     }
   },
   {
@@ -5732,7 +7320,8 @@
     "background": "#1a2b3c",
     "foreground": "#ffffff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -5755,8 +7344,11 @@
     "brightWhite": "#e5e5e5",
     "background": "#000000",
     "foreground": "#f2f2f2",
+    "cursor": "#4d4d4d",
+    "selection": "#414141",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -5779,8 +7371,20 @@
     "brightWhite": "#f2f2f2",
     "background": "#ffffff",
     "foreground": "#191919",
+    "cursor": "#4d4d4d",
+    "selection": "#c1ddff",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": [
+        {
+          "name": "crowsonkb",
+          "link": "https://github.com/crowsonkb"
+        },
+        {
+          "name": "iterm_schemer",
+          "link": "https://github.com/crowsonkb/iterm_schemer"
+        }
+      ]
     }
   },
   {
@@ -5803,8 +7407,16 @@
     "brightWhite": "#ffffff",
     "background": "#21084a",
     "foreground": "#fffbf6",
+    "cursor": "#ff271d",
+    "selection": "#287691",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "msorre2",
+          "link": "https://github.com/msorre2"
+        }
+      ]
     }
   },
   {
@@ -5827,8 +7439,16 @@
     "brightWhite": "#b9aed3",
     "background": "#2a1a4a",
     "foreground": "#ece7fa",
+    "cursor": "#c7c7c7",
+    "selection": "#8689c2",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "DeChamp",
+          "link": "https://github.com/dechamp"
+        }
+      ]
     }
   },
   {
@@ -5843,16 +7463,24 @@
     "brightRed": "#D8624E",
     "brightWhite": "#D8D8D8",
     "brightYellow": "#FFA700",
+    "cursor": "#D8D8D8",
     "cyan": "#00485C",
     "foreground": "#D8D8D8",
     "green": "#157E15",
     "name": "QB64 Super Dark Blue",
     "magenta": "#631563",
     "red": "#98220E",
+    "selection": "#00586C",
     "white": "#989898",
     "yellow": "#808000",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "jmmv",
+          "link": "https://github.com/jmmv"
+        }
+      ]
     }
   },
   {
@@ -5875,8 +7503,16 @@
     "brightWhite": "#ffffff",
     "background": "#111e2a",
     "foreground": "#c0c9e5",
+    "cursor": "#ffffff",
+    "selection": "#304b66",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Pustur",
+          "link": "https://github.com/Pustur"
+        }
+      ]
     }
   },
   {
@@ -5899,8 +7535,20 @@
     "brightWhite": "#ffffff",
     "background": "#1a1a1a",
     "foreground": "#ffffff",
+    "cursor": "#cccccc",
+    "selection": "#333333",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "thomaspaulmann",
+          "link": "https://github.com/thomaspaulmann"
+        },
+        {
+          "name": "itsnwa",
+          "link": "https://github.com/itsnwa"
+        }
+      ]
     }
   },
   {
@@ -5923,8 +7571,20 @@
     "brightWhite": "#ffffff",
     "background": "#ffffff",
     "foreground": "#000000",
+    "cursor": "#000000",
+    "selection": "#e5e5e5",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": [
+        {
+          "name": "thomaspaulmann",
+          "link": "https://github.com/thomaspaulmann"
+        },
+        {
+          "name": "itsnwa",
+          "link": "https://github.com/itsnwa"
+        }
+      ]
     }
   },
   {
@@ -5947,8 +7607,16 @@
     "brightWhite": "#f4f2f9",
     "background": "#292a44",
     "foreground": "#e8e6ed",
+    "cursor": "#b89bf9",
+    "selection": "#663399",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "vic",
+          "link": "https://github.com/vic"
+        }
+      ]
     }
   },
   {
@@ -5971,8 +7639,11 @@
     "brightWhite": "#ffffff",
     "background": "#762423",
     "foreground": "#ffffff",
+    "cursor": "#ffffff",
+    "selection": "#073642",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -5995,8 +7666,20 @@
     "brightWhite": "#d6bfb8",
     "background": "#222222",
     "foreground": "#c2b790",
+    "cursor": "#c2b790",
+    "selection": "#1b324a",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "ibrokemypie",
+          "link": "https://github.com/ibrokemypie"
+        },
+        {
+          "name": "eliquious",
+          "link": "https://github.com/eliquious"
+        }
+      ]
     }
   },
   {
@@ -6019,8 +7702,11 @@
     "brightWhite": "#ffffff",
     "background": "#7a251e",
     "foreground": "#d7c9a7",
+    "cursor": "#ffffff",
+    "selection": "#a4a390",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -6043,8 +7729,11 @@
     "brightWhite": "#f7f7f7",
     "background": "#353a44",
     "foreground": "#d9d9d9",
+    "cursor": "#d9d9d9",
+    "selection": "#6a7985",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -6067,8 +7756,11 @@
     "brightWhite": "#16ba10",
     "background": "#000000",
     "foreground": "#13a10e",
+    "cursor": "#13a10e",
+    "selection": "#ffffff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -6092,7 +7784,13 @@
     "black": "#181A1F",
     "yellow": "#fcee54",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Chrissy LeMaire",
+          "link": "https://github.com/potatoqualitee"
+        }
+      ]
     }
   },
   {
@@ -6115,8 +7813,16 @@
     "brightWhite": "#e5e5e5",
     "background": "#2b2b2b",
     "foreground": "#ffffff",
+    "cursor": "#7f7f7f",
+    "selection": "#5a647e",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "mdw123",
+          "link": "https://github.com/mdw123/rippedcasts"
+        }
+      ]
     }
   },
   {
@@ -6140,7 +7846,8 @@
     "background": "#191724",
     "foreground": "#e0def4",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -6163,8 +7870,11 @@
     "brightWhite": "#e0def4",
     "background": "#191724",
     "foreground": "#e0def4",
+    "cursor": "#e0def4",
+    "selection": "#191724",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -6187,8 +7897,11 @@
     "brightWhite": "#575279",
     "background": "#faf4ed",
     "foreground": "#575279",
+    "cursor": "#575279",
+    "selection": "#faf4ed",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": null
     }
   },
   {
@@ -6211,8 +7924,11 @@
     "brightWhite": "#e0def4",
     "background": "#232136",
     "foreground": "#e0def4",
+    "cursor": "#e0def4",
+    "selection": "#232136",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -6235,8 +7951,20 @@
     "brightWhite": "#e8e8ea",
     "background": "#17182b",
     "foreground": "#a2a3aa",
+    "cursor": "#969e92",
+    "selection": "#5d5d6b",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Josef Aidt",
+          "link": "https://github.com/josefaidt/rouge-theme"
+        },
+        {
+          "name": "Sam Rose",
+          "link": "https://github.com/samrose3"
+        }
+      ]
     }
   },
   {
@@ -6259,8 +7987,16 @@
     "brightWhite": "#9e8cbd",
     "background": "#100815",
     "foreground": "#514968",
+    "cursor": "#524966",
+    "selection": "#1f1d2b",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
@@ -6283,8 +8019,20 @@
     "brightWhite": "#ececec",
     "background": "#2c3941",
     "foreground": "#ececec",
+    "cursor": "#ececec",
+    "selection": "#002831",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "dylanaraps",
+          "link": "https://github.com/dylanaraps"
+        },
+        {
+          "name": "iandrewt",
+          "link": "https://github.com/iandrewt"
+        }
+      ]
     }
   },
   {
@@ -6307,8 +8055,20 @@
     "brightWhite": "#cbb6ff",
     "background": "#18131e",
     "foreground": "#dd7bdc",
+    "cursor": "#ff65fd",
+    "selection": "#c05cbf",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "0xN0ri",
+          "link": "https://github.com/0xN0ri"
+        },
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj"
+        }
+      ]
     }
   },
   {
@@ -6331,8 +8091,16 @@
     "brightWhite": "#ffffff",
     "background": "#1c153d",
     "foreground": "#e41951",
+    "cursor": "#76ff9f",
+    "selection": "#c1deff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "ReagentX",
+          "link": "https://github.com/ReagentX"
+        }
+      ]
     }
   },
   {
@@ -6355,8 +8123,11 @@
     "brightWhite": "#e0e0e0",
     "background": "#243435",
     "foreground": "#d4e7d4",
+    "cursor": "#57647a",
+    "selection": "#ffffff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -6379,8 +8150,16 @@
     "brightWhite": "#fee4ce",
     "background": "#09141b",
     "foreground": "#deb88d",
+    "cursor": "#fca02f",
+    "selection": "#1e4962",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
@@ -6403,8 +8182,11 @@
     "brightWhite": "#a8a8a8",
     "background": "#4b4b4b",
     "foreground": "#dddddd",
+    "cursor": "#e2e2e2",
+    "selection": "#777777",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -6427,14 +8209,19 @@
     "brightWhite": "#777777",
     "background": "#e2e2e2",
     "foreground": "#555555",
+    "cursor": "#555555",
+    "selection": "#cccccc",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": null
     }
   },
   {
     "name": "Serendipity Midnight",
     "background": "#1C1E2D",
     "foreground": "#DEE0EF",
+    "cursor": "#6B6D7C",
+    "selection": "#2C2E3D",
     "black": "#232534",
     "brightBlack": "#8D8F9E",
     "blue": "#5BA2D0",
@@ -6452,13 +8239,25 @@
     "yellow": "#F8D2C9",
     "brightYellow": "#F8D2C9",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Michael Andreuzza",
+          "link": "https://github.com/michael-andreuzza"
+        },
+        {
+          "name": "Chaphasilor",
+          "link": "https://github.com/Chaphasilor"
+        }
+      ]
     }
   },
   {
     "name": "Serendipity Morning",
     "background": "#FFFAF3",
     "foreground": "#575279",
+    "cursor": "#9893A5",
+    "selection": "#F4EFEA",
     "black": "#F2E9DE",
     "brightBlack": "#6E6A86",
     "blue": "#3788BE",
@@ -6476,13 +8275,25 @@
     "yellow": "#C8A299",
     "brightYellow": "#C8A299",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": [
+        {
+          "name": "Michael Andreuzza",
+          "link": "https://github.com/michael-andreuzza"
+        },
+        {
+          "name": "Chaphasilor",
+          "link": "https://github.com/Chaphasilor"
+        }
+      ]
     }
   },
   {
     "name": "Serendipity Sunset",
     "background": "#272938",
     "foreground": "#DEE0EF",
+    "cursor": "#8D8F9E",
+    "selection": "#313342",
     "black": "#363847",
     "brightBlack": "#6B6D7C",
     "blue": "#709BBD",
@@ -6500,7 +8311,17 @@
     "yellow": "#EDD5D6",
     "brightYellow": "#EDD5D6",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Michael Andreuzza",
+          "link": "https://github.com/michael-andreuzza"
+        },
+        {
+          "name": "Chaphasilor",
+          "link": "https://github.com/Chaphasilor"
+        }
+      ]
     }
   },
   {
@@ -6523,8 +8344,20 @@
     "brightWhite": "#ffffff",
     "background": "#111213",
     "foreground": "#cacecd",
+    "cursor": "#e3bf21",
+    "selection": "#303233",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "jesseweed",
+          "link": "https://github.com/jesseweed/seti-syntax/"
+        },
+        {
+          "name": "philduffy",
+          "link": "https://github.com/willmanduffy/seti-iterm"
+        }
+      ]
     }
   },
   {
@@ -6547,8 +8380,20 @@
     "brightWhite": "#ffffff",
     "background": "#1e1d40",
     "foreground": "#ffffff",
+    "cursor": "#fad000",
+    "selection": "#b362ff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "ahmadawais",
+          "link": "https://github.com/ahmadawais/shades-of-purple-iterm2"
+        },
+        {
+          "name": "fr3fou",
+          "link": "https://github.com/fr3fou"
+        }
+      ]
     }
   },
   {
@@ -6571,8 +8416,16 @@
     "brightWhite": "#58fbd6",
     "background": "#001015",
     "foreground": "#405555",
+    "cursor": "#4afcd6",
+    "selection": "#415555",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
@@ -6595,8 +8448,16 @@
     "brightWhite": "#e0e0e0",
     "background": "#222222",
     "foreground": "#35b1d2",
+    "cursor": "#87d3c4",
+    "selection": "#0f3754",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "deneshshan",
+          "link": "https://github.com/deneshshan"
+        }
+      ]
     }
   },
   {
@@ -6619,8 +8480,16 @@
     "brightWhite": "#d2c7a9",
     "background": "#121214",
     "foreground": "#af9a91",
+    "cursor": "#af9a91",
+    "selection": "#575256",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
@@ -6643,8 +8512,16 @@
     "brightWhite": "#f7f7f7",
     "background": "#1b1b1b",
     "foreground": "#f7f7f7",
+    "cursor": "#bbbbbb",
+    "selection": "#207483",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "hukl",
+          "link": "https://github.com/hukl/Smyck-Color-Scheme"
+        }
+      ]
     }
   },
   {
@@ -6667,8 +8544,11 @@
     "brightWhite": "#ededec",
     "background": "#1e1f29",
     "foreground": "#ebece6",
+    "cursor": "#e4e4e4",
+    "selection": "#81aec6",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -6691,8 +8571,16 @@
     "brightWhite": "#d2e0de",
     "background": "#242626",
     "foreground": "#99a3a2",
+    "cursor": "#d2e0de",
+    "selection": "#7f8786",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
@@ -6715,8 +8603,16 @@
     "brightWhite": "#d2d8d9",
     "background": "#3d3f41",
     "foreground": "#d2d8d9",
+    "cursor": "#708284",
+    "selection": "#214283",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "@rickhanlonii",
+          "link": "https://github.com/rickhanlonii"
+        }
+      ]
     }
   },
   {
@@ -6739,8 +8635,11 @@
     "brightWhite": "#fcf4dc",
     "background": "#001e27",
     "foreground": "#708284",
+    "cursor": "#708284",
+    "selection": "#002831",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -6763,14 +8662,23 @@
     "brightWhite": "#fcf4dc",
     "background": "#001e27",
     "foreground": "#9cc2c3",
+    "cursor": "#f34b00",
+    "selection": "#003748",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "heisters",
+          "link": "https://gist.github.com/heisters/1015503"
+        }
+      ]
     }
   },
   {
     "name": "Sonoran Gothic",
     "foreground": "#EAF4DE",
     "background": "#241F17",
+    "cursor": "#EAF4DE",
     "black": "#867F6E",
     "red": "#EB6f6f",
     "green": "#669C50",
@@ -6788,13 +8696,21 @@
     "brightCyan": "#E18F62",
     "brightWhite": "#EAF4DE",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "d-mckee",
+          "link": "https://github.com/d-mckee"
+        }
+      ]
     }
   },
   {
     "name": "Sonoran Sunrise",
     "foreground": "#61543E",
     "background": "#F9FAE3",
+    "cursor": "#61543E",
+    "selection": "#a4f017",
     "black": "#F9FAE3",
     "red": "#EB6f6f",
     "green": "#669C50",
@@ -6812,7 +8728,13 @@
     "brightCyan": "#E07941",
     "brightWhite": "#665E4B",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": [
+        {
+          "name": "d-mckee",
+          "link": "https://github.com/d-mckee"
+        }
+      ]
     }
   },
   {
@@ -6835,8 +8757,20 @@
     "brightWhite": "#fefff1",
     "background": "#0a1e24",
     "foreground": "#ecf0c1",
+    "cursor": "#708284",
+    "selection": "#0a385c",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "mhallendal",
+          "link": "https://github.com/mhallendal/spacedust-theme"
+        },
+        {
+          "name": "Couto",
+          "link": "https://github.com/Couto"
+        }
+      ]
     }
   },
   {
@@ -6859,8 +8793,16 @@
     "brightWhite": "#ffffff",
     "background": "#20242d",
     "foreground": "#b3b8c3",
+    "cursor": "#b3b8c3",
+    "selection": "#16181e",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "ryentzer",
+          "link": "https://github.com/ryentzer/SpaceGray-iTerm"
+        }
+      ]
     }
   },
   {
@@ -6883,8 +8825,16 @@
     "brightWhite": "#ffffff",
     "background": "#222222",
     "foreground": "#bdbaae",
+    "cursor": "#bbbbbb",
+    "selection": "#272e35",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "mhkeller",
+          "link": "https://github.com/mhkeller/spacegray-eighties-iterm"
+        }
+      ]
     }
   },
   {
@@ -6907,8 +8857,16 @@
     "brightWhite": "#ffffff",
     "background": "#222222",
     "foreground": "#c9c6bc",
+    "cursor": "#bbbbbb",
+    "selection": "#272e36",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "mhkeller",
+          "link": "https://github.com/mhkeller/spacegray-eighties-iterm"
+        }
+      ]
     }
   },
   {
@@ -6931,8 +8889,16 @@
     "brightWhite": "#fffff9",
     "background": "#1b1d1e",
     "foreground": "#e3e3e3",
+    "cursor": "#2c3fff",
+    "selection": "#070e50",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "pyrophos",
+          "link": "https://github.com/pyrophos"
+        }
+      ]
     }
   },
   {
@@ -6955,8 +8921,16 @@
     "brightWhite": "#ffffff",
     "background": "#ffffff",
     "foreground": "#4d4d4c",
+    "cursor": "#4d4d4c",
+    "selection": "#d6d6d6",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": [
+        {
+          "name": "t3chnoboy",
+          "link": "https://github.com/t3chnoboy/spring-iTerm"
+        }
+      ]
     }
   },
   {
@@ -6979,8 +8953,16 @@
     "brightWhite": "#e2e2e2",
     "background": "#1a1a1a",
     "foreground": "#acacab",
+    "cursor": "#fcfbcc",
+    "selection": "#4d4d4d",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "baskerville",
+          "link": "https://github.com/baskerville/iTerm-2-Color-Themes"
+        }
+      ]
     }
   },
   {
@@ -7003,8 +8985,16 @@
     "brightWhite": "#ffffee",
     "background": "#202535",
     "foreground": "#ccced0",
+    "cursor": "#ccced0",
+    "selection": "#ccced0",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "sublee",
+          "link": "https://github.com/sublee"
+        }
+      ]
     }
   },
   {
@@ -7027,8 +9017,16 @@
     "brightWhite": "#d4d4d4",
     "background": "#282c35",
     "foreground": "#d4d4d4",
+    "cursor": "#c7c7c7",
+    "selection": "#484e5b",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "gdsrosa",
+          "link": "https://github.com/gdsrosa/subliminal-itermcolors"
+        }
+      ]
     }
   },
   {
@@ -7051,8 +9049,16 @@
     "brightWhite": "#ffffff",
     "background": "#1a1818",
     "foreground": "#c9c9c9",
+    "cursor": "#ffffff",
+    "selection": "#302b2a",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
@@ -7075,8 +9081,16 @@
     "brightWhite": "#ffffff",
     "background": "#000000",
     "foreground": "#ffffff",
+    "cursor": "#dc322f",
+    "selection": "#073642",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Symfony",
+          "link": "http://symfony.com/doc/current/book/index.html"
+        }
+      ]
     }
   },
   {
@@ -7099,8 +9113,16 @@
     "brightWhite": "#ffffff",
     "background": "#000000",
     "foreground": "#dad9c7",
+    "cursor": "#19cde6",
+    "selection": "#19cde6",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "brettstil",
+          "link": "https://github.com/brettstil/"
+        }
+      ]
     }
   },
   {
@@ -7123,8 +9145,20 @@
     "brightWhite": "#fefefe",
     "background": "#2a2139",
     "foreground": "#f0eff1",
+    "cursor": "#72f1b8",
+    "selection": "#181521",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "smithbm2316",
+          "link": "https://github.com/smithbm2316"
+        },
+        {
+          "name": "robb0wen",
+          "link": "https://github.com/robb0wen"
+        }
+      ]
     }
   },
   {
@@ -7147,8 +9181,11 @@
     "brightWhite": "#f2f2e3",
     "background": "#241b30",
     "foreground": "#f2f2e3",
+    "cursor": "#f2f2e3",
+    "selection": "#6e29ad",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -7171,8 +9208,20 @@
     "brightWhite": "#f6f6f4",
     "background": "#ffffff",
     "foreground": "#000000",
+    "cursor": "#000000",
+    "selection": "#c1deff",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": [
+        {
+          "name": "crowsonkb",
+          "link": "https://github.com/crowsonkb"
+        },
+        {
+          "name": "iterm_schemer",
+          "link": "https://github.com/crowsonkb/iterm_schemer"
+        }
+      ]
     }
   },
   {
@@ -7195,8 +9244,20 @@
     "brightWhite": "#f4f4f2",
     "background": "#ffffff",
     "foreground": "#000000",
+    "cursor": "#000000",
+    "selection": "#c1deff",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": [
+        {
+          "name": "crowsonkb",
+          "link": "https://github.com/crowsonkb"
+        },
+        {
+          "name": "iterm_schemer",
+          "link": "https://github.com/crowsonkb/iterm_schemer"
+        }
+      ]
     }
   },
   {
@@ -7219,8 +9280,16 @@
     "brightWhite": "#efefef",
     "background": "#262626",
     "foreground": "#d0d0d0",
+    "cursor": "#e4c9af",
+    "selection": "#4d4d4d",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Teerb",
+          "link": "https://gist.github.com/teerb/1360453"
+        }
+      ]
     }
   },
   {
@@ -7243,8 +9312,11 @@
     "brightWhite": "#e5e5e5",
     "background": "#ffffff",
     "foreground": "#000000",
+    "cursor": "#7f7f7f",
+    "selection": "#a4c9ff",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": null
     }
   },
   {
@@ -7267,8 +9339,16 @@
     "brightWhite": "#f8f8f2",
     "background": "#1b1d1e",
     "foreground": "#f8f8f8",
+    "cursor": "#fc971f",
+    "selection": "#4d4d4d",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "t3chnoboy",
+          "link": "https://github.com/t3chnoboy/thayer-bright-iTerm"
+        }
+      ]
     }
   },
   {
@@ -7291,8 +9371,16 @@
     "brightWhite": "#e5e6e1",
     "background": "#1b1d1e",
     "foreground": "#b5b5b5",
+    "cursor": "#16b61b",
+    "selection": "#4d504c",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "pyrophos",
+          "link": "https://github.com/pyrophos"
+        }
+      ]
     }
   },
   {
@@ -7315,8 +9403,16 @@
     "brightWhite": "#d5d6f3",
     "background": "#1d1d26",
     "foreground": "#cbcbf0",
+    "cursor": "#cbcbf0",
+    "selection": "#ff3399",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Tina Holly",
+          "link": "https://tinaciousdesign.com"
+        }
+      ]
     }
   },
   {
@@ -7339,8 +9435,16 @@
     "brightWhite": "#d5d6f3",
     "background": "#f8f8ff",
     "foreground": "#1d1d26",
+    "cursor": "#cbcbf0",
+    "selection": "#ff3399",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": [
+        {
+          "name": "Tina Holly",
+          "link": "https://tinaciousdesign.com"
+        }
+      ]
     }
   },
   {
@@ -7364,7 +9468,8 @@
     "background": "#16161e",
     "foreground": "#787c99",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -7387,8 +9492,11 @@
     "brightWhite": "#c0caf5",
     "background": "#1a1b26",
     "foreground": "#c0caf5",
+    "cursor": "#c0caf5",
+    "selection": "#33467c",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -7411,8 +9519,11 @@
     "brightWhite": "#3760bf",
     "background": "#e1e2e7",
     "foreground": "#3760bf",
+    "cursor": "#3760bf",
+    "selection": "#99a7df",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": null
     }
   },
   {
@@ -7435,8 +9546,11 @@
     "brightWhite": "#c0caf5",
     "background": "#24283b",
     "foreground": "#c0caf5",
+    "cursor": "#c0caf5",
+    "selection": "#364a82",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -7460,7 +9574,8 @@
     "background": "#cbccd1",
     "foreground": "#4c505e",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": null
     }
   },
   {
@@ -7484,7 +9599,8 @@
     "background": "#1f2335",
     "foreground": "#7982a9",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -7507,8 +9623,16 @@
     "brightWhite": "#ffffff",
     "background": "#ffffff",
     "foreground": "#4d4d4c",
+    "cursor": "#4d4d4c",
+    "selection": "#d6d6d6",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": [
+        {
+          "name": "chriskempson",
+          "link": "https://github.com/chriskempson/tomorrow-theme/tree/master/iTerm2"
+        }
+      ]
     }
   },
   {
@@ -7531,8 +9655,16 @@
     "brightWhite": "#ffffff",
     "background": "#1d1f21",
     "foreground": "#c5c8c6",
+    "cursor": "#c5c8c6",
+    "selection": "#373b41",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "ashwinv11",
+          "link": "https://github.com/ashwinv11/"
+        }
+      ]
     }
   },
   {
@@ -7555,8 +9687,11 @@
     "brightWhite": "#ffffff",
     "background": "#002451",
     "foreground": "#ffffff",
+    "cursor": "#ffffff",
+    "selection": "#003f8e",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -7579,8 +9714,11 @@
     "brightWhite": "#ffffff",
     "background": "#000000",
     "foreground": "#eaeaea",
+    "cursor": "#eaeaea",
+    "selection": "#424242",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -7603,8 +9741,16 @@
     "brightWhite": "#f5f5f5",
     "background": "#151515",
     "foreground": "#a1b0b8",
+    "cursor": "#ff443e",
+    "selection": "#b0bec5",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "ashwinv11",
+          "link": "https://github.com/ashwinv11/"
+        }
+      ]
     }
   },
   {
@@ -7627,8 +9773,11 @@
     "brightWhite": "#ffffff",
     "background": "#2d2d2d",
     "foreground": "#cccccc",
+    "cursor": "#cccccc",
+    "selection": "#515151",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -7651,8 +9800,16 @@
     "brightWhite": "#d5d5d5",
     "background": "#24364b",
     "foreground": "#31d07b",
+    "cursor": "#d5d5d5",
+    "selection": "#5f217a",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
@@ -7675,8 +9832,16 @@
     "brightWhite": "#ffc800",
     "background": "#191919",
     "foreground": "#786b53",
+    "cursor": "#fac814",
+    "selection": "#786b53",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
@@ -7699,8 +9864,16 @@
     "brightWhite": "#ffffd4",
     "background": "#141414",
     "foreground": "#ffffd4",
+    "cursor": "#ffffff",
+    "selection": "#313131",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "stefri",
+          "link": "https://gist.github.com/stefri/1183140"
+        }
+      ]
     }
   },
   {
@@ -7723,8 +9896,20 @@
     "brightWhite": "#eeeeec",
     "background": "#300a24",
     "foreground": "#eeeeec",
+    "cursor": "#bbbbbb",
+    "selection": "#b5d5ff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Maximus",
+          "link": "http://superuser.com/questions/497240/ubuntu-purple-terminal-colors-in-conemu"
+        },
+        {
+          "name": "stepin",
+          "link": "https://github.com/stepin"
+        }
+      ]
     }
   },
   {
@@ -7747,8 +9932,11 @@
     "brightWhite": "#ffffff",
     "background": "#000000",
     "foreground": "#ffffff",
+    "cursor": "#fefefe",
+    "selection": "#222222",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -7771,8 +9959,11 @@
     "brightWhite": "#f9f9f5",
     "background": "#242728",
     "foreground": "#c1c1c1",
+    "cursor": "#c1c1c1",
+    "selection": "#574c49",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -7795,8 +9986,16 @@
     "brightWhite": "#58fbd6",
     "background": "#011116",
     "foreground": "#ffffff",
+    "cursor": "#4afcd6",
+    "selection": "#415555",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "peterpme",
+          "link": "https://github.com/peterpme"
+        }
+      ]
     }
   },
   {
@@ -7811,16 +10010,19 @@
     "brightRed": "#D16969",
     "brightWhite": "#FFFFFF",
     "brightYellow": "#DCDCAA",
+    "cursor": "#F8F8F0",
     "cyan": "#9CDCFE",
     "foreground": "#F8F8F2",
     "green": "#608B4E",
     "name": "Unholy",
     "magenta": "#AE81FF",
     "red": "#D16969",
+    "selection": "#616161",
     "white": "#FFFFFF",
     "yellow": "#FDD877",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -7843,8 +10045,16 @@
     "brightWhite": "#fff3fe",
     "background": "#ff8cd9",
     "foreground": "#0b0b0b",
+    "cursor": "#bafc8b",
+    "selection": "#3ea9fe",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": [
+        {
+          "name": "jakebathman",
+          "link": "https://github.com/jakebathman"
+        }
+      ]
     }
   },
   {
@@ -7867,8 +10077,16 @@
     "brightWhite": "#bfa3ff",
     "background": "#1b1b23",
     "foreground": "#877a9b",
+    "cursor": "#a063eb",
+    "selection": "#a063eb",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "zdj",
+          "link": "https://github.com/zdj/themes/tree/master/iterm2"
+        }
+      ]
     }
   },
   {
@@ -7891,8 +10109,11 @@
     "brightWhite": "#ffffff",
     "background": "#25234f",
     "foreground": "#dcdccc",
+    "cursor": "#ff5555",
+    "selection": "#b5d5ff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -7915,8 +10136,16 @@
     "brightWhite": "#e5e5e5",
     "background": "#000000",
     "foreground": "#ffffff",
+    "cursor": "#ffffff",
+    "selection": "#b5d5ff",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "asanghi",
+          "link": "https://github.com/asanghi/vibrantinklion"
+        }
+      ]
     }
   },
   {
@@ -7939,8 +10168,11 @@
     "brightWhite": "#5c5c5c",
     "background": "#f0f0ca",
     "foreground": "#353535",
+    "cursor": "#353535",
+    "selection": "#d7d7d7",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": null
     }
   },
   {
@@ -7963,8 +10195,16 @@
     "brightWhite": "#c9c6bd",
     "background": "#1c1d1f",
     "foreground": "#708284",
+    "cursor": "#708284",
+    "selection": "#595ab7",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "ashfinal",
+          "link": "https://github.com/ashfinal/vim-colors-violet"
+        }
+      ]
     }
   },
   {
@@ -7987,8 +10227,16 @@
     "brightWhite": "#c9c6bd",
     "background": "#fcf4dc",
     "foreground": "#536870",
+    "cursor": "#536870",
+    "selection": "#595ab7",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": [
+        {
+          "name": "ashfinal",
+          "link": "https://github.com/ashfinal/vim-colors-violet"
+        }
+      ]
     }
   },
   {
@@ -8011,8 +10259,20 @@
     "brightWhite": "#d8c8bb",
     "background": "#404040",
     "foreground": "#afdab6",
+    "cursor": "#30ff24",
+    "selection": "#b0ad21",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "PyCharm",
+          "link": "http://www.jetbrains.com/pycharm/"
+        },
+        {
+          "name": "firewut",
+          "link": "https://github.com/firewut"
+        }
+      ]
     }
   },
   {
@@ -8035,8 +10295,16 @@
     "brightWhite": "#ffffff",
     "background": "#000000",
     "foreground": "#b3b3b3",
+    "cursor": "#53ae71",
+    "selection": "#4d52f8",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "wez",
+          "link": "https://gist.github.com/wez/850268/"
+        }
+      ]
     }
   },
   {
@@ -8059,8 +10327,16 @@
     "brightWhite": "#ffffff",
     "background": "#29283b",
     "foreground": "#b3b0d6",
+    "cursor": "#b3b0d6",
+    "selection": "#3d3c58",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Rod",
+          "link": "https://github.com/rod"
+        }
+      ]
     }
   },
   {
@@ -8083,8 +10359,16 @@
     "brightWhite": "#e4838d",
     "background": "#1f1726",
     "foreground": "#dafaff",
+    "cursor": "#dd00ff",
+    "selection": "#002831",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "mashaal",
+          "link": "https://github.com/mashaal/wild-cherry"
+        }
+      ]
     }
   },
   {
@@ -8107,8 +10391,11 @@
     "brightWhite": "#d3d3d3",
     "background": "#282b33",
     "foreground": "#c6c6c6",
+    "cursor": "#7ebebd",
+    "selection": "#1f2024",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -8131,8 +10418,16 @@
     "brightWhite": "#ffffff",
     "background": "#171717",
     "foreground": "#dedacf",
+    "cursor": "#bbbbbb",
+    "selection": "#453b39",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "djoyner",
+          "link": "https://github.com/djoyner/iTerm2-wombat"
+        }
+      ]
     }
   },
   {
@@ -8155,8 +10450,16 @@
     "brightWhite": "#c0c0c0",
     "background": "#101010",
     "foreground": "#999993",
+    "cursor": "#9e9ecb",
+    "selection": "#4d4d4d",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "baskerville",
+          "link": "https://github.com/baskerville/iTerm-2-Color-Themes"
+        }
+      ]
     }
   },
   {
@@ -8179,8 +10482,11 @@
     "brightWhite": "#4f5e68",
     "background": "#f0edec",
     "foreground": "#2c363c",
+    "cursor": "#2c363c",
+    "selection": "#cbd9e3",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": null
     }
   },
   {
@@ -8203,8 +10509,11 @@
     "brightWhite": "#888f94",
     "background": "#1c1917",
     "foreground": "#b4bdc3",
+    "cursor": "#c4cacf",
+    "selection": "#3d4042",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -8227,8 +10536,11 @@
     "brightWhite": "#4f5e68",
     "background": "#f0edec",
     "foreground": "#2c363c",
+    "cursor": "#2c363c",
+    "selection": "#cbd9e3",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": null
     }
   },
   {
@@ -8251,8 +10563,16 @@
     "brightWhite": "#ffffff",
     "background": "#3f3f3f",
     "foreground": "#dcdccc",
+    "cursor": "#73635a",
+    "selection": "#21322f",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Zenburn",
+          "link": "http://sunaku.github.io/zenburn-terminal-color-scheme.html"
+        }
+      ]
     }
   },
   {
@@ -8275,8 +10595,11 @@
     "brightWhite": "#c0ab86",
     "background": "#404040",
     "foreground": "#f0e4cf",
+    "cursor": "#f3eadb",
+    "selection": "#746956",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -8299,8 +10622,11 @@
     "brightWhite": "#8e8e8e",
     "background": "#191919",
     "foreground": "#bbbbbb",
+    "cursor": "#c9c9c9",
+    "selection": "#404040",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   },
   {
@@ -8323,8 +10649,11 @@
     "brightWhite": "#5c5c5c",
     "background": "#eeeeee",
     "foreground": "#353535",
+    "cursor": "#353535",
+    "selection": "#d7d7d7",
     "meta": {
-      "isDark": false
+      "isDark": false,
+      "credits": null
     }
   },
   {
@@ -8339,16 +10668,19 @@
     "brightRed": "#FF6E6E",
     "brightWhite": "#FFFFFF",
     "brightYellow": "#FFFF6B",
+    "cursor": "#FFFFFF",
     "cyan": "#13D4D4",
     "foreground": "#FFFFFF",
     "green": "#21C221",
     "name": "Zeonica",
     "magenta": "#D918B9",
     "red": "#CC2929",
+    "selection": "#242272",
     "white": "#B2B2B2",
     "yellow": "#D6C315",
     "meta": {
-      "isDark": true
+      "isDark": true,
+      "credits": null
     }
   }
 ]
