@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/agnivade/levenshtein v1.1.1
+	github.com/atotto/clipboard v0.1.4
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/charmbracelet/glamour v0.6.0
 	github.com/charmbracelet/keygen v0.4.3
@@ -27,7 +28,6 @@ require (
 require (
 	github.com/alecthomas/chroma v0.10.0 // indirect
 	github.com/anmitsu/go-shlex v0.0.0-20200514113438-38f4b401e2be // indirect
-	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/caarlos0/sshmarshal v0.1.0 // indirect
