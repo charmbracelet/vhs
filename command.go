@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/atotto/clipboard"
 	"io"
 	"os"
 	"os/exec"
@@ -11,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/atotto/clipboard"
 	"github.com/go-rod/rod/lib/input"
 	"github.com/mattn/go-runewidth"
 )
@@ -264,10 +264,12 @@ func ExecuteOutput(c Command, v *VHS) {
 	}
 }
 
+// ExecuteCopy copies text to the clipboard.
 func ExecuteCopy(c Command, _ *VHS) {
 	_ = clipboard.WriteAll(c.Args)
 }
 
+// ExecutePaste pastes text from the clipboard.
 func ExecutePaste(_ Command, v *VHS) {
 	clip, err := clipboard.ReadAll()
 	if err != nil {
