@@ -7,7 +7,7 @@ require (
 	github.com/atotto/clipboard v0.1.4
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/charmbracelet/glamour v0.6.0
-	github.com/charmbracelet/keygen v0.4.3
+	github.com/charmbracelet/keygen v0.5.0
 	github.com/charmbracelet/lipgloss v0.8.0
 	github.com/charmbracelet/ssh v0.0.0-20221117183211-483d43d97103
 	github.com/charmbracelet/wish v1.1.1
@@ -21,8 +21,8 @@ require (
 	github.com/muesli/roff v0.1.0
 	github.com/muesli/termenv v0.15.2
 	github.com/spf13/cobra v1.7.0
-	golang.org/x/crypto v0.13.0
-	golang.org/x/term v0.12.0
+	golang.org/x/crypto v0.14.0
+	golang.org/x/term v0.13.0
 )
 
 require (
@@ -30,7 +30,6 @@ require (
 	github.com/anmitsu/go-shlex v0.0.0-20200514113438-38f4b401e2be // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
-	github.com/caarlos0/sshmarshal v0.1.0 // indirect
 	github.com/charmbracelet/log v0.2.1 // indirect
 	github.com/dlclark/regexp2 v1.8.1 // indirect
 	github.com/go-logfmt/logfmt v0.6.0 // indirect
@@ -53,5 +52,5 @@ require (
 	github.com/yuin/goldmark v1.5.4 // indirect
 	github.com/yuin/goldmark-emoji v1.0.1 // indirect
 	golang.org/x/net v0.10.0 // indirect
-	golang.org/x/sys v0.12.0 // indirect
+	golang.org/x/sys v0.13.0 // indirect
 )
