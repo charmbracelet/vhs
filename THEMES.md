@@ -38,7 +38,6 @@
 * `Broadcast`
 * `Brogrammer`
 * `Bubbles`
-* `Bubbles`
 * `Builtin Dark`
 * `Builtin Light`
 * `Builtin Pastel Dark`
@@ -49,12 +48,8 @@
 * `C64`
 * `Calamity`
 * `Catppuccin Frappe`
-* `Catppuccin Frappe`
-* `Catppuccin Latte`
 * `Catppuccin Latte`
 * `Catppuccin Macchiato`
-* `Catppuccin Macchiato`
-* `Catppuccin Mocha`
 * `Catppuccin Mocha`
 * `catppuccin-frappe`
 * `catppuccin-latte`
@@ -71,16 +66,12 @@
 * `Cobalt2`
 * `coffee_theme`
 * `Contrast Light`
-* `Contrast Light`
 * `coolnight`
 * `CrayonPonyFish`
 * `Crystal Violet`
-* `Crystal Violet`
-* `Cyber Cube`
 * `Cyber Cube`
 * `Cyberdyne`
 * `cyberpunk`
-* `CyberPunk2077`
 * `CyberPunk2077`
 * `Dark Pastel`
 * `Dark+`
@@ -98,7 +89,6 @@
 * `DotGov`
 * `Dracula`
 * `Dracula+`
-* `DraculaPlus`
 * `DraculaPlus`
 * `duckbones`
 * `Duotone Dark`
@@ -125,11 +115,9 @@
 * `Galaxy`
 * `Galizur`
 * `Ganyu`
-* `Ganyu`
 * `Github`
 * `GitHub Dark`
 * `Glacier`
-* `Glorious`
 * `Glorious`
 * `Grape`
 * `Grass`
@@ -139,8 +127,6 @@
 * `GruvboxDarkHard`
 * `Guezwhoz`
 * `h4rithd`
-* `h4rithd`
-* `h4rithd.com`
 * `h4rithd.com`
 * `Hacktober`
 * `Hardcore`
@@ -155,10 +141,8 @@
 * `Hopscotch`
 * `Hopscotch.256`
 * `Horizon`
-* `Horizon`
 * `Hurtado`
 * `Hybrid`
-* `Hyper`
 * `Hyper`
 * `IC_Green_PPL`
 * `IC_Orange_PPL`
@@ -181,7 +165,6 @@
 * `Jellybeans`
 * `JetBrains Darcula`
 * `jubi`
-* `Juicy Colors`
 * `Juicy Colors`
 * `Kanagawa`
 * `kanagawabones`
@@ -212,17 +195,12 @@
 * `Molokai`
 * `MonaLisa`
 * `Monokai Cmder`
-* `Monokai Cmder`
-* `Monokai Pro`
 * `Monokai Pro`
 * `Monokai Pro (Filter Octagon)`
-* `Monokai Pro (Filter Octagon)`
-* `Monokai Pro (Filter Ristretto)`
 * `Monokai Pro (Filter Ristretto)`
 * `Monokai Remastered`
 * `Monokai Soda`
 * `Monokai Vivid`
-* `Moonlight II`
 * `Moonlight II`
 * `N0tch2k`
 * `neobones_dark`
@@ -244,10 +222,8 @@
 * `OceanicMaterial`
 * `Ollie`
 * `OneDark`
-* `OneDark`
 * `OneHalfDark`
 * `OneHalfLight`
-* `OneStar`
 * `OneStar`
 * `Operator Mono Dark`
 * `Overnight Slumber`
@@ -263,12 +239,10 @@
 * `Popping and Locking`
 * `primary`
 * `Primer`
-* `Primer`
 * `Pro`
 * `Pro Light`
 * `Purple Rain`
 * `purplepeter`
-* `QB64 Super Dark Blue`
 * `QB64 Super Dark Blue`
 * `Rapture`
 * `Raycast_Dark`
@@ -280,9 +254,7 @@
 * `Relaxed`
 * `Retro`
 * `Retrowave`
-* `Retrowave`
 * `Rippedcasts`
-* `Rose Pine`
 * `Rose Pine`
 * `rose-pine`
 * `rose-pine-dawn`
@@ -297,10 +269,7 @@
 * `seoulbones_dark`
 * `seoulbones_light`
 * `Serendipity Midnight`
-* `Serendipity Midnight`
 * `Serendipity Morning`
-* `Serendipity Morning`
-* `Serendipity Sunset`
 * `Serendipity Sunset`
 * `Seti`
 * `shades-of-purple`
@@ -314,8 +283,6 @@
 * `Solarized Dark - Patched`
 * `Solarized Dark Higher Contrast`
 * `Sonoran Gothic`
-* `Sonoran Gothic`
-* `Sonoran Sunrise`
 * `Sonoran Sunrise`
 * `Spacedust`
 * `SpaceGray`
@@ -324,7 +291,6 @@
 * `Spiderman`
 * `Spring`
 * `Square`
-* `Sublette`
 * `Sublette`
 * `Subliminal`
 * `Sundried`
@@ -341,13 +307,10 @@
 * `Tinacious Design (Dark)`
 * `Tinacious Design (Light)`
 * `TokyoNight`
-* `TokyoNight`
 * `tokyonight`
 * `tokyonight-day`
 * `tokyonight-storm`
 * `TokyoNightLight`
-* `TokyoNightLight`
-* `TokyoNightStorm`
 * `TokyoNightStorm`
 * `Tomorrow`
 * `Tomorrow Night`
@@ -362,7 +325,6 @@
 * `UltraDark`
 * `UltraViolent`
 * `UnderTheSea`
-* `Unholy`
 * `Unholy`
 * `Unikitty`
 * `Urple`
