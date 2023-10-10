@@ -121,9 +121,6 @@ func uintPtr(u uint) *uint       { return &u }
 var (
 	//go:embed themes.json
 	themesBts []byte
-
-	//go:embed themes_custom.json
-	customThemesBts []byte
 )
 
 // ThemeNotFoundError is returned when a requested theme is not found.
@@ -146,7 +143,7 @@ func (e ThemeNotFoundError) Error() string {
 // sortedThemeNames returns the names of the themes, sorted.
 func sortedThemeNames() ([]string, error) {
 	var keys []string
-	for _, bts := range [][]byte{themesBts, customThemesBts} {
+	for _, bts := range [][]byte{themesBts} {
 		themes, err := parseThemes(bts)
 		if err != nil {
 			return nil, err
@@ -166,7 +163,7 @@ const distance = 2
 
 // findTheme return the given theme, if it exists.
 func findTheme(name string) (Theme, error) {
-	for _, bts := range [][]byte{themesBts, customThemesBts} {
+	for _, bts := range [][]byte{themesBts} {
 		themes, err := parseThemes(bts)
 		if err != nil {
 			return DefaultTheme, err

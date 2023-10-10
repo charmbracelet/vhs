@@ -12,7 +12,7 @@ func TestFindAllThemes(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	expect := 295
+	expect := 348
 	if l := len(themes); l != expect {
 		t.Errorf("expected to load %d themes, got %d", expect, l)
 	}

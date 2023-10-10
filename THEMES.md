@@ -2,11 +2,16 @@
 
 * `3024 Day`
 * `3024 Night`
+* `Aardvark Blue`
+* `Abernathy`
 * `Adventure`
 * `AdventureTime`
 * `Afterglow`
+* `Alabaster`
 * `AlienBlood`
 * `Andromeda`
+* `Apple Classic`
+* `arcoiris`
 * `Argonaut`
 * `Arthur`
 * `AtelierSulphurpool`
@@ -14,6 +19,7 @@
 * `AtomOneLight`
 * `Aurora`
 * `ayu`
+* `Ayu Mirage`
 * `ayu_light`
 * `Banana Blueberry`
 * `Batman`
@@ -23,6 +29,7 @@
 * `Blazer`
 * `Blue Matrix`
 * `BlueBerryPie`
+* `BlueDolphin`
 * `BlulocoDark`
 * `BlulocoLight`
 * `Borland`
@@ -44,6 +51,11 @@
 * `Catppuccin Latte`
 * `Catppuccin Macchiato`
 * `Catppuccin Mocha`
+* `catppuccin-frappe`
+* `catppuccin-latte`
+* `catppuccin-macchiato`
+* `catppuccin-mocha`
+* `CGA`
 * `Chalk`
 * `Chalkboard`
 * `ChallengerDeep`
@@ -54,6 +66,7 @@
 * `Cobalt2`
 * `coffee_theme`
 * `Contrast Light`
+* `coolnight`
 * `CrayonPonyFish`
 * `Crystal Violet`
 * `Cyber Cube`
@@ -62,6 +75,8 @@
 * `CyberPunk2077`
 * `Dark Pastel`
 * `Dark+`
+* `darkermatrix`
+* `darkmatrix`
 * `Darkside`
 * `deep`
 * `Desert`
@@ -75,6 +90,7 @@
 * `Dracula`
 * `Dracula+`
 * `DraculaPlus`
+* `duckbones`
 * `Duotone Dark`
 * `Earthsong`
 * `Elemental`
@@ -82,7 +98,9 @@
 * `ENCOM`
 * `Espresso`
 * `Espresso Libre`
+* `Everblush`
 * `Fahrenheit`
+* `Fairyfloss`
 * `Fideloper`
 * `FirefoxDev`
 * `Firewatch`
@@ -98,18 +116,24 @@
 * `Galizur`
 * `Ganyu`
 * `Github`
+* `GitHub Dark`
 * `Glacier`
 * `Glorious`
 * `Grape`
 * `Grass`
-* `Gruvbox Dark`
+* `Grey-green`
 * `Gruvbox Light`
+* `GruvboxDark`
+* `GruvboxDarkHard`
 * `Guezwhoz`
 * `h4rithd`
 * `h4rithd.com`
 * `Hacktober`
 * `Hardcore`
 * `Harper`
+* `HaX0R_BLUE`
+* `HaX0R_GR33N`
+* `HaX0R_R3D`
 * `Highway`
 * `Hipster Green`
 * `Hivacruz`
@@ -122,15 +146,28 @@
 * `Hyper`
 * `IC_Green_PPL`
 * `IC_Orange_PPL`
+* `iceberg-dark`
+* `iceberg-light`
 * `idea`
 * `idleToes`
 * `IR_Black`
+* `iTerm2 Dark Background`
+* `iTerm2 Default`
+* `iTerm2 Light Background`
+* `iTerm2 Pastel Dark Background`
+* `iTerm2 Smoooooth`
+* `iTerm2 Solarized Dark`
+* `iTerm2 Solarized Light`
+* `iTerm2 Tango Dark`
+* `iTerm2 Tango Light`
 * `Jackie Brown`
 * `Japanesque`
 * `Jellybeans`
 * `JetBrains Darcula`
 * `jubi`
 * `Juicy Colors`
+* `Kanagawa`
+* `kanagawabones`
 * `Kibble`
 * `Kolorit`
 * `Konsolas`
@@ -143,11 +180,14 @@
 * `LiquidCarbonTransparentInverse`
 * `lovelace`
 * `Man Page`
+* `Mariana`
 * `Material`
 * `MaterialDark`
 * `MaterialDarker`
+* `MaterialDesignColors`
 * `MaterialOcean`
 * `Mathias`
+* `matrix`
 * `Medallion`
 * `midnight-in-mojave`
 * `Mirage`
@@ -155,7 +195,6 @@
 * `Molokai`
 * `MonaLisa`
 * `Monokai Cmder`
-* `Monokai Octagon`
 * `Monokai Pro`
 * `Monokai Pro (Filter Octagon)`
 * `Monokai Pro (Filter Ristretto)`
@@ -164,16 +203,22 @@
 * `Monokai Vivid`
 * `Moonlight II`
 * `N0tch2k`
+* `neobones_dark`
+* `neobones_light`
+* `Neon`
 * `Neopolitan`
 * `Neutron`
 * `Night Owlish Light`
 * `NightLion v1`
 * `NightLion v2`
+* `niji`
 * `Nocturnal Winter`
 * `nord`
+* `nord-light`
 * `Novel`
 * `Obsidian`
 * `Ocean`
+* `Oceanic-Next`
 * `OceanicMaterial`
 * `Ollie`
 * `OneDark`
@@ -185,10 +230,10 @@
 * `PaleNightHC`
 * `Pandora`
 * `Paraiso Dark`
-* `Parasio Dark`
 * `PaulMillr`
 * `PencilDark`
 * `PencilLight`
+* `Peppermint`
 * `Piatto Light`
 * `Pnevma`
 * `Popping and Locking`
@@ -200,14 +245,20 @@
 * `purplepeter`
 * `QB64 Super Dark Blue`
 * `Rapture`
+* `Raycast_Dark`
+* `Raycast_Light`
 * `rebecca`
 * `Red Alert`
 * `Red Planet`
 * `Red Sands`
 * `Relaxed`
+* `Retro`
 * `Retrowave`
 * `Rippedcasts`
 * `Rose Pine`
+* `rose-pine`
+* `rose-pine-dawn`
+* `rose-pine-moon`
 * `Rouge 2`
 * `Royal`
 * `Ryuuko`
@@ -215,6 +266,8 @@
 * `Scarlet Protocol`
 * `Seafoam Pastel`
 * `SeaShells`
+* `seoulbones_dark`
+* `seoulbones_light`
 * `Serendipity Midnight`
 * `Serendipity Morning`
 * `Serendipity Sunset`
@@ -244,6 +297,7 @@
 * `Symfonic`
 * `synthwave`
 * `synthwave-everything`
+* `SynthwaveAlpha`
 * `Tango Adapted`
 * `Tango Half Adapted`
 * `Teerb`
@@ -253,6 +307,9 @@
 * `Tinacious Design (Dark)`
 * `Tinacious Design (Light)`
 * `TokyoNight`
+* `tokyonight`
+* `tokyonight-day`
+* `tokyonight-storm`
 * `TokyoNightLight`
 * `TokyoNightStorm`
 * `Tomorrow`
@@ -265,6 +322,7 @@
 * `Treehouse`
 * `Twilight`
 * `Ubuntu`
+* `UltraDark`
 * `UltraViolent`
 * `UnderTheSea`
 * `Unholy`
@@ -272,12 +330,21 @@
 * `Urple`
 * `Vaughn`
 * `VibrantInk`
+* `vimbones`
 * `Violet Dark`
 * `Violet Light`
 * `WarmNeon`
 * `Wez`
 * `Whimsy`
 * `WildCherry`
+* `wilmersdorf`
 * `Wombat`
 * `Wryan`
+* `zenbones`
+* `zenbones_dark`
+* `zenbones_light`
 * `Zenburn`
+* `zenburned`
+* `zenwritten_dark`
+* `zenwritten_light`
+* `Zeonica`
