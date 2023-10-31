@@ -11,9 +11,9 @@ func TestCommand(t *testing.T) {
 		t.Errorf("Expected %d commands, got %d", numberOfCommands, len(CommandTypes))
 	}
 
-	const numberOfCommandFuncs = 24
+	const numberOfCommandFuncs = 25
 	if len(CommandFuncs) != numberOfCommandFuncs {
-		t.Errorf("Expected %d commands, got %d", numberOfCommands, len(CommandFuncs))
+		t.Errorf("Expected %d commands, got %d", numberOfCommandFuncs, len(CommandFuncs))
 	}
 }
 
