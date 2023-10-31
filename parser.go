@@ -61,6 +61,8 @@ func (p *Parser) parseCommand() Command {
 		return p.parseCtrl()
 	case ALT:
 		return p.parseAlt()
+	case SHIFT:
+		return p.parseShift()
 	case HIDE:
 		return p.parseHide()
 	case REQUIRE:
@@ -187,7 +189,7 @@ func (p *Parser) parseCtrl() Command {
 func (p *Parser) parseAlt() Command {
 	if p.peek.Type == PLUS {
 		p.nextToken()
-		if p.peek.Type == STRING || p.peek.Type == ENTER {
+		if p.peek.Type == STRING || p.peek.Type == ENTER || p.peek.Type == TAB {
 			c := p.peek.Literal
 			p.nextToken()
 			return Command{Type: ALT, Args: c}
@@ -196,6 +198,28 @@ func (p *Parser) parseAlt() Command {
 
 	p.errors = append(p.errors, NewError(p.cur, "Expected alt character, got "+p.cur.Literal))
 	return Command{Type: ALT}
+}
+
+// parseShift parses a shift command.
+// A shift command takes one character and types while shift is held down.
+//
+// Shift+<char>
+// E.g.
+// Shift+A
+// Shift+Tab
+// Shift+Enter
+func (p *Parser) parseShift() Command {
+	if p.peek.Type == PLUS {
+		p.nextToken()
+		if p.peek.Type == STRING || p.peek.Type == ENTER || p.peek.Type == TAB {
+			c := p.peek.Literal
+			p.nextToken()
+			return Command{Type: SHIFT, Args: c}
+		}
+	}
+
+	p.errors = append(p.errors, NewError(p.cur, "Expected shift character, got "+p.cur.Literal))
+	return Command{Type: SHIFT}
 }
 
 // parseKeypress parses a repeatable and time adjustable keypress command.

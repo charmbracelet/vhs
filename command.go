@@ -82,6 +82,7 @@ var CommandFuncs = map[CommandType]CommandFunc{
 	TYPE:       ExecuteType,
 	CTRL:       ExecuteCtrl,
 	ALT:        ExecuteAlt,
+	SHIFT:      ExecuteShift,
 	ILLEGAL:    ExecuteNoop,
 	SCREENSHOT: ExecuteScreenshot,
 	COPY:       ExecuteCopy,
@@ -189,6 +190,30 @@ func ExecuteAlt(c Command, v *VHS) {
 		switch k {
 		case ENTER:
 			_ = v.Page.Keyboard.Type(input.Enter)
+		case TAB:
+			_ = v.Page.Keyboard.Type(input.Tab)
+		}
+	} else {
+		for _, r := range c.Args {
+			if k, ok := keymap[r]; ok {
+				_ = v.Page.Keyboard.Type(k)
+			}
+		}
+	}
+
+	_ = v.Page.Keyboard.Release(input.AltLeft)
+}
+
+// ExecuteShift is a CommandFunc that presses the argument key with the shift
+// key held down on the running instance of vhs.
+func ExecuteShift(c Command, v *VHS) {
+	_ = v.Page.Keyboard.Press(input.ShiftLeft)
+	if k, ok := keywords[c.Args]; ok {
+		switch k {
+		case ENTER:
+			_ = v.Page.Keyboard.Type(input.Enter)
+		case TAB:
+			_ = v.Page.Keyboard.Type(input.Tab)
 		}
 	} else {
 		for _, r := range c.Args {
