@@ -215,6 +215,7 @@ There are a few basic types of VHS commands:
 * [`Show`](#show): stop hiding commands from output
 * [`Screenshot`](#screenshot): screenshot the current frame
 * [`Copy/Paste`](#copy--paste): copy and paste text from clipboard.
+* [`Source`](#source): source commands from another tape
 
 ### Output
 
@@ -724,6 +725,15 @@ Copy "https://github.com/charmbracelet"
 Type "open "
 Sleep 500ms
 Paste
+```
+
+
+### Source
+
+The `source` command allows you to execute commands from another tape.
+
+```elixir
+Source config.tape
 ```
 
 ***
