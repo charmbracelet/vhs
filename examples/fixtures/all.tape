@@ -41,6 +41,14 @@ Backspace
 Backspace 2
 Backspace@1 3
 
+Delete
+Delete 2
+Delete@1 3
+
+Insert
+Insert 2
+Insert@1 3
+
 Down
 Down 2
 Down@1 3

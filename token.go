@@ -104,6 +104,8 @@ var keywords = map[string]TokenType{
 	"Enter":         ENTER,
 	"Space":         SPACE,
 	"Backspace":     BACKSPACE,
+	"Delete":        DELETE,
+	"Insert":        INSERT,
 	"Ctrl":          CTRL,
 	"Alt":           ALT,
 	"Shift":         SHIFT,

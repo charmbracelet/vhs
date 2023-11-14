@@ -47,7 +47,7 @@ func (p *Parser) Parse() []Command {
 // parseCommand parses a command.
 func (p *Parser) parseCommand() Command {
 	switch p.cur.Type {
-	case SPACE, BACKSPACE, ENTER, ESCAPE, TAB, DOWN, LEFT, RIGHT, UP, PAGEUP, PAGEDOWN:
+	case SPACE, BACKSPACE, DELETE, INSERT, ENTER, ESCAPE, TAB, DOWN, LEFT, RIGHT, UP, PAGEUP, PAGEDOWN:
 		return p.parseKeypress(p.cur.Type)
 	case SET:
 		return p.parseSet()

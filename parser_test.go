@@ -15,6 +15,8 @@ Backspace@0.1 5
 Backspace@.1 5
 Backspace@1 5
 Backspace@100ms 5
+Delete 2
+Insert 2
 Right 3
 Left 3
 Up@50ms
@@ -33,6 +35,8 @@ Sleep 3`
 		{Type: BACKSPACE, Options: ".1s", Args: "5"},
 		{Type: BACKSPACE, Options: "1s", Args: "5"},
 		{Type: BACKSPACE, Options: "100ms", Args: "5"},
+		{Type: DELETE, Options: "", Args: "2"},
+		{Type: INSERT, Options: "", Args: "2"},
 		{Type: RIGHT, Options: "", Args: "3"},
 		{Type: LEFT, Options: "", Args: "3"},
 		{Type: UP, Options: "50ms", Args: "1"},
@@ -134,6 +138,12 @@ func TestParseTapeFile(t *testing.T) {
 		{Type: BACKSPACE, Options: "", Args: "1"},
 		{Type: BACKSPACE, Options: "", Args: "2"},
 		{Type: BACKSPACE, Options: "1s", Args: "3"},
+		{Type: DELETE, Options: "", Args: "1"},
+		{Type: DELETE, Options: "", Args: "2"},
+		{Type: DELETE, Options: "1s", Args: "3"},
+		{Type: INSERT, Options: "", Args: "1"},
+		{Type: INSERT, Options: "", Args: "2"},
+		{Type: INSERT, Options: "1s", Args: "3"},
 		{Type: DOWN, Options: "", Args: "1"},
 		{Type: DOWN, Options: "", Args: "2"},
 		{Type: DOWN, Options: "1s", Args: "3"},

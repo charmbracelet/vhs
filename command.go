@@ -21,6 +21,8 @@ type CommandType TokenType
 // CommandTypes is a list of the available commands that can be executed.
 var CommandTypes = []CommandType{ //nolint: deadcode
 	BACKSPACE,
+	DELETE,
+	INSERT,
 	CTRL,
 	ALT,
 	DOWN,
@@ -63,6 +65,8 @@ type CommandFunc func(c Command, v *VHS)
 // CommandFuncs maps command types to their executable functions.
 var CommandFuncs = map[CommandType]CommandFunc{
 	BACKSPACE:  ExecuteKey(input.Backspace),
+	DELETE:     ExecuteKey(input.Delete),
+	INSERT:     ExecuteKey(input.Insert),
 	DOWN:       ExecuteKey(input.ArrowDown),
 	ENTER:      ExecuteKey(input.Enter),
 	LEFT:       ExecuteKey(input.ArrowLeft),
