@@ -31,6 +31,8 @@ The following is a list of all possible commands in VHS:
 * %Type% "<string>"
 * %Ctrl% [+Alt][+Shift]+<char>
 * %Backspace% [repeat]
+* %Delete% [repeat]
+* %Insert% [repeat]
 * %Down% [repeat]
 * %Enter% [repeat]
 * %Left% [repeat]

@@ -37,6 +37,8 @@
 # Keys:
 #   Escape[@<time>] [number]        Press the Escape key
 #   Backspace[@<time>] [number]     Press the Backspace key
+#   Delete[@<time>] [number]        Press the Delete key
+#   Insert[@<time>] [number]        Press the Insert key
 #   Down[@<time>] [number]          Press the Down key
 #   Enter[@<time>] [number]         Press the Enter key
 #   Space[@<time>] [number]         Press the Space key
