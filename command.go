@@ -165,6 +165,8 @@ func ExecuteCtrl(c Command, v *VHS) {
 			inputKey = &input.ShiftLeft
 		case "Alt":
 			inputKey = &input.AltLeft
+		case "Enter":
+			inputKey = &input.Enter
 		default:
 			r := rune(key[0])
 			if k, ok := keymap[r]; ok {

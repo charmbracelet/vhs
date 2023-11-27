@@ -152,7 +152,7 @@ func (p *Parser) parseCtrl() Command {
 		peek := p.peek
 
 		// Get key from keywords and check if it's a valid modifier
-		if k, ok := keywords[peek.Literal]; ok {
+		if k, ok := keywords[peek.Literal]; ok && peek.Type != ENTER {
 			p.nextToken()
 			if IsModifier(k) {
 				args = append(args, peek.Literal)
@@ -162,7 +162,7 @@ func (p *Parser) parseCtrl() Command {
 		}
 
 		// Add key argument
-		if peek.Type == STRING && len(peek.Literal) == 1 {
+		if peek.Type == ENTER || peek.Type == STRING && len(peek.Literal) == 1 {
 			p.nextToken()
 			args = append(args, peek.Literal)
 		}
