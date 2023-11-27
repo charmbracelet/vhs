@@ -21,8 +21,8 @@ require (
 	github.com/muesli/roff v0.1.0
 	github.com/muesli/termenv v0.15.2
 	github.com/spf13/cobra v1.8.0
-	golang.org/x/crypto v0.15.0
-	golang.org/x/term v0.14.0
+	golang.org/x/crypto v0.16.0
+	golang.org/x/term v0.15.0
 )
 
 require (
@@ -52,5 +52,5 @@ require (
 	github.com/yuin/goldmark v1.5.4 // indirect
 	github.com/yuin/goldmark-emoji v1.0.1 // indirect
 	golang.org/x/net v0.17.0 // indirect
-	golang.org/x/sys v0.14.0 // indirect
+	golang.org/x/sys v0.15.0 // indirect
 )
