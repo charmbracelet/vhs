@@ -74,7 +74,7 @@ For more examples see the [`examples/`](https://github.com/charmbracelet/vhs/tre
 
 ## Installation
 
-> **Note**
+> [!NOTE]
 > VHS requires [`ttyd`](https://github.com/tsl0922/ttyd) and [`ffmpeg`](https://ffmpeg.org) to be installed and available on your `PATH`.
 
 Use a package manager:
@@ -198,7 +198,7 @@ ssh vhs.example.com < demo.tape > demo.gif
 
 ## VHS Command Reference
 
-> **Note**
+> [!NOTE]
 > You can view all VHS documentation on the command line with `vhs manual`.
 
 There are a few basic types of VHS commands:
