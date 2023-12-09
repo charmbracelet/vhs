@@ -9605,22 +9605,22 @@
   },
   {
     "name": "Tomorrow",
-    "black": "#000000",
+    "black": "#e0e0e0",
     "red": "#c82829",
     "green": "#718c00",
     "yellow": "#eab700",
     "blue": "#4271ae",
     "magenta": "#8959a8",
     "cyan": "#3e999f",
-    "white": "#ffffff",
-    "brightBlack": "#000000",
+    "white": "#282a2e",
+    "brightBlack": "#d6d6d6",
     "brightRed": "#c82829",
     "brightGreen": "#718c00",
     "brightYellow": "#eab700",
     "brightBlue": "#4271ae",
     "brightMagenta": "#8959a8",
     "brightCyan": "#3e999f",
-    "brightWhite": "#ffffff",
+    "brightWhite": "#1d1f21",
     "background": "#ffffff",
     "foreground": "#4d4d4c",
     "cursor": "#4d4d4c",
@@ -9629,23 +9629,23 @@
       "isDark": false,
       "credits": [
         {
-          "name": "chriskempson",
-          "link": "https://github.com/chriskempson/tomorrow-theme/tree/master/iTerm2"
+          "name": "tinted-theming",
+          "link": "https://github.com/tinted-theming/base16-schemes/blob/main/tomorrow.yaml"
         }
       ]
     }
   },
   {
     "name": "Tomorrow Night",
-    "black": "#000000",
+    "black": "#282a2e",
     "red": "#cc6666",
     "green": "#b5bd68",
     "yellow": "#f0c674",
     "blue": "#81a2be",
     "magenta": "#b294bb",
     "cyan": "#8abeb7",
-    "white": "#ffffff",
-    "brightBlack": "#000000",
+    "white": "#e0e0e0",
+    "brightBlack": "#373b41",
     "brightRed": "#cc6666",
     "brightGreen": "#b5bd68",
     "brightYellow": "#f0c674",
@@ -9661,8 +9661,8 @@
       "isDark": true,
       "credits": [
         {
-          "name": "ashwinv11",
-          "link": "https://github.com/ashwinv11/"
+          "name": "tinted-theming",
+          "link": "https://github.com/tinted-theming/base16-schemes/blob/main/tomorrow-night.yaml"
         }
       ]
     }
@@ -9755,15 +9755,15 @@
   },
   {
     "name": "Tomorrow Night Eighties",
-    "black": "#000000",
+    "black": "#393939",
     "red": "#f2777a",
     "green": "#99cc99",
     "yellow": "#ffcc66",
     "blue": "#6699cc",
     "magenta": "#cc99cc",
     "cyan": "#66cccc",
-    "white": "#ffffff",
-    "brightBlack": "#000000",
+    "white": "#e0e0e0",
+    "brightBlack": "#515151",
     "brightRed": "#f2777a",
     "brightGreen": "#99cc99",
     "brightYellow": "#ffcc66",
@@ -9777,7 +9777,10 @@
     "selection": "#515151",
     "meta": {
       "isDark": true,
-      "credits": null
+      "credits": {
+        "name": "tinted-theming",
+        "link": "https://github.com/tinted-theming/base16-schemes/blob/main/tomorrow-night-eighties.yaml"
+      }
     }
   },
   {
