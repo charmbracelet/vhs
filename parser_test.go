@@ -207,48 +207,63 @@ func TestParseTapeFile(t *testing.T) {
 }
 
 func TestParseCtrl(t *testing.T) {
-	t.Run("should parse with multiple modifiers", func(t *testing.T) {
-		tape := "Ctrl+Shift+Alt+C"
-		l := NewLexer(tape)
-		p := NewParser(l)
+	tests := []struct {
+		name     string
+		tape     string
+		wantArgs []string
+		wantErr  bool
+	}{
+		{
+			name:     "should parse with multiple modifiers",
+			tape:     "Ctrl+Shift+Alt+C",
+			wantArgs: []string{"Shift", "Alt", "C"},
+			wantErr:  false,
+		},
+		{
+			name:     "should parse with out of order modifiers",
+			tape:     "Ctrl+Shift+C+Alt",
+			wantArgs: []string{"Shift", "C", "Alt"},
+			wantErr:  false,
+		},
+		{
+			name:    "Ctrl+Alt+Right",
+			tape:    "Ctrl+Alt+Right",
+			wantErr: true,
+		},
+		{
+			name:    "Ctrl+Backspace",
+			tape:    "Ctrl+Backspace",
+			wantErr: true,
+		},
+	}
 
-		cmd := p.parseCtrl()
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			l := NewLexer(tc.tape)
+			p := NewParser(l)
 
-		expectedArgs := []string{"Shift", "Alt", "C"}
-		args := strings.Split(cmd.Args, " ")
-
-		if len(expectedArgs) != len(args) {
-			t.Fatalf("Unable to parse args, expected args %d, got %d", len(expectedArgs), len(args))
-		}
-
-		for i, arg := range args {
-			if expectedArgs[i] != arg {
-				t.Errorf("Arg %d is wrong, expected %s, got %s", i, expectedArgs[i], arg)
+			cmd := p.parseCtrl()
+			if tc.wantErr {
+				if len(p.errors) == 0 {
+					t.Errorf("Expected to parse with errors but was success")
+				}
+				return
 			}
-		}
-	})
 
-	t.Run("should parse with errors when using unknown modifier", func(t *testing.T) {
-		tape := "Ctrl+AltRight"
-		l := NewLexer(tape)
-		p := NewParser(l)
+			if len(p.errors) > 0 {
+				t.Errorf("Expected to parse with no errors but was failure")
+			}
 
-		_ = p.parseCtrl()
+			args := strings.Split(cmd.Args, " ")
+			if len(tc.wantArgs) != len(args) {
+				t.Fatalf("Unable to parse args, expected args %d, got %d", len(tc.wantArgs), len(args))
+			}
 
-		if len(p.errors) == 0 {
-			t.Errorf("Expected to parse with errors but was success")
-		}
-	})
-
-	t.Run("should parse with errors when using keyword as modifier", func(t *testing.T) {
-		tape := "Ctrl+Backspace"
-		l := NewLexer(tape)
-		p := NewParser(l)
-
-		_ = p.parseCtrl()
-
-		if len(p.errors) == 0 {
-			t.Errorf("Expected to parse with errors but was success")
-		}
-	})
+			for i, arg := range args {
+				if tc.wantArgs[i] != arg {
+					t.Errorf("Arg %d is wrong, expected %s, got %s", i, tc.wantArgs[i], arg)
+				}
+			}
+		})
+	}
 }

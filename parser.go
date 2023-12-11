@@ -152,26 +152,25 @@ func (p *Parser) parseCtrl() Command {
 		peek := p.peek
 
 		// Get key from keywords and check if it's a valid modifier
-		if k, ok := keywords[peek.Literal]; ok && peek.Type != ENTER {
-			p.nextToken()
-			if IsModifier(k) {
-				args = append(args, peek.Literal)
-			} else {
-				p.errors = append(p.errors, NewError(p.cur, "not a valid modifier"))
-			}
-		}
-
-		// Add key argument
-		if peek.Type == ENTER || peek.Type == STRING && len(peek.Literal) == 1 {
-			p.nextToken()
+		if k := keywords[peek.Literal]; IsModifier(k) {
 			args = append(args, peek.Literal)
+			p.nextToken()
+			continue
 		}
 
-		// Key arguments with len > 1 are not valid
-		if peek.Type == STRING && len(peek.Literal) > 1 {
-			p.nextToken()
-			p.errors = append(p.errors, NewError(p.cur, "Invalid control argument: "+p.cur.Literal))
+		// Add key argument.
+		switch {
+		case peek.Type == ENTER,
+			peek.Type == STRING && len(peek.Literal) == 1:
+			args = append(args, peek.Literal)
+		default:
+			// Key arguments with len > 1 are not valid
+			p.errors = append(p.errors,
+				NewError(p.cur, "Not a valid modifier"),
+				NewError(p.cur, "Invalid control argument: "+p.cur.Literal))
 		}
+
+		p.nextToken()
 	}
 
 	if len(args) == 0 {
