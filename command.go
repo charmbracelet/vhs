@@ -169,6 +169,8 @@ func ExecuteCtrl(c Command, v *VHS) {
 			inputKey = &input.Enter
 		case "Space":
 			inputKey = &input.Space
+		case "Backspace":
+			inputKey = &input.Backspace
 		default:
 			r := rune(key[0])
 			if k, ok := keymap[r]; ok {

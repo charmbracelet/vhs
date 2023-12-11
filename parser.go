@@ -172,6 +172,7 @@ func (p *Parser) parseCtrl() Command {
 		switch {
 		case peek.Type == ENTER,
 			peek.Type == SPACE,
+			peek.Type == BACKSPACE,
 			peek.Type == STRING && len(peek.Literal) == 1:
 			args = append(args, peek.Literal)
 		default:
