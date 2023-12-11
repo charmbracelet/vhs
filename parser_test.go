@@ -234,9 +234,10 @@ func TestParseCtrl(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name:    "Ctrl+Backspace",
-			tape:    "Ctrl+Backspace",
-			wantErr: true,
+			name:     "Ctrl+Backspace",
+			tape:     "Ctrl+Backspace",
+			wantArgs: []string{"Backspace"},
+			wantErr:  false,
 		},
 		{
 			name:     "Ctrl+Space",
