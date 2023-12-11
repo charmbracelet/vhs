@@ -226,7 +226,6 @@ func TestParseCtrl(t *testing.T) {
 			wantErr:  false,
 		},
 		{
-			name:    "Ctrl+Alt+Right",
 			tape:    "Ctrl+Alt+Right",
 			wantErr: true,
 		},
@@ -234,6 +233,12 @@ func TestParseCtrl(t *testing.T) {
 			name:    "Ctrl+Backspace",
 			tape:    "Ctrl+Backspace",
 			wantErr: true,
+		},
+		{
+			name:     "Ctrl+Space",
+			tape:     "Ctrl+Space",
+			wantArgs: []string{"Space"},
+			wantErr:  false,
 		},
 	}
 
