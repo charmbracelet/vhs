@@ -161,6 +161,7 @@ func (p *Parser) parseCtrl() Command {
 		// Add key argument.
 		switch {
 		case peek.Type == ENTER,
+			peek.Type == SPACE,
 			peek.Type == STRING && len(peek.Literal) == 1:
 			args = append(args, peek.Literal)
 		default:

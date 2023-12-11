@@ -167,6 +167,8 @@ func ExecuteCtrl(c Command, v *VHS) {
 			inputKey = &input.AltLeft
 		case "Enter":
 			inputKey = &input.Enter
+		case "Space":
+			inputKey = &input.Space
 		default:
 			r := rune(key[0])
 			if k, ok := keymap[r]; ok {
