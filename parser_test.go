@@ -220,10 +220,14 @@ func TestParseCtrl(t *testing.T) {
 			wantErr:  false,
 		},
 		{
-			name:     "should parse with out of order modifiers",
-			tape:     "Ctrl+Shift+C+Alt",
-			wantArgs: []string{"Shift", "C", "Alt"},
-			wantErr:  false,
+			name:    "should not parse with out of order modifiers",
+			tape:    "Ctrl+Shift+C+Alt",
+			wantErr: true,
+		},
+		{
+			name:    "should not parse with out of order modifiers",
+			tape:    "Ctrl+Shift+C+Alt+C",
+			wantErr: true,
 		},
 		{
 			tape:    "Ctrl+Alt+Right",

@@ -147,16 +147,26 @@ func (p *Parser) parseTime() string {
 func (p *Parser) parseCtrl() Command {
 	var args []string
 
+	inModifierChain := true
 	for p.peek.Type == PLUS {
 		p.nextToken()
 		peek := p.peek
 
 		// Get key from keywords and check if it's a valid modifier
 		if k := keywords[peek.Literal]; IsModifier(k) {
+			if !inModifierChain {
+				p.errors = append(p.errors, NewError(p.cur, "Modifiers must come before other characters"))
+				// Clear args so the error is returned
+				args = nil
+				continue
+			}
+
 			args = append(args, peek.Literal)
 			p.nextToken()
 			continue
 		}
+
+		inModifierChain = false
 
 		// Add key argument.
 		switch {
