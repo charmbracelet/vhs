@@ -175,12 +175,14 @@ func ExecuteWait(c Command, v *VHS) {
 	defer timeoutT.Stop()
 
 	for {
+		var last string
 		switch scope {
 		case "Line":
 			line, err := v.CurrentLine()
 			if err != nil {
 				panic(err)
 			}
+			last = line
 
 			if rx.MatchString(line) {
 				return
@@ -190,8 +192,9 @@ func ExecuteWait(c Command, v *VHS) {
 			if err != nil {
 				panic(err)
 			}
+			last = strings.Join(lines, "\n")
 
-			if rx.MatchString(strings.Join(lines, "\n")) {
+			if rx.MatchString(last) {
 				return
 			}
 		default:
@@ -204,7 +207,7 @@ func ExecuteWait(c Command, v *VHS) {
 		case <-checkT.C:
 			continue
 		case <-timeoutT.C:
-			panic(fmt.Errorf("timeout waiting for %q", c.Args))
+			panic(fmt.Errorf("timeout waiting for %q to match %s; last value was: %s", c.Args, rx.String(), last))
 		}
 	}
 }
