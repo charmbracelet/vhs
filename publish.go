@@ -44,17 +44,13 @@ var publishCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		if quietFlag {
-			cmd.Println(url)
+		if quietFlag || !isatty.IsTerminal(os.Stdout.Fd()) {
+			fmt.Println(url)
 			return nil
 		}
-		if isatty.IsTerminal(os.Stdout.Fd()) {
-			publishShareInstructions(url)
-		}
-		log.Println("  " + URLStyle.Render(url))
-		if isatty.IsTerminal(os.Stdout.Fd()) {
-			log.Println()
-		}
+		publishShareInstructions(url)
+		cmd.Print("  " + URLStyle.Render(url))
+		cmd.Println()
 		return nil
 	},
 }

@@ -7,7 +7,6 @@ RUN apk add --no-cache \
     --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
     --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
     font-adobe-source-code-pro font-source-code-pro-nerd \
-    font-bitstream-vera-sans-mono-nerd \
     font-dejavu font-dejavu-sans-mono-nerd \
     font-fira-code font-fira-code-nerd \
     font-hack font-hack-nerd \

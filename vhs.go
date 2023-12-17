@@ -49,6 +49,9 @@ type Options struct {
 	LoopOffset    float64
 	WaitTimeout   time.Duration
 	WaitPattern   *regexp.Regexp
+	CursorBlink   bool
+	Screenshot    ScreenshotOptions
+	Style         StyleOptions
 }
 
 const (
@@ -57,12 +60,13 @@ const (
 	defaultLineHeight    = 1.0
 	defaultLetterSpacing = 1.0
 	fontsSeparator       = ","
+	defaultCursorBlink   = true
 	defaultWaitTimeout   = 5 * time.Second
 )
 
 var defaultWaitPattern = regexp.MustCompile(">$")
 
-var defaultFontFamily = strings.Join([]string{
+var defaultFontFamily = withSymbolsFallback(strings.Join([]string{
 	"JetBrains Mono",
 	"DejaVu Sans Mono",
 	"Menlo",
@@ -73,10 +77,23 @@ var defaultFontFamily = strings.Join([]string{
 	"Consolas",
 	"ui-monospace",
 	"monospace",
-}, fontsSeparator)
+}, fontsSeparator))
+
+var symbolsFallback = []string{
+	"Apple Symbols",
+}
+
+func withSymbolsFallback(font string) string {
+	return font + fontsSeparator + strings.Join(symbolsFallback, fontsSeparator)
+}
 
 // DefaultVHSOptions returns the default set of options to use for the setup function.
 func DefaultVHSOptions() Options {
+	style := DefaultStyleOptions()
+	video := DefaultVideoOptions()
+	video.Style = style
+	screenshot := NewScreenshotOptions(video.Input, style)
+
 	return Options{
 		FontFamily:    defaultFontFamily,
 		FontSize:      defaultFontSize,
@@ -85,7 +102,9 @@ func DefaultVHSOptions() Options {
 		TypingSpeed:   defaultTypingSpeed,
 		Shell:         Shells[defaultShell],
 		Theme:         DefaultTheme,
-		Video:         DefaultVideoOptions(),
+		CursorBlink:   defaultCursorBlink,
+		Video:         video,
+		Screenshot:    screenshot,
 		WaitTimeout:   defaultWaitTimeout,
 		WaitPattern:   defaultWaitPattern,
 	}
@@ -141,17 +160,17 @@ func (vhs *VHS) Start() error {
 func (vhs *VHS) Setup() {
 	// Set Viewport to the correct size, accounting for the padding that will be
 	// added during the render.
-	padding := vhs.Options.Video.Padding
+	padding := vhs.Options.Video.Style.Padding
 	margin := 0
-	if vhs.Options.Video.MarginFill != "" {
-		margin = vhs.Options.Video.Margin
+	if vhs.Options.Video.Style.MarginFill != "" {
+		margin = vhs.Options.Video.Style.Margin
 	}
 	bar := 0
-	if vhs.Options.Video.WindowBar != "" {
-		bar = vhs.Options.Video.WindowBarSize
+	if vhs.Options.Video.Style.WindowBar != "" {
+		bar = vhs.Options.Video.Style.WindowBarSize
 	}
-	width := vhs.Options.Video.Width - double(padding) - double(margin)
-	height := vhs.Options.Video.Height - double(padding) - double(margin) - bar
+	width := vhs.Options.Video.Style.Width - double(padding) - double(margin)
+	height := vhs.Options.Video.Style.Height - double(padding) - double(margin) - bar
 	vhs.Page = vhs.Page.MustSetViewport(width, height, 0, false)
 
 	// Let's wait until we can access the window.term variable.
@@ -163,9 +182,9 @@ func (vhs *VHS) Setup() {
 
 	// Apply options to the terminal
 	// By this point the setting commands have been executed, so the `opts` struct is up to date.
-	vhs.Page.MustEval(fmt.Sprintf("() => { term.options = { fontSize: %d, fontFamily: '%s', letterSpacing: %f, lineHeight: %f, theme: %s } }",
+	vhs.Page.MustEval(fmt.Sprintf("() => { term.options = { fontSize: %d, fontFamily: '%s', letterSpacing: %f, lineHeight: %f, theme: %s, cursorBlink: %t } }",
 		vhs.Options.FontSize, vhs.Options.FontFamily, vhs.Options.LetterSpacing,
-		vhs.Options.LineHeight, vhs.Options.Theme.String()))
+		vhs.Options.LineHeight, vhs.Options.Theme.String(), vhs.Options.CursorBlink))
 
 	// Fit the terminal into the window
 	vhs.Page.MustEval("term.fit")
@@ -192,7 +211,11 @@ func (vhs *VHS) terminate() error {
 
 // Cleanup individual frames.
 func (vhs *VHS) Cleanup() error {
-	return os.RemoveAll(vhs.Options.Video.Input)
+	err := os.RemoveAll(vhs.Options.Video.Input)
+	if err != nil {
+		return err
+	}
+	return os.RemoveAll(vhs.Options.Screenshot.input)
 }
 
 // Render starts rendering the individual frames into a video.
@@ -207,6 +230,7 @@ func (vhs *VHS) Render() error {
 	cmds = append(cmds, MakeGIF(vhs.Options.Video))
 	cmds = append(cmds, MakeMP4(vhs.Options.Video))
 	cmds = append(cmds, MakeWebM(vhs.Options.Video))
+	cmds = append(cmds, MakeScreenshots(vhs.Options.Screenshot)...)
 
 	for _, cmd := range cmds {
 		if cmd == nil {
@@ -349,6 +373,11 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 					ch <- fmt.Errorf("error writing text frame: %w", err)
 					continue
 				}
+
+				// Capture current frame and disable frame capturing
+				if vhs.Options.Screenshot.frameCapture {
+					vhs.Options.Screenshot.makeScreenshot(counter)
+				}
 			}
 		}
 	}()
@@ -370,4 +399,12 @@ func (vhs *VHS) PauseRecording() {
 	defer vhs.mutex.Unlock()
 
 	vhs.recording = false
+}
+
+// ScreenshotNextFrame indicates to VHS that screenshot of next frame must be taken.
+func (vhs *VHS) ScreenshotNextFrame(path string) {
+	vhs.mutex.Lock()
+	defer vhs.mutex.Unlock()
+
+	vhs.Options.Screenshot.enableFrameCapture(path)
 }

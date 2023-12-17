@@ -10,6 +10,7 @@ func TestNextToken(t *testing.T) {
 Output examples/out.gif
 Set FontSize 42
 Set Padding 5
+Set CursorBlink false
 Type "echo 'Hello, world!'"
 Enter
 Type@.1 "echo 'Hello, world!'"
@@ -36,6 +37,9 @@ Wait+Screen@1m /foobar/`
 		{SET, "Set"},
 		{PADDING, "Padding"},
 		{NUMBER, "5"},
+		{SET, "Set"},
+		{CURSOR_BLINK, "CursorBlink"},
+		{BOOLEAN, "false"},
 		{TYPE, "Type"},
 		{STRING, "echo 'Hello, world!'"},
 		{ENTER, "Enter"},
@@ -155,6 +159,9 @@ func TestLexTapeFile(t *testing.T) {
 		{LOOP_OFFSET, "LoopOffset"},
 		{NUMBER, "20.99"},
 		{PERCENT, "%"},
+		{SET, "Set"},
+		{CURSOR_BLINK, "CursorBlink"},
+		{BOOLEAN, "false"},
 		{COMMENT, " Sleep:"},
 		{SLEEP, "Sleep"},
 		{NUMBER, "1"},
@@ -186,6 +193,20 @@ func TestLexTapeFile(t *testing.T) {
 		{BACKSPACE, "Backspace"},
 		{NUMBER, "2"},
 		{BACKSPACE, "Backspace"},
+		{AT, "@"},
+		{NUMBER, "1"},
+		{NUMBER, "3"},
+		{DELETE, "Delete"},
+		{DELETE, "Delete"},
+		{NUMBER, "2"},
+		{DELETE, "Delete"},
+		{AT, "@"},
+		{NUMBER, "1"},
+		{NUMBER, "3"},
+		{INSERT, "Insert"},
+		{INSERT, "Insert"},
+		{NUMBER, "2"},
+		{INSERT, "Insert"},
 		{AT, "@"},
 		{NUMBER, "1"},
 		{NUMBER, "3"},

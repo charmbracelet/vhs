@@ -49,7 +49,7 @@ func (p *Parser) Parse() []Command {
 // parseCommand parses a command.
 func (p *Parser) parseCommand() Command {
 	switch p.cur.Type {
-	case SPACE, BACKSPACE, ENTER, ESCAPE, TAB, DOWN, LEFT, RIGHT, UP, PAGEUP, PAGEDOWN:
+	case SPACE, BACKSPACE, DELETE, INSERT, ENTER, ESCAPE, TAB, DOWN, LEFT, RIGHT, UP, PAGEUP, PAGEDOWN:
 		return p.parseKeypress(p.cur.Type)
 	case SET:
 		return p.parseSet()
@@ -63,6 +63,8 @@ func (p *Parser) parseCommand() Command {
 		return p.parseCtrl()
 	case ALT:
 		return p.parseAlt()
+	case SHIFT:
+		return p.parseShift()
 	case HIDE:
 		return p.parseHide()
 	case REQUIRE:
@@ -73,6 +75,12 @@ func (p *Parser) parseCommand() Command {
 		return p.parseWait()
 	case SOURCE:
 		return p.parseSource()
+	case SCREENSHOT:
+		return p.parseScreenshot()
+	case COPY:
+		return p.parseCopy()
+	case PASTE:
+		return p.parsePaste()
 	default:
 		p.errors = append(p.errors, NewError(p.cur, "Invalid command: "+p.cur.Literal))
 		return Command{Type: ILLEGAL}
@@ -174,21 +182,59 @@ func (p *Parser) parseTime() string {
 }
 
 // parseCtrl parses a control command.
-// A control command takes a character to type while the modifier is held down.
+// A control command takes one or multiples characters and/or modifiers to type while ctrl is held down.
 //
-// Ctrl+<character>
+// Ctrl[+Alt][+Shift]+<char>
+// E.g:
+// Ctrl+Shift+O
+// Ctrl+Alt+Shift+P
 func (p *Parser) parseCtrl() Command {
-	if p.peek.Type == PLUS {
+	var args []string
+
+	inModifierChain := true
+	for p.peek.Type == PLUS {
 		p.nextToken()
-		if p.peek.Type == STRING {
-			c := p.peek.Literal
+		peek := p.peek
+
+		// Get key from keywords and check if it's a valid modifier
+		if k := keywords[peek.Literal]; IsModifier(k) {
+			if !inModifierChain {
+				p.errors = append(p.errors, NewError(p.cur, "Modifiers must come before other characters"))
+				// Clear args so the error is returned
+				args = nil
+				continue
+			}
+
+			args = append(args, peek.Literal)
 			p.nextToken()
-			return Command{Type: CTRL, Args: c}
+			continue
 		}
+
+		inModifierChain = false
+
+		// Add key argument.
+		switch {
+		case peek.Type == ENTER,
+			peek.Type == SPACE,
+			peek.Type == BACKSPACE,
+			peek.Type == STRING && len(peek.Literal) == 1:
+			args = append(args, peek.Literal)
+		default:
+			// Key arguments with len > 1 are not valid
+			p.errors = append(p.errors,
+				NewError(p.cur, "Not a valid modifier"),
+				NewError(p.cur, "Invalid control argument: "+p.cur.Literal))
+		}
+
+		p.nextToken()
 	}
 
-	p.errors = append(p.errors, NewError(p.cur, "Expected control character, got "+p.cur.Literal))
-	return Command{Type: CTRL}
+	if len(args) == 0 {
+		p.errors = append(p.errors, NewError(p.cur, "Expected control character with args, got "+p.cur.Literal))
+	}
+
+	ctrlArgs := strings.Join(args, " ")
+	return Command{Type: CTRL, Args: ctrlArgs}
 }
 
 // parseAlt parses an alt command.
@@ -198,7 +244,7 @@ func (p *Parser) parseCtrl() Command {
 func (p *Parser) parseAlt() Command {
 	if p.peek.Type == PLUS {
 		p.nextToken()
-		if p.peek.Type == STRING || p.peek.Type == ENTER {
+		if p.peek.Type == STRING || p.peek.Type == ENTER || p.peek.Type == TAB {
 			c := p.peek.Literal
 			p.nextToken()
 			return Command{Type: ALT, Args: c}
@@ -207,6 +253,28 @@ func (p *Parser) parseAlt() Command {
 
 	p.errors = append(p.errors, NewError(p.cur, "Expected alt character, got "+p.cur.Literal))
 	return Command{Type: ALT}
+}
+
+// parseShift parses a shift command.
+// A shift command takes one character and types while shift is held down.
+//
+// Shift+<char>
+// E.g.
+// Shift+A
+// Shift+Tab
+// Shift+Enter
+func (p *Parser) parseShift() Command {
+	if p.peek.Type == PLUS {
+		p.nextToken()
+		if p.peek.Type == STRING || p.peek.Type == ENTER || p.peek.Type == TAB {
+			c := p.peek.Literal
+			p.nextToken()
+			return Command{Type: SHIFT, Args: c}
+		}
+	}
+
+	p.errors = append(p.errors, NewError(p.cur, "Expected shift character, got "+p.cur.Literal))
+	return Command{Type: SHIFT}
 }
 
 // parseKeypress parses a repeatable and time adjustable keypress command.
@@ -322,6 +390,16 @@ func (p *Parser) parseSet() Command {
 				)
 			}
 		}
+	case CURSOR_BLINK:
+		cmd.Args = p.peek.Literal
+		p.nextToken()
+
+		if p.cur.Type != BOOLEAN {
+			p.errors = append(
+				p.errors,
+				NewError(p.cur, "expected boolean value."),
+			)
+		}
 
 	default:
 		cmd.Args = p.peek.Literal
@@ -409,6 +487,44 @@ func (p *Parser) parseType() Command {
 	return cmd
 }
 
+// parseCopy parses a copy command
+// A copy command takes a string to the clipboard
+//
+// Copy "string"
+func (p *Parser) parseCopy() Command {
+	cmd := Command{Type: COPY}
+
+	if p.peek.Type != STRING {
+		p.errors = append(p.errors, NewError(p.peek, p.cur.Literal+" expects string"))
+	}
+	for p.peek.Type == STRING {
+		p.nextToken()
+		cmd.Args += p.cur.Literal
+
+		// If the next token is a string, add a space between them.
+		// Since tokens must be separated by a whitespace, this is most likely
+		// what the user intended.
+		//
+		// Although it is possible that there may be multiple spaces / tabs between
+		// the tokens, however if the user was intending to type multiple spaces
+		// they would need to use a string literal.
+
+		if p.peek.Type == STRING {
+			cmd.Args += " "
+		}
+	}
+	return cmd
+}
+
+// parsePaste parses paste command
+// Paste Command the string from the clipboard buffer.
+//
+// Paste
+func (p *Parser) parsePaste() Command {
+	cmd := Command{Type: PASTE}
+	return cmd
+}
+
 // parseSource parses source command.
 // Source command takes a tape path to include in current tape.
 //
@@ -481,6 +597,35 @@ func (p *Parser) parseSource() Command {
 
 	cmd.Args = p.peek.Literal
 	p.nextToken()
+	return cmd
+}
+
+// parseScreenshot parses screenshot command.
+// Screenshot command takes a file path for storing screenshot.
+//
+// Screenshot <path>
+func (p *Parser) parseScreenshot() Command {
+	cmd := Command{Type: SCREENSHOT}
+
+	if p.peek.Type != STRING {
+		p.errors = append(p.errors, NewError(p.cur, "Expected path after Screenshot"))
+		p.nextToken()
+		return cmd
+	}
+
+	path := p.peek.Literal
+
+	// Check if path has .png extension
+	ext := filepath.Ext(path)
+	if ext != ".png" {
+		p.errors = append(p.errors, NewError(p.peek, "Expected file with .png extension"))
+		p.nextToken()
+		return cmd
+	}
+
+	cmd.Args = path
+	p.nextToken()
+
 	return cmd
 }
 

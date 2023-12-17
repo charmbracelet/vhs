@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/atotto/clipboard"
 	"github.com/go-rod/rod/lib/input"
 	"github.com/mattn/go-runewidth"
 )
@@ -21,6 +22,8 @@ type CommandType TokenType
 // CommandTypes is a list of the available commands that can be executed.
 var CommandTypes = []CommandType{ //nolint: deadcode
 	BACKSPACE,
+	DELETE,
+	INSERT,
 	CTRL,
 	ALT,
 	DOWN,
@@ -43,6 +46,9 @@ var CommandTypes = []CommandType{ //nolint: deadcode
 	UP,
 	WAIT,
 	SOURCE,
+	SCREENSHOT,
+	COPY,
+	PASTE,
 }
 
 // String returns the string representation of the command.
@@ -54,28 +60,34 @@ type CommandFunc func(c Command, v *VHS)
 
 // CommandFuncs maps command types to their executable functions.
 var CommandFuncs = map[CommandType]CommandFunc{
-	BACKSPACE: ExecuteKey(input.Backspace),
-	DOWN:      ExecuteKey(input.ArrowDown),
-	ENTER:     ExecuteKey(input.Enter),
-	LEFT:      ExecuteKey(input.ArrowLeft),
-	RIGHT:     ExecuteKey(input.ArrowRight),
-	SPACE:     ExecuteKey(input.Space),
-	UP:        ExecuteKey(input.ArrowUp),
-	TAB:       ExecuteKey(input.Tab),
-	ESCAPE:    ExecuteKey(input.Escape),
-	PAGEUP:    ExecuteKey(input.PageUp),
-	PAGEDOWN:  ExecuteKey(input.PageDown),
-	HIDE:      ExecuteHide,
-	REQUIRE:   ExecuteRequire,
-	SHOW:      ExecuteShow,
-	SET:       ExecuteSet,
-	OUTPUT:    ExecuteOutput,
-	SLEEP:     ExecuteSleep,
-	TYPE:      ExecuteType,
-	CTRL:      ExecuteCtrl,
-	ALT:       ExecuteAlt,
-	ILLEGAL:   ExecuteNoop,
-	WAIT:      ExecuteWait,
+	BACKSPACE:  ExecuteKey(input.Backspace),
+	DELETE:     ExecuteKey(input.Delete),
+	INSERT:     ExecuteKey(input.Insert),
+	DOWN:       ExecuteKey(input.ArrowDown),
+	ENTER:      ExecuteKey(input.Enter),
+	LEFT:       ExecuteKey(input.ArrowLeft),
+	RIGHT:      ExecuteKey(input.ArrowRight),
+	SPACE:      ExecuteKey(input.Space),
+	UP:         ExecuteKey(input.ArrowUp),
+	TAB:        ExecuteKey(input.Tab),
+	ESCAPE:     ExecuteKey(input.Escape),
+	PAGEUP:     ExecuteKey(input.PageUp),
+	PAGEDOWN:   ExecuteKey(input.PageDown),
+	HIDE:       ExecuteHide,
+	REQUIRE:    ExecuteRequire,
+	SHOW:       ExecuteShow,
+	SET:        ExecuteSet,
+	OUTPUT:     ExecuteOutput,
+	SLEEP:      ExecuteSleep,
+	TYPE:       ExecuteType,
+	CTRL:       ExecuteCtrl,
+	ALT:        ExecuteAlt,
+	SHIFT:      ExecuteShift,
+	ILLEGAL:    ExecuteNoop,
+	SCREENSHOT: ExecuteScreenshot,
+	COPY:       ExecuteCopy,
+	PASTE:      ExecutePaste,
+	WAIT:       ExecuteWait,
 }
 
 // Command represents a command with options and arguments.
@@ -197,16 +209,46 @@ func ExecuteWait(c Command, v *VHS) {
 	}
 }
 
-// ExecuteCtrl is a CommandFunc that presses the argument key with the ctrl key
-// held down on the running instance of vhs.
+// ExecuteCtrl is a CommandFunc that presses the argument keys and/or modifiers
+// with the ctrl key held down on the running instance of vhs.
 func ExecuteCtrl(c Command, v *VHS) {
-	_ = v.Page.Keyboard.Press(input.ControlLeft)
-	for _, r := range c.Args {
-		if k, ok := keymap[r]; ok {
-			_ = v.Page.Keyboard.Type(k)
+	// Create key combination by holding ControlLeft
+	action := v.Page.KeyActions().Press(input.ControlLeft)
+	keys := strings.Split(c.Args, " ")
+
+	for i, key := range keys {
+		var inputKey *input.Key
+
+		switch key {
+		case "Shift":
+			inputKey = &input.ShiftLeft
+		case "Alt":
+			inputKey = &input.AltLeft
+		case "Enter":
+			inputKey = &input.Enter
+		case "Space":
+			inputKey = &input.Space
+		case "Backspace":
+			inputKey = &input.Backspace
+		default:
+			r := rune(key[0])
+			if k, ok := keymap[r]; ok {
+				inputKey = &k
+			}
+		}
+
+		// Press or hold key in case it's valid
+		if inputKey != nil {
+			if i != len(keys)-1 {
+				action.Press(*inputKey)
+			} else {
+				// Other keys will remain pressed until the combination reaches the end
+				action.Type(*inputKey)
+			}
 		}
 	}
-	_ = v.Page.Keyboard.Release(input.ControlLeft)
+
+	action.MustDo()
 }
 
 // ExecuteAlt is a CommandFunc that presses the argument key with the alt key
@@ -217,6 +259,30 @@ func ExecuteAlt(c Command, v *VHS) {
 		switch k {
 		case ENTER:
 			_ = v.Page.Keyboard.Type(input.Enter)
+		case TAB:
+			_ = v.Page.Keyboard.Type(input.Tab)
+		}
+	} else {
+		for _, r := range c.Args {
+			if k, ok := keymap[r]; ok {
+				_ = v.Page.Keyboard.Type(k)
+			}
+		}
+	}
+
+	_ = v.Page.Keyboard.Release(input.AltLeft)
+}
+
+// ExecuteShift is a CommandFunc that presses the argument key with the shift
+// key held down on the running instance of vhs.
+func ExecuteShift(c Command, v *VHS) {
+	_ = v.Page.Keyboard.Press(input.ShiftLeft)
+	if k, ok := keywords[c.Args]; ok {
+		switch k {
+		case ENTER:
+			_ = v.Page.Keyboard.Type(input.Enter)
+		case TAB:
+			_ = v.Page.Keyboard.Type(input.Tab)
 		}
 	} else {
 		for _, r := range c.Args {
@@ -292,6 +358,28 @@ func ExecuteOutput(c Command, v *VHS) {
 	}
 }
 
+// ExecuteCopy copies text to the clipboard.
+func ExecuteCopy(c Command, _ *VHS) {
+	_ = clipboard.WriteAll(c.Args)
+}
+
+// ExecutePaste pastes text from the clipboard.
+func ExecutePaste(_ Command, v *VHS) {
+	clip, err := clipboard.ReadAll()
+	if err != nil {
+		return
+	}
+	for _, r := range clip {
+		k, ok := keymap[r]
+		if ok {
+			_ = v.Page.Keyboard.Type(k)
+		} else {
+			_ = v.Page.MustElement("textarea").Input(string(r))
+			v.Page.MustWaitIdle()
+		}
+	}
+}
+
 // Settings maps the Set commands to their respective functions.
 var Settings = map[string]CommandFunc{
 	"FontFamily":    ExecuteSetFontFamily,
@@ -314,6 +402,7 @@ var Settings = map[string]CommandFunc{
 	"BorderRadius":  ExecuteSetBorderRadius,
 	"WaitPattern":   ExecuteSetWaitPattern,
 	"WaitTimeout":   ExecuteSetWaitTimeout,
+	"CursorBlink":   ExecuteSetCursorBlink,
 }
 
 // ExecuteSet applies the settings on the running vhs specified by the
@@ -338,17 +427,17 @@ func ExecuteSetFontSize(c Command, v *VHS) {
 // ExecuteSetFontFamily applies the font family on the vhs.
 func ExecuteSetFontFamily(c Command, v *VHS) {
 	v.Options.FontFamily = c.Args
-	_, _ = v.Page.Eval(fmt.Sprintf("() => term.options.fontFamily = '%s'", c.Args))
+	_, _ = v.Page.Eval(fmt.Sprintf("() => term.options.fontFamily = '%s'", withSymbolsFallback(c.Args)))
 }
 
 // ExecuteSetHeight applies the height on the vhs.
 func ExecuteSetHeight(c Command, v *VHS) {
-	v.Options.Video.Height, _ = strconv.Atoi(c.Args)
+	v.Options.Video.Style.Height, _ = strconv.Atoi(c.Args)
 }
 
 // ExecuteSetWidth applies the width on the vhs.
 func ExecuteSetWidth(c Command, v *VHS) {
-	v.Options.Video.Width, _ = strconv.Atoi(c.Args)
+	v.Options.Video.Style.Width, _ = strconv.Atoi(c.Args)
 }
 
 // ExecuteSetShell applies the shell on the vhs.
@@ -389,8 +478,8 @@ func ExecuteSetTheme(c Command, v *VHS) {
 
 	bts, _ := json.Marshal(v.Options.Theme)
 	_, _ = v.Page.Eval(fmt.Sprintf("() => term.options.theme = %s", string(bts)))
-	v.Options.Video.BackgroundColor = v.Options.Theme.Background
-	v.Options.Video.WindowBarColor = v.Options.Theme.Background
+	v.Options.Video.Style.BackgroundColor = v.Options.Theme.Background
+	v.Options.Video.Style.WindowBarColor = v.Options.Theme.Background
 }
 
 // ExecuteSetTypingSpeed applies the default typing speed on the vhs.
@@ -422,7 +511,7 @@ func ExecuteSetWaitPattern(c Command, v *VHS) {
 
 // ExecuteSetPadding applies the padding on the vhs.
 func ExecuteSetPadding(c Command, v *VHS) {
-	v.Options.Video.Padding, _ = strconv.Atoi(c.Args)
+	v.Options.Video.Style.Padding, _ = strconv.Atoi(c.Args)
 }
 
 // ExecuteSetFramerate applies the framerate on the vhs.
@@ -454,27 +543,36 @@ func ExecuteLoopOffset(c Command, v *VHS) {
 
 // ExecuteSetMarginFill sets vhs margin fill
 func ExecuteSetMarginFill(c Command, v *VHS) {
-	v.Options.Video.MarginFill = c.Args
+	v.Options.Video.Style.MarginFill = c.Args
 }
 
 // ExecuteSetMargin sets vhs margin size
 func ExecuteSetMargin(c Command, v *VHS) {
-	v.Options.Video.Margin, _ = strconv.Atoi(c.Args)
+	v.Options.Video.Style.Margin, _ = strconv.Atoi(c.Args)
 }
 
 // ExecuteSetWindowBar sets window bar type
 func ExecuteSetWindowBar(c Command, v *VHS) {
-	v.Options.Video.WindowBar = c.Args
+	v.Options.Video.Style.WindowBar = c.Args
 }
 
 // ExecuteSetWindowBar sets window bar size
 func ExecuteSetWindowBarSize(c Command, v *VHS) {
-	v.Options.Video.WindowBarSize, _ = strconv.Atoi(c.Args)
+	v.Options.Video.Style.WindowBarSize, _ = strconv.Atoi(c.Args)
 }
 
 // ExecuteSetWindowBar sets corner radius
 func ExecuteSetBorderRadius(c Command, v *VHS) {
-	v.Options.Video.BorderRadius, _ = strconv.Atoi(c.Args)
+	v.Options.Video.Style.BorderRadius, _ = strconv.Atoi(c.Args)
+}
+
+// ExecuteSetCursorBlink sets cursor blinking
+func ExecuteSetCursorBlink(c Command, v *VHS) {
+	var err error
+	v.Options.CursorBlink, err = strconv.ParseBool(c.Args)
+	if err != nil {
+		return
+	}
 }
 
 const sourceDisplayMaxLength = 10
@@ -521,6 +619,11 @@ func ExecuteSourceTape(c Command, v *VHS) {
 		fmt.Fprintf(out, "%s %s\n", GrayStyle.Render(displayPath+":"), cmd.Highlight(false))
 		CommandFuncs[cmd.Type](cmd, v)
 	}
+}
+
+// ExecuteScreenshot is a CommandFunc that indicates a new screenshot must be taken.
+func ExecuteScreenshot(c Command, v *VHS) {
+	v.ScreenshotNextFrame(c.Args)
 }
 
 func getTheme(s string) (Theme, error) {

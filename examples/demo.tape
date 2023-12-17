@@ -25,6 +25,7 @@
 #   Set BorderRadius <number>       Set terminal border radius, in pixels.
 #   Set WindowBar <string>          Set window bar type. (one of: Rings, RingsRight, Colorful, ColorfulRight)
 #   Set WindowBarSize <number>      Set window bar size, in pixels. Default is 40.
+#   Set TypingSpeed <time>          Set the typing speed of the terminal. Default is 50ms.
 #
 # Sleep:
 #   Sleep <time>                    Sleep for a set amount of <time> in seconds
@@ -34,7 +35,10 @@
 #                                   <time> delay between each character
 #
 # Keys:
+#   Escape[@<time>] [number]        Press the Escape key
 #   Backspace[@<time>] [number]     Press the Backspace key
+#   Delete[@<time>] [number]        Press the Delete key
+#   Insert[@<time>] [number]        Press the Insert key
 #   Down[@<time>] [number]          Press the Down key
 #   Enter[@<time>] [number]         Press the Enter key
 #   Space[@<time>] [number]         Press the Space key

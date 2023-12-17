@@ -30,7 +30,6 @@ func buildTtyCmd(port int, shell Shell) *exec.Cmd {
 		"--interface", "127.0.0.1",
 		"-t", "rendererType=canvas",
 		"-t", "disableResizeOverlay=true",
-		"-t", "cursorBlink=true",
 		"-t", "enableSixel=true",
 		"-t", "customGlyphs=true",
 		"--once", // will allow one connection and exit

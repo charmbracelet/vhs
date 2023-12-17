@@ -74,7 +74,7 @@ For more examples see the [`examples/`](https://github.com/charmbracelet/vhs/tre
 
 ## Installation
 
-> **Note**
+> [!NOTE]
 > VHS requires [`ttyd`](https://github.com/tsl0922/ttyd) and [`ffmpeg`](https://ffmpeg.org) to be installed and available on your `PATH`.
 
 Use a package manager:
@@ -154,12 +154,22 @@ settings or modify actions. Then, you can generate the GIF:
 vhs cassette.tape
 ```
 
+## Publish Tapes
+
+VHS allows you to publish your GIFs to our servers for easy sharing with your
+friends and colleagues. Specify which file you want to share, then use the
+`publish` sub-command to host it on `vhs.charm.sh`. The output will provide you
+with links to share your GIF via browser, HTML, and Markdown. 
+
+```bash
+vhs publish demo.gif
+```
 
 ## The VHS Server
 
-VHS has an SSH server built in! When you self host VHS you can access it as
+VHS has an SSH server built in! When you self-host VHS you can access it as
 though it were installed locally. VHS will have access to commands and
-applications on the host so you don't need to install them on your machine.
+applications on the host, so you don't need to install them on your machine.
 
 To start the server run:
 
@@ -188,7 +198,7 @@ ssh vhs.example.com < demo.tape > demo.gif
 
 ## VHS Command Reference
 
-> **Note**
+> [!NOTE]
 > You can view all VHS documentation on the command line with `vhs manual`.
 
 There are a few basic types of VHS commands:
@@ -199,10 +209,13 @@ There are a few basic types of VHS commands:
 * [`Type "<characters>"`](#type): emulate typing
 * [`Left`](#arrow-keys) [`Right`](#arrow-keys) [`Up`](#arrow-keys) [`Down`](#arrow-keys): arrow keys
 * [`Backspace`](#backspace) [`Enter`](#enter) [`Tab`](#tab) [`Space`](#space): special keys
-* [`Ctrl+<char>`](#ctrl): press control + key
+* [`Ctrl[+Alt][+Shift]+<char>`](#ctrl): press control + key and/or modifier
 * [`Sleep <time>`](#sleep): wait for a certain amount of time
 * [`Hide`](#hide): hide commands from output
 * [`Show`](#show): stop hiding commands from output
+* [`Screenshot`](#screenshot): screenshot the current frame
+* [`Copy/Paste`](#copy--paste): copy and paste text from clipboard.
+* [`Source`](#source): source commands from another tape
 
 ### Output
 
@@ -221,7 +234,7 @@ Output frames/ # a directory of frames as a PNG sequence
 
 The `Require` command allows you to specify dependencies for your tape file.
 These are useful to fail early if a required program is missing from the
-`$PATH` and it is certain that the VHS execution will not work as expected.
+`$PATH`, and it is certain that the VHS execution will not work as expected.
 
 Require commands must be defined at the top of a tape file, before any non-
 setting or non-output command.
@@ -472,6 +485,30 @@ Set PlaybackSpeed 1.0 # Keep output at normal speed (default)
 Set PlaybackSpeed 2.0 # Make output 2 times faster
 ```
 
+#### Set Loop Offset
+
+Set the offset for when the GIF loop should begin. This allows you to make the
+first frame of the GIF (generally used for previews) more interesting.
+
+```elixir
+Set LoopOffset 5 # Start the GIF at the 5th frame
+Set LoopOffset 50% # Start the GIF halfway through
+```
+
+#### Set Cursor Blink
+
+Set whether the cursor should blink. Enabled by default.
+
+```elixir
+Set CursorBlink false
+```
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://vhs.charm.sh/vhs-3rMCb80VEkaDdTOJMCrxKy.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-3rMCb80VEkaDdTOJMCrxKy.gif">
+  <img width="600" alt="Example of setting the cursor blink." src="https://vhs.charm.sh/vhs-3rMCb80VEkaDdTOJMCrxKy.gif">
+</picture>
+
 ### Type
 
 Use `Type` to emulate key presses. That is, you can use `Type` to script typing
@@ -669,6 +706,35 @@ Type "You will see this being typed."
   <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/hide.gif">
   <img width="600" alt="Example of typing something while hidden" src="https://stuff.charm.sh/vhs/examples/hide.gif">
 </picture>
+
+### Screenshot
+
+The `Screenshot` command captures the current frame (png format).
+
+```elixir
+# At any point...
+Screenshot examples/screenshot.png
+```
+
+### Copy / Paste
+
+The `Copy` and `Paste` copy and paste the string from clipboard.
+
+```elixir
+Copy "https://github.com/charmbracelet"
+Type "open "
+Sleep 500ms
+Paste
+```
+
+
+### Source
+
+The `source` command allows you to execute commands from another tape.
+
+```elixir
+Source config.tape
+```
 
 ***
 

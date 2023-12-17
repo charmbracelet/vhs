@@ -1,6 +1,8 @@
 package main
 
-import "strings"
+import (
+	"strings"
+)
 
 // TokenType represents a token's type.
 type TokenType string
@@ -46,26 +48,30 @@ const (
 	SLEEP     = "SLEEP"
 	SPACE     = "SPACE"
 	TAB       = "TAB"
+	SHIFT     = "SHIFT"
 
 	COMMENT = "COMMENT"
 	NUMBER  = "NUMBER"
 	STRING  = "STRING"
 	JSON    = "JSON"
 	REGEX   = "REGEX"
+	BOOLEAN = "BOOLEAN"
 
 	DOWN  = "DOWN"
 	LEFT  = "LEFT"
 	RIGHT = "RIGHT"
 	UP    = "UP"
 
-	HIDE    = "HIDE"
-	OUTPUT  = "OUTPUT"
-	REQUIRE = "REQUIRE"
-	SET     = "SET"
-	SHOW    = "SHOW"
-	SOURCE  = "SOURCE"
-	TYPE    = "TYPE"
-
+	HIDE            = "HIDE"
+	OUTPUT          = "OUTPUT"
+	REQUIRE         = "REQUIRE"
+	SET             = "SET"
+	SHOW            = "SHOW"
+	SOURCE          = "SOURCE"
+	TYPE            = "TYPE"
+	SCREENSHOT      = "SCREENSHOT"
+	COPY            = "COPY"
+	PASTE           = "PASTE"
 	SHELL           = "SHELL"
 	FONT_FAMILY     = "FONT_FAMILY" //nolint:revive
 	FONT_SIZE       = "FONT_SIZE"   //nolint:revive
@@ -87,6 +93,7 @@ const (
 	WAIT            = "WAIT"            //nolint:revive
 	WAIT_TIMEOUT    = "WAIT_TIMEOUT"    //nolint:revive
 	WAIT_PATTERN    = "WAIT_PATTERN"    //nolint:revive
+	CURSOR_BLINK    = "CURSOR_BLINK"    //nolint:revive
 )
 
 var keywords = map[string]TokenType{
@@ -101,8 +108,11 @@ var keywords = map[string]TokenType{
 	"Enter":         ENTER,
 	"Space":         SPACE,
 	"Backspace":     BACKSPACE,
+	"Delete":        DELETE,
+	"Insert":        INSERT,
 	"Ctrl":          CTRL,
 	"Alt":           ALT,
+	"Shift":         SHIFT,
 	"Down":          DOWN,
 	"Left":          LEFT,
 	"Right":         RIGHT,
@@ -138,6 +148,12 @@ var keywords = map[string]TokenType{
 	"WaitPattern":   WAIT_PATTERN,
 	"Wait":          WAIT,
 	"Source":        SOURCE,
+	"CursorBlink":   CURSOR_BLINK,
+	"true":          BOOLEAN,
+	"false":         BOOLEAN,
+	"Screenshot":    SCREENSHOT,
+	"Copy":          COPY,
+	"Paste":         PASTE,
 }
 
 // IsSetting returns whether a token is a setting.
@@ -146,24 +162,29 @@ func IsSetting(t TokenType) bool {
 	case SHELL, FONT_FAMILY, FONT_SIZE, LETTER_SPACING, LINE_HEIGHT,
 		FRAMERATE, TYPING_SPEED, THEME, PLAYBACK_SPEED, HEIGHT, WIDTH,
 		PADDING, LOOP_OFFSET, MARGIN_FILL, MARGIN, WINDOW_BAR,
-		WINDOW_BAR_SIZE, BORDER_RADIUS, WAIT_TIMEOUT, WAIT_PATTERN:
+		WINDOW_BAR_SIZE, BORDER_RADIUS, CURSOR_BLINK, WAIT_TIMEOUT, WAIT_PATTERN:
 		return true
 	default:
 		return false
 	}
 }
 
-// IsCommand returns whether the string is a command
+// IsCommand returns whether the string is a command.
 func IsCommand(t TokenType) bool {
 	switch t {
 	case TYPE, SLEEP,
 		UP, DOWN, RIGHT, LEFT, PAGEUP, PAGEDOWN,
 		ENTER, BACKSPACE, DELETE, TAB,
-		ESCAPE, HOME, INSERT, END, CTRL, SOURCE, WAIT:
+		ESCAPE, HOME, INSERT, END, CTRL, SOURCE, SCREENSHOT, COPY, PASTE, WAIT:
 		return true
 	default:
 		return false
 	}
+}
+
+// IsModifier returns whether the token is a modifier.
+func IsModifier(t TokenType) bool {
+	return t == ALT || t == SHIFT
 }
 
 // String converts a token to it's human readable string format.

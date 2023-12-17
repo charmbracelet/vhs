@@ -29,8 +29,10 @@ The following is a list of all possible commands in VHS:
 * %Set% <setting> <value>
 * %Sleep% <time>
 * %Type% "<string>"
-* %Ctrl%+<key>
+* %Ctrl% [+Alt][+Shift]+<char>
 * %Backspace% [repeat]
+* %Delete% [repeat]
+* %Insert% [repeat]
 * %Down% [repeat]
 * %Enter% [repeat]
 * %Left% [repeat]
@@ -46,6 +48,9 @@ The following is a list of all possible commands in VHS:
 * %Alt%+<key>
 * %Space% [repeat]
 * %Source% <path>.tape
+* %Screenshot% <path>.png
+* %Copy% "<string>"
+* %Paste%
 `
 
 	manOutput = `The Output command instructs VHS where to save the output of the recording.

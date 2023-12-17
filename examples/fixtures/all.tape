@@ -21,6 +21,7 @@ Set PlaybackSpeed 2
 Set TypingSpeed .1
 Set LoopOffset 60.4
 Set LoopOffset 20.99%
+Set CursorBlink false
 
 # Sleep:
 Sleep 1
@@ -39,6 +40,14 @@ Type `"Backtick" 'Quote'`
 Backspace
 Backspace 2
 Backspace@1 3
+
+Delete
+Delete 2
+Delete@1 3
+
+Insert
+Insert 2
+Insert@1 3
 
 Down
 Down 2

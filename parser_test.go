@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -16,6 +17,8 @@ Backspace@0.1 5
 Backspace@.1 5
 Backspace@1 5
 Backspace@100ms 5
+Delete 2
+Insert 2
 Right 3
 Left 3
 Up@50ms
@@ -39,6 +42,8 @@ Wait@100ms /foobar/`
 		{Type: BACKSPACE, Options: ".1s", Args: "5"},
 		{Type: BACKSPACE, Options: "1s", Args: "5"},
 		{Type: BACKSPACE, Options: "100ms", Args: "5"},
+		{Type: DELETE, Options: "", Args: "2"},
+		{Type: INSERT, Options: "", Args: "2"},
 		{Type: RIGHT, Options: "", Args: "3"},
 		{Type: LEFT, Options: "", Args: "3"},
 		{Type: UP, Options: "50ms", Args: "1"},
@@ -130,6 +135,7 @@ func TestParseTapeFile(t *testing.T) {
 		{Type: SET, Options: "TypingSpeed", Args: ".1s"},
 		{Type: SET, Options: "LoopOffset", Args: "60.4%"},
 		{Type: SET, Options: "LoopOffset", Args: "20.99%"},
+		{Type: SET, Options: "CursorBlink", Args: "false"},
 		{Type: SLEEP, Options: "", Args: "1s"},
 		{Type: SLEEP, Options: "", Args: "500ms"},
 		{Type: SLEEP, Options: "", Args: ".5s"},
@@ -142,6 +148,12 @@ func TestParseTapeFile(t *testing.T) {
 		{Type: BACKSPACE, Options: "", Args: "1"},
 		{Type: BACKSPACE, Options: "", Args: "2"},
 		{Type: BACKSPACE, Options: "1s", Args: "3"},
+		{Type: DELETE, Options: "", Args: "1"},
+		{Type: DELETE, Options: "", Args: "2"},
+		{Type: DELETE, Options: "1s", Args: "3"},
+		{Type: INSERT, Options: "", Args: "1"},
+		{Type: INSERT, Options: "", Args: "2"},
+		{Type: INSERT, Options: "1s", Args: "3"},
 		{Type: DOWN, Options: "", Args: "1"},
 		{Type: DOWN, Options: "", Args: "2"},
 		{Type: DOWN, Options: "1s", Args: "3"},
@@ -201,5 +213,77 @@ func TestParseTapeFile(t *testing.T) {
 		if cmd.Options != expected[i].Options {
 			t.Errorf("Expected command %d to have options %s, got %s", i, expected[i].Options, cmd.Options)
 		}
+	}
+}
+
+func TestParseCtrl(t *testing.T) {
+	tests := []struct {
+		name     string
+		tape     string
+		wantArgs []string
+		wantErr  bool
+	}{
+		{
+			name:     "should parse with multiple modifiers",
+			tape:     "Ctrl+Shift+Alt+C",
+			wantArgs: []string{"Shift", "Alt", "C"},
+			wantErr:  false,
+		},
+		{
+			name:    "should not parse with out of order modifiers",
+			tape:    "Ctrl+Shift+C+Alt",
+			wantErr: true,
+		},
+		{
+			name:    "should not parse with out of order modifiers",
+			tape:    "Ctrl+Shift+C+Alt+C",
+			wantErr: true,
+		},
+		{
+			tape:    "Ctrl+Alt+Right",
+			wantErr: true,
+		},
+		{
+			name:     "Ctrl+Backspace",
+			tape:     "Ctrl+Backspace",
+			wantArgs: []string{"Backspace"},
+			wantErr:  false,
+		},
+		{
+			name:     "Ctrl+Space",
+			tape:     "Ctrl+Space",
+			wantArgs: []string{"Space"},
+			wantErr:  false,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			l := NewLexer(tc.tape)
+			p := NewParser(l)
+
+			cmd := p.parseCtrl()
+			if tc.wantErr {
+				if len(p.errors) == 0 {
+					t.Errorf("Expected to parse with errors but was success")
+				}
+				return
+			}
+
+			if len(p.errors) > 0 {
+				t.Errorf("Expected to parse with no errors but was failure")
+			}
+
+			args := strings.Split(cmd.Args, " ")
+			if len(tc.wantArgs) != len(args) {
+				t.Fatalf("Unable to parse args, expected args %d, got %d", len(tc.wantArgs), len(args))
+			}
+
+			for i, arg := range args {
+				if tc.wantArgs[i] != arg {
+					t.Errorf("Arg %d is wrong, expected %s, got %s", i, tc.wantArgs[i], arg)
+				}
+			}
+		})
 	}
 }
