@@ -112,7 +112,7 @@ func (p *Parser) parseWait() Command {
 	}
 
 	if p.peek.Type != REGEX {
-		p.errors = append(p.errors, NewError(p.peek, "Wait expects regular expression"))
+		// fallback to default
 		return cmd
 	}
 	p.nextToken()
