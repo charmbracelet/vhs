@@ -23,6 +23,8 @@ func (c Command) Highlight(faint bool) string {
 	}
 
 	switch c.Type {
+	case REGEX:
+		argsStyle = StringStyle
 	case SET:
 		optionsStyle = KeywordStyle
 		if isNumber(c.Args) {

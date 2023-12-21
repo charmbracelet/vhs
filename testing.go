@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"sync"
@@ -39,16 +40,40 @@ func (v *VHS) SaveOutput() {
 		file, _ = os.Create(v.Options.Test.Output)
 	})
 
-	// Get the current buffer.
-	buf, err := v.Page.Eval("() => Array(term.rows).fill(0).map((e, i) => term.buffer.active.getLine(i).translateToString().trimEnd())")
+	lines, err := v.Buffer()
 	if err != nil {
 		return
 	}
 
-	for _, line := range buf.Value.Arr() {
-		str := line.Str()
-		_, _ = file.WriteString(str + "\n")
+	for _, line := range lines {
+		_, _ = file.WriteString(line + "\n")
 	}
 
 	_, _ = file.WriteString(separator + "\n")
+}
+
+// Buffer returns the current buffer.
+func (v *VHS) Buffer() ([]string, error) {
+	// Get the current buffer.
+	buf, err := v.Page.Eval("() => Array(term.rows).fill(0).map((e, i) => term.buffer.active.getLine(i).translateToString().trimEnd())")
+	if err != nil {
+		return nil, fmt.Errorf("read buffer: %w", err)
+	}
+
+	var lines []string
+	for _, line := range buf.Value.Arr() {
+		lines = append(lines, line.Str())
+	}
+
+	return lines, nil
+}
+
+// CurrentLine returns the current line from the buffer.
+func (v *VHS) CurrentLine() (string, error) {
+	buf, err := v.Page.Eval("() => term.buffer.active.getLine(term.buffer.active.cursorY+term.buffer.active.viewportY).translateToString().trimEnd()")
+	if err != nil {
+		return "", fmt.Errorf("read curent line from buffer: %w", err)
+	}
+
+	return buf.Value.Str(), nil
 }

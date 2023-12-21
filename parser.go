@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // Parser is the structure that manages the parsing of tokens.
@@ -69,6 +71,8 @@ func (p *Parser) parseCommand() Command {
 		return p.parseRequire()
 	case SHOW:
 		return p.parseShow()
+	case WAIT:
+		return p.parseWait()
 	case SOURCE:
 		return p.parseSource()
 	case SCREENSHOT:
@@ -81,6 +85,45 @@ func (p *Parser) parseCommand() Command {
 		p.errors = append(p.errors, NewError(p.cur, "Invalid command: "+p.cur.Literal))
 		return Command{Type: ILLEGAL}
 	}
+}
+
+func (p *Parser) parseWait() Command {
+	cmd := Command{Type: WAIT}
+
+	if p.peek.Type == PLUS {
+		p.nextToken()
+		if p.peek.Type != STRING || (p.peek.Literal != "Line" && p.peek.Literal != "Screen") {
+			p.errors = append(p.errors, NewError(p.peek, "Wait+ expects Line or Screen"))
+			return cmd
+		}
+		cmd.Args = p.peek.Literal
+		p.nextToken()
+	} else {
+		cmd.Args = "Line"
+	}
+
+	cmd.Options = p.parseSpeed()
+	if cmd.Options != "" {
+		dur, _ := time.ParseDuration(cmd.Options)
+		if dur <= 0 {
+			p.errors = append(p.errors, NewError(p.peek, "Wait expects positive duration"))
+			return cmd
+		}
+	}
+
+	if p.peek.Type != REGEX {
+		// fallback to default
+		return cmd
+	}
+	p.nextToken()
+	if _, err := regexp.Compile(p.cur.Literal); err != nil {
+		p.errors = append(p.errors, NewError(p.cur, fmt.Sprintf("Invalid regular expression '%s': %v", p.cur.Literal, err)))
+		return cmd
+	}
+
+	cmd.Args += " " + p.cur.Literal
+
+	return cmd
 }
 
 // parseSpeed parses a typing speed indication.
@@ -124,10 +167,11 @@ func (p *Parser) parseTime() string {
 		p.nextToken()
 	} else {
 		p.errors = append(p.errors, NewError(p.cur, "Expected time after "+p.cur.Literal))
+		return ""
 	}
 
 	// Allow TypingSpeed to have bare units (e.g. 50ms, 100ms)
-	if p.peek.Type == MILLISECONDS || p.peek.Type == SECONDS {
+	if p.peek.Type == MILLISECONDS || p.peek.Type == SECONDS || p.peek.Type == MINUTES {
 		t += p.peek.Literal
 		p.nextToken()
 	} else {
@@ -286,6 +330,15 @@ func (p *Parser) parseSet() Command {
 	p.nextToken()
 
 	switch p.cur.Type {
+	case WAIT_TIMEOUT:
+		cmd.Args = p.parseTime()
+	case WAIT_PATTERN:
+		cmd.Args = p.peek.Literal
+		_, err := regexp.Compile(p.peek.Literal)
+		if err != nil {
+			p.errors = append(p.errors, NewError(p.peek, "Invalid regexp pattern: "+p.peek.Literal))
+		}
+		p.nextToken()
 	case LOOP_OFFSET:
 		cmd.Args = p.peek.Literal
 		p.nextToken()
