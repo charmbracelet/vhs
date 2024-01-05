@@ -4,6 +4,9 @@ import (
 	"os"
 	"strings"
 	"testing"
+
+	"github.com/charmbracelet/vhs/lexer"
+	. "github.com/charmbracelet/vhs/token"
 )
 
 func TestParser(t *testing.T) {
@@ -48,7 +51,7 @@ Sleep 3`
 		{Type: SLEEP, Args: "3s"},
 	}
 
-	l := NewLexer(input)
+	l := lexer.NewLexer(input)
 	p := NewParser(l)
 
 	cmds := p.Parse()
@@ -77,7 +80,7 @@ Type "echo 'Hello, World!'" Enter
 Foo
 Sleep Bar`
 
-	l := NewLexer(input)
+	l := lexer.NewLexer(input)
 	p := NewParser(l)
 
 	_ = p.Parse()
@@ -101,7 +104,7 @@ Sleep Bar`
 }
 
 func TestParseTapeFile(t *testing.T) {
-	input, err := os.ReadFile("examples/fixtures/all.tape")
+	input, err := os.ReadFile("../examples/fixtures/all.tape")
 	if err != nil {
 		t.Fatal("could not read fixture file")
 	}
@@ -184,7 +187,7 @@ func TestParseTapeFile(t *testing.T) {
 		{Type: SHOW, Options: "", Args: ""},
 	}
 
-	l := NewLexer(string(input))
+	l := lexer.NewLexer(string(input))
 	p := NewParser(l)
 
 	cmds := p.Parse()
@@ -249,7 +252,7 @@ func TestParseCtrl(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			l := NewLexer(tc.tape)
+			l := lexer.NewLexer(tc.tape)
 			p := NewParser(l)
 
 			cmd := p.parseCtrl()
@@ -293,7 +296,7 @@ func (st *parseSourceTest) run(t *testing.T) {
 		}
 	}
 
-	l := NewLexer(st.tape)
+	l := lexer.NewLexer(st.tape)
 	p := NewParser(l)
 
 	_ = p.Parse()
@@ -376,7 +379,7 @@ type parseScreenshotTest struct {
 }
 
 func (st *parseScreenshotTest) run(t *testing.T) {
-	l := NewLexer(st.tape)
+	l := lexer.NewLexer(st.tape)
 	p := NewParser(l)
 
 	_ = p.Parse()

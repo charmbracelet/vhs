@@ -3,6 +3,8 @@ package lexer
 import (
 	"os"
 	"testing"
+
+	. "github.com/charmbracelet/vhs/token"
 )
 
 func TestNextToken(t *testing.T) {
@@ -87,7 +89,7 @@ Sleep 2`
 }
 
 func TestLexTapeFile(t *testing.T) {
-	input, err := os.ReadFile("examples/fixtures/all.tape")
+	input, err := os.ReadFile("../examples/fixtures/all.tape")
 	if err != nil {
 		t.Fatal("could not read all.tape file")
 	}
