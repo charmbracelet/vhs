@@ -13,14 +13,14 @@ import (
 	"github.com/atotto/clipboard"
 	"github.com/charmbracelet/vhs/lexer"
 	"github.com/charmbracelet/vhs/parser"
-	. "github.com/charmbracelet/vhs/token"
+	"github.com/charmbracelet/vhs/token"
 	"github.com/go-rod/rod/lib/input"
 	"github.com/mattn/go-runewidth"
 )
 
 // Execute executes a command on a running instance of vhs.
 func Execute(c parser.Command, v *VHS) {
-	if c.Type == SOURCE {
+	if c.Type == token.SOURCE {
 		ExecuteSourceTape(c, v)
 	} else {
 		CommandFuncs[c.Type](c, v)
@@ -37,33 +37,33 @@ type CommandFunc func(c parser.Command, v *VHS)
 
 // CommandFuncs maps command types to their executable functions.
 var CommandFuncs = map[parser.CommandType]CommandFunc{
-	BACKSPACE:  ExecuteKey(input.Backspace),
-	DELETE:     ExecuteKey(input.Delete),
-	INSERT:     ExecuteKey(input.Insert),
-	DOWN:       ExecuteKey(input.ArrowDown),
-	ENTER:      ExecuteKey(input.Enter),
-	LEFT:       ExecuteKey(input.ArrowLeft),
-	RIGHT:      ExecuteKey(input.ArrowRight),
-	SPACE:      ExecuteKey(input.Space),
-	UP:         ExecuteKey(input.ArrowUp),
-	TAB:        ExecuteKey(input.Tab),
-	ESCAPE:     ExecuteKey(input.Escape),
-	PAGEUP:     ExecuteKey(input.PageUp),
-	PAGEDOWN:   ExecuteKey(input.PageDown),
-	HIDE:       ExecuteHide,
-	REQUIRE:    ExecuteRequire,
-	SHOW:       ExecuteShow,
-	SET:        ExecuteSet,
-	OUTPUT:     ExecuteOutput,
-	SLEEP:      ExecuteSleep,
-	TYPE:       ExecuteType,
-	CTRL:       ExecuteCtrl,
-	ALT:        ExecuteAlt,
-	SHIFT:      ExecuteShift,
-	ILLEGAL:    ExecuteNoop,
-	SCREENSHOT: ExecuteScreenshot,
-	COPY:       ExecuteCopy,
-	PASTE:      ExecutePaste,
+	token.BACKSPACE:  ExecuteKey(input.Backspace),
+	token.DELETE:     ExecuteKey(input.Delete),
+	token.INSERT:     ExecuteKey(input.Insert),
+	token.DOWN:       ExecuteKey(input.ArrowDown),
+	token.ENTER:      ExecuteKey(input.Enter),
+	token.LEFT:       ExecuteKey(input.ArrowLeft),
+	token.RIGHT:      ExecuteKey(input.ArrowRight),
+	token.SPACE:      ExecuteKey(input.Space),
+	token.UP:         ExecuteKey(input.ArrowUp),
+	token.TAB:        ExecuteKey(input.Tab),
+	token.ESCAPE:     ExecuteKey(input.Escape),
+	token.PAGEUP:     ExecuteKey(input.PageUp),
+	token.PAGEDOWN:   ExecuteKey(input.PageDown),
+	token.HIDE:       ExecuteHide,
+	token.REQUIRE:    ExecuteRequire,
+	token.SHOW:       ExecuteShow,
+	token.SET:        ExecuteSet,
+	token.OUTPUT:     ExecuteOutput,
+	token.SLEEP:      ExecuteSleep,
+	token.TYPE:       ExecuteType,
+	token.CTRL:       ExecuteCtrl,
+	token.ALT:        ExecuteAlt,
+	token.SHIFT:      ExecuteShift,
+	token.ILLEGAL:    ExecuteNoop,
+	token.SCREENSHOT: ExecuteScreenshot,
+	token.COPY:       ExecuteCopy,
+	token.PASTE:      ExecutePaste,
 }
 
 // ExecuteNoop is a no-op command that does nothing.
@@ -140,11 +140,11 @@ func ExecuteCtrl(c parser.Command, v *VHS) {
 // held down on the running instance of vhs.
 func ExecuteAlt(c parser.Command, v *VHS) {
 	_ = v.Page.Keyboard.Press(input.AltLeft)
-	if k, ok := Keywords[c.Args]; ok {
+	if k, ok := token.Keywords[c.Args]; ok {
 		switch k {
-		case ENTER:
+		case token.ENTER:
 			_ = v.Page.Keyboard.Type(input.Enter)
-		case TAB:
+		case token.TAB:
 			_ = v.Page.Keyboard.Type(input.Tab)
 		}
 	} else {
@@ -162,11 +162,11 @@ func ExecuteAlt(c parser.Command, v *VHS) {
 // key held down on the running instance of vhs.
 func ExecuteShift(c parser.Command, v *VHS) {
 	_ = v.Page.Keyboard.Press(input.ShiftLeft)
-	if k, ok := Keywords[c.Args]; ok {
+	if k, ok := token.Keywords[c.Args]; ok {
 		switch k {
-		case ENTER:
+		case token.ENTER:
 			_ = v.Page.Keyboard.Type(input.Enter)
-		case TAB:
+		case token.TAB:
 			_ = v.Page.Keyboard.Type(input.Tab)
 		}
 	} else {
@@ -478,7 +478,8 @@ func ExecuteSourceTape(c parser.Command, v *VHS) {
 	// Run all commands from the sourced tape file.
 	for _, cmd := range cmds {
 		// Output have to be avoid in order to not overwrite output of the original tape.
-		if cmd.Type == SOURCE || cmd.Type == OUTPUT {
+		if cmd.Type == token.SOURCE ||
+			cmd.Type == token.OUTPUT {
 			continue
 		}
 		fmt.Fprintf(out, "%s %s\n", GrayStyle.Render(displayPath+":"), Highlight(cmd, false))

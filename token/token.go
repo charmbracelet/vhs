@@ -4,12 +4,12 @@ import (
 	"strings"
 )
 
-// TokenType represents a token's type.
-type TokenType string
+// Type represents a token's type.
+type Type string
 
 // Token represents a lexer token.
 type Token struct {
-	Type    TokenType
+	Type    Type
 	Literal string
 	Line    int
 	Column  int
@@ -93,7 +93,7 @@ const (
 )
 
 // Keywords maps keyword strings to tokens.
-var Keywords = map[string]TokenType{
+var Keywords = map[string]Type{
 	"em":            EM,
 	"px":            PX,
 	"ms":            MILLISECONDS,
@@ -151,7 +151,7 @@ var Keywords = map[string]TokenType{
 }
 
 // IsSetting returns whether a token is a setting.
-func IsSetting(t TokenType) bool {
+func IsSetting(t Type) bool {
 	switch t {
 	case SHELL, FONT_FAMILY, FONT_SIZE, LETTER_SPACING, LINE_HEIGHT,
 		FRAMERATE, TYPING_SPEED, THEME, PLAYBACK_SPEED, HEIGHT, WIDTH,
@@ -164,7 +164,7 @@ func IsSetting(t TokenType) bool {
 }
 
 // IsCommand returns whether the string is a command.
-func IsCommand(t TokenType) bool {
+func IsCommand(t Type) bool {
 	switch t {
 	case TYPE, SLEEP,
 		UP, DOWN, RIGHT, LEFT, PAGEUP, PAGEDOWN,
@@ -177,12 +177,12 @@ func IsCommand(t TokenType) bool {
 }
 
 // IsModifier returns whether the token is a modifier.
-func IsModifier(t TokenType) bool {
+func IsModifier(t Type) bool {
 	return t == ALT || t == SHIFT
 }
 
 // String converts a token to it's human readable string format.
-func (t TokenType) String() string {
+func (t Type) String() string {
 	if IsCommand(t) || IsSetting(t) {
 		return strings.ToTitle(string(t[0])) + strings.ToLower(string(t[1:]))
 	}
@@ -192,7 +192,7 @@ func (t TokenType) String() string {
 // LookupIdentifier returns whether the identifier is a keyword.
 // In `vhs`, there are no _actual_ identifiers, i.e. there are no variables.
 // Instead, identifiers are simply strings (i.e. bare words).
-func LookupIdentifier(ident string) TokenType {
+func LookupIdentifier(ident string) Type {
 	if t, ok := Keywords[ident]; ok {
 		return t
 	}
