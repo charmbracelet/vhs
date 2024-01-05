@@ -105,8 +105,8 @@ type Parser struct {
 	peek   Token
 }
 
-// NewParser returns a new Parser.
-func NewParser(l *lexer.Lexer) *Parser {
+// New returns a new Parser.
+func New(l *lexer.Lexer) *Parser {
 	p := &Parser{l: l, errors: []Error{}}
 
 	// Read two tokens, so cur and peek are both set.
@@ -610,8 +610,8 @@ func (p *Parser) parseSource() Command {
 		return cmd
 	}
 
-	srcLexer := lexer.NewLexer(srcTape)
-	srcParser := NewParser(srcLexer)
+	srcLexer := lexer.New(srcTape)
+	srcParser := New(srcLexer)
 
 	// Check not nested source
 	srcCmds := srcParser.Parse()

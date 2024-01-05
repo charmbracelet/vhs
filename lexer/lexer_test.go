@@ -73,7 +73,7 @@ Sleep 2`
 		{NUMBER, "2"},
 	}
 
-	l := NewLexer(input)
+	l := New(input)
 
 	for i, tt := range tests {
 		tok := l.NextToken()
@@ -299,7 +299,7 @@ func TestLexTapeFile(t *testing.T) {
 		{SHOW, "Show"},
 	}
 
-	l := NewLexer(string(input))
+	l := New(string(input))
 
 	for i, tt := range tests {
 		tok := l.NextToken()

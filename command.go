@@ -457,8 +457,8 @@ func ExecuteSourceTape(c parser.Command, v *VHS) {
 		return
 	}
 
-	l := lexer.NewLexer(string(tape))
-	p := parser.NewParser(l)
+	l := lexer.New(string(tape))
+	p := parser.New(l)
 
 	cmds := p.Parse()
 

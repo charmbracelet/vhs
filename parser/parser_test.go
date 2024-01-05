@@ -51,8 +51,8 @@ Sleep 3`
 		{Type: SLEEP, Args: "3s"},
 	}
 
-	l := lexer.NewLexer(input)
-	p := NewParser(l)
+	l := lexer.New(input)
+	p := New(l)
 
 	cmds := p.Parse()
 
@@ -80,8 +80,8 @@ Type "echo 'Hello, World!'" Enter
 Foo
 Sleep Bar`
 
-	l := lexer.NewLexer(input)
-	p := NewParser(l)
+	l := lexer.New(input)
+	p := New(l)
 
 	_ = p.Parse()
 
@@ -187,8 +187,8 @@ func TestParseTapeFile(t *testing.T) {
 		{Type: SHOW, Options: "", Args: ""},
 	}
 
-	l := lexer.NewLexer(string(input))
-	p := NewParser(l)
+	l := lexer.New(string(input))
+	p := New(l)
 
 	cmds := p.Parse()
 
@@ -252,8 +252,8 @@ func TestParseCtrl(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			l := lexer.NewLexer(tc.tape)
-			p := NewParser(l)
+			l := lexer.New(tc.tape)
+			p := New(l)
 
 			cmd := p.parseCtrl()
 			if tc.wantErr {
@@ -296,8 +296,8 @@ func (st *parseSourceTest) run(t *testing.T) {
 		}
 	}
 
-	l := lexer.NewLexer(st.tape)
-	p := NewParser(l)
+	l := lexer.New(st.tape)
+	p := New(l)
 
 	_ = p.Parse()
 
@@ -379,8 +379,8 @@ type parseScreenshotTest struct {
 }
 
 func (st *parseScreenshotTest) run(t *testing.T) {
-	l := lexer.NewLexer(st.tape)
-	p := NewParser(l)
+	l := lexer.New(st.tape)
+	p := New(l)
 
 	_ = p.Parse()
 

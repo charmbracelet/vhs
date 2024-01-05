@@ -215,8 +215,8 @@ var (
 					continue
 				}
 
-				l := lexer.NewLexer(string(b))
-				p := parser.NewParser(l)
+				l := lexer.New(string(b))
+				p := parser.New(l)
 
 				_ = p.Parse()
 				errs := p.Errors()

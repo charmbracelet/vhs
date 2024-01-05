@@ -12,8 +12,8 @@ type Lexer struct {
 	column  int
 }
 
-// NewLexer returns a new lexer for tokenizing the input string.
-func NewLexer(input string) *Lexer {
+// New returns a new lexer for tokenizing the input string.
+func New(input string) *Lexer {
 	l := &Lexer{input: input, line: 1, column: 0}
 	l.readChar()
 	return l
