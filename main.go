@@ -17,6 +17,8 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/charmbracelet/vhs/lexer"
+	"github.com/charmbracelet/vhs/parser"
 	version "github.com/hashicorp/go-version"
 	"github.com/mattn/go-isatty"
 	"github.com/spf13/cobra"
@@ -213,8 +215,8 @@ var (
 					continue
 				}
 
-				l := NewLexer(string(b))
-				p := NewParser(l)
+				l := lexer.New(string(b))
+				p := parser.New(l)
 
 				_ = p.Parse()
 				errs := p.Errors()
@@ -223,7 +225,7 @@ var (
 					log.Println(ErrorFileStyle.Render(file))
 
 					for _, err := range errs {
-						printParserError(os.Stderr, string(b), err)
+						printError(os.Stderr, string(b), err)
 					}
 					valid = false
 				}
