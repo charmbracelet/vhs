@@ -1,4 +1,4 @@
-package main
+package parser
 
 import (
 	"fmt"
@@ -6,19 +6,108 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+
+	. "github.com/charmbracelet/vhs/token"
+
+	"github.com/charmbracelet/vhs/lexer"
 )
+
+// NewError returns a new parser.Error with the given token and message.
+func NewError(token Token, msg string) Error {
+	return Error{
+		Token: token,
+		Msg:   msg,
+	}
+}
+
+// CommandType is a type that represents a command.
+type CommandType TokenType
+
+// CommandTypes is a list of the available commands that can be executed.
+var CommandTypes = []CommandType{ //nolint: deadcode
+	BACKSPACE,
+	DELETE,
+	INSERT,
+	CTRL,
+	ALT,
+	DOWN,
+	ENTER,
+	ESCAPE,
+	ILLEGAL,
+	LEFT,
+	PAGEUP,
+	PAGEDOWN,
+	RIGHT,
+	SET,
+	OUTPUT,
+	SLEEP,
+	SPACE,
+	HIDE,
+	REQUIRE,
+	SHOW,
+	TAB,
+	TYPE,
+	UP,
+	SOURCE,
+	SCREENSHOT,
+	COPY,
+	PASTE,
+}
+
+// String returns the string representation of the command.
+func (c CommandType) String() string {
+	if len(c) < 1 {
+		return ""
+	}
+	s := string(c)
+	return string(s[0]) + strings.ToLower(s[1:])
+}
+
+// Command represents a command with options and arguments.
+type Command struct {
+	Type    CommandType
+	Options string
+	Args    string
+}
+
+// String returns the string representation of the command.
+// This includes the options and arguments of the command.
+func (c Command) String() string {
+	if c.Options != "" {
+		return fmt.Sprintf("%s %s %s", c.Type, c.Options, c.Args)
+	}
+	return fmt.Sprintf("%s %s", c.Type, c.Options)
+}
+
+// Error represents an error with parsing a tape file.
+// It tracks the token causing the error and a human readable error message.
+type Error struct {
+	Token Token
+	Msg   string
+}
+
+// String returns a human readable error message printing the token line number
+// and message.
+func (e Error) String() string {
+	return fmt.Sprintf("%2d:%-2d │ %s", e.Token.Line, e.Token.Column, e.Msg)
+}
+
+// Error implements the error interface.
+func (e Error) Error() string {
+	return e.String()
+}
 
 // Parser is the structure that manages the parsing of tokens.
 type Parser struct {
-	l      *Lexer
-	errors []ParserError
+	l      *lexer.Lexer
+	errors []Error
 	cur    Token
 	peek   Token
 }
 
 // NewParser returns a new Parser.
-func NewParser(l *Lexer) *Parser {
-	p := &Parser{l: l, errors: []ParserError{}}
+func NewParser(l *lexer.Lexer) *Parser {
+	p := &Parser{l: l, errors: []Error{}}
 
 	// Read two tokens, so cur and peek are both set.
 	p.nextToken()
@@ -153,7 +242,7 @@ func (p *Parser) parseCtrl() Command {
 		peek := p.peek
 
 		// Get key from keywords and check if it's a valid modifier
-		if k := keywords[peek.Literal]; IsModifier(k) {
+		if k := Keywords[peek.Literal]; IsModifier(k) {
 			if !inModifierChain {
 				p.errors = append(p.errors, NewError(p.cur, "Modifiers must come before other characters"))
 				// Clear args so the error is returned
@@ -521,7 +610,7 @@ func (p *Parser) parseSource() Command {
 		return cmd
 	}
 
-	srcLexer := NewLexer(srcTape)
+	srcLexer := lexer.NewLexer(srcTape)
 	srcParser := NewParser(srcLexer)
 
 	// Check not nested source
@@ -577,7 +666,7 @@ func (p *Parser) parseScreenshot() Command {
 }
 
 // Errors returns any errors that occurred during parsing.
-func (p *Parser) Errors() []ParserError {
+func (p *Parser) Errors() []Error {
 	return p.errors
 }
 
@@ -586,4 +675,11 @@ func (p *Parser) Errors() []ParserError {
 func (p *Parser) nextToken() {
 	p.cur = p.peek
 	p.peek = p.l.NextToken()
+}
+
+// Check if a given windowbar type is valid
+func isValidWindowBar(w string) bool {
+	return w == "" ||
+		w == "Colorful" || w == "ColorfulRight" ||
+		w == "Rings" || w == "RightsRight"
 }

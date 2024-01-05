@@ -1,4 +1,4 @@
-package main
+package token
 
 import (
 	"strings"
@@ -92,7 +92,8 @@ const (
 	CURSOR_BLINK    = "CURSOR_BLINK"    //nolint:revive
 )
 
-var keywords = map[string]TokenType{
+// Keywords maps keyword strings to tokens.
+var Keywords = map[string]TokenType{
 	"em":            EM,
 	"px":            PX,
 	"ms":            MILLISECONDS,
@@ -192,7 +193,7 @@ func (t TokenType) String() string {
 // In `vhs`, there are no _actual_ identifiers, i.e. there are no variables.
 // Instead, identifiers are simply strings (i.e. bare words).
 func LookupIdentifier(ident string) TokenType {
-	if t, ok := keywords[ident]; ok {
+	if t, ok := Keywords[ident]; ok {
 		return t
 	}
 	return STRING

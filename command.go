@@ -11,59 +11,32 @@ import (
 	"time"
 
 	"github.com/atotto/clipboard"
+	"github.com/charmbracelet/vhs/lexer"
+	"github.com/charmbracelet/vhs/parser"
+	. "github.com/charmbracelet/vhs/token"
 	"github.com/go-rod/rod/lib/input"
 	"github.com/mattn/go-runewidth"
 )
 
-// CommandType is a type that represents a command.
-type CommandType TokenType
-
-// CommandTypes is a list of the available commands that can be executed.
-var CommandTypes = []CommandType{ //nolint: deadcode
-	BACKSPACE,
-	DELETE,
-	INSERT,
-	CTRL,
-	ALT,
-	DOWN,
-	ENTER,
-	ESCAPE,
-	ILLEGAL,
-	LEFT,
-	PAGEUP,
-	PAGEDOWN,
-	RIGHT,
-	SET,
-	OUTPUT,
-	SLEEP,
-	SPACE,
-	HIDE,
-	REQUIRE,
-	SHOW,
-	TAB,
-	TYPE,
-	UP,
-	SOURCE,
-	SCREENSHOT,
-	COPY,
-	PASTE,
-}
-
-// String returns the string representation of the command.
-func (c CommandType) String() string {
-	if len(c) < 1 {
-		return ""
+// Execute executes a command on a running instance of vhs.
+func Execute(c parser.Command, v *VHS) {
+	if c.Type == SOURCE {
+		ExecuteSourceTape(c, v)
+	} else {
+		CommandFuncs[c.Type](c, v)
 	}
-	s := string(c)
-	return string(s[0]) + strings.ToLower(s[1:])
+
+	if v.recording && v.Options.Test.Output != "" {
+		v.SaveOutput()
+	}
 }
 
 // CommandFunc is a function that executes a command on a running
 // instance of vhs.
-type CommandFunc func(c Command, v *VHS)
+type CommandFunc func(c parser.Command, v *VHS)
 
 // CommandFuncs maps command types to their executable functions.
-var CommandFuncs = map[CommandType]CommandFunc{
+var CommandFuncs = map[parser.CommandType]CommandFunc{
 	BACKSPACE:  ExecuteKey(input.Backspace),
 	DELETE:     ExecuteKey(input.Delete),
 	INSERT:     ExecuteKey(input.Insert),
@@ -93,39 +66,10 @@ var CommandFuncs = map[CommandType]CommandFunc{
 	PASTE:      ExecutePaste,
 }
 
-// Command represents a command with options and arguments.
-type Command struct {
-	Type    CommandType
-	Options string
-	Args    string
-}
-
-// String returns the string representation of the command.
-// This includes the options and arguments of the command.
-func (c Command) String() string {
-	if c.Options != "" {
-		return fmt.Sprintf("%s %s %s", c.Type, c.Options, c.Args)
-	}
-	return fmt.Sprintf("%s %s", c.Type, c.Options)
-}
-
-// Execute executes a command on a running instance of vhs.
-func (c Command) Execute(v *VHS) {
-	if c.Type == SOURCE {
-		ExecuteSourceTape(c, v)
-	} else {
-		CommandFuncs[c.Type](c, v)
-	}
-
-	if v.recording && v.Options.Test.Output != "" {
-		v.SaveOutput()
-	}
-}
-
 // ExecuteNoop is a no-op command that does nothing.
 // Generally, this is used for Unknown commands when dealing with
 // commands that are not recognized.
-func ExecuteNoop(_ Command, _ *VHS) {}
+func ExecuteNoop(_ parser.Command, _ *VHS) {}
 
 // ExecuteKey is a higher-order function that returns a CommandFunc to execute
 // a key press for a given key. This is so that the logic for key pressing
@@ -134,7 +78,7 @@ func ExecuteNoop(_ Command, _ *VHS) {}
 // i.e. ExecuteKey(input.ArrowDown) would return a CommandFunc that executes
 // the ArrowDown key press.
 func ExecuteKey(k input.Key) CommandFunc {
-	return func(c Command, v *VHS) {
+	return func(c parser.Command, v *VHS) {
 		typingSpeed, err := time.ParseDuration(c.Options)
 		if err != nil {
 			typingSpeed = v.Options.TypingSpeed
@@ -152,7 +96,7 @@ func ExecuteKey(k input.Key) CommandFunc {
 
 // ExecuteCtrl is a CommandFunc that presses the argument keys and/or modifiers
 // with the ctrl key held down on the running instance of vhs.
-func ExecuteCtrl(c Command, v *VHS) {
+func ExecuteCtrl(c parser.Command, v *VHS) {
 	// Create key combination by holding ControlLeft
 	action := v.Page.KeyActions().Press(input.ControlLeft)
 	keys := strings.Split(c.Args, " ")
@@ -194,9 +138,9 @@ func ExecuteCtrl(c Command, v *VHS) {
 
 // ExecuteAlt is a CommandFunc that presses the argument key with the alt key
 // held down on the running instance of vhs.
-func ExecuteAlt(c Command, v *VHS) {
+func ExecuteAlt(c parser.Command, v *VHS) {
 	_ = v.Page.Keyboard.Press(input.AltLeft)
-	if k, ok := keywords[c.Args]; ok {
+	if k, ok := Keywords[c.Args]; ok {
 		switch k {
 		case ENTER:
 			_ = v.Page.Keyboard.Type(input.Enter)
@@ -216,9 +160,9 @@ func ExecuteAlt(c Command, v *VHS) {
 
 // ExecuteShift is a CommandFunc that presses the argument key with the shift
 // key held down on the running instance of vhs.
-func ExecuteShift(c Command, v *VHS) {
+func ExecuteShift(c parser.Command, v *VHS) {
 	_ = v.Page.Keyboard.Press(input.ShiftLeft)
-	if k, ok := keywords[c.Args]; ok {
+	if k, ok := Keywords[c.Args]; ok {
 		switch k {
 		case ENTER:
 			_ = v.Page.Keyboard.Type(input.Enter)
@@ -237,13 +181,13 @@ func ExecuteShift(c Command, v *VHS) {
 }
 
 // ExecuteHide is a CommandFunc that starts or stops the recording of the vhs.
-func ExecuteHide(_ Command, v *VHS) {
+func ExecuteHide(_ parser.Command, v *VHS) {
 	v.PauseRecording()
 }
 
 // ExecuteRequire is a CommandFunc that checks if all the binaries mentioned in the
 // Require command are present. If not, it exits with a non-zero error.
-func ExecuteRequire(c Command, v *VHS) {
+func ExecuteRequire(c parser.Command, v *VHS) {
 	_, err := exec.LookPath(c.Args)
 	if err != nil {
 		v.Errors = append(v.Errors, err)
@@ -251,13 +195,13 @@ func ExecuteRequire(c Command, v *VHS) {
 }
 
 // ExecuteShow is a CommandFunc that resumes the recording of the vhs.
-func ExecuteShow(_ Command, v *VHS) {
+func ExecuteShow(_ parser.Command, v *VHS) {
 	v.ResumeRecording()
 }
 
 // ExecuteSleep sleeps for the desired time specified through the argument of
 // the Sleep command.
-func ExecuteSleep(c Command, _ *VHS) {
+func ExecuteSleep(c parser.Command, _ *VHS) {
 	dur, err := time.ParseDuration(c.Args)
 	if err != nil {
 		return
@@ -266,7 +210,7 @@ func ExecuteSleep(c Command, _ *VHS) {
 }
 
 // ExecuteType types the argument string on the running instance of vhs.
-func ExecuteType(c Command, v *VHS) {
+func ExecuteType(c parser.Command, v *VHS) {
 	typingSpeed, err := time.ParseDuration(c.Options)
 	if err != nil {
 		typingSpeed = v.Options.TypingSpeed
@@ -284,7 +228,7 @@ func ExecuteType(c Command, v *VHS) {
 }
 
 // ExecuteOutput applies the output on the vhs videos.
-func ExecuteOutput(c Command, v *VHS) {
+func ExecuteOutput(c parser.Command, v *VHS) {
 	switch c.Options {
 	case ".mp4":
 		v.Options.Video.Output.MP4 = c.Args
@@ -300,12 +244,12 @@ func ExecuteOutput(c Command, v *VHS) {
 }
 
 // ExecuteCopy copies text to the clipboard.
-func ExecuteCopy(c Command, _ *VHS) {
+func ExecuteCopy(c parser.Command, _ *VHS) {
 	_ = clipboard.WriteAll(c.Args)
 }
 
 // ExecutePaste pastes text from the clipboard.
-func ExecutePaste(_ Command, v *VHS) {
+func ExecutePaste(_ parser.Command, v *VHS) {
 	clip, err := clipboard.ReadAll()
 	if err != nil {
 		return
@@ -346,12 +290,12 @@ var Settings = map[string]CommandFunc{
 
 // ExecuteSet applies the settings on the running vhs specified by the
 // option and argument pass to the command.
-func ExecuteSet(c Command, v *VHS) {
+func ExecuteSet(c parser.Command, v *VHS) {
 	Settings[c.Options](c, v)
 }
 
 // ExecuteSetFontSize applies the font size on the vhs.
-func ExecuteSetFontSize(c Command, v *VHS) {
+func ExecuteSetFontSize(c parser.Command, v *VHS) {
 	fontSize, _ := strconv.Atoi(c.Args)
 	v.Options.FontSize = fontSize
 	_, _ = v.Page.Eval(fmt.Sprintf("() => term.options.fontSize = %d", fontSize))
@@ -364,23 +308,23 @@ func ExecuteSetFontSize(c Command, v *VHS) {
 }
 
 // ExecuteSetFontFamily applies the font family on the vhs.
-func ExecuteSetFontFamily(c Command, v *VHS) {
+func ExecuteSetFontFamily(c parser.Command, v *VHS) {
 	v.Options.FontFamily = c.Args
 	_, _ = v.Page.Eval(fmt.Sprintf("() => term.options.fontFamily = '%s'", withSymbolsFallback(c.Args)))
 }
 
 // ExecuteSetHeight applies the height on the vhs.
-func ExecuteSetHeight(c Command, v *VHS) {
+func ExecuteSetHeight(c parser.Command, v *VHS) {
 	v.Options.Video.Style.Height, _ = strconv.Atoi(c.Args)
 }
 
 // ExecuteSetWidth applies the width on the vhs.
-func ExecuteSetWidth(c Command, v *VHS) {
+func ExecuteSetWidth(c parser.Command, v *VHS) {
 	v.Options.Video.Style.Width, _ = strconv.Atoi(c.Args)
 }
 
 // ExecuteSetShell applies the shell on the vhs.
-func ExecuteSetShell(c Command, v *VHS) {
+func ExecuteSetShell(c parser.Command, v *VHS) {
 	if s, ok := Shells[c.Args]; ok {
 		v.Options.Shell = s
 	}
@@ -393,21 +337,21 @@ const (
 
 // ExecuteSetLetterSpacing applies letter spacing (also known as tracking) on
 // the vhs.
-func ExecuteSetLetterSpacing(c Command, v *VHS) {
+func ExecuteSetLetterSpacing(c parser.Command, v *VHS) {
 	letterSpacing, _ := strconv.ParseFloat(c.Args, bitSize)
 	v.Options.LetterSpacing = letterSpacing
 	_, _ = v.Page.Eval(fmt.Sprintf("() => term.options.letterSpacing = %f", letterSpacing))
 }
 
 // ExecuteSetLineHeight applies the line height on the vhs.
-func ExecuteSetLineHeight(c Command, v *VHS) {
+func ExecuteSetLineHeight(c parser.Command, v *VHS) {
 	lineHeight, _ := strconv.ParseFloat(c.Args, bitSize)
 	v.Options.LineHeight = lineHeight
 	_, _ = v.Page.Eval(fmt.Sprintf("() => term.options.lineHeight = %f", lineHeight))
 }
 
 // ExecuteSetTheme applies the theme on the vhs.
-func ExecuteSetTheme(c Command, v *VHS) {
+func ExecuteSetTheme(c parser.Command, v *VHS) {
 	var err error
 	v.Options.Theme, err = getTheme(c.Args)
 	if err != nil {
@@ -422,7 +366,7 @@ func ExecuteSetTheme(c Command, v *VHS) {
 }
 
 // ExecuteSetTypingSpeed applies the default typing speed on the vhs.
-func ExecuteSetTypingSpeed(c Command, v *VHS) {
+func ExecuteSetTypingSpeed(c parser.Command, v *VHS) {
 	typingSpeed, err := time.ParseDuration(c.Args)
 	if err != nil {
 		return
@@ -431,12 +375,12 @@ func ExecuteSetTypingSpeed(c Command, v *VHS) {
 }
 
 // ExecuteSetPadding applies the padding on the vhs.
-func ExecuteSetPadding(c Command, v *VHS) {
+func ExecuteSetPadding(c parser.Command, v *VHS) {
 	v.Options.Video.Style.Padding, _ = strconv.Atoi(c.Args)
 }
 
 // ExecuteSetFramerate applies the framerate on the vhs.
-func ExecuteSetFramerate(c Command, v *VHS) {
+func ExecuteSetFramerate(c parser.Command, v *VHS) {
 	framerate, err := strconv.ParseInt(c.Args, base, 0)
 	if err != nil {
 		return
@@ -445,7 +389,7 @@ func ExecuteSetFramerate(c Command, v *VHS) {
 }
 
 // ExecuteSetPlaybackSpeed applies the playback speed option on the vhs.
-func ExecuteSetPlaybackSpeed(c Command, v *VHS) {
+func ExecuteSetPlaybackSpeed(c parser.Command, v *VHS) {
 	playbackSpeed, err := strconv.ParseFloat(c.Args, bitSize)
 	if err != nil {
 		return
@@ -454,7 +398,7 @@ func ExecuteSetPlaybackSpeed(c Command, v *VHS) {
 }
 
 // ExecuteLoopOffset applies the loop offset option on the vhs.
-func ExecuteLoopOffset(c Command, v *VHS) {
+func ExecuteLoopOffset(c parser.Command, v *VHS) {
 	loopOffset, err := strconv.ParseFloat(strings.TrimRight(c.Args, "%"), bitSize)
 	if err != nil {
 		return
@@ -463,32 +407,32 @@ func ExecuteLoopOffset(c Command, v *VHS) {
 }
 
 // ExecuteSetMarginFill sets vhs margin fill
-func ExecuteSetMarginFill(c Command, v *VHS) {
+func ExecuteSetMarginFill(c parser.Command, v *VHS) {
 	v.Options.Video.Style.MarginFill = c.Args
 }
 
 // ExecuteSetMargin sets vhs margin size
-func ExecuteSetMargin(c Command, v *VHS) {
+func ExecuteSetMargin(c parser.Command, v *VHS) {
 	v.Options.Video.Style.Margin, _ = strconv.Atoi(c.Args)
 }
 
 // ExecuteSetWindowBar sets window bar type
-func ExecuteSetWindowBar(c Command, v *VHS) {
+func ExecuteSetWindowBar(c parser.Command, v *VHS) {
 	v.Options.Video.Style.WindowBar = c.Args
 }
 
 // ExecuteSetWindowBar sets window bar size
-func ExecuteSetWindowBarSize(c Command, v *VHS) {
+func ExecuteSetWindowBarSize(c parser.Command, v *VHS) {
 	v.Options.Video.Style.WindowBarSize, _ = strconv.Atoi(c.Args)
 }
 
 // ExecuteSetWindowBar sets corner radius
-func ExecuteSetBorderRadius(c Command, v *VHS) {
+func ExecuteSetBorderRadius(c parser.Command, v *VHS) {
 	v.Options.Video.Style.BorderRadius, _ = strconv.Atoi(c.Args)
 }
 
 // ExecuteSetCursorBlink sets cursor blinking
-func ExecuteSetCursorBlink(c Command, v *VHS) {
+func ExecuteSetCursorBlink(c parser.Command, v *VHS) {
 	var err error
 	v.Options.CursorBlink, err = strconv.ParseBool(c.Args)
 	if err != nil {
@@ -499,7 +443,7 @@ func ExecuteSetCursorBlink(c Command, v *VHS) {
 const sourceDisplayMaxLength = 10
 
 // ExecuteSourceTape is a CommandFunc that executes all commands of source tape.
-func ExecuteSourceTape(c Command, v *VHS) {
+func ExecuteSourceTape(c parser.Command, v *VHS) {
 	tapePath := c.Args
 	var out io.Writer = os.Stdout
 	if quietFlag {
@@ -513,8 +457,8 @@ func ExecuteSourceTape(c Command, v *VHS) {
 		return
 	}
 
-	l := NewLexer(string(tape))
-	p := NewParser(l)
+	l := lexer.NewLexer(string(tape))
+	p := parser.NewParser(l)
 
 	cmds := p.Parse()
 
@@ -537,13 +481,13 @@ func ExecuteSourceTape(c Command, v *VHS) {
 		if cmd.Type == SOURCE || cmd.Type == OUTPUT {
 			continue
 		}
-		fmt.Fprintf(out, "%s %s\n", GrayStyle.Render(displayPath+":"), cmd.Highlight(false))
+		fmt.Fprintf(out, "%s %s\n", GrayStyle.Render(displayPath+":"), Highlight(cmd, false))
 		CommandFuncs[cmd.Type](cmd, v)
 	}
 }
 
 // ExecuteScreenshot is a CommandFunc that indicates a new screenshot must be taken.
-func ExecuteScreenshot(c Command, v *VHS) {
+func ExecuteScreenshot(c parser.Command, v *VHS) {
 	v.ScreenshotNextFrame(c.Args)
 }
 

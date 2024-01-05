@@ -1,4 +1,6 @@
-package main
+package lexer
+
+import . "github.com/charmbracelet/vhs/token"
 
 // Lexer is a lexer that tokenizes the input.
 type Lexer struct {

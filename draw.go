@@ -205,20 +205,6 @@ func MakeBorderRadiusMask(width, height, radius int, targetpng string) {
 	}
 }
 
-// Check if a given windowbar type is valid
-func isValidWindowBar(windowbar string) bool {
-	switch windowbar {
-	case
-		"",
-		"Colorful",
-		"ColorfulRight",
-		"Rings",
-		"RingsRight":
-		return true
-	}
-	return false
-}
-
 // Make a window bar and save it to a file
 func MakeWindowBar(termWidth, termHeight int, opts StyleOptions, file string) {
 	var err error
