@@ -1,6 +1,8 @@
 module github.com/charmbracelet/vhs
 
-go 1.18
+go 1.21
+
+toolchain go1.21.5
 
 require (
 	github.com/agnivade/levenshtein v1.1.1
@@ -21,6 +23,8 @@ require (
 	github.com/muesli/roff v0.1.0
 	github.com/muesli/termenv v0.15.2
 	github.com/spf13/cobra v1.8.0
+	github.com/tliron/commonlog v0.2.10
+	github.com/tliron/glsp v0.2.1
 	golang.org/x/crypto v0.17.0
 	golang.org/x/term v0.16.0
 )
@@ -34,6 +38,8 @@ require (
 	github.com/dlclark/regexp2 v1.8.1 // indirect
 	github.com/go-logfmt/logfmt v0.6.0 // indirect
 	github.com/gorilla/css v1.0.0 // indirect
+	github.com/gorilla/websocket v1.5.1 // indirect
+	github.com/iancoleman/strcase v0.3.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/microcosm-cc/bluemonday v1.0.23 // indirect
@@ -42,8 +48,13 @@ require (
 	github.com/muesli/mango-pflag v0.1.0 // indirect
 	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
+	github.com/petermattis/goid v0.0.0-20180202154549-b0b1615b78e5 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
+	github.com/sasha-s/go-deadlock v0.3.1 // indirect
+	github.com/sourcegraph/jsonrpc2 v0.2.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/tliron/kutil v0.3.13 // indirect
 	github.com/ysmood/fetchup v0.2.3 // indirect
 	github.com/ysmood/goob v0.4.0 // indirect
 	github.com/ysmood/got v0.34.1 // indirect

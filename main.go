@@ -18,6 +18,7 @@ import (
 	"syscall"
 
 	"github.com/charmbracelet/vhs/lexer"
+	"github.com/charmbracelet/vhs/lsp"
 	"github.com/charmbracelet/vhs/parser"
 	version "github.com/hashicorp/go-version"
 	"github.com/mattn/go-isatty"
@@ -202,6 +203,13 @@ var (
 		},
 	}
 
+	lspCmd = &cobra.Command{
+		Use:   "lsp",
+		Short: "Start the LSP server",
+		Args:  cobra.NoArgs,
+		RunE:  lsp.Run,
+	}
+
 	validateCmd = &cobra.Command{
 		Use:   "validate <file>...",
 		Short: "Validate a glob file path and parses all the files to ensure they are valid without running them.",
@@ -268,6 +276,7 @@ func init() {
 	rootCmd.AddCommand(
 		recordCmd,
 		newCmd,
+		lspCmd,
 		themesCmd,
 		validateCmd,
 		manCmd,
