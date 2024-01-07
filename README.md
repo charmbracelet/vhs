@@ -533,6 +533,17 @@ Type@500ms "Slow down there, partner."
   <img width="600" alt="Example of using the Type command in VHS" src="https://stuff.charm.sh/vhs/examples/type.gif">
 </picture>
 
+You can also enclose the text you type in backticks or single quotes. This is useful
+if you want to type the `"` character.
+
+```elixir
+# Type something enclosed in back ticks
+Type `VAR="Hello world!"`
+
+# Type something enclosed in single quotes
+Type 'VAR="Hello world!"'
+```
+
 ### Keys
 
 Key commands take an optional `@time` and optional repeat `count` for repeating
