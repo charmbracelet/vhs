@@ -179,9 +179,7 @@ func (vhs *VHS) Setup() {
 	// By this point the setting commands have been executed, so the `opts` struct is up to date.
 	vhs.Page.MustEval(fmt.Sprintf("() => { term.options = { fontSize: %d, fontFamily: '%s', letterSpacing: %f, lineHeight: %f, theme: %s, cursorBlink: %t } }",
 			vhs.Options.FontSize, vhs.Options.FontFamily, vhs.Options.LetterSpacing,
-			vhs.Options.LineHeight, vhs.Options.Theme.String(), vhs.Options.CursorBlink,
-		),
-	)
+			vhs.Options.LineHeight, vhs.Options.Theme.String(), vhs.Options.CursorBlink))
 
 	// Fit the terminal into the window
 	vhs.Page.MustEval("term.fit")
