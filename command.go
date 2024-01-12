@@ -11,12 +11,11 @@ import (
 	"time"
 
 	"github.com/atotto/clipboard"
-	"github.com/go-rod/rod/lib/input"
-	"github.com/mattn/go-runewidth"
-
 	"github.com/charmbracelet/vhs/lexer"
 	"github.com/charmbracelet/vhs/parser"
 	"github.com/charmbracelet/vhs/token"
+	"github.com/go-rod/rod/lib/input"
+	"github.com/mattn/go-runewidth"
 )
 
 // Execute executes a command on a running instance of vhs.
@@ -312,9 +311,7 @@ func ExecuteSetFontSize(c parser.Command, v *VHS) {
 // ExecuteSetFontFamily applies the font family on the vhs.
 func ExecuteSetFontFamily(c parser.Command, v *VHS) {
 	v.Options.FontFamily = c.Args
-	_, _ = v.Page.Eval(
-		fmt.Sprintf("() => term.options.fontFamily = '%s'", withSymbolsFallback(c.Args)),
-	)
+	_, _ = v.Page.Eval(fmt.Sprintf("() => term.options.fontFamily = '%s'", withSymbolsFallback(c.Args)))
 }
 
 // ExecuteSetHeight applies the height on the vhs.
@@ -482,11 +479,7 @@ func ExecuteSourceTape(c parser.Command, v *VHS) {
 		return
 	}
 
-	displayPath := runewidth.Truncate(
-		strings.TrimSuffix(tapePath, extension),
-		sourceDisplayMaxLength,
-		"…",
-	)
+	displayPath := runewidth.Truncate(strings.TrimSuffix(tapePath, extension), sourceDisplayMaxLength, "…")
 
 	// Run all commands from the sourced tape file.
 	for _, cmd := range cmds {

@@ -139,13 +139,7 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 			fmt.Fprintln(out, Highlight(cmd, true))
 			continue
 		}
-		fmt.Fprintln(
-			out,
-			Highlight(
-				cmd,
-				!v.recording || cmd.Type == token.SHOW || cmd.Type == token.HIDE || isSetting,
-			),
-		)
+		fmt.Fprintln(out, Highlight(cmd, !v.recording || cmd.Type == token.SHOW || cmd.Type == token.HIDE || isSetting))
 		Execute(cmd, &v)
 	}
 

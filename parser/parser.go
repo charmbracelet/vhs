@@ -255,10 +255,7 @@ func (p *Parser) parseCtrl() Command {
 		// Get key from keywords and check if it's a valid modifier
 		if k := token.Keywords[peek.Literal]; token.IsModifier(k) {
 			if !inModifierChain {
-				p.errors = append(
-					p.errors,
-					NewError(p.cur, "Modifiers must come before other characters"),
-				)
+				p.errors = append(p.errors, NewError(p.cur, "Modifiers must come before other characters"))
 				// Clear args so the error is returned
 				args = nil
 				continue
@@ -289,10 +286,7 @@ func (p *Parser) parseCtrl() Command {
 	}
 
 	if len(args) == 0 {
-		p.errors = append(
-			p.errors,
-			NewError(p.cur, "Expected control character with args, got "+p.cur.Literal),
-		)
+		p.errors = append(p.errors, NewError(p.cur, "Expected control character with args, got "+p.cur.Literal))
 	}
 
 	ctrlArgs := strings.Join(args, " ")
@@ -653,10 +647,7 @@ func (p *Parser) parseSource() Command {
 	// Check src errors
 	srcErrors := srcParser.Errors()
 	if len(srcErrors) > 0 {
-		p.errors = append(
-			p.errors,
-			NewError(p.peek, fmt.Sprintf("%s has %d errors", srcPath, len(srcErrors))),
-		)
+		p.errors = append(p.errors, NewError(p.peek, fmt.Sprintf("%s has %d errors", srcPath, len(srcErrors))))
 		p.nextToken()
 		return cmd
 	}
