@@ -37,6 +37,7 @@ type VHS struct {
 // Options is the set of options for the setup.
 type Options struct {
 	Shell         Shell
+	CWD           string
 	FontFamily    string
 	FontSize      int
 	LetterSpacing float64
@@ -52,6 +53,7 @@ type Options struct {
 }
 
 const (
+	defaultCWD           = "."
 	defaultFontSize      = 22
 	defaultTypingSpeed   = 50 * time.Millisecond
 	defaultLineHeight    = 1.0
@@ -89,6 +91,7 @@ func DefaultVHSOptions() Options {
 	screenshot := NewScreenshotOptions(video.Input, style)
 
 	return Options{
+		CWD:           defaultCWD,
 		FontFamily:    defaultFontFamily,
 		FontSize:      defaultFontSize,
 		LetterSpacing: defaultLetterSpacing,
@@ -123,7 +126,7 @@ func (vhs *VHS) Start() error {
 	}
 
 	port := randomPort()
-	vhs.tty = buildTtyCmd(port, vhs.Options.Shell)
+	vhs.tty = buildTtyCmd(port, vhs.Options.Shell, vhs.Options.CWD)
 	if err := vhs.tty.Start(); err != nil {
 		return fmt.Errorf("could not start tty: %w", err)
 	}
@@ -135,7 +138,9 @@ func (vhs *VHS) Start() error {
 		return fmt.Errorf("could not launch browser: %w", err)
 	}
 	browser := rod.New().ControlURL(u).MustConnect()
-	page, err := browser.Page(proto.TargetCreateTarget{URL: fmt.Sprintf("http://localhost:%d", port)})
+	page, err := browser.Page(
+		proto.TargetCreateTarget{URL: fmt.Sprintf("http://localhost:%d", port)},
+	)
 	if err != nil {
 		return fmt.Errorf("could not open ttyd: %w", err)
 	}
@@ -174,9 +179,17 @@ func (vhs *VHS) Setup() {
 
 	// Apply options to the terminal
 	// By this point the setting commands have been executed, so the `opts` struct is up to date.
-	vhs.Page.MustEval(fmt.Sprintf("() => { term.options = { fontSize: %d, fontFamily: '%s', letterSpacing: %f, lineHeight: %f, theme: %s, cursorBlink: %t } }",
-		vhs.Options.FontSize, vhs.Options.FontFamily, vhs.Options.LetterSpacing,
-		vhs.Options.LineHeight, vhs.Options.Theme.String(), vhs.Options.CursorBlink))
+	vhs.Page.MustEval(
+		fmt.Sprintf(
+			"() => { term.options = { fontSize: %d, fontFamily: '%s', letterSpacing: %f, lineHeight: %f, theme: %s, cursorBlink: %t } }",
+			vhs.Options.FontSize,
+			vhs.Options.FontFamily,
+			vhs.Options.LetterSpacing,
+			vhs.Options.LineHeight,
+			vhs.Options.Theme.String(),
+			vhs.Options.CursorBlink,
+		),
+	)
 
 	// Fit the terminal into the window
 	vhs.Page.MustEval("term.fit")

@@ -29,7 +29,7 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 
 	v := New()
 	for _, cmd := range cmds {
-		if cmd.Type == token.SET && cmd.Options == "Shell" {
+		if cmd.Type == token.SET && (cmd.Options == "Shell" || cmd.Options == "CWD") {
 			Execute(cmd, &v)
 		}
 	}
@@ -139,7 +139,13 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 			fmt.Fprintln(out, Highlight(cmd, true))
 			continue
 		}
-		fmt.Fprintln(out, Highlight(cmd, !v.recording || cmd.Type == token.SHOW || cmd.Type == token.HIDE || isSetting))
+		fmt.Fprintln(
+			out,
+			Highlight(
+				cmd,
+				!v.recording || cmd.Type == token.SHOW || cmd.Type == token.HIDE || isSetting,
+			),
+		)
 		Execute(cmd, &v)
 	}
 
