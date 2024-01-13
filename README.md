@@ -262,6 +262,14 @@ Set the shell with the `Set Shell <shell>` command
 Set Shell fish
 ```
 
+#### Set CWD
+
+Sets the directory the terminal will start in. Must be quoted.
+
+```elixir
+Set CWD "/tmp"
+```
+
 #### Set Font Size
 
 Set the font size with the `Set FontSize <number>` command.
