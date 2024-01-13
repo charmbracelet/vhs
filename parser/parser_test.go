@@ -114,6 +114,7 @@ func TestParseTapeFile(t *testing.T) {
 		{Type: token.OUTPUT, Options: ".mp4", Args: "examples/fixtures/all.mp4"},
 		{Type: token.OUTPUT, Options: ".webm", Args: "examples/fixtures/all.webm"},
 		{Type: token.SET, Options: "Shell", Args: "fish"},
+		{Type: token.SET, Options: "CWD", Args: ".."},
 		{Type: token.SET, Options: "FontSize", Args: "22"},
 		{Type: token.SET, Options: "FontFamily", Args: "DejaVu Sans Mono"},
 		{Type: token.SET, Options: "Height", Args: "600"},
