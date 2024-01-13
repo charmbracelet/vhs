@@ -456,14 +456,32 @@ func (p *Parser) parseSet() Command {
 	case token.CWD:
 		cmd.Args = p.peek.Literal
 		p.nextToken()
-		//TODO validate the CWD is a valid path
 
+    cwd := p.cur.Literal
+
+    if !isDirectory(cwd) {
+      p.errors = append(
+        p.errors,
+        NewError(p.cur, cwd+" is not a valid directory."),
+      )
+    }
 	default:
 		cmd.Args = p.peek.Literal
 		p.nextToken()
 	}
 
 	return cmd
+}
+
+func isDirectory(path string) bool {
+  fileInfo, err := os.Stat(path)
+  if os.IsNotExist(err){
+    return false
+  }else if fileInfo.IsDir() {
+    return true
+  } else {
+    return false
+  }
 }
 
 // parseSleep parses a sleep command.
