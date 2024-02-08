@@ -152,6 +152,9 @@ func inputToTape(input string) string {
 		repeat := 1
 		for lines[i] == lines[i+repeat] {
 			repeat++
+			if i+repeat == len(lines) {
+				break
+			}
 		}
 		i += repeat - 1
 

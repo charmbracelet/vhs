@@ -66,3 +66,12 @@ func TestInputToTapeLongSleep(t *testing.T) {
 		t.Fatalf("want:\n%s\ngot:\n%s\n", want, got)
 	}
 }
+
+func TestInputToTape_RepeatedSleepAfterExit(t *testing.T) {
+	input := "SLEEP\nexit\nSLEEP\nSLEEP"
+	want := "Sleep 500ms\nType \"exit\"\nSleep 1s\n"
+	got := inputToTape(input)
+	if want != got {
+		t.Fatalf("want:\n%s\ngot:\n%s\n", want, got)
+	}
+}
