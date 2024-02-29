@@ -93,21 +93,21 @@ var serveCmd = &cobra.Command{
 						tempFile := filepath.Join(os.TempDir(), fmt.Sprintf("vhs-%d", rand))
 						defer func() { _ = os.Remove(tempFile) }()
 						errs := Evaluate(s.Context(), b.String(), s.Stderr(), func(v *VHS) {
-							var gif, mp4, webm string
+							var gifOutput, mp4Output, webmOutput string
 							switch {
 							case v.Options.Video.Output.MP4 != "":
 								tempFile += mp4
-								mp4 = tempFile
+								mp4Output = tempFile
 							case v.Options.Video.Output.WebM != "":
 								tempFile += webm
-								webm = tempFile
+								webmOutput = tempFile
 							default:
 								tempFile += gif
-								gif = tempFile
+								gifOutput = tempFile
 							}
-							v.Options.Video.Output.GIF = gif
-							v.Options.Video.Output.MP4 = mp4
-							v.Options.Video.Output.WebM = webm
+							v.Options.Video.Output.GIF = gifOutput
+							v.Options.Video.Output.MP4 = mp4Output
+							v.Options.Video.Output.WebM = webmOutput
 						})
 
 						if len(errs) > 0 {
