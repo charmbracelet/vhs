@@ -527,22 +527,17 @@ Type "Whatever you want"
 Type@500ms "Slow down there, partner."
 ```
 
+Escape single and double quotes with backticks.
+
+```elixir
+Type `VAR="Escaped"`
+```
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/type.gif">
   <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/type.gif">
   <img width="600" alt="Example of using the Type command in VHS" src="https://stuff.charm.sh/vhs/examples/type.gif">
 </picture>
-
-You can also enclose the text you type in backticks or single quotes. This is useful
-if you want to type the `"` character.
-
-```elixir
-# Type something enclosed in back ticks
-Type `VAR="Hello world!"`
-
-# Type something enclosed in single quotes
-Type 'VAR="Hello world!"'
-```
 
 ### Keys
 
