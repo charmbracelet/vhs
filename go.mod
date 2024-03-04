@@ -31,7 +31,7 @@ require (
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/charmbracelet/bubbletea v0.25.0 // indirect
-	github.com/charmbracelet/log v0.3.1 // indirect
+	github.com/charmbracelet/log v0.3.2-0.20240304184442-28193306e6f5 // indirect
 	github.com/charmbracelet/x/errors v0.0.0-20240117030013-d31dba354651 // indirect
 	github.com/charmbracelet/x/exp/term v0.0.0-20240202113029-6ff29cf0473e // indirect
 	github.com/containerd/console v1.0.4-0.20230313162750-1ae8d489ac81 // indirect
