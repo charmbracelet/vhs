@@ -8,7 +8,7 @@ require (
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/charmbracelet/glamour v0.6.0
 	github.com/charmbracelet/keygen v0.5.0
-	github.com/charmbracelet/lipgloss v0.9.1
+	github.com/charmbracelet/lipgloss v0.10.0
 	github.com/charmbracelet/ssh v0.0.0-20240202115812-f4ab1009799a
 	github.com/charmbracelet/wish v1.3.1
 	github.com/creack/pty v1.1.21
@@ -49,7 +49,7 @@ require (
 	github.com/muesli/mango-pflag v0.1.0 // indirect
 	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
-	github.com/rivo/uniseg v0.4.4 // indirect
+	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/ysmood/fetchup v0.2.3 // indirect
 	github.com/ysmood/goob v0.4.0 // indirect
