@@ -12,7 +12,7 @@ require (
 	github.com/charmbracelet/ssh v0.0.0-20240202115812-f4ab1009799a
 	github.com/charmbracelet/wish v1.3.1
 	github.com/creack/pty v1.1.21
-	github.com/go-rod/rod v0.114.7
+	github.com/go-rod/rod v0.114.8
 	github.com/hashicorp/go-version v1.6.0
 	github.com/mattn/go-isatty v0.0.20
 	github.com/mattn/go-runewidth v0.0.15
