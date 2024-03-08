@@ -112,7 +112,12 @@ sudo yum install vhs ffmpeg
 # Void Linux
 sudo xbps-install vhs
 
-# Windows
+# Windows using winget
+# Note: Winget will install all the needed dependencies, which're FFmpeg and ttyd.
+#       No need to do any prerequisites to install vhs using this method.
+winget install charmbracelet.vhs
+
+# Windows using scoop
 scoop install vhs
 
 ```
