@@ -286,6 +286,7 @@ var Settings = map[string]CommandFunc{
 	"WindowBarSize": ExecuteSetWindowBarSize,
 	"BorderRadius":  ExecuteSetBorderRadius,
 	"CursorBlink":   ExecuteSetCursorBlink,
+	"DisableRender": ExecuteDisableRender,
 }
 
 // ExecuteSet applies the settings on the running vhs specified by the
@@ -435,6 +436,15 @@ func ExecuteSetBorderRadius(c parser.Command, v *VHS) {
 func ExecuteSetCursorBlink(c parser.Command, v *VHS) {
 	var err error
 	v.Options.CursorBlink, err = strconv.ParseBool(c.Args)
+	if err != nil {
+		return
+	}
+}
+
+// ExecuteDisableRender disables rendering on the vhs after the program has finished.
+func ExecuteDisableRender(c parser.Command, v *VHS) {
+	var err error
+	v.Options.DisableRender, err = strconv.ParseBool(c.Args)
 	if err != nil {
 		return
 	}

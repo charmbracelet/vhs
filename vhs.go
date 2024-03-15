@@ -49,6 +49,7 @@ type Options struct {
 	CursorBlink   bool
 	Screenshot    ScreenshotOptions
 	Style         StyleOptions
+	DisableRender bool
 }
 
 const (
@@ -58,6 +59,7 @@ const (
 	defaultLetterSpacing = 1.0
 	fontsSeparator       = ","
 	defaultCursorBlink   = true
+	defaultNoRender      = false
 )
 
 var defaultFontFamily = withSymbolsFallback(strings.Join([]string{
@@ -99,6 +101,7 @@ func DefaultVHSOptions() Options {
 		CursorBlink:   defaultCursorBlink,
 		Video:         video,
 		Screenshot:    screenshot,
+		DisableRender: defaultNoRender,
 	}
 }
 
@@ -212,6 +215,9 @@ func (vhs *VHS) Cleanup() error {
 
 // Render starts rendering the individual frames into a video.
 func (vhs *VHS) Render() error {
+	if vhs.Options.DisableRender {
+		return nil
+	}
 	// Apply Loop Offset by modifying frame sequence
 	if err := vhs.ApplyLoopOffset(); err != nil {
 		return err

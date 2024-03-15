@@ -26,6 +26,7 @@
 #   Set WindowBar <string>          Set window bar type. (one of: Rings, RingsRight, Colorful, ColorfulRight)
 #   Set WindowBarSize <number>      Set window bar size, in pixels. Default is 40.
 #   Set TypingSpeed <time>          Set the typing speed of the terminal. Default is 50ms.
+#   Set DisableRender <bool>        Set option to disable rendering with ffmpeg. (output = .txt) Default is false.
 #
 # Sleep:
 #   Sleep <time>                    Sleep for a set amount of <time> in seconds
