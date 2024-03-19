@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
 
 	"github.com/atotto/clipboard"
 	"github.com/charmbracelet/vhs/lexer"
@@ -139,23 +140,23 @@ func ExecuteCtrl(c parser.Command, v *VHS) {
 // ExecuteAlt is a CommandFunc that presses the argument key with the alt key
 // held down on the running instance of vhs.
 func ExecuteAlt(c parser.Command, v *VHS) {
-	_ = v.Page.Keyboard.Press(input.AltLeft)
+	const esc = '\x1b'
+
 	if k, ok := token.Keywords[c.Args]; ok {
+		_ = v.Page.Keyboard.Press(input.AltLeft)
 		switch k {
 		case token.ENTER:
 			_ = v.Page.Keyboard.Type(input.Enter)
 		case token.TAB:
 			_ = v.Page.Keyboard.Type(input.Tab)
 		}
+		_ = v.Page.Keyboard.Release(input.AltLeft)
 	} else {
 		for _, r := range c.Args {
-			if k, ok := keymap[r]; ok {
-				_ = v.Page.Keyboard.Type(k)
-			}
+			k := []rune{esc, unicode.ToLower(r)}
+			_ = v.Page.InsertText(string(k))
 		}
 	}
-
-	_ = v.Page.Keyboard.Release(input.AltLeft)
 }
 
 // ExecuteShift is a CommandFunc that presses the argument key with the shift
