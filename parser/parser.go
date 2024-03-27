@@ -4,8 +4,11 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
+
+	"time"
 
 	"github.com/charmbracelet/vhs/lexer"
 	"github.com/charmbracelet/vhs/token"
@@ -51,6 +54,7 @@ var CommandTypes = []CommandType{ //nolint: deadcode
 	token.SCREENSHOT,
 	token.COPY,
 	token.PASTE,
+	token.WAIT,
 }
 
 // String returns the string representation of the command.
@@ -169,6 +173,8 @@ func (p *Parser) parseCommand() Command {
 		return p.parseRequire()
 	case token.SHOW:
 		return p.parseShow()
+	case token.WAIT:
+		return p.parseWait()
 	case token.SOURCE:
 		return p.parseSource()
 	case token.SCREENSHOT:
@@ -181,6 +187,45 @@ func (p *Parser) parseCommand() Command {
 		p.errors = append(p.errors, NewError(p.cur, "Invalid command: "+p.cur.Literal))
 		return Command{Type: token.ILLEGAL}
 	}
+}
+
+func (p *Parser) parseWait() Command {
+	cmd := Command{Type: token.WAIT}
+
+	if p.peek.Type == token.PLUS {
+		p.nextToken()
+		if p.peek.Type != token.STRING || (p.peek.Literal != "Line" && p.peek.Literal != "Screen") {
+			p.errors = append(p.errors, NewError(p.peek, "Wait+ expects Line or Screen"))
+			return cmd
+		}
+		cmd.Args = p.peek.Literal
+		p.nextToken()
+	} else {
+		cmd.Args = "Line"
+	}
+
+	cmd.Options = p.parseSpeed()
+	if cmd.Options != "" {
+		dur, _ := time.ParseDuration(cmd.Options)
+		if dur <= 0 {
+			p.errors = append(p.errors, NewError(p.peek, "Wait expects positive duration"))
+			return cmd
+		}
+	}
+
+	if p.peek.Type != token.REGEX {
+		// fallback to default
+		return cmd
+	}
+	p.nextToken()
+	if _, err := regexp.Compile(p.cur.Literal); err != nil {
+		p.errors = append(p.errors, NewError(p.cur, fmt.Sprintf("Invalid regular expression '%s': %v", p.cur.Literal, err)))
+		return cmd
+	}
+
+	cmd.Args += " " + p.cur.Literal
+
+	return cmd
 }
 
 // parseSpeed parses a typing speed indication.
@@ -224,10 +269,11 @@ func (p *Parser) parseTime() string {
 		p.nextToken()
 	} else {
 		p.errors = append(p.errors, NewError(p.cur, "Expected time after "+p.cur.Literal))
+		return ""
 	}
 
 	// Allow TypingSpeed to have bare units (e.g. 50ms, 100ms)
-	if p.peek.Type == token.MILLISECONDS || p.peek.Type == token.SECONDS {
+	if p.peek.Type == token.MILLISECONDS || p.peek.Type == token.SECONDS || p.peek.Type == token.MINUTES {
 		t += p.peek.Literal
 		p.nextToken()
 	} else {
@@ -390,6 +436,15 @@ func (p *Parser) parseSet() Command {
 	p.nextToken()
 
 	switch p.cur.Type {
+	case token.WAIT_TIMEOUT:
+		cmd.Args = p.parseTime()
+	case token.WAIT_PATTERN:
+		cmd.Args = p.peek.Literal
+		_, err := regexp.Compile(p.peek.Literal)
+		if err != nil {
+			p.errors = append(p.errors, NewError(p.peek, "Invalid regexp pattern: "+p.peek.Literal))
+		}
+		p.nextToken()
 	case token.LOOP_OFFSET:
 		cmd.Args = p.peek.Literal
 		p.nextToken()
