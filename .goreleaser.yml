@@ -1,11 +1,102 @@
-includes:
-  - from_url:
-      url: charmbracelet/meta/main/goreleaser-vhs.yaml
+# yaml-language-server: $schema=https://goreleaser.com/static/schema-pro.json
 
 variables:
-  main: "."
-  description: "A tool for recording terminal GIFs"
-  github_url: "https://github.com/charmbracelet/vhs"
-  maintainer: "Maas Lalani <maas@charm.sh>"
-  brew_commit_author_name: "Maas Lalani"
-  brew_commit_author_email: "maas@charm.sh"
+  main: ""
+  binary_name: ""
+  description: ""
+  maintainer: ""
+  homepage: "https://charm.sh/"
+
+before:
+  hooks:
+    - go mod tidy
+
+gomod:
+  proxy: true
+
+builds:
+  - binary: "{{ with .Var.binary_name }}{{ . }}{{ else }}{{ .ProjectName }}{{ end }}"
+    env:
+      - CGO_ENABLED=0
+    main: "{{ with .Var.main }}{{ . }}{{ else }}.{{ end }}"
+    ldflags: -s -w -X main.Version=v{{ .Version }} -X main.CommitSHA={{ .Commit }} -X main.CommitDate={{ .CommitDate }}
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+      - "386"
+      - arm
+    goarm:
+      - "7"
+    ignore:
+      - goos: windows
+        goarch: arm64
+      - goos: windows
+        goarm: "7"
+
+archives:
+  - format_overrides:
+      - goos: windows
+        format: zip
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- .Version }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+    wrap_in_directory: true
+    files:
+      - README*
+      - LICENSE*
+      - manpages/*
+      - completions/*
+
+checksum:
+  name_template: "checksums.txt"
+
+source:
+  enabled: true
+
+sboms:
+  - artifacts: archive
+  - id: source
+    artifacts: source
+
+snapshot:
+  name_template: "{{ incpatch .Version }}-snapshot"
+
+nightly:
+  name_template: "{{ incpatch .Version }}-devel"
+
+changelog:
+  sort: asc
+  use: github
+  filters:
+    exclude:
+      - "^test:"
+      - "^chore"
+      - "merge conflict"
+      - Merge pull request
+      - Merge remote-tracking branch
+      - Merge branch
+      - go mod tidy
+  groups:
+    - title: Dependency updates
+      regexp: "^.*\\(deps\\)*:+.*$"
+      order: 300
+    - title: "New Features"
+      regexp: "^.*feat[(\\w)]*:+.*$"
+      order: 100
+    - title: "Bug fixes"
+      regexp: "^.*fix[(\\w)]*:+.*$"
+      order: 200
+    - title: "Documentation updates"
+      regexp: "^.*docs[(\\w)]*:+.*$"
+      order: 400
+    - title: Other work
+      order: 9999
+

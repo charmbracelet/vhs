@@ -5,29 +5,53 @@ on:
     tags:
       - v*.*.*
 
-concurrency:
-  group: goreleaser
-  cancel-in-progress: true
+# concurrency:
+#   group: goreleaser
+#   cancel-in-progress: true
+
+# jobs:
+#   goreleaser:
+#     uses: charmbracelet/meta/.github/workflows/goreleaser.yml@main
+#     secrets:
+#       docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
+#       docker_token: ${{ secrets.DOCKERHUB_TOKEN }}
+#       gh_pat: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+#       goreleaser_key: ${{ secrets.GORELEASER_KEY }}
+#       aur_key: ${{ secrets.AUR_KEY }}
+#       fury_token: ${{ secrets.FURY_TOKEN }}
+#       nfpm_gpg_key: ${{ secrets.NFPM_GPG_KEY }}
+#       nfpm_passphrase: ${{ secrets.NFPM_PASSPHRASE }}
 
 jobs:
   goreleaser:
-    uses: charmbracelet/meta/.github/workflows/goreleaser.yml@main
-    secrets:
-      docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
-      docker_token: ${{ secrets.DOCKERHUB_TOKEN }}
-      gh_pat: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-      goreleaser_key: ${{ secrets.GORELEASER_KEY }}
-      aur_key: ${{ secrets.AUR_KEY }}
-      fury_token: ${{ secrets.FURY_TOKEN }}
-      nfpm_gpg_key: ${{ secrets.NFPM_GPG_KEY }}
-      nfpm_passphrase: ${{ secrets.NFPM_PASSPHRASE }}
-  homebrew:
-    name: Bump Homebrew formula
     runs-on: ubuntu-latest
     steps:
-      - uses: mislav/bump-homebrew-formula-action@v3
+      - uses: actions/checkout@v4
         with:
-          # A PR will be sent to github.com/Homebrew/homebrew-core to update this formula:
-          formula-name: vhs
+          # Allow goreleaser to access older tag information.
+          fetch-depth: 0
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+          cache: true
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v5
+        with:
+          version: latest
+          args: release --clean
         env:
-          COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
+          # GitHub sets this automatically
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+  # homebrew:
+  #   name: Bump Homebrew formula
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: mislav/bump-homebrew-formula-action@v3
+  #       with:
+  #         # A PR will be sent to github.com/Homebrew/homebrew-core to update this formula:
+  #         formula-name: vhs
+  #       env:
+  #         COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
