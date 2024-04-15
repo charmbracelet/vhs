@@ -426,7 +426,7 @@ func ExecuteSetWindowBarSize(c parser.Command, v *VHS) {
 	v.Options.Video.Style.WindowBarSize, _ = strconv.Atoi(c.Args)
 }
 
-// ExecuteSetWindowBar sets corner radius
+// ExecuteSetBorderRadius sets corner radius
 func ExecuteSetBorderRadius(c parser.Command, v *VHS) {
 	v.Options.Video.Style.BorderRadius, _ = strconv.Atoi(c.Args)
 }

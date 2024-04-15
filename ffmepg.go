@@ -108,7 +108,7 @@ func calcTermDimensions(style StyleOptions) (int, int) {
 	return width, height
 }
 
-// WithWindowBarW adds window bar options to ffmepg filter_complex.
+// WithWindowBar adds window bar options to ffmepg filter_complex.
 func (fb *FilterComplexBuilder) WithWindowBar(barStream int) *FilterComplexBuilder {
 	if fb.style.WindowBar != "" {
 		fb.filterComplex.WriteString(";")
@@ -299,7 +299,7 @@ func (sb *StreamBuilder) WithCorner() *StreamBuilder {
 	return sb
 }
 
-// WithMP4W adds mp4 stream with required config.
+// WithMP4 adds mp4 stream with required config.
 func (sb *StreamBuilder) WithMP4() *StreamBuilder {
 	sb.args = append(sb.args,
 		"-vcodec", "libx264",
@@ -311,7 +311,7 @@ func (sb *StreamBuilder) WithMP4() *StreamBuilder {
 	return sb
 }
 
-// WithWebmW adds webm stream with required config.
+// WithWebm adds webm stream with required config.
 func (sb *StreamBuilder) WithWebm() *StreamBuilder {
 	sb.args = append(sb.args,
 		"-pix_fmt", "yuv420p",
