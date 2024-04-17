@@ -279,6 +279,7 @@ var Settings = map[string]CommandFunc{
 	"TypingSpeed":   ExecuteSetTypingSpeed,
 	"Width":         ExecuteSetWidth,
 	"Shell":         ExecuteSetShell,
+	"CWD":           ExecuteSetCWD,
 	"LoopOffset":    ExecuteLoopOffset,
 	"MarginFill":    ExecuteSetMarginFill,
 	"Margin":        ExecuteSetMargin,
@@ -328,6 +329,11 @@ func ExecuteSetShell(c parser.Command, v *VHS) {
 	if s, ok := Shells[c.Args]; ok {
 		v.Options.Shell = s
 	}
+}
+
+// ExecuteSetCWD applies the current working directory on the vhs.
+func ExecuteSetCWD(c parser.Command, v *VHS) {
+	v.Options.CWD = c.Args
 }
 
 const (

@@ -37,6 +37,7 @@ type VHS struct {
 // Options is the set of options for the setup.
 type Options struct {
 	Shell         Shell
+	CWD           string
 	FontFamily    string
 	FontSize      int
 	LetterSpacing float64
@@ -52,6 +53,7 @@ type Options struct {
 }
 
 const (
+	defaultCWD           = "."
 	defaultFontSize      = 22
 	defaultTypingSpeed   = 50 * time.Millisecond
 	defaultLineHeight    = 1.0
@@ -89,6 +91,7 @@ func DefaultVHSOptions() Options {
 	screenshot := NewScreenshotOptions(video.Input, style)
 
 	return Options{
+		CWD:           defaultCWD,
 		FontFamily:    defaultFontFamily,
 		FontSize:      defaultFontSize,
 		LetterSpacing: defaultLetterSpacing,
@@ -123,7 +126,7 @@ func (vhs *VHS) Start() error {
 	}
 
 	port := randomPort()
-	vhs.tty = buildTtyCmd(port, vhs.Options.Shell)
+	vhs.tty = buildTtyCmd(port, vhs.Options.Shell, vhs.Options.CWD)
 	if err := vhs.tty.Start(); err != nil {
 		return fmt.Errorf("could not start tty: %w", err)
 	}

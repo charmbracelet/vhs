@@ -72,6 +72,7 @@ const (
 	COPY            = "COPY"
 	PASTE           = "PASTE"
 	SHELL           = "SHELL"
+	CWD             = "CWD"
 	FONT_FAMILY     = "FONT_FAMILY" //nolint:revive
 	FONT_SIZE       = "FONT_SIZE"   //nolint:revive
 	FRAMERATE       = "FRAMERATE"
@@ -124,6 +125,7 @@ var Keywords = map[string]Type{
 	"Show":          SHOW,
 	"Output":        OUTPUT,
 	"Shell":         SHELL,
+	"CWD":           CWD,
 	"FontFamily":    FONT_FAMILY,
 	"MarginFill":    MARGIN_FILL,
 	"Margin":        MARGIN,
@@ -153,7 +155,7 @@ var Keywords = map[string]Type{
 // IsSetting returns whether a token is a setting.
 func IsSetting(t Type) bool {
 	switch t {
-	case SHELL, FONT_FAMILY, FONT_SIZE, LETTER_SPACING, LINE_HEIGHT,
+	case SHELL, CWD, FONT_FAMILY, FONT_SIZE, LETTER_SPACING, LINE_HEIGHT,
 		FRAMERATE, TYPING_SPEED, THEME, PLAYBACK_SPEED, HEIGHT, WIDTH,
 		PADDING, LOOP_OFFSET, MARGIN_FILL, MARGIN, WINDOW_BAR,
 		WINDOW_BAR_SIZE, BORDER_RADIUS, CURSOR_BLINK:
