@@ -86,11 +86,6 @@ var (
 				return errors.New("no input provided")
 			}
 
-			publishEnv, publishEnvSet := os.LookupEnv("VHS_PUBLISH")
-			if !publishEnvSet && !publishFlag {
-				log.Println(FaintStyle.Render("Host your GIF on vhs.charm.sh: vhs publish <file>.gif"))
-			}
-
 			var publishFile string
 			out := cmd.OutOrStdout()
 			if quietFlag {
@@ -115,6 +110,11 @@ var (
 
 				publishFile = v.Options.Video.Output.GIF
 			})
+
+			publishEnv, publishEnvSet := os.LookupEnv("VHS_PUBLISH")
+			if !publishEnvSet && !publishFlag && len(errs) == 0 {
+				log.Println(FaintStyle.Render("Host your GIF on vhs.charm.sh: vhs publish <file>.gif"))
+			}
 
 			if len(errs) > 0 {
 				printErrors(os.Stderr, string(input), errs)
