@@ -57,6 +57,14 @@ PageDown
 PageDown 2
 PageDown@1 3
 
+F1
+F1 2
+F1@1 3
+
+F12
+F12 2
+F12@1 3
+
 Enter
 Enter 2
 Enter@1 3

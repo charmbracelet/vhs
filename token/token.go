@@ -44,6 +44,18 @@ const (
 	HOME      = "HOME"
 	INSERT    = "INSERT"
 	PAGEDOWN  = "PAGEDOWN"
+	F1        = "F1"
+	F2        = "F2"
+	F3        = "F3"
+	F4        = "F4"
+	F5        = "F5"
+	F6        = "F6"
+	F7        = "F7"
+	F8        = "F8"
+	F9        = "F9"
+	F10       = "F10"
+	F11       = "F11"
+	F12       = "F12"
 	PAGEUP    = "PAGEUP"
 	SLEEP     = "SLEEP"
 	SPACE     = "SPACE"
@@ -116,6 +128,18 @@ var Keywords = map[string]Type{
 	"Up":            UP,
 	"PageUp":        PAGEUP,
 	"PageDown":      PAGEDOWN,
+	"F1":            F1,
+	"F2":            F2,
+	"F3":            F3,
+	"F4":            F4,
+	"F5":            F5,
+	"F6":            F6,
+	"F7":            F7,
+	"F8":            F8,
+	"F9":            F9,
+	"F10":           F10,
+	"F11":           F11,
+	"F12":           F12,
 	"Tab":           TAB,
 	"Escape":        ESCAPE,
 	"End":           END,
@@ -168,6 +192,7 @@ func IsCommand(t Type) bool {
 	switch t {
 	case TYPE, SLEEP,
 		UP, DOWN, RIGHT, LEFT, PAGEUP, PAGEDOWN,
+		F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12,
 		ENTER, BACKSPACE, DELETE, TAB,
 		ESCAPE, HOME, INSERT, END, CTRL, SOURCE, SCREENSHOT, COPY, PASTE:
 		return true
