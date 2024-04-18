@@ -221,6 +221,7 @@ There are a few basic types of VHS commands:
 * [`Screenshot`](#screenshot): screenshot the current frame
 * [`Copy/Paste`](#copy--paste): copy and paste text from clipboard.
 * [`Source`](#source): source commands from another tape
+* [`Env <Key> Value`](#env): set environment variables
 
 ### Output
 
@@ -738,6 +739,35 @@ Sleep 500ms
 Paste
 ```
 
+### Env
+
+`Env` command sets the environment variable via key-value pair.
+
+```elixir
+Env KEY "the command is working"
+
+Type "echo $KEY"
+Enter
+Sleep 3s
+```
+
+`Env PROMPT value` changes the command prompt to the given value.
+
+```elixir
+Output examples/demo.gif
+Env PROMPT "Σ"
+
+Require echo
+
+Set Shell "bash"
+Set FontSize 32
+Set Width 1200
+Set Height 600
+
+Type "echo 'Custom prompt'" Sleep 500ms  Enter
+
+Sleep 5s
+```
 
 ### Source
 
