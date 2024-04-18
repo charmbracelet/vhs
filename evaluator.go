@@ -32,6 +32,9 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 		if cmd.Type == token.SET && cmd.Options == "Shell" {
 			Execute(cmd, &v)
 		}
+		if cmd.Type == token.ENV {
+			Execute(cmd, &v)
+		}
 	}
 
 	// Start things up

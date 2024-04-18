@@ -51,6 +51,7 @@ var CommandTypes = []CommandType{ //nolint: deadcode
 	token.SCREENSHOT,
 	token.COPY,
 	token.PASTE,
+	token.ENV,
 }
 
 // String returns the string representation of the command.
@@ -177,6 +178,8 @@ func (p *Parser) parseCommand() Command {
 		return p.parseCopy()
 	case token.PASTE:
 		return p.parsePaste()
+	case token.ENV:
+		return p.parseEnv()
 	default:
 		p.errors = append(p.errors, NewError(p.cur, "Invalid command: "+p.cur.Literal))
 		return Command{Type: token.ILLEGAL}
@@ -574,6 +577,22 @@ func (p *Parser) parseCopy() Command {
 // Paste
 func (p *Parser) parsePaste() Command {
 	cmd := Command{Type: token.PASTE}
+	return cmd
+}
+
+func (p *Parser) parseEnv() Command {
+	cmd := Command{Type: token.ENV}
+
+	cmd.Options = p.peek.Literal
+	p.nextToken()
+
+	if p.peek.Type != token.STRING {
+		p.errors = append(p.errors, NewError(p.peek, p.cur.Literal+" expects string"))
+	}
+
+	cmd.Args = p.peek.Literal
+	p.nextToken()
+
 	return cmd
 }
 

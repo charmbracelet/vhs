@@ -72,6 +72,7 @@ const (
 	COPY            = "COPY"
 	PASTE           = "PASTE"
 	SHELL           = "SHELL"
+	ENV             = "ENV"
 	FONT_FAMILY     = "FONT_FAMILY" //nolint:revive
 	FONT_SIZE       = "FONT_SIZE"   //nolint:revive
 	FRAMERATE       = "FRAMERATE"
@@ -148,6 +149,7 @@ var Keywords = map[string]Type{
 	"Screenshot":    SCREENSHOT,
 	"Copy":          COPY,
 	"Paste":         PASTE,
+	"Env":           ENV,
 }
 
 // IsSetting returns whether a token is a setting.
