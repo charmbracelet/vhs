@@ -249,8 +249,9 @@ func ExecuteCopy(c parser.Command, _ *VHS) {
 	_ = clipboard.WriteAll(c.Args)
 }
 
+// ExecuteEnv sets env with given key-value pair.
 func ExecuteEnv(c parser.Command, v *VHS) {
-	os.Setenv(c.Options, c.Args)
+	_ = os.Setenv(c.Options, c.Args)
 
 	if c.Options == "PROMPT" {
 		if v.Options.Shell.Env != nil {

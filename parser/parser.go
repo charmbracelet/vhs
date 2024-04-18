@@ -580,6 +580,10 @@ func (p *Parser) parsePaste() Command {
 	return cmd
 }
 
+// parseEnv parses Env command
+// Env command takes in a key-value pair which is set.
+//
+// Env key "value"
 func (p *Parser) parseEnv() Command {
 	cmd := Command{Type: token.ENV}
 
