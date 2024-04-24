@@ -64,6 +64,7 @@ var CommandFuncs = map[parser.CommandType]CommandFunc{
 	token.SCREENSHOT: ExecuteScreenshot,
 	token.COPY:       ExecuteCopy,
 	token.PASTE:      ExecutePaste,
+	token.ENV:        ExecuteEnv,
 }
 
 // ExecuteNoop is a no-op command that does nothing.
@@ -246,6 +247,11 @@ func ExecuteOutput(c parser.Command, v *VHS) {
 // ExecuteCopy copies text to the clipboard.
 func ExecuteCopy(c parser.Command, _ *VHS) {
 	_ = clipboard.WriteAll(c.Args)
+}
+
+// ExecuteEnv sets env with given key-value pair.
+func ExecuteEnv(c parser.Command, _ *VHS) {
+	_ = os.Setenv(c.Options, c.Args)
 }
 
 // ExecutePaste pastes text from the clipboard.

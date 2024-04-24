@@ -221,6 +221,7 @@ There are a few basic types of VHS commands:
 * [`Screenshot`](#screenshot): screenshot the current frame
 * [`Copy/Paste`](#copy--paste): copy and paste text from clipboard.
 * [`Source`](#source): source commands from another tape
+* [`Env <Key> Value`](#env): set environment variables
 
 ### Output
 
@@ -736,6 +737,18 @@ Copy "https://github.com/charmbracelet"
 Type "open "
 Sleep 500ms
 Paste
+```
+
+### Env
+
+`Env` command sets the environment variable via key-value pair.
+
+```elixir
+Env HELLO WORLD
+
+Type "echo $HELLO"
+Enter
+Sleep 3s
 ```
 
 
