@@ -751,23 +751,6 @@ Enter
 Sleep 3s
 ```
 
-`Env PROMPT value` changes the command prompt to the given value.
-
-```elixir
-Output examples/demo.gif
-Env PROMPT "Σ"
-
-Require echo
-
-Set Shell "bash"
-Set FontSize 32
-Set Width 1200
-Set Height 600
-
-Type "echo 'Custom prompt'" Sleep 500ms  Enter
-
-Sleep 5s
-```
 
 ### Source
 
