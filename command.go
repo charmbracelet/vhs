@@ -252,7 +252,6 @@ func ExecuteCopy(c parser.Command, _ *VHS) {
 // ExecuteEnv sets env with given key-value pair.
 func ExecuteEnv(c parser.Command, _ *VHS) {
 	_ = os.Setenv(c.Options, c.Args)
-
 }
 
 // ExecutePaste pastes text from the clipboard.
