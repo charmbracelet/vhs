@@ -29,7 +29,7 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 
 	v := New()
 	for _, cmd := range cmds {
-		if cmd.Type == token.SET && cmd.Options == "Shell" {
+		if cmd.Type == token.SET && cmd.Options == "Shell" || cmd.Type == token.ENV {
 			Execute(cmd, &v)
 		}
 		if cmd.Type == token.ENV {

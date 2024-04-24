@@ -744,13 +744,12 @@ Paste
 `Env` command sets the environment variable via key-value pair.
 
 ```elixir
-Env HELLO WORLD
+Env HELLO "WORLD"
 
 Type "echo $HELLO"
 Enter
-Sleep 3s
+Sleep 1s
 ```
-
 
 ### Source
 

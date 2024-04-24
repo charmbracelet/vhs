@@ -35,6 +35,9 @@ func Highlight(c parser.Command, faint bool) string {
 		} else {
 			argsStyle = StringStyle
 		}
+	case token.ENV:
+		optionsStyle = NoneStyle
+		argsStyle = StringStyle
 	case token.OUTPUT:
 		optionsStyle = NoneStyle
 		argsStyle = StringStyle
@@ -52,7 +55,13 @@ func Highlight(c parser.Command, faint bool) string {
 	var s strings.Builder
 	s.WriteString(CommandStyle.Render(c.Type.String()) + " ")
 	if c.Options != "" {
-		s.WriteString(optionsStyle.Render(c.Options) + " ")
+		s.WriteString(optionsStyle.Render(c.Options))
+		switch c.Type {
+		case token.ENV:
+			s.WriteString("=")
+		default:
+			s.WriteString(" ")
+		}
 	}
 	s.WriteString(argsStyle.Render(c.Args))
 	return s.String()
