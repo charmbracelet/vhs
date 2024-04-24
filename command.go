@@ -253,14 +253,6 @@ func ExecuteCopy(c parser.Command, _ *VHS) {
 func ExecuteEnv(c parser.Command, v *VHS) {
 	_ = os.Setenv(c.Options, c.Args)
 
-	if c.Options == "PROMPT" {
-		if v.Options.Shell.Env != nil {
-			v.Options.Shell.Env[0] = strings.ReplaceAll(v.Options.Shell.Env[0], ">", c.Args)
-		} else if v.Options.Shell.Command != nil {
-			last := len(v.Options.Shell.Command) - 1
-			v.Options.Shell.Command[last] = strings.ReplaceAll(v.Options.Shell.Command[last], ">", c.Args)
-		}
-	}
 }
 
 // ExecutePaste pastes text from the clipboard.
