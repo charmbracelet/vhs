@@ -744,9 +744,9 @@ Paste
 `Env` command sets the environment variable via key-value pair.
 
 ```elixir
-Env KEY "the command is working"
+Env HELLO WORLD
 
-Type "echo $KEY"
+Type "echo $HELLO"
 Enter
 Sleep 3s
 ```
