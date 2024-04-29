@@ -178,7 +178,7 @@ func ExecuteShift(c parser.Command, v *VHS) {
 		}
 	}
 
-	_ = v.Page.Keyboard.Release(input.AltLeft)
+	_ = v.Page.Keyboard.Release(input.ShiftLeft)
 }
 
 // ExecuteHide is a CommandFunc that starts or stops the recording of the vhs.
