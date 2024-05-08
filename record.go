@@ -70,6 +70,8 @@ var EscapeSequences = map[string]string{
 func Record(_ *cobra.Command, _ []string) error {
 	command := exec.Command(shell)
 
+	command.Env = append(command.Env, "VHS_RECORD=true")
+
 	terminal, err := pty.Start(command)
 	if err != nil {
 		return err
