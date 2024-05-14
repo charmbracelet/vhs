@@ -283,6 +283,7 @@ var Settings = map[string]CommandFunc{
 	"Padding":       ExecuteSetPadding,
 	"Theme":         ExecuteSetTheme,
 	"TypingSpeed":   ExecuteSetTypingSpeed,
+	"KeyStrokes":    ExecuteSetKeyStrokes,
 	"Width":         ExecuteSetWidth,
 	"Shell":         ExecuteSetShell,
 	"LoopOffset":    ExecuteLoopOffset,
@@ -378,6 +379,11 @@ func ExecuteSetTypingSpeed(c parser.Command, v *VHS) {
 		return
 	}
 	v.Options.TypingSpeed = typingSpeed
+}
+
+// ExecuteSetKeyStrokes enables or disables keystroke overlay recording.
+func ExecuteSetKeyStrokes(c parser.Command, v *VHS) {
+	v.Options.ShouldRenderKeyStrokes = c.Args == "Show"
 }
 
 // ExecuteSetPadding applies the padding on the vhs.

@@ -42,6 +42,7 @@ type Options struct {
 	LetterSpacing float64
 	LineHeight    float64
 	TypingSpeed   time.Duration
+	KeyStrokes    bool
 	Theme         Theme
 	Test          TestOptions
 	Video         VideoOptions
