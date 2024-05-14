@@ -17,6 +17,11 @@ func TestCommand(t *testing.T) {
 	if len(CommandFuncs) != numberOfCommandFuncs {
 		t.Errorf("Expected %d commands, got %d", numberOfCommandFuncs, len(CommandFuncs))
 	}
+
+	const numberOfSettings = 20
+	if len(Settings) != numberOfSettings {
+		t.Errorf("Expected %d settings, got %d", numberOfSettings, len(Settings))
+	}
 }
 
 func TestExecuteSetTheme(t *testing.T) {
