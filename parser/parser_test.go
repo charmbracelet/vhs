@@ -90,15 +90,18 @@ Sleep Bar`
 		" 4:1  │ Invalid command: Foo",
 		" 5:1  │ Expected time after Sleep",
 		" 5:7  │ Invalid command: Bar",
+	actualErrorMessages := make([]string, len(p.errors))
+	for i, err := range p.errors {
+		actualErrorMessages[i] = err.String()
 	}
 
 	if len(p.errors) != len(expectedErrors) {
-		t.Fatalf("Expected %d errors, got %d", len(expectedErrors), len(p.errors))
+		t.Fatalf("Expected %d errors, got %d (expected:\n%s\ngot:\n%s)", len(expectedErrors), len(p.errors), strings.Join(expectedErrors, "\n"), strings.Join(actualErrorMessages, "\n"))
 	}
 
-	for i, err := range p.errors {
-		if err.String() != expectedErrors[i] {
-			t.Errorf("Expected error %d to be [%s], got (%s)", i, expectedErrors[i], err)
+	for i, errMsg := range actualErrorMessages {
+		if errMsg != expectedErrors[i] {
+			t.Errorf("Expected error %d to be [%s], got (%s)", i, expectedErrors[i], errMsg)
 		}
 	}
 }
