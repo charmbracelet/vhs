@@ -414,6 +414,14 @@ func (p *Parser) parseSet() Command {
 		} else if cmd.Options == "TypingSpeed" {
 			cmd.Args += "s"
 		}
+	case token.KEYSTROKES:
+		switch p.peek.Type {
+		case token.HIDE, token.SHOW:
+			cmd.Args = p.peek.Literal
+			p.nextToken()
+		default:
+			p.errors = append(p.errors, NewError(p.peek, "Expected Hide or Show after KeyStrokes"))
+		}
 	case token.WINDOW_BAR:
 		cmd.Args = p.peek.Literal
 		p.nextToken()
