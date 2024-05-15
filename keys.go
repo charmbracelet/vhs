@@ -129,3 +129,13 @@ var keymap = map[rune]input.Key{
 	'→':    input.ArrowRight,
 	'↓':    input.ArrowDown,
 }
+
+// inverseKeymap is the inverse map of keymap, mapping input.Keys to runes.
+var inverseKeymap = make(map[input.Key]rune)
+
+// init initializes the invKeymap map to ensure it stays in-sync with keymap.
+func init() {
+	for r, k := range keymap {
+		inverseKeymap[k] = r
+	}
+}
