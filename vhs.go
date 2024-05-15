@@ -22,7 +22,7 @@ import (
 type VHS struct {
 	Options      *Options
 	Errors       []error
-	Page         *rod.Page
+	Page         *Page
 	browser      *rod.Browser
 	TextCanvas   *rod.Element
 	CursorCanvas *rod.Element
@@ -142,7 +142,7 @@ func (vhs *VHS) Start() error {
 	}
 
 	vhs.browser = browser
-	vhs.Page = page
+	vhs.Page = NewPage(page)
 	vhs.close = vhs.browser.Close
 	vhs.started = true
 	return nil

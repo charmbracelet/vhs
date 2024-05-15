@@ -20,27 +20,30 @@ type KeyStrokeEvent struct {
 
 // KeyStrokeEvents is a collection of key press events that you can push to.
 type KeyStrokeEvents struct {
+	display   string
 	events    []KeyStrokeEvent
 	startTime time.Time
 }
 
 // NewKeyStrokeEvents creates a new KeyStrokeEvents struct.
-func NewKeyStrokeEvents() KeyStrokeEvents {
-	return KeyStrokeEvents{
+func NewKeyStrokeEvents() *KeyStrokeEvents {
+	return &KeyStrokeEvents{
+		display:   "",
 		events:    make([]KeyStrokeEvent, 0),
 		startTime: time.Now(),
 	}
 }
 
 // Push adds a new key press event to the collection.
-func (k KeyStrokeEvents) Push(display string) {
-	event := KeyStrokeEvent{Display: strconv.Quote(display), WhenMS: time.Now().Sub(k.startTime).Milliseconds()}
+func (k *KeyStrokeEvents) Push(display string) {
+	k.display += strconv.Quote(display)
+	event := KeyStrokeEvent{Display: k.display, WhenMS: time.Now().Sub(k.startTime).Milliseconds()}
 	k.events = append(k.events, event)
 }
 
 // Slice returns the underlying slice of key press events.
 // NOTE: This is a reference.
-func (k KeyStrokeEvents) Slice() []KeyStrokeEvent {
+func (k *KeyStrokeEvents) Slice() []KeyStrokeEvent {
 	return k.events
 }
 
@@ -53,7 +56,7 @@ func (k KeyStrokeEvents) Slice() []KeyStrokeEvent {
 type Page struct {
 	*rod.Page
 	Keyboard        Keyboard
-	KeyStrokeEvents KeyStrokeEvents
+	KeyStrokeEvents *KeyStrokeEvents
 }
 
 // NewPage creates a new wrapper Page object.
@@ -78,7 +81,7 @@ func (p *Page) MustWait(js string) *Page {
 type Keyboard struct {
 	*rod.Keyboard
 	textAreaElem    *rod.Element
-	KeyStrokeEvents KeyStrokeEvents
+	KeyStrokeEvents *KeyStrokeEvents
 }
 
 // Press is a wrapper around the rod.Keyboard#Press method.
@@ -93,7 +96,7 @@ func (k *Keyboard) Type(key input.Key) {
 	k.Keyboard.Type(key)
 }
 
-// Input is a wrapper around the rod.Keyboard#Input method.
+// Input is a wrapper around the rod.Page#MustElement("textarea")#Input method.
 func (k *Keyboard) Input(text string) {
 	k.KeyStrokeEvents.Push(text)
 	k.textAreaElem.Input(text)

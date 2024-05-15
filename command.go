@@ -89,7 +89,7 @@ func ExecuteKey(k input.Key) CommandFunc {
 			repeat = 1
 		}
 		for i := 0; i < repeat; i++ {
-			_ = v.Page.Keyboard.Type(k)
+			v.Page.Keyboard.Type(k)
 			time.Sleep(typingSpeed)
 		}
 	}
@@ -140,45 +140,45 @@ func ExecuteCtrl(c parser.Command, v *VHS) {
 // ExecuteAlt is a CommandFunc that presses the argument key with the alt key
 // held down on the running instance of vhs.
 func ExecuteAlt(c parser.Command, v *VHS) {
-	_ = v.Page.Keyboard.Press(input.AltLeft)
+	v.Page.Keyboard.Press(input.AltLeft)
 	if k, ok := token.Keywords[c.Args]; ok {
 		switch k {
 		case token.ENTER:
-			_ = v.Page.Keyboard.Type(input.Enter)
+			v.Page.Keyboard.Type(input.Enter)
 		case token.TAB:
-			_ = v.Page.Keyboard.Type(input.Tab)
+			v.Page.Keyboard.Type(input.Tab)
 		}
 	} else {
 		for _, r := range c.Args {
 			if k, ok := keymap[r]; ok {
-				_ = v.Page.Keyboard.Type(k)
+				v.Page.Keyboard.Type(k)
 			}
 		}
 	}
 
-	_ = v.Page.Keyboard.Release(input.AltLeft)
+	v.Page.Keyboard.Release(input.AltLeft)
 }
 
 // ExecuteShift is a CommandFunc that presses the argument key with the shift
 // key held down on the running instance of vhs.
 func ExecuteShift(c parser.Command, v *VHS) {
-	_ = v.Page.Keyboard.Press(input.ShiftLeft)
+	v.Page.Keyboard.Press(input.ShiftLeft)
 	if k, ok := token.Keywords[c.Args]; ok {
 		switch k {
 		case token.ENTER:
-			_ = v.Page.Keyboard.Type(input.Enter)
+			v.Page.Keyboard.Type(input.Enter)
 		case token.TAB:
-			_ = v.Page.Keyboard.Type(input.Tab)
+			v.Page.Keyboard.Type(input.Tab)
 		}
 	} else {
 		for _, r := range c.Args {
 			if k, ok := keymap[r]; ok {
-				_ = v.Page.Keyboard.Type(k)
+				v.Page.Keyboard.Type(k)
 			}
 		}
 	}
 
-	_ = v.Page.Keyboard.Release(input.ShiftLeft)
+	v.Page.Keyboard.Release(input.ShiftLeft)
 }
 
 // ExecuteHide is a CommandFunc that starts or stops the recording of the vhs.
@@ -219,9 +219,9 @@ func ExecuteType(c parser.Command, v *VHS) {
 	for _, r := range c.Args {
 		k, ok := keymap[r]
 		if ok {
-			_ = v.Page.Keyboard.Type(k)
+			v.Page.Keyboard.Type(k)
 		} else {
-			_ = v.Page.MustElement("textarea").Input(string(r))
+			v.Page.Keyboard.Input(string(r))
 			v.Page.MustWaitIdle()
 		}
 		time.Sleep(typingSpeed)
@@ -263,9 +263,9 @@ func ExecutePaste(_ parser.Command, v *VHS) {
 	for _, r := range clip {
 		k, ok := keymap[r]
 		if ok {
-			_ = v.Page.Keyboard.Type(k)
+			v.Page.Keyboard.Type(k)
 		} else {
-			_ = v.Page.MustElement("textarea").Input(string(r))
+			v.Page.Keyboard.Input(string(r))
 			v.Page.MustWaitIdle()
 		}
 	}
