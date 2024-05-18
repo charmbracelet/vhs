@@ -6,6 +6,10 @@ import (
 	"io"
 	"log"
 	"os"
+
+	"github.com/charmbracelet/vhs/lexer"
+	"github.com/charmbracelet/vhs/parser"
+	"github.com/charmbracelet/vhs/token"
 )
 
 // EvaluatorOption is a function that can be used to modify the VHS instance.
@@ -14,8 +18,8 @@ type EvaluatorOption func(*VHS)
 // Evaluate takes as input a tape string, an output writer, and an output file
 // and evaluates all the commands within the tape string and produces a GIF.
 func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...EvaluatorOption) []error {
-	l := NewLexer(tape)
-	p := NewParser(l)
+	l := lexer.New(tape)
+	p := parser.New(l)
 
 	cmds := p.Parse()
 	errs := p.Errors()
@@ -25,8 +29,8 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 
 	v := New()
 	for _, cmd := range cmds {
-		if cmd.Type == SET && cmd.Options == "Shell" {
-			cmd.Execute(&v)
+		if cmd.Type == token.SET && cmd.Options == "Shell" || cmd.Type == token.ENV {
+			Execute(cmd, &v)
 		}
 	}
 
@@ -39,10 +43,10 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	// Run Output and Set commands as they only modify options on the VHS instance.
 	var offset int
 	for i, cmd := range cmds {
-		if cmd.Type == SET || cmd.Type == OUTPUT || cmd.Type == REQUIRE {
-			fmt.Fprintln(out, cmd.Highlight(false))
+		if cmd.Type == token.SET || cmd.Type == token.OUTPUT || cmd.Type == token.REQUIRE {
+			fmt.Fprintln(out, Highlight(cmd, false))
 			if cmd.Options != "Shell" {
-				cmd.Execute(&v)
+				Execute(cmd, &v)
 			}
 		} else {
 			offset = i
@@ -77,14 +81,14 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	// If the first command (after Settings and Outputs) is a Hide command, we can
 	// begin executing the commands before we start recording to avoid capturing
 	// any unwanted frames.
-	if cmds[offset].Type == HIDE {
+	if cmds[offset].Type == token.HIDE {
 		for i, cmd := range cmds[offset:] {
-			if cmd.Type == SHOW {
+			if cmd.Type == token.SHOW {
 				offset += i
 				break
 			}
-			fmt.Fprintln(out, cmd.Highlight(true))
-			cmd.Execute(&v)
+			fmt.Fprintln(out, Highlight(cmd, true))
+			Execute(cmd, &v)
 		}
 	}
 
@@ -130,13 +134,13 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 		// GIF as the frame sequence will change dimensions. This is fixable.
 		//
 		// We should remove if isSetting statement.
-		isSetting := cmd.Type == SET && cmd.Options != "TypingSpeed"
-		if isSetting || cmd.Type == REQUIRE {
-			fmt.Fprintln(out, cmd.Highlight(true))
+		isSetting := cmd.Type == token.SET && cmd.Options != "TypingSpeed"
+		if isSetting || cmd.Type == token.REQUIRE {
+			fmt.Fprintln(out, Highlight(cmd, true))
 			continue
 		}
-		fmt.Fprintln(out, cmd.Highlight(!v.recording || cmd.Type == SHOW || cmd.Type == HIDE || isSetting))
-		cmd.Execute(&v)
+		fmt.Fprintln(out, Highlight(cmd, !v.recording || cmd.Type == token.SHOW || cmd.Type == token.HIDE || isSetting))
+		Execute(cmd, &v)
 	}
 
 	// If running as an SSH server, the output file is a temporary file

@@ -1,4 +1,6 @@
-package main
+package lexer
+
+import "github.com/charmbracelet/vhs/token"
 
 // Lexer is a lexer that tokenizes the input.
 type Lexer struct {
@@ -10,8 +12,8 @@ type Lexer struct {
 	column  int
 }
 
-// NewLexer returns a new lexer for tokenizing the input string.
-func NewLexer(input string) *Lexer {
+// New returns a new lexer for tokenizing the input string.
+func New(input string) *Lexer {
 	l := &Lexer{input: input, line: 1, column: 0}
 	l.readChar()
 	return l
@@ -26,58 +28,58 @@ func (l *Lexer) readChar() {
 }
 
 // NextToken returns the next token in the input.
-func (l *Lexer) NextToken() Token {
+func (l *Lexer) NextToken() token.Token {
 	l.skipWhitespace()
 
-	var tok = Token{Line: l.line, Column: l.column}
+	tok := token.Token{Line: l.line, Column: l.column}
 
 	switch l.ch {
 	case 0:
-		tok = l.newToken(EOF, l.ch)
+		tok = l.newToken(token.EOF, l.ch)
 	case '@':
-		tok = l.newToken(AT, l.ch)
+		tok = l.newToken(token.AT, l.ch)
 		l.readChar()
 	case '=':
-		tok = l.newToken(EQUAL, l.ch)
+		tok = l.newToken(token.EQUAL, l.ch)
 		l.readChar()
 	case '%':
-		tok = l.newToken(PERCENT, l.ch)
+		tok = l.newToken(token.PERCENT, l.ch)
 		l.readChar()
 	case '#':
-		tok.Type = COMMENT
+		tok.Type = token.COMMENT
 		tok.Literal = l.readComment()
 	case '+':
-		tok = l.newToken(PLUS, l.ch)
+		tok = l.newToken(token.PLUS, l.ch)
 		l.readChar()
 	case '{':
-		tok.Type = JSON
+		tok.Type = token.JSON
 		tok.Literal = "{" + l.readJSON() + "}"
 		l.readChar()
 	case '`':
-		tok.Type = STRING
+		tok.Type = token.STRING
 		tok.Literal = l.readString('`')
 		l.readChar()
 	case '\'':
-		tok.Type = STRING
+		tok.Type = token.STRING
 		tok.Literal = l.readString('\'')
 		l.readChar()
 	case '"':
-		tok.Type = STRING
+		tok.Type = token.STRING
 		tok.Literal = l.readString('"')
 		l.readChar()
 	case '/':
-		tok.Type = REGEX
+		tok.Type = token.REGEX
 		tok.Literal = l.readString('/')
 		l.readChar()
 	default:
 		if isDigit(l.ch) || (isDot(l.ch) && isDigit(l.peekChar())) {
 			tok.Literal = l.readNumber()
-			tok.Type = NUMBER
+			tok.Type = token.NUMBER
 		} else if isLetter(l.ch) || isDot(l.ch) {
 			tok.Literal = l.readIdentifier()
-			tok.Type = LookupIdentifier(tok.Literal)
+			tok.Type = token.LookupIdentifier(tok.Literal)
 		} else {
-			tok = l.newToken(ILLEGAL, l.ch)
+			tok = l.newToken(token.ILLEGAL, l.ch)
 			l.readChar()
 		}
 	}
@@ -85,9 +87,9 @@ func (l *Lexer) NextToken() Token {
 }
 
 // newToken creates a new token with the given type and literal.
-func (l *Lexer) newToken(tokenType TokenType, ch byte) Token {
+func (l *Lexer) newToken(tokenType token.Type, ch byte) token.Token {
 	literal := string(ch)
-	return Token{
+	return token.Token{
 		Type:    tokenType,
 		Literal: literal,
 		Line:    l.line,

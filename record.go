@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/charmbracelet/vhs/token"
 	"github.com/creack/pty"
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
@@ -22,43 +23,43 @@ const sleepThreshold = 500 * time.Millisecond
 
 // EscapeSequences is a map of escape sequences to their VHS commands.
 var EscapeSequences = map[string]string{
-	"\x1b[A":  UP,
-	"\x1b[B":  DOWN,
-	"\x1b[C":  RIGHT,
-	"\x1b[D":  LEFT,
-	"\x1b[1~": HOME,
-	"\x1b[2~": INSERT,
-	"\x1b[3~": DELETE,
-	"\x1b[4~": END,
-	"\x1b[5~": PAGEUP,
-	"\x1b[6~": PAGEDOWN,
-	"\x01":    CTRL + "+A",
-	"\x02":    CTRL + "+B",
-	"\x03":    CTRL + "+C",
-	"\x04":    CTRL + "+D",
-	"\x05":    CTRL + "+E",
-	"\x06":    CTRL + "+F",
-	"\x07":    CTRL + "+G",
-	"\x08":    BACKSPACE,
-	"\x09":    TAB,
-	"\x0b":    CTRL + "+K",
-	"\x0c":    CTRL + "+L",
-	"\x0d":    ENTER,
-	"\x0e":    CTRL + "+N",
-	"\x0f":    CTRL + "+O",
-	"\x10":    CTRL + "+P",
-	"\x11":    CTRL + "+Q",
-	"\x12":    CTRL + "+R",
-	"\x13":    CTRL + "+S",
-	"\x14":    CTRL + "+T",
-	"\x15":    CTRL + "+U",
-	"\x16":    CTRL + "+V",
-	"\x17":    CTRL + "+W",
-	"\x18":    CTRL + "+X",
-	"\x19":    CTRL + "+Y",
-	"\x1a":    CTRL + "+Z",
-	"\x1b":    ESCAPE,
-	"\x7f":    BACKSPACE,
+	"\x1b[A":  token.UP,
+	"\x1b[B":  token.DOWN,
+	"\x1b[C":  token.RIGHT,
+	"\x1b[D":  token.LEFT,
+	"\x1b[1~": token.HOME,
+	"\x1b[2~": token.INSERT,
+	"\x1b[3~": token.DELETE,
+	"\x1b[4~": token.END,
+	"\x1b[5~": token.PAGEUP,
+	"\x1b[6~": token.PAGEDOWN,
+	"\x01":    token.CTRL + "+A",
+	"\x02":    token.CTRL + "+B",
+	"\x03":    token.CTRL + "+C",
+	"\x04":    token.CTRL + "+D",
+	"\x05":    token.CTRL + "+E",
+	"\x06":    token.CTRL + "+F",
+	"\x07":    token.CTRL + "+G",
+	"\x08":    token.BACKSPACE,
+	"\x09":    token.TAB,
+	"\x0b":    token.CTRL + "+K",
+	"\x0c":    token.CTRL + "+L",
+	"\x0d":    token.ENTER,
+	"\x0e":    token.CTRL + "+N",
+	"\x0f":    token.CTRL + "+O",
+	"\x10":    token.CTRL + "+P",
+	"\x11":    token.CTRL + "+Q",
+	"\x12":    token.CTRL + "+R",
+	"\x13":    token.CTRL + "+S",
+	"\x14":    token.CTRL + "+T",
+	"\x15":    token.CTRL + "+U",
+	"\x16":    token.CTRL + "+V",
+	"\x17":    token.CTRL + "+W",
+	"\x18":    token.CTRL + "+X",
+	"\x19":    token.CTRL + "+Y",
+	"\x1a":    token.CTRL + "+Z",
+	"\x1b":    token.ESCAPE,
+	"\x7f":    token.BACKSPACE,
 }
 
 // Record is a command that starts a pseudo-terminal for the user to begin
@@ -68,6 +69,8 @@ var EscapeSequences = map[string]string{
 // vhs record > file.tape
 func Record(_ *cobra.Command, _ []string) error {
 	command := exec.Command(shell)
+
+	command.Env = append(command.Env, "VHS_RECORD=true")
 
 	terminal, err := pty.Start(command)
 	if err != nil {
@@ -89,7 +92,7 @@ func Record(_ *cobra.Command, _ []string) error {
 	in := io.MultiWriter(tape, terminal)
 
 	if shell != defaultShell {
-		tape.WriteString(fmt.Sprintf("%s Shell %s\n", SET, shell))
+		tape.WriteString(fmt.Sprintf("%s Shell %s\n", token.SET, shell))
 	}
 
 	go func() {
@@ -99,7 +102,7 @@ func Record(_ *cobra.Command, _ []string) error {
 			time.Sleep(sleepThreshold)
 			if length == tape.Len() {
 				// Tape has not changed in a while, write a Sleep command.
-				tape.WriteString(fmt.Sprintf("\n%s\n", SLEEP))
+				tape.WriteString(fmt.Sprintf("\n%s\n", token.SLEEP))
 			}
 		}
 	}()
@@ -151,38 +154,41 @@ func inputToTape(input string) string {
 		repeat := 1
 		for lines[i] == lines[i+repeat] {
 			repeat++
+			if i+repeat == len(lines) {
+				break
+			}
 		}
 		i += repeat - 1
 
 		// We've encountered some non-command, assume that we need to type these
 		// characters.
-		if TokenType(lines[i]) == SLEEP {
+		if token.Type(lines[i]) == token.SLEEP {
 			sleep := sleepThreshold * time.Duration(repeat)
 			if sleep >= time.Minute {
-				sanitized.WriteString(fmt.Sprintf("%s %gs", TokenType(SLEEP), sleep.Seconds()))
+				sanitized.WriteString(fmt.Sprintf("%s %gs", token.Type(token.SLEEP), sleep.Seconds()))
 			} else {
-				sanitized.WriteString(fmt.Sprintf("%s %s", TokenType(SLEEP), sleep))
+				sanitized.WriteString(fmt.Sprintf("%s %s", token.Type(token.SLEEP), sleep))
 			}
-		} else if strings.HasPrefix(lines[i], CTRL) {
+		} else if strings.HasPrefix(lines[i], token.CTRL) {
 			for j := 0; j < repeat; j++ {
-				sanitized.WriteString("Ctrl" + strings.TrimPrefix(lines[i], CTRL) + "\n")
+				sanitized.WriteString("Ctrl" + strings.TrimPrefix(lines[i], token.CTRL) + "\n")
 			}
 			continue
-		} else if strings.HasPrefix(lines[i], ALT) {
+		} else if strings.HasPrefix(lines[i], token.ALT) {
 			for j := 0; j < repeat; j++ {
-				sanitized.WriteString("Alt" + strings.TrimPrefix(lines[i], ALT) + "\n")
+				sanitized.WriteString("Alt" + strings.TrimPrefix(lines[i], token.ALT) + "\n")
 			}
 			continue
-		} else if strings.HasPrefix(lines[i], SET) {
-			sanitized.WriteString("Set" + strings.TrimPrefix(lines[i], SET))
-		} else if IsCommand(TokenType(lines[i])) {
-			sanitized.WriteString(fmt.Sprint(TokenType(lines[i])))
+		} else if strings.HasPrefix(lines[i], token.SET) {
+			sanitized.WriteString("Set" + strings.TrimPrefix(lines[i], token.SET))
+		} else if token.IsCommand(token.Type(lines[i])) {
+			sanitized.WriteString(fmt.Sprint(token.Type(lines[i])))
 			if repeat > 1 {
 				sanitized.WriteString(fmt.Sprint(" ", repeat))
 			}
 		} else {
 			if lines[i] != "" {
-				sanitized.WriteString(fmt.Sprintln(TokenType(TYPE), quote(lines[i])))
+				sanitized.WriteString(fmt.Sprintln(token.Type(token.TYPE), quote(lines[i])))
 			}
 			continue
 		}

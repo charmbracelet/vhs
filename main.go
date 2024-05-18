@@ -17,6 +17,8 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/charmbracelet/vhs/lexer"
+	"github.com/charmbracelet/vhs/parser"
 	version "github.com/hashicorp/go-version"
 	"github.com/mattn/go-isatty"
 	"github.com/spf13/cobra"
@@ -84,11 +86,6 @@ var (
 				return errors.New("no input provided")
 			}
 
-			publishEnv, publishEnvSet := os.LookupEnv("VHS_PUBLISH")
-			if !publishEnvSet && !publishFlag {
-				log.Println(FaintStyle.Render("Host your GIF on vhs.charm.sh: vhs publish <file>.gif"))
-			}
-
 			var publishFile string
 			out := cmd.OutOrStdout()
 			if quietFlag {
@@ -113,6 +110,11 @@ var (
 
 				publishFile = v.Options.Video.Output.GIF
 			})
+
+			publishEnv, publishEnvSet := os.LookupEnv("VHS_PUBLISH")
+			if !publishEnvSet && !publishFlag && len(errs) == 0 {
+				log.Println(FaintStyle.Render("Host your GIF on vhs.charm.sh: vhs publish <file>.gif"))
+			}
 
 			if len(errs) > 0 {
 				printErrors(os.Stderr, string(input), errs)
@@ -213,8 +215,8 @@ var (
 					continue
 				}
 
-				l := NewLexer(string(b))
-				p := NewParser(l)
+				l := lexer.New(string(b))
+				p := parser.New(l)
 
 				_ = p.Parse()
 				errs := p.Errors()
@@ -223,7 +225,7 @@ var (
 					log.Println(ErrorFileStyle.Render(file))
 
 					for _, err := range errs {
-						printParserError(os.Stderr, string(b), err)
+						printError(os.Stderr, string(b), err)
 					}
 					valid = false
 				}

@@ -4,12 +4,15 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+
+	"github.com/charmbracelet/vhs/parser"
+	"github.com/charmbracelet/vhs/token"
 )
 
 // Highlight syntax highlights a command for prettier printing.
 // It takes an argument whether or not to print the command in a faint style to
 // represent hidden commands.
-func (c Command) Highlight(faint bool) string {
+func Highlight(c parser.Command, faint bool) string {
 	var (
 		optionsStyle = TimeStyle
 		argsStyle    = NumberStyle
@@ -23,9 +26,9 @@ func (c Command) Highlight(faint bool) string {
 	}
 
 	switch c.Type {
-	case REGEX:
+	case token.REGEX:
 		argsStyle = StringStyle
-	case SET:
+	case token.SET:
 		optionsStyle = KeywordStyle
 		if isNumber(c.Args) {
 			argsStyle = NumberStyle
@@ -34,24 +37,33 @@ func (c Command) Highlight(faint bool) string {
 		} else {
 			argsStyle = StringStyle
 		}
-	case OUTPUT:
+	case token.ENV:
 		optionsStyle = NoneStyle
 		argsStyle = StringStyle
-	case CTRL:
+	case token.OUTPUT:
+		optionsStyle = NoneStyle
+		argsStyle = StringStyle
+	case token.CTRL:
 		argsStyle = CommandStyle
-	case SLEEP:
+	case token.SLEEP:
 		argsStyle = TimeStyle
-	case TYPE:
+	case token.TYPE:
 		optionsStyle = TimeStyle
 		argsStyle = StringStyle
-	case HIDE, SHOW:
+	case token.HIDE, token.SHOW:
 		return FaintStyle.Render(c.Type.String())
 	}
 
 	var s strings.Builder
 	s.WriteString(CommandStyle.Render(c.Type.String()) + " ")
 	if c.Options != "" {
-		s.WriteString(optionsStyle.Render(c.Options) + " ")
+		s.WriteString(optionsStyle.Render(c.Options))
+		switch c.Type {
+		case token.ENV:
+			s.WriteString("=")
+		default:
+			s.WriteString(" ")
+		}
 	}
 	s.WriteString(argsStyle.Render(c.Args))
 	return s.String()

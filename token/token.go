@@ -1,15 +1,15 @@
-package main
+package token
 
 import (
 	"strings"
 )
 
-// TokenType represents a token's type.
-type TokenType string
+// Type represents a token's type.
+type Type string
 
 // Token represents a lexer token.
 type Token struct {
-	Type    TokenType
+	Type    Type
 	Literal string
 	Line    int
 	Column  int
@@ -73,6 +73,7 @@ const (
 	COPY            = "COPY"
 	PASTE           = "PASTE"
 	SHELL           = "SHELL"
+	ENV             = "ENV"
 	FONT_FAMILY     = "FONT_FAMILY" //nolint:revive
 	FONT_SIZE       = "FONT_SIZE"   //nolint:revive
 	FRAMERATE       = "FRAMERATE"
@@ -96,7 +97,8 @@ const (
 	CURSOR_BLINK    = "CURSOR_BLINK"    //nolint:revive
 )
 
-var keywords = map[string]TokenType{
+// Keywords maps keyword strings to tokens.
+var Keywords = map[string]Type{
 	"em":            EM,
 	"px":            PX,
 	"ms":            MILLISECONDS,
@@ -154,10 +156,11 @@ var keywords = map[string]TokenType{
 	"Screenshot":    SCREENSHOT,
 	"Copy":          COPY,
 	"Paste":         PASTE,
+	"Env":           ENV,
 }
 
 // IsSetting returns whether a token is a setting.
-func IsSetting(t TokenType) bool {
+func IsSetting(t Type) bool {
 	switch t {
 	case SHELL, FONT_FAMILY, FONT_SIZE, LETTER_SPACING, LINE_HEIGHT,
 		FRAMERATE, TYPING_SPEED, THEME, PLAYBACK_SPEED, HEIGHT, WIDTH,
@@ -170,7 +173,7 @@ func IsSetting(t TokenType) bool {
 }
 
 // IsCommand returns whether the string is a command.
-func IsCommand(t TokenType) bool {
+func IsCommand(t Type) bool {
 	switch t {
 	case TYPE, SLEEP,
 		UP, DOWN, RIGHT, LEFT, PAGEUP, PAGEDOWN,
@@ -183,19 +186,20 @@ func IsCommand(t TokenType) bool {
 }
 
 // IsModifier returns whether the token is a modifier.
-func IsModifier(t TokenType) bool {
+func IsModifier(t Type) bool {
 	return t == ALT || t == SHIFT
 }
 
 // String converts a token to it's human readable string format.
-func (t TokenType) String() string {
+func (t Type) String() string {
 	if IsCommand(t) || IsSetting(t) {
-		return toCamel(string(t))
+		return ToCamel(string(t))
 	}
 	return string(t)
 }
 
-func toCamel(s string) string {
+// ToCamel converts a snake_case string to CamelCase.
+func ToCamel(s string) string {
 	parts := strings.Split(s, "_")
 	for i, p := range parts {
 		p = strings.ToUpper(p[:1]) + strings.ToLower(p[1:])
@@ -208,8 +212,8 @@ func toCamel(s string) string {
 // LookupIdentifier returns whether the identifier is a keyword.
 // In `vhs`, there are no _actual_ identifiers, i.e. there are no variables.
 // Instead, identifiers are simply strings (i.e. bare words).
-func LookupIdentifier(ident string) TokenType {
-	if t, ok := keywords[ident]; ok {
+func LookupIdentifier(ident string) Type {
+	if t, ok := Keywords[ident]; ok {
 		return t
 	}
 	return STRING

@@ -112,7 +112,12 @@ sudo yum install vhs ffmpeg
 # Void Linux
 sudo xbps-install vhs
 
-# Windows
+# Windows using winget
+# Note: Winget will install all the needed dependencies, which're FFmpeg and ttyd.
+#       No need to do any prerequisites to install vhs using this method.
+winget install charmbracelet.vhs
+
+# Windows using scoop
 scoop install vhs
 
 ```
@@ -216,6 +221,7 @@ There are a few basic types of VHS commands:
 * [`Screenshot`](#screenshot): screenshot the current frame
 * [`Copy/Paste`](#copy--paste): copy and paste text from clipboard.
 * [`Source`](#source): source commands from another tape
+* [`Env <Key> Value`](#env): set environment variables
 
 ### Output
 
@@ -527,6 +533,12 @@ Type "Whatever you want"
 Type@500ms "Slow down there, partner."
 ```
 
+Escape single and double quotes with backticks.
+
+```elixir
+Type `VAR="Escaped"`
+```
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/type.gif">
   <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/type.gif">
@@ -727,6 +739,17 @@ Sleep 500ms
 Paste
 ```
 
+### Env
+
+`Env` command sets the environment variable via key-value pair.
+
+```elixir
+Env HELLO "WORLD"
+
+Type "echo $HELLO"
+Enter
+Sleep 1s
+```
 
 ### Source
 

@@ -1,16 +1,16 @@
-package main
+package token
 
 import "testing"
 
 func TestToCamel(t *testing.T) {
 	// simple case
-	res := toCamel("SIMPLE")
+	res := ToCamel("SIMPLE")
 	if res != "Simple" {
 		t.Errorf("expected Simple, got %s", res)
 	}
 
 	// multiple words
-	res = toCamel("MULTIPLE_WORDS")
+	res = ToCamel("MULTIPLE_WORDS")
 	if res != "MultipleWords" {
 		t.Errorf("expected MultipleWords, got %s", res)
 	}

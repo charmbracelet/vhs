@@ -1,4 +1,4 @@
-package main
+package parser
 
 import (
 	"fmt"
@@ -8,19 +8,103 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/charmbracelet/vhs/lexer"
+	"github.com/charmbracelet/vhs/token"
 )
+
+// NewError returns a new parser.Error with the given token and message.
+func NewError(token token.Token, msg string) Error {
+	return Error{
+		Token: token,
+		Msg:   msg,
+	}
+}
+
+// CommandType is a type that represents a command.
+type CommandType token.Type
+
+// CommandTypes is a list of the available commands that can be executed.
+var CommandTypes = []CommandType{ //nolint: deadcode
+	token.BACKSPACE,
+	token.DELETE,
+	token.INSERT,
+	token.CTRL,
+	token.ALT,
+	token.DOWN,
+	token.ENTER,
+	token.ESCAPE,
+	token.ILLEGAL,
+	token.LEFT,
+	token.PAGEUP,
+	token.PAGEDOWN,
+	token.RIGHT,
+	token.SET,
+	token.OUTPUT,
+	token.SLEEP,
+	token.SPACE,
+	token.HIDE,
+	token.REQUIRE,
+	token.SHOW,
+	token.TAB,
+	token.TYPE,
+	token.UP,
+	token.WAIT,
+	token.SOURCE,
+	token.SCREENSHOT,
+	token.COPY,
+	token.PASTE,
+	token.ENV,
+}
+
+// String returns the string representation of the command.
+func (c CommandType) String() string { return token.ToCamel(string(c)) }
+
+// Command represents a command with options and arguments.
+type Command struct {
+	Type    CommandType
+	Options string
+	Args    string
+}
+
+// String returns the string representation of the command.
+// This includes the options and arguments of the command.
+func (c Command) String() string {
+	if c.Options != "" {
+		return fmt.Sprintf("%s %s %s", c.Type, c.Options, c.Args)
+	}
+	return fmt.Sprintf("%s %s", c.Type, c.Options)
+}
+
+// Error represents an error with parsing a tape file.
+// It tracks the token causing the error and a human readable error message.
+type Error struct {
+	Token token.Token
+	Msg   string
+}
+
+// String returns a human readable error message printing the token line number
+// and message.
+func (e Error) String() string {
+	return fmt.Sprintf("%2d:%-2d │ %s", e.Token.Line, e.Token.Column, e.Msg)
+}
+
+// Error implements the error interface.
+func (e Error) Error() string {
+	return e.String()
+}
 
 // Parser is the structure that manages the parsing of tokens.
 type Parser struct {
-	l      *Lexer
-	errors []ParserError
-	cur    Token
-	peek   Token
+	l      *lexer.Lexer
+	errors []Error
+	cur    token.Token
+	peek   token.Token
 }
 
-// NewParser returns a new Parser.
-func NewParser(l *Lexer) *Parser {
-	p := &Parser{l: l, errors: []ParserError{}}
+// New returns a new Parser.
+func New(l *lexer.Lexer) *Parser {
+	p := &Parser{l: l, errors: []Error{}}
 
 	// Read two tokens, so cur and peek are both set.
 	p.nextToken()
@@ -34,8 +118,8 @@ func NewParser(l *Lexer) *Parser {
 func (p *Parser) Parse() []Command {
 	cmds := []Command{}
 
-	for p.cur.Type != EOF {
-		if p.cur.Type == COMMENT {
+	for p.cur.Type != token.EOF {
+		if p.cur.Type == token.COMMENT {
 			p.nextToken()
 			continue
 		}
@@ -49,50 +133,64 @@ func (p *Parser) Parse() []Command {
 // parseCommand parses a command.
 func (p *Parser) parseCommand() Command {
 	switch p.cur.Type {
-	case SPACE, BACKSPACE, DELETE, INSERT, ENTER, ESCAPE, TAB, DOWN, LEFT, RIGHT, UP, PAGEUP, PAGEDOWN:
+	case token.SPACE,
+		token.BACKSPACE,
+		token.DELETE,
+		token.INSERT,
+		token.ENTER,
+		token.ESCAPE,
+		token.TAB,
+		token.DOWN,
+		token.LEFT,
+		token.RIGHT,
+		token.UP,
+		token.PAGEUP,
+		token.PAGEDOWN:
 		return p.parseKeypress(p.cur.Type)
-	case SET:
+	case token.SET:
 		return p.parseSet()
-	case OUTPUT:
+	case token.OUTPUT:
 		return p.parseOutput()
-	case SLEEP:
+	case token.SLEEP:
 		return p.parseSleep()
-	case TYPE:
+	case token.TYPE:
 		return p.parseType()
-	case CTRL:
+	case token.CTRL:
 		return p.parseCtrl()
-	case ALT:
+	case token.ALT:
 		return p.parseAlt()
-	case SHIFT:
+	case token.SHIFT:
 		return p.parseShift()
-	case HIDE:
+	case token.HIDE:
 		return p.parseHide()
-	case REQUIRE:
+	case token.REQUIRE:
 		return p.parseRequire()
-	case SHOW:
+	case token.SHOW:
 		return p.parseShow()
-	case WAIT:
+	case token.WAIT:
 		return p.parseWait()
-	case SOURCE:
+	case token.SOURCE:
 		return p.parseSource()
-	case SCREENSHOT:
+	case token.SCREENSHOT:
 		return p.parseScreenshot()
-	case COPY:
+	case token.COPY:
 		return p.parseCopy()
-	case PASTE:
+	case token.PASTE:
 		return p.parsePaste()
+	case token.ENV:
+		return p.parseEnv()
 	default:
 		p.errors = append(p.errors, NewError(p.cur, "Invalid command: "+p.cur.Literal))
-		return Command{Type: ILLEGAL}
+		return Command{Type: token.ILLEGAL}
 	}
 }
 
 func (p *Parser) parseWait() Command {
-	cmd := Command{Type: WAIT}
+	cmd := Command{Type: token.WAIT}
 
-	if p.peek.Type == PLUS {
+	if p.peek.Type == token.PLUS {
 		p.nextToken()
-		if p.peek.Type != STRING || (p.peek.Literal != "Line" && p.peek.Literal != "Screen") {
+		if p.peek.Type != token.STRING || (p.peek.Literal != "Line" && p.peek.Literal != "Screen") {
 			p.errors = append(p.errors, NewError(p.peek, "Wait+ expects Line or Screen"))
 			return cmd
 		}
@@ -111,7 +209,7 @@ func (p *Parser) parseWait() Command {
 		}
 	}
 
-	if p.peek.Type != REGEX {
+	if p.peek.Type != token.REGEX {
 		// fallback to default
 		return cmd
 	}
@@ -133,7 +231,7 @@ func (p *Parser) parseWait() Command {
 // This is optional (defaults to 100ms), thus skips (rather than error-ing)
 // if the typing speed is not specified.
 func (p *Parser) parseSpeed() string {
-	if p.peek.Type == AT {
+	if p.peek.Type == token.AT {
 		p.nextToken()
 		return p.parseTime()
 	}
@@ -147,7 +245,7 @@ func (p *Parser) parseSpeed() string {
 // This is optional (defaults to 1), thus skips (rather than error-ing)
 // if the repeat count is not specified.
 func (p *Parser) parseRepeat() string {
-	if p.peek.Type == NUMBER {
+	if p.peek.Type == token.NUMBER {
 		count := p.peek.Literal
 		p.nextToken()
 		return count
@@ -162,7 +260,7 @@ func (p *Parser) parseRepeat() string {
 func (p *Parser) parseTime() string {
 	var t string
 
-	if p.peek.Type == NUMBER {
+	if p.peek.Type == token.NUMBER {
 		t = p.peek.Literal
 		p.nextToken()
 	} else {
@@ -171,7 +269,7 @@ func (p *Parser) parseTime() string {
 	}
 
 	// Allow TypingSpeed to have bare units (e.g. 50ms, 100ms)
-	if p.peek.Type == MILLISECONDS || p.peek.Type == SECONDS || p.peek.Type == MINUTES {
+	if p.peek.Type == token.MILLISECONDS || p.peek.Type == token.SECONDS || p.peek.Type == token.MINUTES {
 		t += p.peek.Literal
 		p.nextToken()
 	} else {
@@ -192,12 +290,12 @@ func (p *Parser) parseCtrl() Command {
 	var args []string
 
 	inModifierChain := true
-	for p.peek.Type == PLUS {
+	for p.peek.Type == token.PLUS {
 		p.nextToken()
 		peek := p.peek
 
 		// Get key from keywords and check if it's a valid modifier
-		if k := keywords[peek.Literal]; IsModifier(k) {
+		if k := token.Keywords[peek.Literal]; token.IsModifier(k) {
 			if !inModifierChain {
 				p.errors = append(p.errors, NewError(p.cur, "Modifiers must come before other characters"))
 				// Clear args so the error is returned
@@ -214,10 +312,10 @@ func (p *Parser) parseCtrl() Command {
 
 		// Add key argument.
 		switch {
-		case peek.Type == ENTER,
-			peek.Type == SPACE,
-			peek.Type == BACKSPACE,
-			peek.Type == STRING && len(peek.Literal) == 1:
+		case peek.Type == token.ENTER,
+			peek.Type == token.SPACE,
+			peek.Type == token.BACKSPACE,
+			peek.Type == token.STRING && len(peek.Literal) == 1:
 			args = append(args, peek.Literal)
 		default:
 			// Key arguments with len > 1 are not valid
@@ -234,7 +332,7 @@ func (p *Parser) parseCtrl() Command {
 	}
 
 	ctrlArgs := strings.Join(args, " ")
-	return Command{Type: CTRL, Args: ctrlArgs}
+	return Command{Type: token.CTRL, Args: ctrlArgs}
 }
 
 // parseAlt parses an alt command.
@@ -242,17 +340,19 @@ func (p *Parser) parseCtrl() Command {
 //
 // Alt+<character>
 func (p *Parser) parseAlt() Command {
-	if p.peek.Type == PLUS {
+	if p.peek.Type == token.PLUS {
 		p.nextToken()
-		if p.peek.Type == STRING || p.peek.Type == ENTER || p.peek.Type == TAB {
+		if p.peek.Type == token.STRING ||
+			p.peek.Type == token.ENTER ||
+			p.peek.Type == token.TAB {
 			c := p.peek.Literal
 			p.nextToken()
-			return Command{Type: ALT, Args: c}
+			return Command{Type: token.ALT, Args: c}
 		}
 	}
 
 	p.errors = append(p.errors, NewError(p.cur, "Expected alt character, got "+p.cur.Literal))
-	return Command{Type: ALT}
+	return Command{Type: token.ALT}
 }
 
 // parseShift parses a shift command.
@@ -264,24 +364,26 @@ func (p *Parser) parseAlt() Command {
 // Shift+Tab
 // Shift+Enter
 func (p *Parser) parseShift() Command {
-	if p.peek.Type == PLUS {
+	if p.peek.Type == token.PLUS {
 		p.nextToken()
-		if p.peek.Type == STRING || p.peek.Type == ENTER || p.peek.Type == TAB {
+		if p.peek.Type == token.STRING ||
+			p.peek.Type == token.ENTER ||
+			p.peek.Type == token.TAB {
 			c := p.peek.Literal
 			p.nextToken()
-			return Command{Type: SHIFT, Args: c}
+			return Command{Type: token.SHIFT, Args: c}
 		}
 	}
 
 	p.errors = append(p.errors, NewError(p.cur, "Expected shift character, got "+p.cur.Literal))
-	return Command{Type: SHIFT}
+	return Command{Type: token.SHIFT}
 }
 
 // parseKeypress parses a repeatable and time adjustable keypress command.
 // A keypress command takes an optional typing speed and optional count.
 //
 // Key[@<time>] [count]
-func (p *Parser) parseKeypress(ct TokenType) Command {
+func (p *Parser) parseKeypress(ct token.Type) Command {
 	cmd := Command{Type: CommandType(ct)}
 	cmd.Options = p.parseSpeed()
 	cmd.Args = p.parseRepeat()
@@ -293,9 +395,9 @@ func (p *Parser) parseKeypress(ct TokenType) Command {
 //
 // Output <path>
 func (p *Parser) parseOutput() Command {
-	cmd := Command{Type: OUTPUT}
+	cmd := Command{Type: token.OUTPUT}
 
-	if p.peek.Type != STRING {
+	if p.peek.Type != token.STRING {
 		p.errors = append(p.errors, NewError(p.cur, "Expected file path after output"))
 		return cmd
 	}
@@ -320,9 +422,9 @@ func (p *Parser) parseOutput() Command {
 //
 // Set <setting> <value>
 func (p *Parser) parseSet() Command {
-	cmd := Command{Type: SET}
+	cmd := Command{Type: token.SET}
 
-	if IsSetting(p.peek.Type) {
+	if token.IsSetting(p.peek.Type) {
 		cmd.Options = p.peek.Literal
 	} else {
 		p.errors = append(p.errors, NewError(p.peek, "Unknown setting: "+p.peek.Literal))
@@ -330,36 +432,37 @@ func (p *Parser) parseSet() Command {
 	p.nextToken()
 
 	switch p.cur.Type {
-	case WAIT_TIMEOUT:
+	case token.WAIT_TIMEOUT:
 		cmd.Args = p.parseTime()
-	case WAIT_PATTERN:
+	case token.WAIT_PATTERN:
 		cmd.Args = p.peek.Literal
 		_, err := regexp.Compile(p.peek.Literal)
 		if err != nil {
 			p.errors = append(p.errors, NewError(p.peek, "Invalid regexp pattern: "+p.peek.Literal))
 		}
 		p.nextToken()
-	case LOOP_OFFSET:
+	case token.LOOP_OFFSET:
 		cmd.Args = p.peek.Literal
 		p.nextToken()
 		// Allow LoopOffset without '%'
 		// Set LoopOffset 20
 		cmd.Args += "%"
-		if p.peek.Type == PERCENT {
+		if p.peek.Type == token.PERCENT {
 			p.nextToken()
 		}
-	case TYPING_SPEED:
+	case token.TYPING_SPEED:
 		cmd.Args = p.peek.Literal
 		p.nextToken()
 		// Allow TypingSpeed to have bare units (e.g. 10ms)
 		// Set TypingSpeed 10ms
-		if p.peek.Type == MILLISECONDS || p.peek.Type == SECONDS {
+		if p.peek.Type == token.MILLISECONDS ||
+			p.peek.Type == token.SECONDS {
 			cmd.Args += p.peek.Literal
 			p.nextToken()
 		} else if cmd.Options == "TypingSpeed" {
 			cmd.Args += "s"
 		}
-	case WINDOW_BAR:
+	case token.WINDOW_BAR:
 		cmd.Args = p.peek.Literal
 		p.nextToken()
 
@@ -370,7 +473,7 @@ func (p *Parser) parseSet() Command {
 				NewError(p.cur, windowBar+" is not a valid bar style."),
 			)
 		}
-	case MARGIN_FILL:
+	case token.MARGIN_FILL:
 		cmd.Args = p.peek.Literal
 		p.nextToken()
 
@@ -390,11 +493,11 @@ func (p *Parser) parseSet() Command {
 				)
 			}
 		}
-	case CURSOR_BLINK:
+	case token.CURSOR_BLINK:
 		cmd.Args = p.peek.Literal
 		p.nextToken()
 
-		if p.cur.Type != BOOLEAN {
+		if p.cur.Type != token.BOOLEAN {
 			p.errors = append(
 				p.errors,
 				NewError(p.cur, "expected boolean value."),
@@ -414,7 +517,7 @@ func (p *Parser) parseSet() Command {
 //
 // Sleep <time>
 func (p *Parser) parseSleep() Command {
-	cmd := Command{Type: SLEEP}
+	cmd := Command{Type: token.SLEEP}
 	cmd.Args = p.parseTime()
 	return cmd
 }
@@ -424,7 +527,7 @@ func (p *Parser) parseSleep() Command {
 // Hide
 // ...
 func (p *Parser) parseHide() Command {
-	cmd := Command{Type: HIDE}
+	cmd := Command{Type: token.HIDE}
 	return cmd
 }
 
@@ -433,9 +536,9 @@ func (p *Parser) parseHide() Command {
 // ...
 // Require
 func (p *Parser) parseRequire() Command {
-	cmd := Command{Type: REQUIRE}
+	cmd := Command{Type: token.REQUIRE}
 
-	if p.peek.Type != STRING {
+	if p.peek.Type != token.STRING {
 		p.errors = append(p.errors, NewError(p.peek, p.cur.Literal+" expects one string"))
 	}
 
@@ -450,7 +553,7 @@ func (p *Parser) parseRequire() Command {
 // ...
 // Show
 func (p *Parser) parseShow() Command {
-	cmd := Command{Type: SHOW}
+	cmd := Command{Type: token.SHOW}
 	return cmd
 }
 
@@ -459,15 +562,15 @@ func (p *Parser) parseShow() Command {
 //
 // Type "string"
 func (p *Parser) parseType() Command {
-	cmd := Command{Type: TYPE}
+	cmd := Command{Type: token.TYPE}
 
 	cmd.Options = p.parseSpeed()
 
-	if p.peek.Type != STRING {
+	if p.peek.Type != token.STRING {
 		p.errors = append(p.errors, NewError(p.peek, p.cur.Literal+" expects string"))
 	}
 
-	for p.peek.Type == STRING {
+	for p.peek.Type == token.STRING {
 		p.nextToken()
 		cmd.Args += p.cur.Literal
 
@@ -479,7 +582,7 @@ func (p *Parser) parseType() Command {
 		// the tokens, however if the user was intending to type multiple spaces
 		// they would need to use a string literal.
 
-		if p.peek.Type == STRING {
+		if p.peek.Type == token.STRING {
 			cmd.Args += " "
 		}
 	}
@@ -492,12 +595,12 @@ func (p *Parser) parseType() Command {
 //
 // Copy "string"
 func (p *Parser) parseCopy() Command {
-	cmd := Command{Type: COPY}
+	cmd := Command{Type: token.COPY}
 
-	if p.peek.Type != STRING {
+	if p.peek.Type != token.STRING {
 		p.errors = append(p.errors, NewError(p.peek, p.cur.Literal+" expects string"))
 	}
-	for p.peek.Type == STRING {
+	for p.peek.Type == token.STRING {
 		p.nextToken()
 		cmd.Args += p.cur.Literal
 
@@ -509,7 +612,7 @@ func (p *Parser) parseCopy() Command {
 		// the tokens, however if the user was intending to type multiple spaces
 		// they would need to use a string literal.
 
-		if p.peek.Type == STRING {
+		if p.peek.Type == token.STRING {
 			cmd.Args += " "
 		}
 	}
@@ -521,7 +624,27 @@ func (p *Parser) parseCopy() Command {
 //
 // Paste
 func (p *Parser) parsePaste() Command {
-	cmd := Command{Type: PASTE}
+	cmd := Command{Type: token.PASTE}
+	return cmd
+}
+
+// parseEnv parses Env command
+// Env command takes in a key-value pair which is set.
+//
+// Env key "value"
+func (p *Parser) parseEnv() Command {
+	cmd := Command{Type: token.ENV}
+
+	cmd.Options = p.peek.Literal
+	p.nextToken()
+
+	if p.peek.Type != token.STRING {
+		p.errors = append(p.errors, NewError(p.peek, p.cur.Literal+" expects string"))
+	}
+
+	cmd.Args = p.peek.Literal
+	p.nextToken()
+
 	return cmd
 }
 
@@ -530,9 +653,9 @@ func (p *Parser) parsePaste() Command {
 //
 // Source <path>
 func (p *Parser) parseSource() Command {
-	cmd := Command{Type: SOURCE}
+	cmd := Command{Type: token.SOURCE}
 
-	if p.peek.Type != STRING {
+	if p.peek.Type != token.STRING {
 		p.errors = append(p.errors, NewError(p.cur, "Expected path after Source"))
 		p.nextToken()
 		return cmd
@@ -574,13 +697,13 @@ func (p *Parser) parseSource() Command {
 		return cmd
 	}
 
-	srcLexer := NewLexer(srcTape)
-	srcParser := NewParser(srcLexer)
+	srcLexer := lexer.New(srcTape)
+	srcParser := New(srcLexer)
 
 	// Check not nested source
 	srcCmds := srcParser.Parse()
 	for _, cmd := range srcCmds {
-		if cmd.Type == SOURCE {
+		if cmd.Type == token.SOURCE {
 			p.errors = append(p.errors, NewError(p.peek, "Nested Source detected"))
 			p.nextToken()
 			return cmd
@@ -605,9 +728,9 @@ func (p *Parser) parseSource() Command {
 //
 // Screenshot <path>
 func (p *Parser) parseScreenshot() Command {
-	cmd := Command{Type: SCREENSHOT}
+	cmd := Command{Type: token.SCREENSHOT}
 
-	if p.peek.Type != STRING {
+	if p.peek.Type != token.STRING {
 		p.errors = append(p.errors, NewError(p.cur, "Expected path after Screenshot"))
 		p.nextToken()
 		return cmd
@@ -630,7 +753,7 @@ func (p *Parser) parseScreenshot() Command {
 }
 
 // Errors returns any errors that occurred during parsing.
-func (p *Parser) Errors() []ParserError {
+func (p *Parser) Errors() []Error {
 	return p.errors
 }
 
@@ -639,4 +762,11 @@ func (p *Parser) Errors() []ParserError {
 func (p *Parser) nextToken() {
 	p.cur = p.peek
 	p.peek = p.l.NextToken()
+}
+
+// Check if a given windowbar type is valid
+func isValidWindowBar(w string) bool {
+	return w == "" ||
+		w == "Colorful" || w == "ColorfulRight" ||
+		w == "Rings" || w == "RightsRight"
 }
