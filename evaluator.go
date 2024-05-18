@@ -10,6 +10,7 @@ import (
 	"github.com/charmbracelet/vhs/lexer"
 	"github.com/charmbracelet/vhs/parser"
 	"github.com/charmbracelet/vhs/token"
+	"github.com/go-rod/rod"
 )
 
 // EvaluatorOption is a function that can be used to modify the VHS instance.
@@ -43,7 +44,14 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	}
 	defer func() { _ = v.close() }()
 
-	// Run Output and Set commands as they only modify options on the VHS instance.
+	// Let's wait until we can access the window.term variable.
+	//
+	// This is necessary because some SET commands modify the terminal.
+	err := v.Page.Wait(rod.Eval("() => window.term != undefined"))
+	if err != nil {
+		return []error{err}
+	}
+
 	var offset int
 	for i, cmd := range cmds {
 		if cmd.Type == token.SET || cmd.Type == token.OUTPUT || cmd.Type == token.REQUIRE {
