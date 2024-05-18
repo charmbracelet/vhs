@@ -30,7 +30,10 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	v := New()
 	for _, cmd := range cmds {
 		if cmd.Type == token.SET && cmd.Options == "Shell" || cmd.Type == token.ENV {
-			Execute(cmd, &v)
+			err := Execute(cmd, &v)
+			if err != nil {
+				return []error{err}
+			}
 		}
 	}
 
@@ -46,7 +49,10 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 		if cmd.Type == token.SET || cmd.Type == token.OUTPUT || cmd.Type == token.REQUIRE {
 			fmt.Fprintln(out, Highlight(cmd, false))
 			if cmd.Options != "Shell" {
-				Execute(cmd, &v)
+				err := Execute(cmd, &v)
+				if err != nil {
+					return []error{err}
+				}
 			}
 		} else {
 			offset = i
@@ -88,7 +94,10 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 				break
 			}
 			fmt.Fprintln(out, Highlight(cmd, true))
-			Execute(cmd, &v)
+			err := Execute(cmd, &v)
+			if err != nil {
+				return []error{err}
+			}
 		}
 	}
 
@@ -140,7 +149,11 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 			continue
 		}
 		fmt.Fprintln(out, Highlight(cmd, !v.recording || cmd.Type == token.SHOW || cmd.Type == token.HIDE || isSetting))
-		Execute(cmd, &v)
+		err := Execute(cmd, &v)
+		if err != nil {
+			teardown()
+			return []error{err}
+		}
 	}
 
 	// If running as an SSH server, the output file is a temporary file
