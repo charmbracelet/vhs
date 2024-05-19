@@ -49,13 +49,14 @@ type VideoOutputs struct {
 
 // VideoOptions is the set of options for converting frames to a GIF.
 type VideoOptions struct {
-	Framerate     int
-	PlaybackSpeed float64
-	Input         string
-	MaxColors     int
-	Output        VideoOutputs
-	StartingFrame int
-	Style         *StyleOptions
+	Framerate       int
+	PlaybackSpeed   float64
+	Input           string
+	MaxColors       int
+	Output          VideoOutputs
+	StartingFrame   int
+	Style           *StyleOptions
+	KeyStrokeEvents []KeyStrokeEvent
 }
 
 const (
@@ -118,6 +119,10 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 		WithWindowBar(streamBuilder.barStream).
 		WithBorderRadius(streamBuilder.cornerStream).
 		WithMarginFill(streamBuilder.marginStream)
+
+	if opts.KeyStrokeEvents != nil { // TODO: What if number of events is 0?
+		filterBuilder = filterBuilder.WithKeyStrokes(opts.KeyStrokeEvents)
+	}
 
 	// Format-specific options
 	switch filepath.Ext(targetFile) {
