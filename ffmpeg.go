@@ -172,6 +172,43 @@ func (fb *FilterComplexBuilder) WithMarginFill(marginStream int) *FilterComplexB
 	return fb
 }
 
+// WithKeyStrokes adds key stroke drawtext options to the ffmpeg filter_complex.
+func (fb *FilterComplexBuilder) WithKeyStrokes(events []KeyStrokeEvent) *FilterComplexBuilder {
+	prevStageName := fb.prevStageName
+	for i := range events {
+		event := events[i]
+		fb.filterComplex.WriteString(";")
+		stageName := fmt.Sprintf("keypressOverlay%d", i)
+		enableCondition := fmt.Sprintf("gte(t,%f)", float64(event.WhenMS)/1000)
+		if i < len(events)-1 {
+			enableCondition = fmt.Sprintf("between(t,%f,%f)", float64(events[i].WhenMS)/1000, float64(events[i+1].WhenMS)/1000)
+		}
+		fb.filterComplex.WriteString(
+			fmt.Sprintf(`
+			[%s]drawtext=fontfile=%s:text='%s':fontcolor=%s:fontsize=%d:x=%d:y=%d:enable='%s'[%s]
+			`,
+				prevStageName,
+				"/path/to/font.ttf",
+				events[i].Display,
+				"white",
+				30,
+				00,
+				00,
+				enableCondition,
+				stageName,
+			),
+		)
+		prevStageName = stageName
+	}
+
+	// fmt.Println("drawtext filter added: ", fb.filterComplex.String())
+
+	// At the end of the loop, the previous stage name is now transfered to the filter complex builder's
+	// state for use in subsequent filters.
+	fb.prevStageName = prevStageName
+	return fb
+}
+
 // WithGIF adds gif options to ffmepg filter_complex.
 func (fb *FilterComplexBuilder) WithGIF() *FilterComplexBuilder {
 	fb.filterComplex.WriteString(";")
