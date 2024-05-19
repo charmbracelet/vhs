@@ -185,10 +185,10 @@ func (fb *FilterComplexBuilder) WithKeyStrokes(events []KeyStrokeEvent) *FilterC
 		}
 		fb.filterComplex.WriteString(
 			fmt.Sprintf(`
-			[%s]drawtext=fontfile=%s:text='%s':fontcolor=%s:fontsize=%d:x=%d:y=%d:enable='%s'[%s]
+			[%s]drawtext=font=%s:text='%s':fontcolor=%s:fontsize=%d:x=%d:y=%d:enable='%s'[%s]
 			`,
 				prevStageName,
-				"/path/to/font.ttf",
+				"Noto Mono",
 				events[i].Display,
 				"white",
 				30,
