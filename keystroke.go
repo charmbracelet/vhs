@@ -1,7 +1,7 @@
 package main
 
 import (
-	"strconv"
+	"fmt"
 	"time"
 
 	"github.com/go-rod/rod"
@@ -34,9 +34,93 @@ func NewKeyStrokeEvents() *KeyStrokeEvents {
 	}
 }
 
+// keypressSymbolOverrides maps certain input keys to their corresponding
+// keypress string or symbol. These override the default rune for the
+// corresponding input key to improve the visuals or readability of the keypress
+// overlay. A good example of this improvement can be seen in things like Enter
+// (newline). The description string and symbol are embedded into an inner map,
+// which can be indexed into based on whether special symbols are requested or
+// not.
+var keypressSymbolOverrides = map[input.Key]map[bool]string{
+	input.Backspace: {
+		true:  "\\\\\\\\b",
+		false: "⌫",
+	},
+	input.Delete: {
+		true:  "\\\\\\\\d",
+		false: "␡",
+	},
+	input.ControlLeft: {
+		true:  "<CTRL>+",
+		false: "C-",
+	},
+	input.ControlRight: {
+		true:  "<CTRL>+",
+		false: "C-",
+	},
+	input.AltLeft: {
+		true:  "<ALT>+",
+		false: "⎇-",
+	},
+	input.AltRight: {
+		true:  "<ALT>+",
+		false: "⎇-",
+	},
+	input.ArrowDown: {
+		true:  "<DOWN>",
+		false: "↓",
+	},
+	input.PageDown: {
+		true:  "<PAGEDOWN>",
+		false: "⤓",
+	},
+	input.ArrowUp: {
+		true:  "<UP>",
+		false: "↑",
+	},
+	input.PageUp: {
+		true:  "<PAGEUP>",
+		false: "⤒",
+	},
+	input.ArrowLeft: {
+		true:  "<LEFT>",
+		false: "←",
+	},
+	input.ArrowRight: {
+		true:  "<RIGHT>",
+		false: "→",
+	},
+	input.Space: {
+		true:  "<SPACE>",
+		false: "\\\\\\\\s",
+	},
+	input.Enter: {
+		true:  "<ENTER>",
+		false: "⏎",
+	},
+	input.Escape: {
+		true:  "<ESCAPE>",
+		false: "⎋",
+	},
+	input.Tab: {
+		true:  "<TAB>",
+		false: "⇥",
+	},
+}
+
+func keyToDisplay(key input.Key) string {
+	if override, ok := keypressSymbolOverrides[key]; ok {
+		if symbol, ok := override[false]; ok {
+			fmt.Println("returning symbol: ", symbol)
+			return symbol
+		}
+	}
+	return string(inverseKeymap[key])
+}
+
 // Push adds a new key press event to the collection.
 func (k *KeyStrokeEvents) Push(display string) {
-	k.display += strconv.Quote(display)
+	k.display += display
 	event := KeyStrokeEvent{Display: k.display, WhenMS: time.Now().Sub(k.startTime).Milliseconds()}
 	k.events = append(k.events, event)
 }
@@ -86,13 +170,13 @@ type Keyboard struct {
 
 // Press is a wrapper around the rod.Keyboard#Press method.
 func (k *Keyboard) Press(key input.Key) {
-	k.KeyStrokeEvents.Push(string(inverseKeymap[key]))
+	k.KeyStrokeEvents.Push(keyToDisplay(key))
 	k.Keyboard.Press(key)
 }
 
 // Type is a wrapper around the rod.Keyboard#Type method.
 func (k *Keyboard) Type(key input.Key) {
-	k.KeyStrokeEvents.Push(string(inverseKeymap[key]))
+	k.KeyStrokeEvents.Push(keyToDisplay(key))
 	k.Keyboard.Type(key)
 }
 
