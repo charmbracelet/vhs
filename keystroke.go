@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"sync"
 	"time"
 
 	"github.com/go-rod/rod"
@@ -22,14 +22,21 @@ type KeyStrokeEvent struct {
 type KeyStrokeEvents struct {
 	display   string
 	events    []KeyStrokeEvent
+	once      sync.Once
 	startTime time.Time
 }
 
 // NewKeyStrokeEvents creates a new KeyStrokeEvents struct.
 func NewKeyStrokeEvents() *KeyStrokeEvents {
 	return &KeyStrokeEvents{
-		display:   "",
-		events:    make([]KeyStrokeEvent, 0),
+		display: "",
+		events:  make([]KeyStrokeEvent, 0),
+		// NOTE: This is actually setting the startTime too early. It
+		// takes a while (in computer time) to get to the point where
+		// we start recording. Therefore, we actually set this another
+		// time on the first push. Without this, the final overlay
+		// would be slightly desynced by a 20-40 ms, which is
+		// noticeable to the human eye.
 		startTime: time.Now(),
 	}
 }
@@ -111,7 +118,6 @@ var keypressSymbolOverrides = map[input.Key]map[bool]string{
 func keyToDisplay(key input.Key) string {
 	if override, ok := keypressSymbolOverrides[key]; ok {
 		if symbol, ok := override[false]; ok {
-			fmt.Println("returning symbol: ", symbol)
 			return symbol
 		}
 	}
@@ -120,6 +126,9 @@ func keyToDisplay(key input.Key) string {
 
 // Push adds a new key press event to the collection.
 func (k *KeyStrokeEvents) Push(display string) {
+	k.once.Do(func() {
+		k.startTime = time.Now()
+	})
 	k.display += display
 	event := KeyStrokeEvent{Display: k.display, WhenMS: time.Now().Sub(k.startTime).Milliseconds()}
 	k.events = append(k.events, event)
