@@ -370,6 +370,13 @@ func ExecuteSetTheme(c parser.Command, v *VHS) {
 	_, _ = v.Page.Eval(fmt.Sprintf("() => term.options.theme = %s", string(bts)))
 	v.Options.Video.Style.BackgroundColor = v.Options.Theme.Background
 	v.Options.Video.Style.WindowBarColor = v.Options.Theme.Background
+	// The intuitive behavior is to have keystroke overlay inherit from the
+	// foreground color. One key benefit of this behavior is that you won't have
+	// issues where e.g. a light theme makes a default white-value keypress
+	// overlay be hard to read. If it does, then the theme is likely
+	// fundamentally 'broken' since the text you type at the shell will
+	// similarly be very hard to read.
+	v.Options.Video.KeyStrokeOverlay.Color = v.Options.Theme.Foreground
 }
 
 // ExecuteSetTypingSpeed applies the default typing speed on the vhs.

@@ -48,6 +48,8 @@ func NewKeyStrokeEvents() *KeyStrokeEvents {
 // (newline). The description string and symbol are embedded into an inner map,
 // which can be indexed into based on whether special symbols are requested or
 // not.
+// TODO: I think we can ignore the non-special symbol case and just use the
+// symbols since we can rely on font fallback behavior.
 var keypressSymbolOverrides = map[input.Key]map[bool]string{
 	input.Backspace: {
 		true:  "\\\\\\\\b",

@@ -173,7 +173,8 @@ func (fb *FilterComplexBuilder) WithMarginFill(marginStream int) *FilterComplexB
 }
 
 // WithKeyStrokes adds key stroke drawtext options to the ffmpeg filter_complex.
-func (fb *FilterComplexBuilder) WithKeyStrokes(events []KeyStrokeEvent) *FilterComplexBuilder {
+func (fb *FilterComplexBuilder) WithKeyStrokes(opts VideoOptions) *FilterComplexBuilder {
+	events := opts.KeyStrokeOverlay.Events
 	prevStageName := fb.prevStageName
 	for i := range events {
 		event := events[i]
@@ -190,7 +191,7 @@ func (fb *FilterComplexBuilder) WithKeyStrokes(events []KeyStrokeEvent) *FilterC
 				prevStageName,
 				"monospace",
 				events[i].Display,
-				"white",
+				opts.KeyStrokeOverlay.Color,
 				30,
 				"(w-text_w)/2",
 				"h-text_h-40",

@@ -219,9 +219,8 @@ func (vhs *VHS) Render() error {
 	}
 
 	if vhs.Options.ShouldRenderKeyStrokes {
-		vhs.Options.Video.KeyStrokeEvents = vhs.Page.KeyStrokeEvents.Slice()
+		vhs.Options.Video.KeyStrokeOverlay.Events = vhs.Page.KeyStrokeEvents.Slice()
 	}
-	fmt.Println("should render keystrokes?: ", vhs.Options.ShouldRenderKeyStrokes, " num events: ", len(vhs.Options.Video.KeyStrokeEvents))
 
 	// Generate the video(s) with the frames.
 	var cmds []*exec.Cmd
