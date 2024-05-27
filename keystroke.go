@@ -99,7 +99,7 @@ var keypressSymbolOverrides = map[input.Key]map[bool]string{
 	},
 	input.Space: {
 		true:  "<SPACE>",
-		false: "\\\\\\\\s",
+		false: "␣",
 	},
 	input.Enter: {
 		true:  "<ENTER>",

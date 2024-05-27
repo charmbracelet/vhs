@@ -188,7 +188,7 @@ func (fb *FilterComplexBuilder) WithKeyStrokes(events []KeyStrokeEvent) *FilterC
 			[%s]drawtext=font=%s:text='%s':fontcolor=%s:fontsize=%d:x=%s:y=%s:enable='%s'[%s]
 			`,
 				prevStageName,
-				"Noto Mono",
+				"monospace",
 				events[i].Display,
 				"white",
 				30,
