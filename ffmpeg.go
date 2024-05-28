@@ -193,8 +193,8 @@ func (fb *FilterComplexBuilder) WithKeyStrokes(opts VideoOptions) *FilterComplex
 				events[i].Display,
 				opts.KeyStrokeOverlay.Color,
 				30,
-				"(w-text_w)/2",
-				"h-text_h-40",
+				"(w-text_w)/2", // Horizontal center.
+				"h-text_h-40",  // Vertical center.
 				enableCondition,
 				stageName,
 			),
