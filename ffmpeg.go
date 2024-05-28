@@ -192,7 +192,7 @@ func (fb *FilterComplexBuilder) WithKeyStrokes(opts VideoOptions) *FilterComplex
 				"monospace",
 				events[i].Display,
 				opts.KeyStrokeOverlay.Color,
-				30,
+				defaultFontSize,
 				"(w-text_w)/2", // Horizontal center.
 				"h-text_h-40",  // Vertical center.
 				enableCondition,
