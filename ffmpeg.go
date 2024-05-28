@@ -174,12 +174,22 @@ func (fb *FilterComplexBuilder) WithMarginFill(marginStream int) *FilterComplexB
 
 // WithKeyStrokes adds key stroke drawtext options to the ffmpeg filter_complex.
 func (fb *FilterComplexBuilder) WithKeyStrokes(opts VideoOptions) *FilterComplexBuilder {
+	const (
+		defaultFontFamily = "monospace"
+		horizontalCenter  = "(w-text_w)/2"
+		verticalCenter    = "h-text_h-40"
+	)
+
 	events := opts.KeyStrokeOverlay.Events
 	prevStageName := fb.prevStageName
 	for i := range events {
 		event := events[i]
 		fb.filterComplex.WriteString(";")
 		stageName := fmt.Sprintf("keypressOverlay%d", i)
+
+		// When setting the enable conditions, we have to handle the very last
+		// event specially. It technically has no 'end' so we set it to render
+		// until the end of the video.
 		enableCondition := fmt.Sprintf("gte(t,%f)", float64(event.WhenMS)/1000)
 		if i < len(events)-1 {
 			enableCondition = fmt.Sprintf("between(t,%f,%f)", float64(events[i].WhenMS)/1000, float64(events[i+1].WhenMS)/1000)
@@ -189,20 +199,18 @@ func (fb *FilterComplexBuilder) WithKeyStrokes(opts VideoOptions) *FilterComplex
 			[%s]drawtext=font=%s:text='%s':fontcolor=%s:fontsize=%d:x=%s:y=%s:enable='%s'[%s]
 			`,
 				prevStageName,
-				"monospace",
+				defaultFontFamily,
 				events[i].Display,
 				opts.KeyStrokeOverlay.Color,
 				defaultFontSize,
-				"(w-text_w)/2", // Horizontal center.
-				"h-text_h-40",  // Vertical center.
+				horizontalCenter,
+				verticalCenter,
 				enableCondition,
 				stageName,
 			),
 		)
 		prevStageName = stageName
 	}
-
-	// fmt.Println("drawtext filter added: ", fb.filterComplex.String())
 
 	// At the end of the loop, the previous stage name is now transfered to the filter complex builder's
 	// state for use in subsequent filters.
