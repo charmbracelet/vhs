@@ -117,7 +117,7 @@ func ExecuteKey(k input.Key) CommandFunc {
 const WaitTick = 10 * time.Millisecond
 
 // ExecuteWait is a CommandFunc that waits for a regex match for the given amount of time.
-func ExecuteWait(c parser.Command, v *VHS) {
+func ExecuteWait(c parser.Command, v *VHS) error {
 	scope, rxStr, ok := strings.Cut(c.Args, " ")
 	rx := v.Options.WaitPattern
 	if ok {
@@ -130,7 +130,7 @@ func ExecuteWait(c parser.Command, v *VHS) {
 		t, err := time.ParseDuration(c.Options)
 		if err != nil {
 			// Shouldn't be possible due to parse validation.
-			panic(err)
+			return fmt.Errorf("failed to parse duration: %w", err)
 		}
 		timeout = t
 	}
@@ -146,34 +146,34 @@ func ExecuteWait(c parser.Command, v *VHS) {
 		case "Line":
 			line, err := v.CurrentLine()
 			if err != nil {
-				panic(err)
+				return fmt.Errorf("failed to get current line: %w", err)
 			}
 			last = line
 
 			if rx.MatchString(line) {
-				return
+				return nil
 			}
 		case "Screen":
 			lines, err := v.Buffer()
 			if err != nil {
-				panic(err)
+				return fmt.Errorf("failed to get buffer: %w", err)
 			}
 			last = strings.Join(lines, "\n")
 
 			if rx.MatchString(last) {
-				return
+				return nil
 			}
 		default:
 			// Should be impossible due to parse validation, but we don't want to
 			// hang if it does happen due to a bug.
-			panic(fmt.Errorf("invalid scope %q", scope))
+			return fmt.Errorf("invalid scope %q", scope)
 		}
 
 		select {
 		case <-checkT.C:
 			continue
 		case <-timeoutT.C:
-			panic(fmt.Errorf("timeout waiting for %q to match %s; last value was: %s", c.Args, rx.String(), last))
+			return fmt.Errorf("timeout waiting for %q to match %s; last value was: %s", c.Args, rx.String(), last)
 		}
 	}
 }
@@ -591,21 +591,23 @@ func ExecuteSetTypingSpeed(c parser.Command, v *VHS) error {
 }
 
 // ExecuteSetWaitTimeout applies the default wait timeout on the vhs.
-func ExecuteSetWaitTimeout(c parser.Command, v *VHS) {
+func ExecuteSetWaitTimeout(c parser.Command, v *VHS) error {
 	waitTimeout, err := time.ParseDuration(c.Args)
 	if err != nil {
-		return
+		return fmt.Errorf("failed to parse wait timeout: %w", err)
 	}
 	v.Options.WaitTimeout = waitTimeout
+	return nil
 }
 
 // ExecuteSetWaitPattern applies the default wait pattern on the vhs.
-func ExecuteSetWaitPattern(c parser.Command, v *VHS) {
+func ExecuteSetWaitPattern(c parser.Command, v *VHS) error {
 	rx, err := regexp.Compile(c.Args)
 	if err != nil {
-		return
+		return fmt.Errorf("failed to compile regexp: %w", err)
 	}
 	v.Options.WaitPattern = rx
+	return nil
 }
 
 // ExecuteSetPadding applies the padding on the vhs.
