@@ -83,43 +83,14 @@ Use a package manager:
 # macOS or Linux
 brew install vhs
 
-# macOS (via MacPorts)
-sudo port install vhs
-
 # Arch Linux (btw)
 pacman -S vhs
 
 # Nix
 nix-env -iA nixpkgs.vhs
 
-# Debian/Ubuntu
-sudo mkdir -p /etc/apt/keyrings
-curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
-echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | sudo tee /etc/apt/sources.list.d/charm.list
-# Install ttyd from https://github.com/tsl0922/ttyd/releases
-sudo apt update && sudo apt install vhs ffmpeg
-
-# Fedora/RHEL
-echo '[charm]
-name=Charm
-baseurl=https://repo.charm.sh/yum/
-enabled=1
-gpgcheck=1
-gpgkey=https://repo.charm.sh/yum/gpg.key' | sudo tee /etc/yum.repos.d/charm.repo
-# Install ttyd from https://github.com/tsl0922/ttyd/releases
-sudo yum install vhs ffmpeg
-
-# Void Linux
-sudo xbps-install vhs
-
-# Windows using winget
-# Note: Winget will install all the needed dependencies, which're FFmpeg and ttyd.
-#       No need to do any prerequisites to install vhs using this method.
-winget install charmbracelet.vhs
-
 # Windows using scoop
 scoop install vhs
-
 ```
 
 Or, use Docker to run VHS directly, dependencies included:
@@ -138,6 +109,49 @@ Or, just install it with `go`:
 ```sh
 go install github.com/charmbracelet/vhs@latest
 ```
+
+<details>
+<summary>Windows, Debian, Ubuntu, Fedora, RHEL, Void Instructions</summary>
+
+* Debian / Ubuntu
+
+```sh
+# Debian/Ubuntu
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
+echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | sudo tee /etc/apt/sources.list.d/charm.list
+# Install ttyd from https://github.com/tsl0922/ttyd/releases
+sudo apt update && sudo apt install vhs ffmpeg  
+```
+
+* Fedora / RHEL
+
+```sh
+echo '[charm]
+name=Charm
+baseurl=https://repo.charm.sh/yum/
+enabled=1
+gpgcheck=1
+gpgkey=https://repo.charm.sh/yum/gpg.key' | sudo tee /etc/yum.repos.d/charm.repo
+# Install ttyd from https://github.com/tsl0922/ttyd/releases
+sudo yum install vhs ffmpeg
+```
+
+* Void
+
+```sh
+sudo xbps-install vhs
+```
+
+* Windows
+
+```sh
+winget install charmbracelet.vhs
+# or scoop
+scoop install vhs
+```
+
+</details>
 
 [releases]: https://github.com/charmbracelet/vhs/releases
 

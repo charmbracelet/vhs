@@ -29,27 +29,39 @@ var (
 )
 
 // SaveOutput saves the current buffer to the output file.
-func (v *VHS) SaveOutput() {
+func (v *VHS) SaveOutput() error {
+	var err error
 	// Create output file (once)
 	once.Do(func() {
-		err := os.MkdirAll(filepath.Dir(v.Options.Test.Output), os.ModePerm)
+		err = os.MkdirAll(filepath.Dir(v.Options.Test.Output), os.ModePerm)
 		if err != nil {
-			file, _ = os.CreateTemp(os.TempDir(), "vhs-*.txt")
+			file, err = os.CreateTemp(os.TempDir(), "vhs-*.txt")
 			return
 		}
-		file, _ = os.Create(v.Options.Test.Output)
+		file, err = os.Create(v.Options.Test.Output)
 	})
+	if err != nil {
+		return fmt.Errorf("failed to create output file: %w", err)
+	}
 
 	lines, err := v.Buffer()
 	if err != nil {
-		return
+		return fmt.Errorf("failed to get buffer: %w", err)
 	}
 
 	for _, line := range lines {
-		_, _ = file.WriteString(line + "\n")
+		_, err = file.WriteString(line + "\n")
+		if err != nil {
+			return fmt.Errorf("failed to write buffer to file: %w", err)
+		}
 	}
 
-	_, _ = file.WriteString(separator + "\n")
+	_, err = file.WriteString(separator + "\n")
+	if err != nil {
+		return fmt.Errorf("failed to write separator to file: %w", err)
+	}
+
+	return nil
 }
 
 // Buffer returns the current buffer.

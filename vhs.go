@@ -173,9 +173,6 @@ func (vhs *VHS) Setup() {
 	height := vhs.Options.Video.Style.Height - double(padding) - double(margin) - bar
 	vhs.Page = vhs.Page.MustSetViewport(width, height, 0, false)
 
-	// Let's wait until we can access the window.term variable.
-	vhs.Page = vhs.Page.MustWait("() => window.term != undefined")
-
 	// Find xterm.js canvases for the text and cursor layer for recording.
 	vhs.TextCanvas, _ = vhs.Page.Element("canvas.xterm-text-layer")
 	vhs.CursorCanvas, _ = vhs.Page.Element("canvas.xterm-cursor-layer")
