@@ -245,7 +245,7 @@ func ExecuteHide(_ parser.Command, v *VHS) error {
 
 // ExecuteRequire is a CommandFunc that checks if all the binaries mentioned in the
 // Require command are present. If not, it exits with a non-zero error.
-func ExecuteRequire(c parser.Command, v *VHS) error {
+func ExecuteRequire(c parser.Command, _ *VHS) error {
 	_, err := exec.LookPath(c.Args)
 	return err
 }
