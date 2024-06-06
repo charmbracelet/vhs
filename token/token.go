@@ -54,6 +54,7 @@ const (
 	NUMBER  = "NUMBER"
 	STRING  = "STRING"
 	JSON    = "JSON"
+	REGEX   = "REGEX"
 	BOOLEAN = "BOOLEAN"
 
 	DOWN  = "DOWN"
@@ -90,6 +91,9 @@ const (
 	WINDOW_BAR      = "WINDOW_BAR"      //nolint:revive
 	WINDOW_BAR_SIZE = "WINDOW_BAR_SIZE" //nolint:revive
 	BORDER_RADIUS   = "CORNER_RADIUS"   //nolint:revive
+	WAIT            = "WAIT"            //nolint:revive
+	WAIT_TIMEOUT    = "WAIT_TIMEOUT"    //nolint:revive
+	WAIT_PATTERN    = "WAIT_PATTERN"    //nolint:revive
 	CURSOR_BLINK    = "CURSOR_BLINK"    //nolint:revive
 )
 
@@ -142,6 +146,9 @@ var Keywords = map[string]Type{
 	"Theme":         THEME,
 	"Width":         WIDTH,
 	"LoopOffset":    LOOP_OFFSET,
+	"WaitTimeout":   WAIT_TIMEOUT,
+	"WaitPattern":   WAIT_PATTERN,
+	"Wait":          WAIT,
 	"Source":        SOURCE,
 	"CursorBlink":   CURSOR_BLINK,
 	"true":          BOOLEAN,
@@ -158,7 +165,7 @@ func IsSetting(t Type) bool {
 	case SHELL, FONT_FAMILY, FONT_SIZE, LETTER_SPACING, LINE_HEIGHT,
 		FRAMERATE, TYPING_SPEED, THEME, PLAYBACK_SPEED, HEIGHT, WIDTH,
 		PADDING, LOOP_OFFSET, MARGIN_FILL, MARGIN, WINDOW_BAR,
-		WINDOW_BAR_SIZE, BORDER_RADIUS, CURSOR_BLINK:
+		WINDOW_BAR_SIZE, BORDER_RADIUS, CURSOR_BLINK, WAIT_TIMEOUT, WAIT_PATTERN:
 		return true
 	default:
 		return false
@@ -171,7 +178,7 @@ func IsCommand(t Type) bool {
 	case TYPE, SLEEP,
 		UP, DOWN, RIGHT, LEFT, PAGEUP, PAGEDOWN,
 		ENTER, BACKSPACE, DELETE, TAB,
-		ESCAPE, HOME, INSERT, END, CTRL, SOURCE, SCREENSHOT, COPY, PASTE:
+		ESCAPE, HOME, INSERT, END, CTRL, SOURCE, SCREENSHOT, COPY, PASTE, WAIT:
 		return true
 	default:
 		return false
@@ -186,9 +193,20 @@ func IsModifier(t Type) bool {
 // String converts a token to it's human readable string format.
 func (t Type) String() string {
 	if IsCommand(t) || IsSetting(t) {
-		return strings.ToTitle(string(t[0])) + strings.ToLower(string(t[1:]))
+		return ToCamel(string(t))
 	}
 	return string(t)
+}
+
+// ToCamel converts a snake_case string to CamelCase.
+func ToCamel(s string) string {
+	parts := strings.Split(s, "_")
+	for i, p := range parts {
+		p = strings.ToUpper(p[:1]) + strings.ToLower(p[1:])
+		parts[i] = p
+	}
+
+	return strings.Join(parts, "")
 }
 
 // LookupIdentifier returns whether the identifier is a keyword.

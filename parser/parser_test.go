@@ -12,6 +12,8 @@ import (
 func TestParser(t *testing.T) {
 	input := `
 Set TypingSpeed 100ms
+Set WaitTimeout 1m
+Set WaitPattern /foo/
 Type "echo 'Hello, World!'"
 Enter
 Backspace@0.1 5
@@ -28,10 +30,15 @@ Ctrl+C
 Ctrl+L
 Alt+.
 Sleep 100ms
-Sleep 3`
+Sleep 3
+Wait
+Wait+Screen
+Wait@100ms /foobar/`
 
 	expected := []Command{
 		{Type: token.SET, Options: "TypingSpeed", Args: "100ms"},
+		{Type: token.SET, Options: "WaitTimeout", Args: "1m"},
+		{Type: token.SET, Options: "WaitPattern", Args: "foo"},
 		{Type: token.TYPE, Options: "", Args: "echo 'Hello, World!'"},
 		{Type: token.ENTER, Options: "", Args: "1"},
 		{Type: token.BACKSPACE, Options: "0.1s", Args: "5"},
@@ -49,6 +56,9 @@ Sleep 3`
 		{Type: token.ALT, Options: "", Args: "."},
 		{Type: token.SLEEP, Args: "100ms"},
 		{Type: token.SLEEP, Args: "3s"},
+		{Type: token.WAIT, Args: "Line"},
+		{Type: token.WAIT, Args: "Screen"},
+		{Type: token.WAIT, Options: "100ms", Args: "Line foobar"},
 	}
 
 	l := lexer.New(input)
@@ -57,7 +67,7 @@ Sleep 3`
 	cmds := p.Parse()
 
 	if len(cmds) != len(expected) {
-		t.Fatalf("Expected %d commands, got %d", len(expected), len(cmds))
+		t.Fatalf("Expected %d commands, got %d; %v", len(expected), len(cmds), cmds)
 	}
 
 	for i, cmd := range cmds {

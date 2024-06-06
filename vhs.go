@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -46,6 +47,8 @@ type Options struct {
 	Test          TestOptions
 	Video         VideoOptions
 	LoopOffset    float64
+	WaitTimeout   time.Duration
+	WaitPattern   *regexp.Regexp
 	CursorBlink   bool
 	Screenshot    ScreenshotOptions
 	Style         StyleOptions
@@ -58,7 +61,10 @@ const (
 	defaultLetterSpacing = 1.0
 	fontsSeparator       = ","
 	defaultCursorBlink   = true
+	defaultWaitTimeout   = 15 * time.Second
 )
+
+var defaultWaitPattern = regexp.MustCompile(">$")
 
 var defaultFontFamily = withSymbolsFallback(strings.Join([]string{
 	"JetBrains Mono",
@@ -99,6 +105,8 @@ func DefaultVHSOptions() Options {
 		CursorBlink:   defaultCursorBlink,
 		Video:         video,
 		Screenshot:    screenshot,
+		WaitTimeout:   defaultWaitTimeout,
+		WaitPattern:   defaultWaitPattern,
 	}
 }
 

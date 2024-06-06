@@ -24,7 +24,8 @@ Ctrl+C
 Enter
 Sleep .1
 Sleep 100ms
-Sleep 2`
+Sleep 2
+Wait+Screen@1m /foobar/`
 
 	tests := []struct {
 		expectedType    token.Type
@@ -71,6 +72,13 @@ Sleep 2`
 		{token.MILLISECONDS, "ms"},
 		{token.SLEEP, "Sleep"},
 		{token.NUMBER, "2"},
+		{token.WAIT, "Wait"},
+		{token.PLUS, "+"},
+		{token.STRING, "Screen"},
+		{token.AT, "@"},
+		{token.NUMBER, "1"},
+		{token.MINUTES, "m"},
+		{token.REGEX, "foobar"},
 	}
 
 	l := New(input)

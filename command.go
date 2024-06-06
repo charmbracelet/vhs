@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -76,6 +77,7 @@ var CommandFuncs = map[parser.CommandType]CommandFunc{
 	token.COPY:       ExecuteCopy,
 	token.PASTE:      ExecutePaste,
 	token.ENV:        ExecuteEnv,
+	token.WAIT:       ExecuteWait,
 }
 
 // ExecuteNoop is a no-op command that does nothing.
@@ -108,6 +110,71 @@ func ExecuteKey(k input.Key) CommandFunc {
 		}
 
 		return nil
+	}
+}
+
+// WaitTick is the amount of time to wait between checking for a match.
+const WaitTick = 10 * time.Millisecond
+
+// ExecuteWait is a CommandFunc that waits for a regex match for the given amount of time.
+func ExecuteWait(c parser.Command, v *VHS) error {
+	scope, rxStr, ok := strings.Cut(c.Args, " ")
+	rx := v.Options.WaitPattern
+	if ok {
+		// This is validated on parse so using MustCompile reduces noise.
+		rx = regexp.MustCompile(rxStr)
+	}
+
+	timeout := v.Options.WaitTimeout
+	if c.Options != "" {
+		t, err := time.ParseDuration(c.Options)
+		if err != nil {
+			// Shouldn't be possible due to parse validation.
+			return fmt.Errorf("failed to parse duration: %w", err)
+		}
+		timeout = t
+	}
+
+	checkT := time.NewTicker(WaitTick)
+	defer checkT.Stop()
+	timeoutT := time.NewTimer(timeout)
+	defer timeoutT.Stop()
+
+	for {
+		var last string
+		switch scope {
+		case "Line":
+			line, err := v.CurrentLine()
+			if err != nil {
+				return fmt.Errorf("failed to get current line: %w", err)
+			}
+			last = line
+
+			if rx.MatchString(line) {
+				return nil
+			}
+		case "Screen":
+			lines, err := v.Buffer()
+			if err != nil {
+				return fmt.Errorf("failed to get buffer: %w", err)
+			}
+			last = strings.Join(lines, "\n")
+
+			if rx.MatchString(last) {
+				return nil
+			}
+		default:
+			// Should be impossible due to parse validation, but we don't want to
+			// hang if it does happen due to a bug.
+			return fmt.Errorf("invalid scope %q", scope)
+		}
+
+		select {
+		case <-checkT.C:
+			continue
+		case <-timeoutT.C:
+			return fmt.Errorf("timeout waiting for %q to match %s; last value was: %s", c.Args, rx.String(), last)
+		}
 	}
 }
 
@@ -371,6 +438,8 @@ var Settings = map[string]CommandFunc{
 	"WindowBar":     ExecuteSetWindowBar,
 	"WindowBarSize": ExecuteSetWindowBarSize,
 	"BorderRadius":  ExecuteSetBorderRadius,
+	"WaitPattern":   ExecuteSetWaitPattern,
+	"WaitTimeout":   ExecuteSetWaitTimeout,
 	"CursorBlink":   ExecuteSetCursorBlink,
 }
 
@@ -518,6 +587,26 @@ func ExecuteSetTypingSpeed(c parser.Command, v *VHS) error {
 	}
 
 	v.Options.TypingSpeed = typingSpeed
+	return nil
+}
+
+// ExecuteSetWaitTimeout applies the default wait timeout on the vhs.
+func ExecuteSetWaitTimeout(c parser.Command, v *VHS) error {
+	waitTimeout, err := time.ParseDuration(c.Args)
+	if err != nil {
+		return fmt.Errorf("failed to parse wait timeout: %w", err)
+	}
+	v.Options.WaitTimeout = waitTimeout
+	return nil
+}
+
+// ExecuteSetWaitPattern applies the default wait pattern on the vhs.
+func ExecuteSetWaitPattern(c parser.Command, v *VHS) error {
+	rx, err := regexp.Compile(c.Args)
+	if err != nil {
+		return fmt.Errorf("failed to compile regexp: %w", err)
+	}
+	v.Options.WaitPattern = rx
 	return nil
 }
 
