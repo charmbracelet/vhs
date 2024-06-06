@@ -61,7 +61,7 @@ const (
 	defaultLetterSpacing = 1.0
 	fontsSeparator       = ","
 	defaultCursorBlink   = true
-	defaultWaitTimeout   = 5 * time.Second
+	defaultWaitTimeout   = 15 * time.Second
 )
 
 var defaultWaitPattern = regexp.MustCompile(">$")
