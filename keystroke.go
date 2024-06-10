@@ -20,10 +20,11 @@ type KeyStrokeEvent struct {
 
 // KeyStrokeEvents is a collection of key press events that you can push to.
 type KeyStrokeEvents struct {
-	display   string
-	events    []KeyStrokeEvent
-	once      sync.Once
-	startTime time.Time
+	display        string
+	events         []KeyStrokeEvent
+	once           sync.Once
+	startTime      time.Time
+	maxDisplaySize int
 }
 
 // NewKeyStrokeEvents creates a new KeyStrokeEvents struct.
@@ -37,7 +38,8 @@ func NewKeyStrokeEvents() *KeyStrokeEvents {
 		// time on the first push. Without this, the final overlay
 		// would be slightly desynced by a 20-40 ms, which is
 		// noticeable to the human eye.
-		startTime: time.Now(),
+		startTime:      time.Now(),
+		maxDisplaySize: 20,
 	}
 }
 
@@ -132,6 +134,16 @@ func (k *KeyStrokeEvents) Push(display string) {
 		k.startTime = time.Now()
 	})
 	k.display += display
+	// Keep k.display @ 20 max.
+	// Anymore than that is probably overkill, and we don't want to run into
+	// issues where the overlay text is longer than the video width itself.
+	if len(k.display) > k.maxDisplaySize {
+		// We need to be cognizant of unicode -- we can't just slice off a byte,
+		// we have to slice off a _rune_. The conversion back-and-forth may be a
+		// bit inefficient, but k.display will always be tiny thanks to
+		// k.maxDisplaySize.
+		k.display = string([]rune(k.display)[1:])
+	}
 	event := KeyStrokeEvent{Display: k.display, WhenMS: time.Now().Sub(k.startTime).Milliseconds()}
 	k.events = append(k.events, event)
 }
