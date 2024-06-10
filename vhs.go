@@ -36,20 +36,19 @@ type VHS struct {
 
 // Options is the set of options for the setup.
 type Options struct {
-	Shell                  Shell
-	FontFamily             string
-	FontSize               int
-	LetterSpacing          float64
-	LineHeight             float64
-	TypingSpeed            time.Duration
-	ShouldRenderKeyStrokes bool
-	Theme                  Theme
-	Test                   TestOptions
-	Video                  VideoOptions
-	LoopOffset             float64
-	CursorBlink            bool
-	Screenshot             ScreenshotOptions
-	Style                  StyleOptions
+	Shell         Shell
+	FontFamily    string
+	FontSize      int
+	LetterSpacing float64
+	LineHeight    float64
+	TypingSpeed   time.Duration
+	Theme         Theme
+	Test          TestOptions
+	Video         VideoOptions
+	LoopOffset    float64
+	CursorBlink   bool
+	Screenshot    ScreenshotOptions
+	Style         StyleOptions
 }
 
 const (
@@ -218,9 +217,7 @@ func (vhs *VHS) Render() error {
 		return err
 	}
 
-	if vhs.Options.ShouldRenderKeyStrokes {
-		vhs.Options.Video.KeyStrokeOverlay.Events = vhs.Page.KeyStrokeEvents.Slice()
-	}
+	vhs.Options.Video.KeyStrokeOverlay.Events = vhs.Page.KeyStrokeEvents.Slice()
 
 	// Generate the video(s) with the frames.
 	var cmds []*exec.Cmd

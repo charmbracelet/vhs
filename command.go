@@ -390,7 +390,14 @@ func ExecuteSetTypingSpeed(c parser.Command, v *VHS) {
 
 // ExecuteSetKeyStrokes enables or disables keystroke overlay recording.
 func ExecuteSetKeyStrokes(c parser.Command, v *VHS) {
-	v.Options.ShouldRenderKeyStrokes = c.Args == "Show"
+	switch c.Args {
+	case "Hide":
+		v.Page.KeyStrokeEvents.Disable()
+	case "Show":
+		v.Page.KeyStrokeEvents.Enable()
+	default:
+		return
+	}
 }
 
 // ExecuteSetPadding applies the padding on the vhs.

@@ -20,6 +20,7 @@ type KeyStrokeEvent struct {
 
 // KeyStrokeEvents is a collection of key press events that you can push to.
 type KeyStrokeEvents struct {
+	enabled        bool
 	display        string
 	events         []KeyStrokeEvent
 	once           sync.Once
@@ -128,11 +129,31 @@ func keyToDisplay(key input.Key) string {
 	return string(inverseKeymap[key])
 }
 
+// Enable enables key press event recording.
+func (k *KeyStrokeEvents) Enable() {
+	k.enabled = true
+}
+
+// Disable disables key press event recording.
+func (k *KeyStrokeEvents) Disable() {
+	k.enabled = false
+}
+
 // Push adds a new key press event to the collection.
 func (k *KeyStrokeEvents) Push(display string) {
 	k.once.Do(func() {
 		k.startTime = time.Now()
 	})
+
+	// If we're not enabled, we don't want to do anything.
+	// But note that we still want to update the start time -- this is because
+	// we need to know the global start time if we want to render any subsequent
+	// events correctly, and the keystroke overlay may be re-enabled later in
+	// the recording.
+	if !k.enabled {
+		return
+	}
+
 	k.display += display
 	// Keep k.display @ 20 max.
 	// Anymore than that is probably overkill, and we don't want to run into

@@ -15,6 +15,22 @@ import (
 // EvaluatorOption is a function that can be used to modify the VHS instance.
 type EvaluatorOption func(*VHS)
 
+// isIntermediateAllowedSet returns true if the set command is allowed to be
+// evaluated in the middle of the tape.
+// This function assumes that the given option is from a Set command.
+func isIntermediateAllowedSet(opt string) bool {
+	intermediateAllowedSets := []string{
+		"TypingSpeed",
+		"KeyStrokes",
+	}
+	for _, allowed := range intermediateAllowedSets {
+		if opt == allowed {
+			return true
+		}
+	}
+	return false
+}
+
 // Evaluate takes as input a tape string, an output writer, and an output file
 // and evaluates all the commands within the tape string and produces a GIF.
 func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...EvaluatorOption) []error {
@@ -134,7 +150,7 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 		// GIF as the frame sequence will change dimensions. This is fixable.
 		//
 		// We should remove if isSetting statement.
-		isSetting := cmd.Type == token.SET && cmd.Options != "TypingSpeed"
+		isSetting := cmd.Type == token.SET && !isIntermediateAllowedSet(cmd.Options)
 		if isSetting || cmd.Type == token.REQUIRE {
 			fmt.Fprintln(out, Highlight(cmd, true))
 			continue
