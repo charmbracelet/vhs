@@ -51,80 +51,28 @@ func NewKeyStrokeEvents() *KeyStrokeEvents {
 // (newline). The description string and symbol are embedded into an inner map,
 // which can be indexed into based on whether special symbols are requested or
 // not.
-// TODO: I think we can ignore the non-special symbol case and just use the
-// symbols since we can rely on font fallback behavior.
-var keypressSymbolOverrides = map[input.Key]map[bool]string{
-	input.Backspace: {
-		true:  "\\\\\\\\b",
-		false: "⌫",
-	},
-	input.Delete: {
-		true:  "\\\\\\\\d",
-		false: "␡",
-	},
-	input.ControlLeft: {
-		true:  "<CTRL>+",
-		false: "C-",
-	},
-	input.ControlRight: {
-		true:  "<CTRL>+",
-		false: "C-",
-	},
-	input.AltLeft: {
-		true:  "<ALT>+",
-		false: "⎇-",
-	},
-	input.AltRight: {
-		true:  "<ALT>+",
-		false: "⎇-",
-	},
-	input.ArrowDown: {
-		true:  "<DOWN>",
-		false: "↓",
-	},
-	input.PageDown: {
-		true:  "<PAGEDOWN>",
-		false: "⤓",
-	},
-	input.ArrowUp: {
-		true:  "<UP>",
-		false: "↑",
-	},
-	input.PageUp: {
-		true:  "<PAGEUP>",
-		false: "⤒",
-	},
-	input.ArrowLeft: {
-		true:  "<LEFT>",
-		false: "←",
-	},
-	input.ArrowRight: {
-		true:  "<RIGHT>",
-		false: "→",
-	},
-	input.Space: {
-		true:  "<SPACE>",
-		false: "␣",
-	},
-	input.Enter: {
-		true:  "<ENTER>",
-		false: "⏎",
-	},
-	input.Escape: {
-		true:  "<ESCAPE>",
-		false: "⎋",
-	},
-	input.Tab: {
-		true:  "<TAB>",
-		false: "⇥",
-	},
+var keypressSymbolOverrides = map[input.Key]string{
+	input.Backspace:    "⌫",
+	input.Delete:       "␡",
+	input.ControlLeft:  "C-",
+	input.ControlRight: "C-",
+	input.AltLeft:      "⎇-",
+	input.AltRight:     "⎇-",
+	input.ArrowDown:    "↓",
+	input.PageDown:     "⤓",
+	input.ArrowUp:      "↑",
+	input.PageUp:       "⤒",
+	input.ArrowLeft:    "←",
+	input.ArrowRight:   "→",
+	input.Space:        "␣",
+	input.Enter:        "⏎",
+	input.Escape:       "⎋",
+	input.Tab:          "⇥",
 }
 
 func keyToDisplay(key input.Key) string {
-	if override, ok := keypressSymbolOverrides[key]; ok {
-		if symbol, ok := override[false]; ok {
-			return symbol
-		}
+	if symbol, ok := keypressSymbolOverrides[key]; ok {
+		return symbol
 	}
 	return string(inverseKeymap[key])
 }
