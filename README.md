@@ -89,6 +89,9 @@ pacman -S vhs
 # Nix
 nix-env -iA nixpkgs.vhs
 
+# Flox
+flox instal vhs
+
 # Windows using scoop
 scoop install vhs
 ```
