@@ -372,7 +372,7 @@ func ExecuteSetTheme(c parser.Command, v *VHS) {
 	v.Options.Video.Style.WindowBarColor = v.Options.Theme.Background
 	// The intuitive behavior is to have keystroke overlay inherit from the
 	// foreground color. One key benefit of this behavior is that you won't have
-	// issues where e.g. a light theme makes a default white-value keypress
+	// issues where e.g. a light theme makes a default white-value keystroke
 	// overlay be hard to read. If it does, then the theme is likely
 	// fundamentally 'broken' since the text you type at the shell will
 	// similarly be very hard to read.

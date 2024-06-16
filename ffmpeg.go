@@ -185,7 +185,7 @@ func (fb *FilterComplexBuilder) WithKeyStrokes(opts VideoOptions) *FilterComplex
 	for i := range events {
 		event := events[i]
 		fb.filterComplex.WriteString(";")
-		stageName := fmt.Sprintf("keypressOverlay%d", i)
+		stageName := fmt.Sprintf("keystrokeOverlay%d", i)
 
 		// When setting the enable conditions, we have to handle the very last
 		// event specially. It technically has no 'end' so we set it to render

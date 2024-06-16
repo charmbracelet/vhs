@@ -44,14 +44,14 @@ func NewKeyStrokeEvents() *KeyStrokeEvents {
 	}
 }
 
-// keypressSymbolOverrides maps certain input keys to their corresponding
-// keypress string or symbol. These override the default rune for the
-// corresponding input key to improve the visuals or readability of the keypress
-// overlay. A good example of this improvement can be seen in things like Enter
-// (newline). The description string and symbol are embedded into an inner map,
-// which can be indexed into based on whether special symbols are requested or
-// not.
-var keypressSymbolOverrides = map[input.Key]string{
+// keystrokeSymbolOverrides maps certain input keys to their corresponding
+// keystroke string or symbol. These override the default rune for the
+// corresponding input key to improve the visuals or readability of the
+// keystroke overlay. A good example of this improvement can be seen in things
+// like Enter (newline). The description string and symbol are embedded into an
+// inner map, which can be indexed into based on whether special symbols are
+// requested or not.
+var keystrokeSymbolOverrides = map[input.Key]string{
 	input.Backspace:    "⌫",
 	input.Delete:       "␡",
 	input.ControlLeft:  "C-",
@@ -71,7 +71,7 @@ var keypressSymbolOverrides = map[input.Key]string{
 }
 
 func keyToDisplay(key input.Key) string {
-	if symbol, ok := keypressSymbolOverrides[key]; ok {
+	if symbol, ok := keystrokeSymbolOverrides[key]; ok {
 		return symbol
 	}
 	return string(inverseKeymap[key])
@@ -125,10 +125,10 @@ func (k *KeyStrokeEvents) Slice() []KeyStrokeEvent {
 
 // Page is a wrapper around the rod.Page object.
 // It's primary purpose is to decorate the rod.Page struct such that we can
-// record keypress events during the recording for keypress overlays. We prefer
-// decorating so that we that minimize the possibility of future bugs around
-// forgetting to log key presses, since all input is done through rod.Page (and
-// technically rod.Page.MustElement() + rod.Page.Keyboard).
+// record keystroke events during the recording for keystroke overlays. We
+// prefer decorating so that we that minimize the possibility of future bugs
+// around forgetting to log key presses, since all input is done through
+// rod.Page (and technically rod.Page.MustElement() + rod.Page.Keyboard).
 type Page struct {
 	*rod.Page
 	Keyboard        Keyboard
