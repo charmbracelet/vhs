@@ -28,8 +28,14 @@ type KeyStrokeEvents struct {
 	maxDisplaySize int
 }
 
+const (
+	// DefaultMaxDisplaySize is the default maximum display size for the
+	// keystroke overlay.
+	DefaultMaxDisplaySize = 20
+)
+
 // NewKeyStrokeEvents creates a new KeyStrokeEvents struct.
-func NewKeyStrokeEvents() *KeyStrokeEvents {
+func NewKeyStrokeEvents(maxDisplaySize int) *KeyStrokeEvents {
 	return &KeyStrokeEvents{
 		display: "",
 		events:  make([]KeyStrokeEvent, 0),
@@ -40,7 +46,7 @@ func NewKeyStrokeEvents() *KeyStrokeEvents {
 		// would be slightly desynced by a 20-40 ms, which is
 		// noticeable to the human eye.
 		startTime:      time.Now(),
-		maxDisplaySize: 20,
+		maxDisplaySize: maxDisplaySize,
 	}
 }
 
@@ -137,7 +143,7 @@ type Page struct {
 
 // NewPage creates a new wrapper Page object.
 func NewPage(page *rod.Page) *Page {
-	keyStrokeEvents := NewKeyStrokeEvents()
+	keyStrokeEvents := NewKeyStrokeEvents(DefaultMaxDisplaySize)
 	return &Page{Page: page, KeyStrokeEvents: keyStrokeEvents, Keyboard: Keyboard{page.Keyboard, page.MustElement("textarea"), keyStrokeEvents}}
 }
 
