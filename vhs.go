@@ -129,7 +129,7 @@ func (vhs *VHS) Start() error {
 	}
 
 	path, _ := launcher.LookPath()
-	enableNoSandbox := os.Getenv("VHS_NO_SANDBOX") != ""
+	enableNoSandbox := os.Getenv("VHS_NO_SANDBOX") != "true"
 	u, err := launcher.New().Leakless(false).Bin(path).NoSandbox(enableNoSandbox).Launch()
 	if err != nil {
 		return fmt.Errorf("could not launch browser: %w", err)
