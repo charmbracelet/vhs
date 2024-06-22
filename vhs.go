@@ -320,7 +320,8 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 
 	go func() {
 		counter := 0
-		start := time.Now()
+		ticker := time.NewTicker(interval)
+		defer ticker.Stop()
 		for {
 			select {
 			case <-ctx.Done():
@@ -333,10 +334,7 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 				close(ch)
 				return
 
-			case <-time.After(interval - time.Since(start)):
-				// record last attempt
-				start = time.Now()
-
+			case <-ticker.C:
 				if !vhs.recording {
 					continue
 				}
