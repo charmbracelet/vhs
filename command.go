@@ -386,6 +386,7 @@ func ExecuteSetTypingSpeed(c parser.Command, v *VHS) {
 		return
 	}
 	v.Options.TypingSpeed = typingSpeed
+	v.Options.Video.KeyStrokeOverlay.TypingSpeed = typingSpeed
 }
 
 // ExecuteSetKeyStrokes enables or disables keystroke overlay recording.

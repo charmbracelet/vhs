@@ -15,6 +15,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 const (
@@ -49,8 +50,10 @@ type VideoOutputs struct {
 
 // KeyStrokeOptions is the set of options for rendering keystroke overlay.
 type KeyStrokeOptions struct {
-	Events []KeyStrokeEvent
-	Color  string
+	Events      []KeyStrokeEvent
+	Color       string
+	TypingSpeed time.Duration
+	Duration    time.Duration
 }
 
 // VideoOptions is the set of options for converting frames to a GIF.
@@ -81,8 +84,9 @@ func DefaultVideoOptions() VideoOptions {
 		PlaybackSpeed: defaultPlaybackSpeed,
 		StartingFrame: defaultStartingFrame,
 		KeyStrokeOverlay: KeyStrokeOptions{
-			Events: []KeyStrokeEvent{},
-			Color:  DefaultTheme.Foreground,
+			Events:      []KeyStrokeEvent{},
+			Color:       DefaultTheme.Foreground,
+			TypingSpeed: defaultTypingSpeed,
 		},
 	}
 }

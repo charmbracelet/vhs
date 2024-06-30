@@ -190,6 +190,8 @@ const cleanupWaitTime = 100 * time.Millisecond
 // Terminate cleans up a VHS instance and terminates the go-rod browser and ttyd
 // processes.
 func (vhs *VHS) terminate() error {
+	// Signal the end of all keystroke events.
+	vhs.Page.KeyStrokeEvents.End()
 	// Give some time for any commands executed (such as `rm`) to finish.
 	//
 	// If a user runs a long running command, they must sleep for the required time
@@ -217,7 +219,8 @@ func (vhs *VHS) Render() error {
 		return err
 	}
 
-	vhs.Options.Video.KeyStrokeOverlay.Events = vhs.Page.KeyStrokeEvents.Slice()
+	vhs.Options.Video.KeyStrokeOverlay.Events = vhs.Page.KeyStrokeEvents.events
+	vhs.Options.Video.KeyStrokeOverlay.Duration = vhs.Page.KeyStrokeEvents.duration
 
 	// Generate the video(s) with the frames.
 	var cmds []*exec.Cmd

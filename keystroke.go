@@ -25,6 +25,7 @@ type KeyStrokeEvents struct {
 	events         []KeyStrokeEvent
 	once           sync.Once
 	startTime      time.Time
+	duration       time.Duration
 	maxDisplaySize int
 }
 
@@ -93,6 +94,13 @@ func (k *KeyStrokeEvents) Disable() {
 	k.enabled = false
 }
 
+// End signals to the KeyStrokeEvents that the recording has finished.
+// This _seems_ small, but it is crucial to ensure that a final key stroke event
+// is not lost due to the recording finishing 1 frame too early.
+func (k *KeyStrokeEvents) End() {
+	k.duration = time.Now().Sub(k.startTime)
+}
+
 // Push adds a new key press event to the collection.
 func (k *KeyStrokeEvents) Push(display string) {
 	k.once.Do(func() {
@@ -121,12 +129,6 @@ func (k *KeyStrokeEvents) Push(display string) {
 	}
 	event := KeyStrokeEvent{Display: k.display, WhenMS: time.Now().Sub(k.startTime).Milliseconds()}
 	k.events = append(k.events, event)
-}
-
-// Slice returns the underlying slice of key press events.
-// NOTE: This is a reference.
-func (k *KeyStrokeEvents) Slice() []KeyStrokeEvent {
-	return k.events
 }
 
 // Page is a wrapper around the rod.Page object.
