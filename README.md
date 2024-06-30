@@ -515,6 +515,22 @@ Set CursorBlink false
   <img width="600" alt="Example of setting the cursor blink." src="https://vhs.charm.sh/vhs-3rMCb80VEkaDdTOJMCrxKy.gif">
 </picture>
 
+#### Set KeyStroke Overlay
+
+Set whether keystrokes in the recording should be rendered in subtitle fashion on the recording. You can toggle keystrokes rendering on or off for sections of the tape.
+
+**NOTE**: Keystroke overlay will use symbols for certain non-printable keystrokes (e.g. Backspace). If these symbols do not render correctly, investigate your `fontconfig` settings for the `monospace` family.
+
+```elixir
+Set KeyStrokes Show
+```
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://vhs.charm.sh/vhs-3rMCb80VEkaDdTOJMCrxKy.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-3rMCb80VEkaDdTOJMCrxKy.gif">
+  <img width="600" alt="Example of setting the keystroke overlay." src="https://vhs.charm.sh/vhs-3rMCb80VEkaDdTOJMCrxKy.gif">
+</picture>
+
 ### Type
 
 Use `Type` to emulate key presses. That is, you can use `Type` to script typing
