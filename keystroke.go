@@ -163,6 +163,50 @@ func (p *Page) MustWait(js string) *Page {
 	return p
 }
 
+// KeyActions is a wrapper around the rod.Page#KeyActions method.
+func (p *Page) KeyActions() *KeyActions {
+	return &KeyActions{
+		KeyActions:      p.Page.KeyActions(),
+		displays:        []string{},
+		KeyStrokeEvents: p.KeyStrokeEvents,
+	}
+}
+
+// Keyboard is a wrapper around the rod.KeyActions method.
+type KeyActions struct {
+	*rod.KeyActions
+	displays        []string
+	KeyStrokeEvents *KeyStrokeEvents
+}
+
+// Press is a wrapper around the rod.KeyActions#Press method.
+func (k *KeyActions) Press(key input.Key) *KeyActions {
+	k.displays = append(k.displays, keyToDisplay(key))
+	return &KeyActions{
+		KeyActions:      k.KeyActions.Press(key),
+		displays:        k.displays,
+		KeyStrokeEvents: k.KeyStrokeEvents,
+	}
+}
+
+// Type is a wrapper around the rod.KeyActions#Type method.
+func (k *KeyActions) Type(key input.Key) *KeyActions {
+	k.displays = append(k.displays, keyToDisplay(key))
+	return &KeyActions{
+		KeyActions:      k.KeyActions.Type(key),
+		displays:        k.displays,
+		KeyStrokeEvents: k.KeyStrokeEvents,
+	}
+}
+
+// MustDo is a wrapper around the rod.KeyActions#MustDo method.
+func (k *KeyActions) MustDo() {
+	for _, display := range k.displays {
+		k.KeyStrokeEvents.Push(display)
+	}
+	k.KeyActions.MustDo()
+}
+
 // Keyboard is a wrapper around the rod.Keyboard object.
 type Keyboard struct {
 	*rod.Keyboard
