@@ -233,7 +233,6 @@ func (vhs *VHS) Render() error {
 		if cmd == nil {
 			continue
 		}
-		fmt.Println("executing cmd; ", cmd.String())
 		out, err := cmd.CombinedOutput()
 		if err != nil {
 			log.Println(string(out))
