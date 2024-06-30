@@ -112,12 +112,12 @@ func (k *KeyStrokeEvents) Push(display string) {
 	// Keep k.display @ 20 max.
 	// Anymore than that is probably overkill, and we don't want to run into
 	// issues where the overlay text is longer than the video width itself.
-	if len(k.display) > k.maxDisplaySize {
+	if displayRunes := []rune(k.display); len(displayRunes) > k.maxDisplaySize {
 		// We need to be cognizant of unicode -- we can't just slice off a byte,
 		// we have to slice off a _rune_. The conversion back-and-forth may be a
 		// bit inefficient, but k.display will always be tiny thanks to
 		// k.maxDisplaySize.
-		k.display = string([]rune(k.display)[1:])
+		k.display = string(displayRunes[1:])
 	}
 	event := KeyStrokeEvent{Display: k.display, WhenMS: time.Now().Sub(k.startTime).Milliseconds()}
 	k.events = append(k.events, event)
