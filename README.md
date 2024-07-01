@@ -526,9 +526,9 @@ Set KeyStrokes Show
 ```
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://vhs.charm.sh/vhs-5ho73B4XGle294TsWdv1NM.gif">
-  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-5ho73B4XGle294TsWdv1NM.gif">
-  <img width="600" alt="Example of setting the keystroke overlay." src="https://vhs.charm.sh/vhs-5ho73B4XGle294TsWdv1NM.gif">
+  <source media="(prefers-color-scheme: dark)" srcset="https://vhs.charm.sh/vhs-7GzZg7oEHSbXtghZi97gwf.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-7GzZg7oEHSbXtghZi97gwf.gif">
+  <img width="600" alt="Example of setting the keystroke overlay." src="https://vhs.charm.sh/vhs-7GzZg7oEHSbXtghZi97gwf.gif">
 </picture>
 
 ### Type
