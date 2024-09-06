@@ -13,7 +13,7 @@ require (
 	github.com/charmbracelet/lipgloss v0.13.0
 	github.com/charmbracelet/ssh v0.0.0-20240725163421-eb71b85b27aa
 	github.com/charmbracelet/wish v1.4.3
-	github.com/creack/pty v1.1.21
+	github.com/creack/pty v1.1.23
 	github.com/go-rod/rod v0.116.2
 	github.com/hashicorp/go-version v1.7.0
 	github.com/mattn/go-isatty v0.0.20
@@ -22,9 +22,9 @@ require (
 	github.com/muesli/mango-cobra v1.2.0
 	github.com/muesli/roff v0.1.0
 	github.com/muesli/termenv v0.15.3-0.20240618155329-98d742f6907a
-	github.com/spf13/cobra v1.8.0
-	golang.org/x/crypto v0.26.0
-	golang.org/x/term v0.23.0
+	github.com/spf13/cobra v1.8.1
+	golang.org/x/crypto v0.27.0
+	golang.org/x/term v0.24.0
 )
 
 require (
@@ -65,6 +65,6 @@ require (
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d // indirect
 	golang.org/x/net v0.27.0 // indirect
 	golang.org/x/sync v0.8.0 // indirect
-	golang.org/x/sys v0.24.0 // indirect
-	golang.org/x/text v0.17.0 // indirect
+	golang.org/x/sys v0.25.0 // indirect
+	golang.org/x/text v0.18.0 // indirect
 )
