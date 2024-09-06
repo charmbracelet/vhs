@@ -13,7 +13,7 @@ require (
 	github.com/charmbracelet/lipgloss v0.13.0
 	github.com/charmbracelet/ssh v0.0.0-20240725163421-eb71b85b27aa
 	github.com/charmbracelet/wish v1.4.3
-	github.com/creack/pty v1.1.21
+	github.com/creack/pty v1.1.23
 	github.com/go-rod/rod v0.116.2
 	github.com/hashicorp/go-version v1.7.0
 	github.com/mattn/go-isatty v0.0.20
