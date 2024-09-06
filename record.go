@@ -81,7 +81,7 @@ func Record(_ *cobra.Command, _ []string) error {
 		log.Printf("error resizing pty: %s", err)
 	}
 
-	prevState, err := term.MakeRaw(int(os.Stdin.Fd()))
+	prevState, err := term.MakeRaw(int(os.Stdin.Fd())) //nolint: gosec
 	if err != nil {
 		return err
 	}
@@ -114,7 +114,7 @@ func Record(_ *cobra.Command, _ []string) error {
 
 	// PTY cleanup and restore terminal
 	_ = terminal.Close()
-	_ = term.Restore(int(os.Stdin.Fd()), prevState)
+	_ = term.Restore(int(os.Stdin.Fd()), prevState) //nolint: gosec
 
 	fmt.Println(inputToTape(tape.String()))
 	return nil

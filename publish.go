@@ -88,7 +88,7 @@ func hostKeyCallback(path string) ssh.HostKeyCallback {
 					return fmt.Errorf("possible man-in-the-middle attack: %w", err)
 				}
 				// if want is empty, it means the host was not in the known_hosts file, so lets add it there.
-				fmt.Fprintln(kh, knownhosts.Line([]string{hostname}, key))
+				_, _ = fmt.Fprintln(kh, knownhosts.Line([]string{hostname}, key))
 				return nil
 			}
 			return fmt.Errorf("failed to check known_hosts: %w", err)
