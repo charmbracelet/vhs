@@ -31,7 +31,7 @@ func (l *Lexer) readChar() {
 func (l *Lexer) NextToken() token.Token {
 	l.skipWhitespace()
 
-	var tok = token.Token{Line: l.line, Column: l.column}
+	tok := token.Token{Line: l.line, Column: l.column}
 
 	switch l.ch {
 	case 0:

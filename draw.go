@@ -15,8 +15,10 @@ type circle struct {
 	r int
 }
 
-const white = 0xFF
-const black = 0x17
+const (
+	white = 0xFF
+	black = 0x17
+)
 
 func (c *circle) ColorModel() color.Model {
 	return color.AlphaModel
@@ -31,8 +33,10 @@ func (c *circle) Bounds() image.Rectangle {
 	)
 }
 
-const halfPixel = 0.5
-const doublingFactor = 2
+const (
+	halfPixel      = 0.5
+	doublingFactor = 2
+)
 
 func double(i int) int { return i * doublingFactor }
 func half(i int) int   { return i / doublingFactor }
@@ -224,8 +228,10 @@ func MakeWindowBar(termWidth, termHeight int, opts StyleOptions, file string) {
 	}
 }
 
-const barToDotRatio = 6
-const barToDotBorderRatio = 5
+const (
+	barToDotRatio       = 6
+	barToDotBorderRatio = 5
+)
 
 func makeColorfulBar(termWidth int, termHeight int, isRight bool, opts StyleOptions, targetpng string) error {
 	// Radius of dots

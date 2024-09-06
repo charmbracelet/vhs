@@ -11,13 +11,14 @@
 package main
 
 import (
-	"github.com/charmbracelet/glamour/ansi"
-
-	_ "embed"
 	"encoding/json"
 	"fmt"
 	"sort"
 	"strings"
+
+	"github.com/charmbracelet/glamour/ansi"
+
+	_ "embed"
 
 	"github.com/agnivade/levenshtein"
 )
@@ -118,10 +119,8 @@ func boolPtr(b bool) *bool       { return &b }
 func stringPtr(s string) *string { return &s }
 func uintPtr(u uint) *uint       { return &u }
 
-var (
-	//go:embed themes.json
-	themesBts []byte
-)
+//go:embed themes.json
+var themesBts []byte
 
 // ThemeNotFoundError is returned when a requested theme is not found.
 type ThemeNotFoundError struct {
