@@ -349,7 +349,7 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 				if err := os.WriteFile(
 					filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(cursorFrameFormat, counter)),
 					cursor,
-					os.ModePerm,
+					0o600,
 				); err != nil {
 					ch <- fmt.Errorf("error writing cursor frame: %w", err)
 					continue
@@ -357,7 +357,7 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 				if err := os.WriteFile(
 					filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(textFrameFormat, counter)),
 					text,
-					os.ModePerm,
+					0o600,
 				); err != nil {
 					ch <- fmt.Errorf("error writing text frame: %w", err)
 					continue

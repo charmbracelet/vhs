@@ -654,7 +654,7 @@ func ExecuteSourceTape(c parser.Command, v *VHS) error {
 			cmd.Type == token.OUTPUT {
 			continue
 		}
-		fmt.Fprintf(out, "%s %s\n", GrayStyle.Render(displayPath+":"), Highlight(cmd, false))
+		_, _ = fmt.Fprintf(out, "%s %s\n", GrayStyle.Render(displayPath+":"), Highlight(cmd, false))
 		err := CommandFuncs[cmd.Type](cmd, v)
 		if err != nil {
 			return fmt.Errorf("failed to execute command %s: %w", cmd.Type.String(), err)

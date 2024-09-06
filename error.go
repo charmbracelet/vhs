@@ -35,11 +35,11 @@ func LineNumber(line int) string {
 func printError(out io.Writer, tape string, err parser.Error) {
 	lines := strings.Split(tape, "\n")
 
-	fmt.Fprint(out, LineNumber(err.Token.Line))
-	fmt.Fprintln(out, lines[err.Token.Line-1])
-	fmt.Fprint(out, strings.Repeat(" ", err.Token.Column+ErrorColumnOffset))
-	fmt.Fprintln(out, Underline(len(err.Token.Literal)), err.Msg)
-	fmt.Fprintln(out)
+	_, _ = fmt.Fprint(out, LineNumber(err.Token.Line))
+	_, _ = fmt.Fprintln(out, lines[err.Token.Line-1])
+	_, _ = fmt.Fprint(out, strings.Repeat(" ", err.Token.Column+ErrorColumnOffset))
+	_, _ = fmt.Fprintln(out, Underline(len(err.Token.Literal)), err.Msg)
+	_, _ = fmt.Fprintln(out)
 }
 
 func printErrors(out io.Writer, tape string, errs []error) {
@@ -49,10 +49,10 @@ func printErrors(out io.Writer, tape string, errs []error) {
 			for _, v := range err.Errors {
 				printError(out, tape, v)
 			}
-			fmt.Fprintln(out, ErrorStyle.Render(err.Error()))
+			_, _ = fmt.Fprintln(out, ErrorStyle.Render(err.Error()))
 
 		default:
-			fmt.Fprintln(out, ErrorStyle.Render(err.Error()))
+			_, _ = fmt.Fprintln(out, ErrorStyle.Render(err.Error()))
 		}
 	}
 }
