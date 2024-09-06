@@ -13,7 +13,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/caarlos0/env/v6"
+	"github.com/caarlos0/env/v11"
 	"github.com/charmbracelet/ssh"
 	"github.com/charmbracelet/wish"
 	"github.com/charmbracelet/wish/logging"
@@ -39,7 +39,7 @@ var serveCmd = &cobra.Command{
 	Short: "Start the VHS SSH server",
 	RunE: func(cmd *cobra.Command, _ []string) error {
 		var cfg config
-		if err := env.Parse(&cfg, env.Options{
+		if err := env.ParseWithOptions(&cfg, env.Options{
 			Prefix: "VHS_",
 		}); err != nil {
 			return err
