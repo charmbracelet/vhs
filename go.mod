@@ -5,7 +5,7 @@ go 1.21
 toolchain go1.22.5
 
 require (
-	github.com/agnivade/levenshtein v1.1.1
+	github.com/agnivade/levenshtein v1.2.0
 	github.com/atotto/clipboard v0.1.4
 	github.com/caarlos0/env/v11 v11.2.2
 	github.com/charmbracelet/glamour v0.8.0
