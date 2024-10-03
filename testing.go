@@ -84,7 +84,7 @@ func (v *VHS) Buffer() ([]string, error) {
 func (v *VHS) CurrentLine() (string, error) {
 	buf, err := v.Page.Eval("() => term.buffer.active.getLine(term.buffer.active.cursorY+term.buffer.active.viewportY).translateToString().trimEnd()")
 	if err != nil {
-		return "", fmt.Errorf("read curent line from buffer: %w", err)
+		return "", fmt.Errorf("read current line from buffer: %w", err)
 	}
 
 	return buf.Value.Str(), nil
