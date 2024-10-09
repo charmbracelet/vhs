@@ -43,6 +43,7 @@ The following is a list of all possible commands in VHS:
 * %PageDown% [repeat]
 * %Hide%
 * %Show%
+* %Wait%[+Screen][@<timeout>] /<regexp>/
 * %Escape%
 * %Alt%+<key>
 * %Space% [repeat]
@@ -72,6 +73,8 @@ The following is a list of all possible setting commands in VHS:
 * Set %Padding% <number>
 * Set %Framerate% <number>
 * Set %PlaybackSpeed% <float>
+* Set %WaitTimeout% <time>
+* Set %WaitPattern% <regexp>
 `
 	manBugs = "See GitHub Issues: <https://github.com/charmbracelet/vhs/issues>"
 

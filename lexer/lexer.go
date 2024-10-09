@@ -67,6 +67,10 @@ func (l *Lexer) NextToken() token.Token {
 		tok.Type = token.STRING
 		tok.Literal = l.readString('"')
 		l.readChar()
+	case '/':
+		tok.Type = token.REGEX
+		tok.Literal = l.readString('/')
+		l.readChar()
 	default:
 		if isDigit(l.ch) || (isDot(l.ch) && isDigit(l.peekChar())) {
 			tok.Literal = l.readNumber()

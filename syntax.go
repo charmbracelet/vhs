@@ -26,6 +26,8 @@ func Highlight(c parser.Command, faint bool) string {
 	}
 
 	switch c.Type {
+	case token.REGEX:
+		argsStyle = StringStyle
 	case token.SET:
 		optionsStyle = KeywordStyle
 		if isNumber(c.Args) {
