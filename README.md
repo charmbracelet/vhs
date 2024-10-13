@@ -469,6 +469,20 @@ Set WindowBar Colorful
   <img width="600" alt="Example of setting the margin" src="https://vhs.charm.sh/vhs-4VgviCu38DbaGtbRzhtOUI.gif">
 </picture>
 
+#### Set Window Title
+
+Set a title on the window bar of the terminal window with the `Set WindowTitle` command.
+
+```elixir
+Set WindowTitle "Live in the Terminal"
+```
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://vhs.charm.sh/vhs-6s07y8kWtPAC5TBLzxhRfS.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-6s07y8kWtPAC5TBLzxhRfS.gif">
+  <img width="600" alt="Example of setting the window title" src="https://vhs.charm.sh/vhs-6s07y8kWtPAC5TBLzxhRfS.gif">
+</picture>
+
 #### Set Border Radius
 
 Set the border radius (in pixels) of the terminal window with the `Set BorderRadius` command.

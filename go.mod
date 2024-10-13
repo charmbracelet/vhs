@@ -15,6 +15,7 @@ require (
 	github.com/charmbracelet/wish v1.4.3
 	github.com/creack/pty v1.1.23
 	github.com/go-rod/rod v0.116.2
+	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/hashicorp/go-version v1.7.0
 	github.com/mattn/go-isatty v0.0.20
 	github.com/mattn/go-runewidth v0.0.16
@@ -24,6 +25,7 @@ require (
 	github.com/muesli/termenv v0.15.3-0.20240618155329-98d742f6907a
 	github.com/spf13/cobra v1.8.1
 	golang.org/x/crypto v0.28.0
+	golang.org/x/image v0.18.0
 	golang.org/x/term v0.25.0
 )
 

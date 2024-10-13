@@ -60,30 +60,34 @@ var (
 
 // StyleOptions represents the ui options for video and screenshots.
 type StyleOptions struct {
-	Width           int
-	Height          int
-	Padding         int
-	BackgroundColor string
-	MarginFill      string
-	Margin          int
-	WindowBar       string
-	WindowBarSize   int
-	WindowBarColor  string
-	BorderRadius    int
+	Width            int
+	Height           int
+	Padding          int
+	BackgroundColor  string
+	MarginFill       string
+	Margin           int
+	WindowBar        string
+	WindowTitle      string
+	WindowTitleColor string
+	WindowBarSize    int
+	WindowBarColor   string
+	BorderRadius     int
 }
 
 // DefaultStyleOptions returns default Style config.
 func DefaultStyleOptions() *StyleOptions {
 	return &StyleOptions{
-		Width:           defaultWidth,
-		Height:          defaultHeight,
-		Padding:         defaultPadding,
-		MarginFill:      DefaultTheme.Background,
-		Margin:          0,
-		WindowBar:       "",
-		WindowBarSize:   defaultWindowBarSize,
-		WindowBarColor:  DefaultTheme.Background,
-		BorderRadius:    0,
-		BackgroundColor: DefaultTheme.Background,
+		Width:            defaultWidth,
+		Height:           defaultHeight,
+		Padding:          defaultPadding,
+		MarginFill:       DefaultTheme.Background,
+		Margin:           0,
+		WindowBar:        "",
+		WindowTitle:      "",
+		WindowTitleColor: DefaultTheme.Foreground,
+		WindowBarSize:    defaultWindowBarSize,
+		WindowBarColor:   DefaultTheme.Background,
+		BorderRadius:     0,
+		BackgroundColor:  DefaultTheme.Background,
 	}
 }

@@ -139,6 +139,7 @@ func TestParseTapeFile(t *testing.T) {
 		{Type: token.SET, Options: "LoopOffset", Args: "60.4%"},
 		{Type: token.SET, Options: "LoopOffset", Args: "20.99%"},
 		{Type: token.SET, Options: "CursorBlink", Args: "false"},
+		{Type: token.SET, Options: "WindowTitle", Args: "Hello, world!"},
 		{Type: token.SLEEP, Options: "", Args: "1s"},
 		{Type: token.SLEEP, Options: "", Args: "500ms"},
 		{Type: token.SLEEP, Options: "", Args: ".5s"},
