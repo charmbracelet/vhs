@@ -473,6 +473,9 @@ func (p *Parser) parseSet() Command {
 				NewError(p.cur, windowBar+" is not a valid bar style."),
 			)
 		}
+	case token.WINDOW_TITLE:
+		cmd.Args = p.peek.Literal
+		p.nextToken()
 	case token.MARGIN_FILL:
 		cmd.Args = p.peek.Literal
 		p.nextToken()

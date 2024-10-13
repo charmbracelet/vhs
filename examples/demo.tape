@@ -25,6 +25,7 @@
 #   Set BorderRadius <number>       Set terminal border radius, in pixels.
 #   Set WindowBar <string>          Set window bar type. (one of: Rings, RingsRight, Colorful, ColorfulRight)
 #   Set WindowBarSize <number>      Set window bar size, in pixels. Default is 40.
+#   Set WindowTitle <string>        Set window title. Text color is taken from theme.
 #   Set TypingSpeed <time>          Set the typing speed of the terminal. Default is 50ms.
 #
 # Sleep:
