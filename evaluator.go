@@ -154,7 +154,7 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 		isSetting := cmd.Type == token.SET && cmd.Options != "TypingSpeed"
 
 		if isSetting {
-			fmt.Println(ErrorStyle.Render(fmt.Sprintf("WARN: Set %s %s has to be a top declaration of the file", cmd.Options, cmd.Args)))
+			fmt.Println(ErrorStyle.Render(fmt.Sprintf("WARN: 'Set %s %s' has been ignored. Move the directive to the top of the file.\nLearn more: https://github.com/charmbracelet/vhs#settings", cmd.Options, cmd.Args)))
 		}
 		if isSetting || cmd.Type == token.REQUIRE {
 			fmt.Fprintln(out, Highlight(cmd, true))
