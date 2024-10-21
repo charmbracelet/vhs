@@ -18,7 +18,7 @@ import (
 const specialChar = "%"
 
 var (
-	manDescription = `VHS let's you write terminal GIFs as code.
+	manDescription = `VHS lets you write terminal GIFs as code.
 VHS reads .tape files and renders GIFs (videos).
 A tape file is a script made up of commands describing what actions to perform in the render.
 
