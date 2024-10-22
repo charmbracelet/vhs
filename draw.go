@@ -8,6 +8,11 @@ import (
 	"image/png"
 	"math"
 	"os"
+
+	"github.com/golang/freetype"
+	"github.com/golang/freetype/truetype"
+	"golang.org/x/image/font"
+	"golang.org/x/image/font/gofont/goregular"
 )
 
 type circle struct {
@@ -233,6 +238,72 @@ const (
 	barToDotBorderRatio = 5
 )
 
+func drawWindowTitle(
+	dotsSpace,
+	borderSpace int,
+	dotsRight bool,
+	opts StyleOptions,
+	windowBar *image.RGBA,
+) error {
+	ttf, err := freetype.ParseFont(goregular.TTF)
+	if err != nil {
+		return err
+	}
+
+	title := opts.WindowTitle
+
+	titleMinX := dotsSpace
+	titleMaxX := borderSpace
+	if dotsRight {
+		titleMinX, titleMaxX = titleMaxX, titleMinX
+	}
+
+	img := image.NewRGBA(
+		image.Rectangle{
+			image.Point{
+				windowBar.Rect.Min.X + titleMinX,
+				windowBar.Rect.Min.Y,
+			},
+			image.Point{
+				windowBar.Rect.Max.X - titleMaxX,
+				windowBar.Rect.Max.Y,
+			},
+		},
+	)
+
+	fg, _ := parseHexColor(opts.WindowTitleColor)
+
+	c := freetype.NewContext()
+	c.SetDPI(72)
+	c.SetFont(ttf)
+	c.SetFontSize(float64(half(opts.WindowBarSize)))
+	c.SetClip(img.Bounds())
+	c.SetDst(windowBar)
+	c.SetSrc(&image.Uniform{fg})
+	c.SetHinting(font.HintingNone)
+
+	fontFace := truetype.NewFace(ttf, &truetype.Options{})
+	titleTextWidth := font.MeasureString(fontFace, title).Ceil()
+	titleBarWidth := img.Rect.Max.X - img.Rect.Min.X
+
+	// Center-align title text if it will fit, else left-align (truncated by bounds)
+	var textStartX int
+	if titleBarWidth >= titleTextWidth {
+		textStartX = (img.Rect.Max.X - titleTextWidth - titleMaxX) / 2
+	} else {
+		textStartX = titleMinX
+	}
+
+	// Font size is half window bar size, thus Y start pos is 0.75 of window bar size
+	textStartY := int(c.PointToFixed(float64(opts.WindowBarSize)*0.75) >> 6)
+
+	pt := freetype.Pt(textStartX, textStartY)
+	if _, err := c.DrawString(title, pt); err != nil {
+		return err
+	}
+	return nil
+}
+
 func makeColorfulBar(termWidth int, termHeight int, isRight bool, opts StyleOptions, targetpng string) error {
 	// Radius of dots
 	dotRad := opts.WindowBarSize / barToDotRatio
@@ -304,6 +375,21 @@ func makeColorfulBar(termWidth int, termHeight int, isRight bool, opts StyleOpti
 		image.Point{0, 0},
 		draw.Over,
 	)
+
+	if opts.WindowTitle != "" {
+		titleDotsSpace := dotGap + dotRad*3 + dotSpace*3
+		titleBorderSpace := dotGap + dotSpace
+
+		if err := drawWindowTitle(
+			titleDotsSpace,
+			titleBorderSpace,
+			isRight,
+			opts,
+			img,
+		); err != nil {
+			fmt.Println(ErrorStyle.Render(fmt.Sprintf("Couldn't draw window title: %s.", err)))
+		}
+	}
 
 	f, err := os.Create(targetpng)
 	if err != nil {
@@ -377,6 +463,21 @@ func makeRingBar(termWidth int, termHeight int, isRight bool, opts StyleOptions,
 			image.Point{0, 0},
 			draw.Over,
 		)
+	}
+
+	if opts.WindowTitle != "" {
+		titleDotsSpace := ringGap + outerRad*3 + ringSpace*3
+		titleBorderSpace := ringGap + ringSpace
+
+		if err := drawWindowTitle(
+			titleDotsSpace,
+			titleBorderSpace,
+			isRight,
+			opts,
+			img,
+		); err != nil {
+			fmt.Println(ErrorStyle.Render(fmt.Sprintf("Couldn't draw window title: %s.", err)))
+		}
 	}
 
 	f, err := os.Create(targetpng)

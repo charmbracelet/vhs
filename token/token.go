@@ -89,6 +89,7 @@ const (
 	MARGIN_FILL     = "MARGIN_FILL"     //nolint:revive
 	MARGIN          = "MARGIN"          //nolint:revive
 	WINDOW_BAR      = "WINDOW_BAR"      //nolint:revive
+	WINDOW_TITLE    = "WINDOW_TITLE"    //nolint:revive
 	WINDOW_BAR_SIZE = "WINDOW_BAR_SIZE" //nolint:revive
 	BORDER_RADIUS   = "CORNER_RADIUS"   //nolint:revive
 	WAIT            = "WAIT"            //nolint:revive
@@ -133,6 +134,7 @@ var Keywords = map[string]Type{
 	"MarginFill":    MARGIN_FILL,
 	"Margin":        MARGIN,
 	"WindowBar":     WINDOW_BAR,
+	"WindowTitle":   WINDOW_TITLE,
 	"WindowBarSize": WINDOW_BAR_SIZE,
 	"BorderRadius":  BORDER_RADIUS,
 	"FontSize":      FONT_SIZE,
@@ -164,7 +166,7 @@ func IsSetting(t Type) bool {
 	switch t {
 	case SHELL, FONT_FAMILY, FONT_SIZE, LETTER_SPACING, LINE_HEIGHT,
 		FRAMERATE, TYPING_SPEED, THEME, PLAYBACK_SPEED, HEIGHT, WIDTH,
-		PADDING, LOOP_OFFSET, MARGIN_FILL, MARGIN, WINDOW_BAR,
+		PADDING, LOOP_OFFSET, MARGIN_FILL, MARGIN, WINDOW_BAR, WINDOW_TITLE,
 		WINDOW_BAR_SIZE, BORDER_RADIUS, CURSOR_BLINK, WAIT_TIMEOUT, WAIT_PATTERN:
 		return true
 	default:
