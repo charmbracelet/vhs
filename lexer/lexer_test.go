@@ -10,6 +10,7 @@ import (
 func TestNextToken(t *testing.T) {
 	input := `
 Output examples/out.gif
+Set WindowTitle "Hello, world!"
 Set FontSize 42
 Set Padding 5
 Set CursorBlink false
@@ -33,6 +34,9 @@ Wait+Screen@1m /foobar/`
 	}{
 		{token.OUTPUT, "Output"},
 		{token.STRING, "examples/out.gif"},
+		{token.SET, "Set"},
+		{token.WINDOW_TITLE, "WindowTitle"},
+		{token.STRING, "Hello, world!"},
 		{token.SET, "Set"},
 		{token.FONT_SIZE, "FontSize"},
 		{token.NUMBER, "42"},
@@ -164,6 +168,9 @@ func TestLexTapeFile(t *testing.T) {
 		{token.SET, "Set"},
 		{token.CURSOR_BLINK, "CursorBlink"},
 		{token.BOOLEAN, "false"},
+		{token.SET, "Set"},
+		{token.WINDOW_TITLE, "WindowTitle"},
+		{token.STRING, "Hello, world!"},
 		{token.COMMENT, " Sleep:"},
 		{token.SLEEP, "Sleep"},
 		{token.NUMBER, "1"},
