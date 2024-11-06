@@ -768,5 +768,5 @@ func (p *Parser) nextToken() {
 func isValidWindowBar(w string) bool {
 	return w == "" ||
 		w == "Colorful" || w == "ColorfulRight" ||
-		w == "Rings" || w == "RightsRight"
+		w == "Rings" || w == "RingsRight"
 }
