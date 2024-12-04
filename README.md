@@ -205,6 +205,7 @@ vhs serve
 * `VHS_UID`: The User ID to run the server as (current user's UID)
 * `VHS_KEY_PATH`: The path to the SSH key to use (`.ssh/vhs_ed25519`)
 * `VHS_AUTHORIZED_KEYS_PATH`: The path to the authorized keys file (empty, publicly accessible)
+* `VHS_NO_SANDBOX`: Run with no-sandbox (`false`)
 
 </details>
 
