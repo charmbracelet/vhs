@@ -7,7 +7,7 @@ toolchain go1.22.5
 require (
 	github.com/agnivade/levenshtein v1.2.0
 	github.com/atotto/clipboard v0.1.4
-	github.com/caarlos0/env/v11 v11.3.0
+	github.com/caarlos0/env/v11 v11.3.1
 	github.com/charmbracelet/glamour v0.8.0
 	github.com/charmbracelet/keygen v0.5.1
 	github.com/charmbracelet/lipgloss v1.0.0
