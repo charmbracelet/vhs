@@ -8,6 +8,7 @@ const (
 	nushell    = "nu"
 	powershell = "powershell"
 	pwsh       = "pwsh"
+	xonsh      = "xonsh"
 	zsh        = "zsh"
 )
 
@@ -63,5 +64,8 @@ var Shells = map[string]Shell{
 	},
 	nushell: {
 		Command: []string{"nu", "--execute", "$env.PROMPT_COMMAND = {''}"},
+	},
+	xonsh: {
+		Command: []string{"xonsh", "--no-rc", "-D", "PROMPT=\033[;38;2;91;86;224m>\033[m "},
 	},
 }
