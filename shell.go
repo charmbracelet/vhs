@@ -4,6 +4,7 @@ package main
 const (
 	bash       = "bash"
 	cmdexe     = "cmd"
+	elvish     = "elvish"
 	fish       = "fish"
 	nushell    = "nu"
 	powershell = "powershell"
@@ -63,5 +64,8 @@ var Shells = map[string]Shell{
 	},
 	nushell: {
 		Command: []string{"nu", "--execute", "$env.PROMPT_COMMAND = {''}"},
+	},
+	elvish: {
+		Command: []string{"elvish", "-c", `use os; var rc = (os:temp-file 'vhs-'); try { echo 'set edit:prompt = { styled "> " "#5B56E0" };set edit:rprompt = { }' > $rc; elvish -rc $rc[name] } finally { os:remove $rc[name] }`},
 	},
 }
