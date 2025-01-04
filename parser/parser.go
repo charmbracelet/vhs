@@ -65,6 +65,7 @@ type Command struct {
 	Type    CommandType
 	Options string
 	Args    string
+	Source  string
 }
 
 // String returns the string representation of the command.
@@ -123,7 +124,7 @@ func (p *Parser) Parse() []Command {
 			p.nextToken()
 			continue
 		}
-		cmds = append(cmds, p.parseCommand())
+		cmds = append(cmds, p.parseCommand()...)
 		p.nextToken()
 	}
 
@@ -131,7 +132,7 @@ func (p *Parser) Parse() []Command {
 }
 
 // parseCommand parses a command.
-func (p *Parser) parseCommand() Command {
+func (p *Parser) parseCommand() []Command {
 	switch p.cur.Type {
 	case token.SPACE,
 		token.BACKSPACE,
@@ -146,42 +147,42 @@ func (p *Parser) parseCommand() Command {
 		token.UP,
 		token.PAGEUP,
 		token.PAGEDOWN:
-		return p.parseKeypress(p.cur.Type)
+		return []Command{p.parseKeypress(p.cur.Type)}
 	case token.SET:
-		return p.parseSet()
+		return []Command{p.parseSet()}
 	case token.OUTPUT:
-		return p.parseOutput()
+		return []Command{p.parseOutput()}
 	case token.SLEEP:
-		return p.parseSleep()
+		return []Command{p.parseSleep()}
 	case token.TYPE:
-		return p.parseType()
+		return []Command{p.parseType()}
 	case token.CTRL:
-		return p.parseCtrl()
+		return []Command{p.parseCtrl()}
 	case token.ALT:
-		return p.parseAlt()
+		return []Command{p.parseAlt()}
 	case token.SHIFT:
-		return p.parseShift()
+		return []Command{p.parseShift()}
 	case token.HIDE:
-		return p.parseHide()
+		return []Command{p.parseHide()}
 	case token.REQUIRE:
-		return p.parseRequire()
+		return []Command{p.parseRequire()}
 	case token.SHOW:
-		return p.parseShow()
+		return []Command{p.parseShow()}
 	case token.WAIT:
-		return p.parseWait()
+		return []Command{p.parseWait()}
 	case token.SOURCE:
 		return p.parseSource()
 	case token.SCREENSHOT:
-		return p.parseScreenshot()
+		return []Command{p.parseScreenshot()}
 	case token.COPY:
-		return p.parseCopy()
+		return []Command{p.parseCopy()}
 	case token.PASTE:
-		return p.parsePaste()
+		return []Command{p.parsePaste()}
 	case token.ENV:
-		return p.parseEnv()
+		return []Command{p.parseEnv()}
 	default:
 		p.errors = append(p.errors, NewError(p.cur, "Invalid command: "+p.cur.Literal))
-		return Command{Type: token.ILLEGAL}
+		return []Command{{Type: token.ILLEGAL}}
 	}
 }
 
@@ -652,13 +653,13 @@ func (p *Parser) parseEnv() Command {
 // Source command takes a tape path to include in current tape.
 //
 // Source <path>
-func (p *Parser) parseSource() Command {
+func (p *Parser) parseSource() []Command {
 	cmd := Command{Type: token.SOURCE}
 
 	if p.peek.Type != token.STRING {
 		p.errors = append(p.errors, NewError(p.cur, "Expected path after Source"))
 		p.nextToken()
-		return cmd
+		return []Command{cmd}
 	}
 
 	srcPath := p.peek.Literal
@@ -668,7 +669,7 @@ func (p *Parser) parseSource() Command {
 	if ext != ".tape" {
 		p.errors = append(p.errors, NewError(p.peek, "Expected file with .tape extension"))
 		p.nextToken()
-		return cmd
+		return []Command{cmd}
 	}
 
 	// Check if tape exist
@@ -676,7 +677,7 @@ func (p *Parser) parseSource() Command {
 		notFoundErr := fmt.Sprintf("File %s not found", srcPath)
 		p.errors = append(p.errors, NewError(p.peek, notFoundErr))
 		p.nextToken()
-		return cmd
+		return []Command{cmd}
 	}
 
 	// Check if source tape contains nested Source command
@@ -685,7 +686,7 @@ func (p *Parser) parseSource() Command {
 		readErr := fmt.Sprintf("Unable to read file: %s", srcPath)
 		p.errors = append(p.errors, NewError(p.peek, readErr))
 		p.nextToken()
-		return cmd
+		return []Command{cmd}
 	}
 
 	srcTape := string(d)
@@ -694,7 +695,7 @@ func (p *Parser) parseSource() Command {
 		readErr := fmt.Sprintf("Source tape: %s is empty", srcPath)
 		p.errors = append(p.errors, NewError(p.peek, readErr))
 		p.nextToken()
-		return cmd
+		return []Command{cmd}
 	}
 
 	srcLexer := lexer.New(srcTape)
@@ -706,7 +707,7 @@ func (p *Parser) parseSource() Command {
 		if cmd.Type == token.SOURCE {
 			p.errors = append(p.errors, NewError(p.peek, "Nested Source detected"))
 			p.nextToken()
-			return cmd
+			return []Command{cmd}
 		}
 	}
 
@@ -715,12 +716,23 @@ func (p *Parser) parseSource() Command {
 	if len(srcErrors) > 0 {
 		p.errors = append(p.errors, NewError(p.peek, fmt.Sprintf("%s has %d errors", srcPath, len(srcErrors))))
 		p.nextToken()
-		return cmd
+		return []Command{cmd}
 	}
 
 	cmd.Args = p.peek.Literal
+	filtered := make([]Command, 0, len(srcCmds))
+	for _, srcCmd := range srcCmds {
+		// Output have to be avoid in order to not overwrite output of the original tape.
+		if srcCmd.Type == token.SOURCE ||
+			srcCmd.Type == token.OUTPUT {
+			continue
+		}
+		srcCmd.Source = cmd.Args
+		filtered = append(filtered, srcCmd)
+	}
+
 	p.nextToken()
-	return cmd
+	return filtered
 }
 
 // parseScreenshot parses screenshot command.
