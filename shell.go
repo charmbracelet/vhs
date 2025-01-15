@@ -9,6 +9,7 @@ const (
 	osh        = "osh"
 	powershell = "powershell"
 	pwsh       = "pwsh"
+	xonsh      = "xonsh"
 	zsh        = "zsh"
 )
 
@@ -68,5 +69,8 @@ var Shells = map[string]Shell{
 	osh: {
 		Env:     []string{"PS1=\\[\\e[38;2;90;86;224m\\]> \\[\\e[0m\\]"},
 		Command: []string{"osh", "--norc"},
+	},
+	xonsh: {
+		Command: []string{"xonsh", "--no-rc", "-D", "PROMPT=\033[;38;2;91;86;224m>\033[m "},
 	},
 }
