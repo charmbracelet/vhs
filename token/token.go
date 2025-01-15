@@ -119,8 +119,8 @@ var Keywords = map[string]Type{
 	"Left":          LEFT,
 	"Right":         RIGHT,
 	"Up":            UP,
-	"PageUp":        PAGE_UP,
-	"PageDown":      PAGE_DOWN,
+	"PageUp":        PAGE_UP,   //nolint:revive
+	"PageDown":      PAGE_DOWN, //nolint:revive
 	"Tab":           TAB,
 	"Escape":        ESCAPE,
 	"End":           END,
