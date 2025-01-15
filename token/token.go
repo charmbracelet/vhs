@@ -43,8 +43,8 @@ const (
 	ESCAPE    = "ESCAPE"
 	HOME      = "HOME"
 	INSERT    = "INSERT"
-	PAGE_DOWN = "PAGE_DOWN"
-	PAGE_UP   = "PAGE_UP"
+	PAGE_DOWN = "PAGE_DOWN" //nolint:revive
+	PAGE_UP   = "PAGE_UP"   //nolint:revive
 	SLEEP     = "SLEEP"
 	SPACE     = "SPACE"
 	TAB       = "TAB"
