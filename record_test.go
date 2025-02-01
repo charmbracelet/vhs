@@ -6,7 +6,14 @@ import (
 )
 
 func TestInputToTape(t *testing.T) {
-	input := `echo "Hello,.
+	tests := []struct {
+		name  string
+		input string
+		want  string
+	}{
+		{
+			name: "ctrl key combinations",
+			input: `echo "Hello,.
 BACKSPACE
 LEFT
 LEFT
@@ -31,9 +38,8 @@ SLEEP
 ALT+.
 SLEEP
 exit
-`
-
-	want := `Type 'echo "Hello,.'
+`,
+			want: `Type 'echo "Hello,.'
 Backspace
 Left 2
 Right 2
@@ -51,10 +57,36 @@ Ctrl+E
 Sleep 1s
 Alt+.
 Sleep 500ms
-`
-	got := inputToTape(input)
-	if want != got {
-		t.Fatalf("want:\n%s\ngot:\n%s\n", want, got)
+`,
+		},
+		{
+			name: "PageUp, PageDown #559",
+			input: `echo "Hello,.
+PAGE_UP
+PAGE_UP
+PAGE_UP
+PAGE_UP
+PAGE_UP
+PAGE_UP
+PAGE_UP
+PAGE_UP
+PAGE_DOWN
+PAGE_DOWN
+PAGE_DOWN
+PAGE_DOWN
+exit
+`,
+			want: `Type 'echo "Hello,.'
+PageUp 8
+PageDown 4
+`,
+		},
+	}
+	for _, tc := range tests {
+		got := inputToTape(tc.input)
+		if tc.want != got {
+			t.Fatalf("want:\n%s\ngot:\n%s\n", tc.want, got)
+		}
 	}
 }
 
