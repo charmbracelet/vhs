@@ -15,6 +15,7 @@ Set Padding 5
 Set CursorBlink false
 Type "echo 'Hello, world!'"
 Enter
+TypeVariable "echo 'Hello, world!'"
 Type@.1 "echo 'Hello, world!'"
 Left 3
 Sleep 1
@@ -45,6 +46,8 @@ Wait+Screen@1m /foobar/`
 		{token.TYPE, "Type"},
 		{token.STRING, "echo 'Hello, world!'"},
 		{token.ENTER, "Enter"},
+		{token.TYPE_VARIABLE, "TypeVariable"},
+		{token.STRING, "echo 'Hello, world!'"},
 		{token.TYPE, "Type"},
 		{token.AT, "@"},
 		{token.NUMBER, ".1"},
@@ -164,6 +167,11 @@ func TestLexTapeFile(t *testing.T) {
 		{token.SET, "Set"},
 		{token.CURSOR_BLINK, "CursorBlink"},
 		{token.BOOLEAN, "false"},
+		{token.SET, "Set"},
+		{token.TYPING_SPEED_VARIABLE, "TypingSpeedVariable"},
+		{token.NUMBER, "0.1"},
+		{token.NUMBER, "1"},
+		{token.SECONDS, "s"},
 		{token.COMMENT, " Sleep:"},
 		{token.SLEEP, "Sleep"},
 		{token.NUMBER, "1"},
