@@ -123,7 +123,7 @@ func (p *Parser) Parse() []Command {
 			p.nextToken()
 			continue
 		}
-		cmds = append(cmds, p.parseCommand())
+		cmds = append(cmds, p.parseCommand(cmds))
 		p.nextToken()
 	}
 
@@ -131,7 +131,7 @@ func (p *Parser) Parse() []Command {
 }
 
 // parseCommand parses a command.
-func (p *Parser) parseCommand() Command {
+func (p *Parser) parseCommand(cmds []Command) Command {
 	switch p.cur.Type {
 	case token.SPACE,
 		token.BACKSPACE,
@@ -170,7 +170,7 @@ func (p *Parser) parseCommand() Command {
 	case token.WAIT:
 		return p.parseWait()
 	case token.SOURCE:
-		return p.parseSource()
+		return p.parseSource(cmds)
 	case token.SCREENSHOT:
 		return p.parseScreenshot()
 	case token.COPY:
@@ -652,7 +652,7 @@ func (p *Parser) parseEnv() Command {
 // Source command takes a tape path to include in current tape.
 //
 // Source <path>
-func (p *Parser) parseSource() Command {
+func (p *Parser) parseSource(cmds []Command) Command {
 	cmd := Command{Type: token.SOURCE}
 
 	if p.peek.Type != token.STRING {
@@ -718,6 +718,8 @@ func (p *Parser) parseSource() Command {
 		return cmd
 	}
 
+
+	cmds = append(cmds, srcCmds...)
 	cmd.Args = p.peek.Literal
 	p.nextToken()
 	return cmd
