@@ -22,6 +22,10 @@ Right@100ms 3
 Sleep 500ms
 Ctrl+C
 Enter
+Ctrl+@
+Ctrl+\
+Alt+]
+Shift+[
 Sleep .1
 Sleep 100ms
 Sleep 2
@@ -65,6 +69,18 @@ Wait+Screen@1m /foobar/`
 		{token.PLUS, "+"},
 		{token.STRING, "C"},
 		{token.ENTER, "Enter"},
+		{token.CTRL, "Ctrl"},
+		{token.PLUS, "+"},
+		{token.AT, "@"},
+		{token.CTRL, "Ctrl"},
+		{token.PLUS, "+"},
+		{token.BACKSLASH, "\\"},
+		{token.ALT, "Alt"},
+		{token.PLUS, "+"},
+		{token.RIGHT_BRACKET, "]"},
+		{token.SHIFT, "Shift"},
+		{token.PLUS, "+"},
+		{token.LEFT_BRACKET, "["},
 		{token.SLEEP, "Sleep"},
 		{token.NUMBER, ".1"},
 		{token.SLEEP, "Sleep"},

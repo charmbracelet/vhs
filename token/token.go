@@ -17,13 +17,19 @@ type Token struct {
 
 // Tokens for the VHS language
 const (
-	AT      = "@"
-	EQUAL   = "="
-	PLUS    = "+"
-	PERCENT = "%"
-	SLASH   = "/"
-	DOT     = "."
-	DASH    = "-"
+	AT        = "@"
+	EQUAL     = "="
+	PLUS      = "+"
+	PERCENT   = "%"
+	SLASH     = "/"
+	BACKSLASH = "\\"
+	DOT       = "."
+	DASH      = "-"
+
+	MINUS         = "-"
+	RIGHT_BRACKET = "]" //nolint:revive
+	LEFT_BRACKET  = "[" //nolint:revive
+	CARET         = "^"
 
 	EM           = "EM"
 	MILLISECONDS = "MILLISECONDS"

@@ -315,6 +315,12 @@ func (p *Parser) parseCtrl() Command {
 		case peek.Type == token.ENTER,
 			peek.Type == token.SPACE,
 			peek.Type == token.BACKSPACE,
+			peek.Type == token.MINUS,
+			peek.Type == token.AT,
+			peek.Type == token.LEFT_BRACKET,
+			peek.Type == token.RIGHT_BRACKET,
+			peek.Type == token.CARET,
+			peek.Type == token.BACKSLASH,
 			peek.Type == token.STRING && len(peek.Literal) == 1:
 			args = append(args, peek.Literal)
 		default:
@@ -344,6 +350,8 @@ func (p *Parser) parseAlt() Command {
 		p.nextToken()
 		if p.peek.Type == token.STRING ||
 			p.peek.Type == token.ENTER ||
+			p.peek.Type == token.LEFT_BRACKET ||
+			p.peek.Type == token.RIGHT_BRACKET ||
 			p.peek.Type == token.TAB {
 			c := p.peek.Literal
 			p.nextToken()
@@ -368,6 +376,8 @@ func (p *Parser) parseShift() Command {
 		p.nextToken()
 		if p.peek.Type == token.STRING ||
 			p.peek.Type == token.ENTER ||
+			p.peek.Type == token.LEFT_BRACKET ||
+			p.peek.Type == token.RIGHT_BRACKET ||
 			p.peek.Type == token.TAB {
 			c := p.peek.Literal
 			p.nextToken()
