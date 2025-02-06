@@ -27,8 +27,8 @@ const (
 	DASH      = "-"
 
 	MINUS         = "-"
-	RIGHT_BRACKET = "]"
-	LEFT_BRACKET  = "["
+	RIGHT_BRACKET = "]" //nolint:revive
+	LEFT_BRACKET  = "[" //nolint:revive
 	CARET         = "^"
 
 	EM           = "EM"
