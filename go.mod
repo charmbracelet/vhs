@@ -21,7 +21,7 @@ require (
 	github.com/muesli/go-app-paths v0.2.2
 	github.com/muesli/mango-cobra v1.2.0
 	github.com/muesli/roff v0.1.0
-	github.com/muesli/termenv v0.15.3-0.20240618155329-98d742f6907a
+	github.com/muesli/termenv v0.16.0
 	github.com/spf13/cobra v1.9.1
 	golang.org/x/crypto v0.33.0
 	golang.org/x/term v0.29.0
