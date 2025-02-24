@@ -1,8 +1,7 @@
 module github.com/charmbracelet/vhs
 
 go 1.21
-
-toolchain go1.22.5
+toolchain go1.23.6
 
 require (
 	github.com/agnivade/levenshtein v1.2.1
@@ -23,7 +22,7 @@ require (
 	github.com/muesli/roff v0.1.0
 	github.com/muesli/termenv v0.16.0
 	github.com/spf13/cobra v1.9.1
-	golang.org/x/crypto v0.33.0
+	golang.org/x/crypto v0.34.0
 	golang.org/x/term v0.29.0
 )
 
