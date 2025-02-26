@@ -22,6 +22,7 @@ Set TypingSpeed .1
 Set LoopOffset 60.4
 Set LoopOffset 20.99%
 Set CursorBlink false
+Set TypingSpeedVariable 0.1 1s
 
 # Sleep:
 Sleep 1
