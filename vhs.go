@@ -233,6 +233,9 @@ func (vhs *VHS) Render() error {
 		if cmd == nil {
 			continue
 		}
+		if err := checkFFMpegDependency(); err != nil {
+			return err
+		}
 		out, err := cmd.CombinedOutput()
 		if err != nil {
 			log.Println(string(out))
