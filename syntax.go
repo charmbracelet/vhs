@@ -7,7 +7,10 @@ import (
 
 	"github.com/charmbracelet/vhs/parser"
 	"github.com/charmbracelet/vhs/token"
+	"github.com/mattn/go-runewidth"
 )
+
+const sourceDisplayMaxLength = 10
 
 // Highlight syntax highlights a command for prettier printing.
 // It takes an argument whether or not to print the command in a faint style to
@@ -18,11 +21,17 @@ func Highlight(c parser.Command, faint bool) string {
 		argsStyle    = NumberStyle
 	)
 
+	sourcePrefix := ""
+	if c.Source != "" {
+		displayPath := runewidth.Truncate(strings.TrimSuffix(c.Source, extension), sourceDisplayMaxLength, "…")
+		sourcePrefix = GrayStyle.Render(displayPath+":") + " "
+	}
+
 	if faint {
 		if c.Options != "" {
-			return FaintStyle.Render(fmt.Sprintf("%s %s %s", c.Type, c.Options, c.Args))
+			return sourcePrefix + FaintStyle.Render(fmt.Sprintf("%s %s %s", c.Type, c.Options, c.Args))
 		}
-		return FaintStyle.Render(fmt.Sprintf("%s %s", c.Type, c.Args))
+		return sourcePrefix + FaintStyle.Render(fmt.Sprintf("%s %s", c.Type, c.Args))
 	}
 
 	switch c.Type {
@@ -55,6 +64,7 @@ func Highlight(c parser.Command, faint bool) string {
 	}
 
 	var s strings.Builder
+	s.WriteString(sourcePrefix)
 	s.WriteString(CommandStyle.Render(c.Type.String()) + " ")
 	if c.Options != "" {
 		s.WriteString(optionsStyle.Render(c.Options))
