@@ -12,6 +12,9 @@ import (
 func TestParser(t *testing.T) {
 	input := `
 Set TypingSpeed 100ms
+Set TypingSpeedVariable 1s 5s
+Set TypingSpeedVariable 0.1 1s
+Set TypingSpeedVariable 1s 2
 Set WaitTimeout 1m
 Set WaitPattern /foo/
 Type "echo 'Hello, World!'"
@@ -37,6 +40,9 @@ Wait@100ms /foobar/`
 
 	expected := []Command{
 		{Type: token.SET, Options: "TypingSpeed", Args: "100ms"},
+		{Type: token.SET, Options: "TypingSpeedVariable", Args: "1s 5s"},
+		{Type: token.SET, Options: "TypingSpeedVariable", Args: "0.1s 1s"},
+		{Type: token.SET, Options: "TypingSpeedVariable", Args: "1s 2s"},
 		{Type: token.SET, Options: "WaitTimeout", Args: "1m"},
 		{Type: token.SET, Options: "WaitPattern", Args: "foo"},
 		{Type: token.TYPE, Options: "", Args: "echo 'Hello, World!'"},
@@ -139,6 +145,7 @@ func TestParseTapeFile(t *testing.T) {
 		{Type: token.SET, Options: "LoopOffset", Args: "60.4%"},
 		{Type: token.SET, Options: "LoopOffset", Args: "20.99%"},
 		{Type: token.SET, Options: "CursorBlink", Args: "false"},
+		{Type: token.SET, Options: "TypingSpeedVariable", Args: "0.1s 1s"},
 		{Type: token.SLEEP, Options: "", Args: "1s"},
 		{Type: token.SLEEP, Options: "", Args: "500ms"},
 		{Type: token.SLEEP, Options: "", Args: ".5s"},
