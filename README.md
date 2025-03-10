@@ -75,7 +75,7 @@ For more examples see the [`examples/`](https://github.com/charmbracelet/vhs/tre
 ## Installation
 
 > [!NOTE]
-> VHS requires [`ttyd`](https://github.com/tsl0922/ttyd) and [`ffmpeg`](https://ffmpeg.org) to be installed and available on your `PATH`.
+> VHS requires [`ttyd`](https://github.com/tsl0922/ttyd) and [`ffmpeg`](https://ffmpeg.org) to be installed and available on your `PATH`, unless only text output is used.
 
 Use a package manager:
 
