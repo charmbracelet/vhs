@@ -34,6 +34,7 @@ type config struct {
 	AuthorizedKeysPath string `env:"AUTHORIZED_KEYS_PATH"`
 }
 
+//nolint:wrapcheck
 var serveCmd = &cobra.Command{
 	Use:   "serve",
 	Short: "Start the VHS SSH server",

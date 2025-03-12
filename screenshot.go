@@ -59,7 +59,6 @@ func MakeScreenshots(opts ScreenshotOptions) []*exec.Cmd {
 
 		args := opts.buildFFopts(path, textStream, cursorStream)
 
-		//nolint:gosec
 		cmds = append(cmds, exec.Command(
 			"ffmpeg",
 			args...,

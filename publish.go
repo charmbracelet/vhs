@@ -55,6 +55,7 @@ var publishCmd = &cobra.Command{
 	},
 }
 
+//nolint:wrapcheck
 func dataPath() (string, error) {
 	scope := gap.NewScope(gap.User, "vhs")
 	dataPath, err := scope.DataPath("")
@@ -70,7 +71,7 @@ func dataPath() (string, error) {
 // if the host does not exist there, it adds it so its available next time, as plain old `ssh` does.
 func hostKeyCallback(path string) ssh.HostKeyCallback {
 	return func(hostname string, remote net.Addr, key ssh.PublicKey) error {
-		kh, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0o600) //nolint:gomnd
+		kh, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0o600) //nolint:mnd
 		if err != nil {
 			return fmt.Errorf("failed to open known_hosts: %w", err)
 		}
@@ -97,6 +98,7 @@ func hostKeyCallback(path string) ssh.HostKeyCallback {
 	}
 }
 
+//nolint:wrapcheck
 func sshSession() (*ssh.Session, error) {
 	dp, err := dataPath()
 	if err != nil {
@@ -132,7 +134,7 @@ func sshSession() (*ssh.Session, error) {
 }
 
 // publishShareInstructions log shareable URL
-// If log level is set to `logLevelQuiet` the log message will be forced
+// If log level is set to `logLevelQuiet` the log message will be forced.
 func publishShareInstructions(url string) {
 	log.Println("\n" + GrayStyle.Render("  Share your GIF with Markdown:"))
 	log.Println(CommandStyle.Render("  ![Made with VHS]") + URLStyle.Render("("+url+")"))
@@ -145,6 +147,8 @@ func publishShareInstructions(url string) {
 }
 
 // Publish publishes the given GIF file to the web.
+//
+//nolint:wrapcheck
 func Publish(ctx context.Context, path string) (string, error) {
 	s, err := sshSession()
 	if err != nil {

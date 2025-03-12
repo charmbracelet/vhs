@@ -232,7 +232,7 @@ func ExecuteAlt(c parser.Command, v *VHS) error {
 	if err != nil {
 		return fmt.Errorf("failed to press Alt key: %w", err)
 	}
-	if k, ok := token.Keywords[c.Args]; ok {
+	if k, ok := token.Keywords[c.Args]; ok { //nolint:nestif
 		switch k {
 		case token.ENTER:
 			err = v.Page.Keyboard.Type(input.Enter)
@@ -272,7 +272,7 @@ func ExecuteShift(c parser.Command, v *VHS) error {
 		return fmt.Errorf("failed to press Shift key: %w", err)
 	}
 
-	if k, ok := token.Keywords[c.Args]; ok {
+	if k, ok := token.Keywords[c.Args]; ok { //nolint:nestif
 		switch k {
 		case token.ENTER:
 			err = v.Page.Keyboard.Type(input.Enter)
@@ -314,7 +314,7 @@ func ExecuteHide(_ parser.Command, v *VHS) error {
 // Require command are present. If not, it exits with a non-zero error.
 func ExecuteRequire(c parser.Command, _ *VHS) error {
 	_, err := exec.LookPath(c.Args)
-	return err
+	return err //nolint:wrapcheck
 }
 
 // ExecuteShow is a CommandFunc that resumes the recording of the vhs.
@@ -385,12 +385,12 @@ func ExecuteOutput(c parser.Command, v *VHS) error {
 
 // ExecuteCopy copies text to the clipboard.
 func ExecuteCopy(c parser.Command, _ *VHS) error {
-	return clipboard.WriteAll(c.Args)
+	return clipboard.WriteAll(c.Args) //nolint:wrapcheck
 }
 
 // ExecuteEnv sets env with given key-value pair.
 func ExecuteEnv(c parser.Command, _ *VHS) error {
-	return os.Setenv(c.Options, c.Args)
+	return os.Setenv(c.Options, c.Args) //nolint:wrapcheck
 }
 
 // ExecutePaste pastes text from the clipboard.
@@ -654,13 +654,13 @@ func ExecuteLoopOffset(c parser.Command, v *VHS) error {
 	return nil
 }
 
-// ExecuteSetMarginFill sets vhs margin fill
+// ExecuteSetMarginFill sets vhs margin fill.
 func ExecuteSetMarginFill(c parser.Command, v *VHS) error {
 	v.Options.Video.Style.MarginFill = c.Args
 	return nil
 }
 
-// ExecuteSetMargin sets vhs margin size
+// ExecuteSetMargin sets vhs margin size.
 func ExecuteSetMargin(c parser.Command, v *VHS) error {
 	margin, err := strconv.Atoi(c.Args)
 	if err != nil {
@@ -671,13 +671,13 @@ func ExecuteSetMargin(c parser.Command, v *VHS) error {
 	return nil
 }
 
-// ExecuteSetWindowBar sets window bar type
+// ExecuteSetWindowBar sets window bar type.
 func ExecuteSetWindowBar(c parser.Command, v *VHS) error {
 	v.Options.Video.Style.WindowBar = c.Args
 	return nil
 }
 
-// ExecuteSetWindowBar sets window bar size
+// ExecuteSetWindowBar sets window bar size.
 func ExecuteSetWindowBarSize(c parser.Command, v *VHS) error {
 	windowBarSize, err := strconv.Atoi(c.Args)
 	if err != nil {
@@ -688,7 +688,7 @@ func ExecuteSetWindowBarSize(c parser.Command, v *VHS) error {
 	return nil
 }
 
-// ExecuteSetBorderRadius sets corner radius
+// ExecuteSetBorderRadius sets corner radius.
 func ExecuteSetBorderRadius(c parser.Command, v *VHS) error {
 	borderRadius, err := strconv.Atoi(c.Args)
 	if err != nil {
@@ -699,7 +699,7 @@ func ExecuteSetBorderRadius(c parser.Command, v *VHS) error {
 	return nil
 }
 
-// ExecuteSetCursorBlink sets cursor blinking
+// ExecuteSetCursorBlink sets cursor blinking.
 func ExecuteSetCursorBlink(c parser.Command, v *VHS) error {
 	var err error
 	v.Options.CursorBlink, err = strconv.ParseBool(c.Args)

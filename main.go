@@ -27,12 +27,10 @@ import (
 const extension = ".tape"
 
 var (
-	// Version stores the build version of VHS at the time of packaging through -ldflags
-	//
-	// go build -ldflags "-s -w -X=main.Version=$(VERSION)" main.go
+	// Version stores the build version of VHS at the time of packaging through -ldflags.
 	Version string
 
-	// CommitSHA stores the commit SHA of VHS at the time of packaging through -ldflags
+	// CommitSHA stores the commit SHA of VHS at the time of packaging through -ldflags.
 	CommitSHA string
 
 	ttydMinVersion = version.Must(version.NewVersion("1.7.2"))
@@ -42,6 +40,7 @@ var (
 
 	quietFlag bool
 
+	//nolint:wrapcheck
 	rootCmd = &cobra.Command{
 		Use:           "vhs <file>",
 		Short:         "Run a given tape file and generates its outputs.",
@@ -178,6 +177,7 @@ var (
 		RunE:  Record,
 	}
 
+	//nolint:wrapcheck
 	newCmd = &cobra.Command{
 		Use:   "new <name>",
 		Short: "Create a new tape file with example tape file contents and documentation",
@@ -276,7 +276,7 @@ func init() {
 	)
 	rootCmd.CompletionOptions.HiddenDefaultCmd = true
 
-	if len(CommitSHA) >= 7 { //nolint:gomnd
+	if len(CommitSHA) >= 7 { //nolint:mnd
 		vt := rootCmd.VersionTemplate()
 		rootCmd.SetVersionTemplate(vt[:len(vt)-1] + " (" + CommitSHA[0:7] + ")\n")
 	}
@@ -292,7 +292,7 @@ func init() {
 
 var versionRegex = regexp.MustCompile(`\d+\.\d+\.\d+`)
 
-// getVersion returns the parsed version of a program
+// getVersion returns the parsed version of a program.
 func getVersion(program string) *version.Version {
 	cmd := exec.Command(program, "--version")
 	out, err := cmd.Output()
@@ -304,7 +304,7 @@ func getVersion(program string) *version.Version {
 }
 
 // ensureDependencies ensures that all dependencies are correctly installed
-// and versioned before continuing
+// and versioned before continuing.
 func ensureDependencies() error {
 	_, ffmpegErr := exec.LookPath("ffmpeg")
 	if ffmpegErr != nil {

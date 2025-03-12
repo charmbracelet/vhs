@@ -1,6 +1,6 @@
 package main
 
-// Supported shells of VHS
+// Supported shells of VH.
 const (
 	bash       = "bash"
 	cmdexe     = "cmd"

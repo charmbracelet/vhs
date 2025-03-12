@@ -15,7 +15,7 @@ type Token struct {
 	Column  int
 }
 
-// Tokens for the VHS language
+// Tokens for the VHS language.
 const (
 	AT        = "@"
 	EQUAL     = "="

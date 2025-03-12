@@ -81,6 +81,7 @@ The following is a list of all possible setting commands in VHS:
 	manAuthor = "Charm <vt100@charm.sh>"
 )
 
+//nolint:wrapcheck
 var manCmd = &cobra.Command{
 	Use:     "manual",
 	Aliases: []string{"man"},

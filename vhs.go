@@ -194,6 +194,8 @@ const cleanupWaitTime = 100 * time.Millisecond
 
 // Terminate cleans up a VHS instance and terminates the go-rod browser and ttyd
 // processes.
+//
+//nolint:wrapcheck
 func (vhs *VHS) terminate() error {
 	// Give some time for any commands executed (such as `rm`) to finish.
 	//
@@ -207,6 +209,8 @@ func (vhs *VHS) terminate() error {
 }
 
 // Cleanup individual frames.
+//
+//nolint:wrapcheck
 func (vhs *VHS) Cleanup() error {
 	err := os.RemoveAll(vhs.Options.Video.Input)
 	if err != nil {
@@ -242,7 +246,7 @@ func (vhs *VHS) Render() error {
 	return nil
 }
 
-// ApplyLoopOffset by modifying frame sequence
+// ApplyLoopOffset by modifying frame sequence.
 func (vhs *VHS) ApplyLoopOffset() error {
 	if vhs.totalFrames <= 0 {
 		return errors.New("no frames")
@@ -320,6 +324,7 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 	ch := make(chan error)
 	interval := time.Second / time.Duration(vhs.Options.Video.Framerate)
 
+	//nolint: mnd
 	go func() {
 		counter := 0
 		start := time.Now()
