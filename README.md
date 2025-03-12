@@ -733,6 +733,7 @@ Enter
 # Cleanup
 Hide
 Type 'rm example'
+Enter
 ```
 
 ### Show
