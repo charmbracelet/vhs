@@ -25,7 +25,6 @@ linters:
     - goprintffuncname
     - gosec
     - misspell
-    - mnd
     - nakedret
     - nestif
     - nilerr
