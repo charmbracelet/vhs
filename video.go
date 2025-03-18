@@ -89,7 +89,7 @@ func ensureDir(output string) {
 	}
 }
 
-// buildFFopts assembles an ffmpeg command from some VideoOptions
+// buildFFopts assembles an ffmpeg command from some VideoOptions.
 func buildFFopts(opts VideoOptions, targetFile string) []string {
 	var args []string
 	streamCounter := 2

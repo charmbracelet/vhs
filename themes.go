@@ -90,8 +90,7 @@ var DefaultTheme = Theme{
 
 const margin = 2
 
-// GlamourTheme is the theme for printing out the manual page.
-// $ vhs man
+// GlamourTheme is the theme for printing out the manual page ('vhs man').
 var GlamourTheme = ansi.StyleConfig{
 	Document: ansi.StyleBlock{
 		StylePrimitive: ansi.StylePrimitive{

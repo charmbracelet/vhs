@@ -30,7 +30,7 @@ vim demo.tape
 ```
 
 Tape files consist of a series of [commands](#vhs-command-reference). The commands are
-instructions for VHS to perform on its virtual terminal.  For a list of all
+instructions for VHS to perform on its virtual terminal. For a list of all
 possible commands see [the command reference](#vhs-command-reference).
 
 ```elixir
@@ -101,8 +101,8 @@ docker run --rm -v $PWD:/vhs ghcr.io/charmbracelet/vhs <cassette>.tape
 
 Or, download it:
 
-* [Packages][releases] are available in Debian and RPM formats
-* [Binaries][releases] are available for Linux, macOS, and Windows
+- [Packages][releases] are available in Debian and RPM formats
+- [Binaries][releases] are available for Linux, macOS, and Windows
 
 Or, just install it with `go`:
 
@@ -113,7 +113,7 @@ go install github.com/charmbracelet/vhs@latest
 <details>
 <summary>Windows, Debian, Ubuntu, Fedora, RHEL, Void Instructions</summary>
 
-* Debian / Ubuntu
+- Debian / Ubuntu
 
 ```sh
 # Debian/Ubuntu
@@ -121,10 +121,10 @@ sudo mkdir -p /etc/apt/keyrings
 curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
 echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | sudo tee /etc/apt/sources.list.d/charm.list
 # Install ttyd from https://github.com/tsl0922/ttyd/releases
-sudo apt update && sudo apt install vhs ffmpeg  
+sudo apt update && sudo apt install vhs ffmpeg
 ```
 
-* Fedora / RHEL
+- Fedora / RHEL
 
 ```sh
 echo '[charm]
@@ -137,13 +137,13 @@ gpgkey=https://repo.charm.sh/yum/gpg.key' | sudo tee /etc/yum.repos.d/charm.repo
 sudo yum install vhs ffmpeg
 ```
 
-* Void
+- Void
 
 ```sh
 sudo xbps-install vhs
 ```
 
-* Windows
+- Windows
 
 ```sh
 winget install charmbracelet.vhs
@@ -178,7 +178,7 @@ vhs cassette.tape
 VHS allows you to publish your GIFs to our servers for easy sharing with your
 friends and colleagues. Specify which file you want to share, then use the
 `publish` sub-command to host it on `vhs.charm.sh`. The output will provide you
-with links to share your GIF via browser, HTML, and Markdown. 
+with links to share your GIF via browser, HTML, and Markdown.
 
 ```bash
 vhs publish demo.gif
@@ -199,15 +199,14 @@ vhs serve
 <details>
 <summary>Configuration Options</summary>
 
-* `VHS_PORT`: The port to listen on (`1976`)
-* `VHS_HOST`: The host to listen on (`localhost`)
-* `VHS_GID`: The Group ID to run the server as (current user's GID)
-* `VHS_UID`: The User ID to run the server as (current user's UID)
-* `VHS_KEY_PATH`: The path to the SSH key to use (`.ssh/vhs_ed25519`)
-* `VHS_AUTHORIZED_KEYS_PATH`: The path to the authorized keys file (empty, publicly accessible)
+- `VHS_PORT`: The port to listen on (`1976`)
+- `VHS_HOST`: The host to listen on (`localhost`)
+- `VHS_GID`: The Group ID to run the server as (current user's GID)
+- `VHS_UID`: The User ID to run the server as (current user's UID)
+- `VHS_KEY_PATH`: The path to the SSH key to use (`.ssh/vhs_ed25519`)
+- `VHS_AUTHORIZED_KEYS_PATH`: The path to the authorized keys file (empty, publicly accessible)
 
 </details>
-
 
 Then, simply access VHS from a different machine via `ssh`:
 
@@ -222,20 +221,21 @@ ssh vhs.example.com < demo.tape > demo.gif
 
 There are a few basic types of VHS commands:
 
-* [`Output <path>`](#output): specify file output
-* [`Require <program>`](#require): specify required programs for tape file
-* [`Set <Setting> Value`](#settings): set recording settings
-* [`Type "<characters>"`](#type): emulate typing
-* [`Left`](#arrow-keys) [`Right`](#arrow-keys) [`Up`](#arrow-keys) [`Down`](#arrow-keys): arrow keys
-* [`Backspace`](#backspace) [`Enter`](#enter) [`Tab`](#tab) [`Space`](#space): special keys
-* [`Ctrl[+Alt][+Shift]+<char>`](#ctrl): press control + key and/or modifier
-* [`Sleep <time>`](#sleep): wait for a certain amount of time
-* [`Hide`](#hide): hide commands from output
-* [`Show`](#show): stop hiding commands from output
-* [`Screenshot`](#screenshot): screenshot the current frame
-* [`Copy/Paste`](#copy--paste): copy and paste text from clipboard.
-* [`Source`](#source): source commands from another tape
-* [`Env <Key> Value`](#env): set environment variables
+- [`Output <path>`](#output): specify file output
+- [`Require <program>`](#require): specify required programs for tape file
+- [`Set <Setting> Value`](#settings): set recording settings
+- [`Type "<characters>"`](#type): emulate typing
+- [`Left`](#arrow-keys) [`Right`](#arrow-keys) [`Up`](#arrow-keys) [`Down`](#arrow-keys): arrow keys
+- [`Backspace`](#backspace) [`Enter`](#enter) [`Tab`](#tab) [`Space`](#space): special keys
+- [`Ctrl[+Alt][+Shift]+<char>`](#ctrl): press control + key and/or modifier
+- [`Sleep <time>`](#sleep): wait for a certain amount of time
+- [`Wait[+Screen][+Line] /regex/`](#wait): wait for specific conditions
+- [`Hide`](#hide): hide commands from output
+- [`Show`](#show): stop hiding commands from output
+- [`Screenshot`](#screenshot): screenshot the current frame
+- [`Copy/Paste`](#copy--paste): copy and paste text from clipboard.
+- [`Source`](#source): source commands from another tape
+- [`Env <Key> Value`](#env): set environment variables
 
 ### Output
 
@@ -345,6 +345,7 @@ Set the height of the terminal with the `Set Height` command.
 ```elixir
 Set Height 1000
 ```
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/height.gif">
   <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/height.gif">
@@ -432,13 +433,11 @@ command.
 Set Padding 0
 ```
 
-
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://stuff.charm.sh/vhs/examples/padding.gif">
   <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/padding.gif">
   <img width="600" alt="Example of setting the padding" src="https://stuff.charm.sh/vhs/examples/padding.gif">
 </picture>
-
 
 #### Set Margin
 
@@ -485,7 +484,6 @@ Set BorderRadius 10
   <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-4nYoy6IsUKmleJANG7N1BH.gif">
   <img width="400" alt="Example of setting the margin" src="https://vhs.charm.sh/vhs-4nYoy6IsUKmleJANG7N1BH.gif">
 </picture>
-
 
 #### Set Framerate
 
@@ -669,6 +667,28 @@ PageUp 3
 PageDown 5
 ```
 
+### Wait
+
+The `Wait` command allows you to wait for something to appear on the screen.
+This is useful when you need to wait on something to complete, even if you don't
+know how long it'll take, while including it in the recording like a spinner or
+loading state.
+The command takes a regular expression as an argument, and optionally allows to
+set the duration to wait and if you want to check the whole screen or just the
+last line (the scope).
+
+```elixir
+Wait
+Wait            /World/
+Wait+Screen     /World/
+Wait+Line       /World/
+Wait@10ms       /World/
+Wait+Line@10ms  /World/
+```
+
+The default regular expression is `/>$/`, the wait timeout is `15s`, and the
+default scope is `Line`.
+
 ### Sleep
 
 The `Sleep` command allows you to continue capturing frames without interacting
@@ -713,6 +733,7 @@ Enter
 # Cleanup
 Hide
 Type 'rm example'
+Enter
 ```
 
 ### Show
@@ -773,7 +794,7 @@ The `source` command allows you to execute commands from another tape.
 Source config.tape
 ```
 
-***
+---
 
 ## Continuous Integration
 
@@ -803,15 +824,15 @@ It works great with Neovim, Emacs, and so on!
 
 We’d love to hear your thoughts on this project. Feel free to drop us a note!
 
-* [Twitter](https://twitter.com/charmcli)
-* [The Fediverse](https://mastodon.social/@charmcli)
-* [Discord](https://charm.sh/chat)
+- [Twitter](https://twitter.com/charmcli)
+- [The Fediverse](https://mastodon.social/@charmcli)
+- [Discord](https://charm.sh/chat)
 
 ## License
 
 [MIT](https://github.com/charmbracelet/vhs/raw/main/LICENSE)
 
-***
+---
 
 Part of [Charm](https://charm.sh).
 
