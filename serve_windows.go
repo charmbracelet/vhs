@@ -4,6 +4,6 @@
 package main
 
 // Windows doesn't support UID and GID, so we need to skip this.
-func dropUserPrivileges(gid int, uid int) error {
+func dropUserPrivileges(int, int) error {
 	return nil
 }
