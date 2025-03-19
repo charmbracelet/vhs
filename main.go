@@ -191,7 +191,7 @@ var (
 				return err
 			}
 
-			_, err = f.Write(bytes.Replace(DemoTape, []byte("examples/demo.gif"), []byte(name+".gif"), 1))
+			_, err = f.Write(bytes.Replace(demoTape, []byte("examples/demo.gif"), []byte(name+".gif"), 1))
 			if err != nil {
 				return err
 			}
