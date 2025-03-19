@@ -36,8 +36,8 @@ var CommandTypes = []CommandType{ //nolint: deadcode
 	token.ESCAPE,
 	token.ILLEGAL,
 	token.LEFT,
-	token.PAGEUP,
-	token.PAGEDOWN,
+	token.PAGE_UP,
+	token.PAGE_DOWN,
 	token.RIGHT,
 	token.SET,
 	token.OUTPUT,
@@ -144,8 +144,8 @@ func (p *Parser) parseCommand() Command {
 		token.LEFT,
 		token.RIGHT,
 		token.UP,
-		token.PAGEUP,
-		token.PAGEDOWN:
+		token.PAGE_UP,
+		token.PAGE_DOWN:
 		return p.parseKeypress(p.cur.Type)
 	case token.SET:
 		return p.parseSet()
