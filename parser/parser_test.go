@@ -302,7 +302,7 @@ func (st *parseSourceTest) run(t *testing.T) {
 	if st.writeFile {
 		err := os.WriteFile("source.tape", []byte(st.srcTape), os.ModePerm)
 		if err != nil {
-			t.Fatalf(err.Error())
+			t.Fatal(err)
 		}
 	}
 
