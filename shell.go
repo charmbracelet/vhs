@@ -1,13 +1,15 @@
 package main
 
-// Supported shells of VHS
+// Supported shells of VH.
 const (
 	bash       = "bash"
 	cmdexe     = "cmd"
 	fish       = "fish"
 	nushell    = "nu"
+	osh        = "osh"
 	powershell = "powershell"
 	pwsh       = "pwsh"
+	xonsh      = "xonsh"
 	zsh        = "zsh"
 )
 
@@ -62,6 +64,13 @@ var Shells = map[string]Shell{
 		Command: []string{"cmd.exe", "/k", "prompt=^> "},
 	},
 	nushell: {
-		Command: []string{"nu", "--execute", "$env.PROMPT_COMMAND = {''}"},
+		Command: []string{"nu", "--execute", "$env.PROMPT_COMMAND = {'\033[;38;2;91;86;224m>\033[m '}; $env.PROMPT_COMMAND_RIGHT = {''}"},
+	},
+	osh: {
+		Env:     []string{"PS1=\\[\\e[38;2;90;86;224m\\]> \\[\\e[0m\\]"},
+		Command: []string{"osh", "--norc"},
+	},
+	xonsh: {
+		Command: []string{"xonsh", "--no-rc", "-D", "PROMPT=\033[;38;2;91;86;224m>\033[m "},
 	},
 }

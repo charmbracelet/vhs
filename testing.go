@@ -72,8 +72,9 @@ func (v *VHS) Buffer() ([]string, error) {
 		return nil, fmt.Errorf("read buffer: %w", err)
 	}
 
-	var lines []string
-	for _, line := range buf.Value.Arr() {
+	arr := buf.Value.Arr()
+	lines := make([]string, 0, len(arr))
+	for _, line := range arr {
 		lines = append(lines, line.Str())
 	}
 

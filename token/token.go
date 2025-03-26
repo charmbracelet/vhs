@@ -15,15 +15,21 @@ type Token struct {
 	Column  int
 }
 
-// Tokens for the VHS language
+// Tokens for the VHS language.
 const (
-	AT      = "@"
-	EQUAL   = "="
-	PLUS    = "+"
-	PERCENT = "%"
-	SLASH   = "/"
-	DOT     = "."
-	DASH    = "-"
+	AT        = "@"
+	EQUAL     = "="
+	PLUS      = "+"
+	PERCENT   = "%"
+	SLASH     = "/"
+	BACKSLASH = "\\"
+	DOT       = "."
+	DASH      = "-"
+
+	MINUS         = "-"
+	RIGHT_BRACKET = "]" //nolint:revive
+	LEFT_BRACKET  = "[" //nolint:revive
+	CARET         = "^"
 
 	EM           = "EM"
 	MILLISECONDS = "MILLISECONDS"
@@ -43,8 +49,8 @@ const (
 	ESCAPE    = "ESCAPE"
 	HOME      = "HOME"
 	INSERT    = "INSERT"
-	PAGEDOWN  = "PAGEDOWN"
-	PAGEUP    = "PAGEUP"
+	PAGE_DOWN = "PAGE_DOWN" //nolint:revive
+	PAGE_UP   = "PAGE_UP"   //nolint:revive
 	SLEEP     = "SLEEP"
 	SPACE     = "SPACE"
 	TAB       = "TAB"
@@ -119,8 +125,8 @@ var Keywords = map[string]Type{
 	"Left":          LEFT,
 	"Right":         RIGHT,
 	"Up":            UP,
-	"PageUp":        PAGEUP,
-	"PageDown":      PAGEDOWN,
+	"PageUp":        PAGE_UP,
+	"PageDown":      PAGE_DOWN,
 	"Tab":           TAB,
 	"Escape":        ESCAPE,
 	"End":           END,
@@ -176,7 +182,7 @@ func IsSetting(t Type) bool {
 func IsCommand(t Type) bool {
 	switch t {
 	case TYPE, SLEEP,
-		UP, DOWN, RIGHT, LEFT, PAGEUP, PAGEDOWN,
+		UP, DOWN, RIGHT, LEFT, PAGE_UP, PAGE_DOWN,
 		ENTER, BACKSPACE, DELETE, TAB,
 		ESCAPE, HOME, INSERT, END, CTRL, SOURCE, SCREENSHOT, COPY, PASTE, WAIT:
 		return true

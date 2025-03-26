@@ -174,7 +174,7 @@ func (r *roundedrect) At(x, y int) color.Color {
 	return color.Alpha{white}
 }
 
-// Make a mask to round a terminal's corners
+// Make a mask to round a terminal's corners.
 func MakeBorderRadiusMask(width, height, radius int, targetpng string) {
 	img := image.NewGray(
 		image.Rectangle{
@@ -209,7 +209,7 @@ func MakeBorderRadiusMask(width, height, radius int, targetpng string) {
 	}
 }
 
-// Make a window bar and save it to a file
+// Make a window bar and save it to a file.
 func MakeWindowBar(termWidth, termHeight int, opts StyleOptions, file string) {
 	var err error
 	switch opts.WindowBar {
@@ -311,7 +311,7 @@ func makeColorfulBar(termWidth int, termHeight int, isRight bool, opts StyleOpti
 	} else {
 		err = png.Encode(f, img)
 	}
-	return err
+	return err //nolint:wrapcheck
 }
 
 func makeRingBar(termWidth int, termHeight int, isRight bool, opts StyleOptions, targetpng string) error {
@@ -385,9 +385,10 @@ func makeRingBar(termWidth int, termHeight int, isRight bool, opts StyleOptions,
 	} else {
 		err = png.Encode(f, img)
 	}
-	return err
+	return err //nolint:wrapcheck
 }
 
+//nolint:mnd
 func parseHexColor(s string) (c color.RGBA, err error) {
 	c.R, c.G, c.B, c.A = black, black, black, white
 	switch len(s) {

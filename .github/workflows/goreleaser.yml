@@ -28,13 +28,3 @@ jobs:
       macos_notary_issuer_id: ${{ secrets.MACOS_NOTARY_ISSUER_ID }}
       macos_notary_key_id: ${{ secrets.MACOS_NOTARY_KEY_ID }}
       macos_notary_key: ${{ secrets.MACOS_NOTARY_KEY }}
-  homebrew:
-    name: Bump Homebrew formula
-    runs-on: ubuntu-latest
-    steps:
-      - uses: mislav/bump-homebrew-formula-action@v3
-        with:
-          # A PR will be sent to github.com/Homebrew/homebrew-core to update this formula:
-          formula-name: vhs
-        env:
-          COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}

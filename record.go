@@ -18,7 +18,7 @@ import (
 )
 
 // sleepThreshold is the time at which if there has been no activity in the
-// tape file we insert a Sleep command
+// tape file we insert a Sleep command.
 const sleepThreshold = 500 * time.Millisecond
 
 // EscapeSequences is a map of escape sequences to their VHS commands.
@@ -31,8 +31,8 @@ var EscapeSequences = map[string]string{
 	"\x1b[2~": token.INSERT,
 	"\x1b[3~": token.DELETE,
 	"\x1b[4~": token.END,
-	"\x1b[5~": token.PAGEUP,
-	"\x1b[6~": token.PAGEDOWN,
+	"\x1b[5~": token.PAGE_UP,
+	"\x1b[6~": token.PAGE_DOWN,
 	"\x01":    token.CTRL + "+A",
 	"\x02":    token.CTRL + "+B",
 	"\x03":    token.CTRL + "+C",
@@ -66,11 +66,13 @@ var EscapeSequences = map[string]string{
 // writing to, it records all the key presses on stdin and uses them to write
 // Tape commands.
 //
-// vhs record > file.tape
+//	vhs record > file.tape
+//
+//nolint:wrapcheck
 func Record(_ *cobra.Command, _ []string) error {
 	command := exec.Command(shell)
 
-	command.Env = append(command.Env, "VHS_RECORD=true")
+	command.Env = append(os.Environ(), "VHS_RECORD=true")
 
 	terminal, err := pty.Start(command)
 	if err != nil {
@@ -81,7 +83,7 @@ func Record(_ *cobra.Command, _ []string) error {
 		log.Printf("error resizing pty: %s", err)
 	}
 
-	prevState, err := term.MakeRaw(int(os.Stdin.Fd())) //nolint: gosec
+	prevState, err := term.MakeRaw(int(os.Stdin.Fd()))
 	if err != nil {
 		return err
 	}
@@ -114,7 +116,7 @@ func Record(_ *cobra.Command, _ []string) error {
 
 	// PTY cleanup and restore terminal
 	_ = terminal.Close()
-	_ = term.Restore(int(os.Stdin.Fd()), prevState) //nolint: gosec
+	_ = term.Restore(int(os.Stdin.Fd()), prevState)
 
 	fmt.Println(inputToTape(tape.String()))
 	return nil
@@ -162,7 +164,7 @@ func inputToTape(input string) string {
 
 		// We've encountered some non-command, assume that we need to type these
 		// characters.
-		if token.Type(lines[i]) == token.SLEEP {
+		if token.Type(lines[i]) == token.SLEEP { //nolint:nestif
 			sleep := sleepThreshold * time.Duration(repeat)
 			if sleep >= time.Minute {
 				sanitized.WriteString(fmt.Sprintf("%s %gs", token.Type(token.SLEEP), sleep.Seconds()))
@@ -198,7 +200,7 @@ func inputToTape(input string) string {
 	return sanitized.String()
 }
 
-// quote wraps a string in (single or double) quotes
+// quote wraps a string in (single or double) quotes.
 func quote(s string) string {
 	if strings.ContainsRune(s, '"') && strings.ContainsRune(s, '\'') {
 		return fmt.Sprintf("`%s`", s)

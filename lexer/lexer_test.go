@@ -22,6 +22,10 @@ Right@100ms 3
 Sleep 500ms
 Ctrl+C
 Enter
+Ctrl+@
+Ctrl+\
+Alt+]
+Shift+[
 Sleep .1
 Sleep 100ms
 Sleep 2
@@ -65,6 +69,18 @@ Wait+Screen@1m /foobar/`
 		{token.PLUS, "+"},
 		{token.STRING, "C"},
 		{token.ENTER, "Enter"},
+		{token.CTRL, "Ctrl"},
+		{token.PLUS, "+"},
+		{token.AT, "@"},
+		{token.CTRL, "Ctrl"},
+		{token.PLUS, "+"},
+		{token.BACKSLASH, "\\"},
+		{token.ALT, "Alt"},
+		{token.PLUS, "+"},
+		{token.RIGHT_BRACKET, "]"},
+		{token.SHIFT, "Shift"},
+		{token.PLUS, "+"},
+		{token.LEFT_BRACKET, "["},
 		{token.SLEEP, "Sleep"},
 		{token.NUMBER, ".1"},
 		{token.SLEEP, "Sleep"},
@@ -219,10 +235,10 @@ func TestLexTapeFile(t *testing.T) {
 		{token.AT, "@"},
 		{token.NUMBER, "1"},
 		{token.NUMBER, "3"},
-		{token.PAGEDOWN, "PageDown"},
-		{token.PAGEDOWN, "PageDown"},
+		{token.PAGE_DOWN, "PageDown"},
+		{token.PAGE_DOWN, "PageDown"},
 		{token.NUMBER, "2"},
-		{token.PAGEDOWN, "PageDown"},
+		{token.PAGE_DOWN, "PageDown"},
 		{token.AT, "@"},
 		{token.NUMBER, "1"},
 		{token.NUMBER, "3"},
@@ -268,10 +284,10 @@ func TestLexTapeFile(t *testing.T) {
 		{token.AT, "@"},
 		{token.NUMBER, "1"},
 		{token.NUMBER, "3"},
-		{token.PAGEUP, "PageUp"},
-		{token.PAGEUP, "PageUp"},
+		{token.PAGE_UP, "PageUp"},
+		{token.PAGE_UP, "PageUp"},
 		{token.NUMBER, "2"},
-		{token.PAGEUP, "PageUp"},
+		{token.PAGE_UP, "PageUp"},
 		{token.AT, "@"},
 		{token.NUMBER, "1"},
 		{token.NUMBER, "3"},

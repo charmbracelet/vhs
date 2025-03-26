@@ -42,8 +42,23 @@ func (l *Lexer) NextToken() token.Token {
 	case '=':
 		tok = l.newToken(token.EQUAL, l.ch)
 		l.readChar()
+	case ']':
+		tok = l.newToken(token.RIGHT_BRACKET, l.ch)
+		l.readChar()
+	case '[':
+		tok = l.newToken(token.LEFT_BRACKET, l.ch)
+		l.readChar()
+	case '-':
+		tok = l.newToken(token.MINUS, l.ch)
+		l.readChar()
 	case '%':
 		tok = l.newToken(token.PERCENT, l.ch)
+		l.readChar()
+	case '^':
+		tok = l.newToken(token.CARET, l.ch)
+		l.readChar()
+	case '\\':
+		tok = l.newToken(token.BACKSLASH, l.ch)
 		l.readChar()
 	case '#':
 		tok.Type = token.COMMENT
