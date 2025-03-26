@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"os"
 	"os/exec"
 	"regexp"
@@ -12,25 +11,16 @@ import (
 	"time"
 
 	"github.com/atotto/clipboard"
-	"github.com/charmbracelet/vhs/lexer"
 	"github.com/charmbracelet/vhs/parser"
 	"github.com/charmbracelet/vhs/token"
 	"github.com/go-rod/rod/lib/input"
-	"github.com/mattn/go-runewidth"
 )
 
 // Execute executes a command on a running instance of vhs.
 func Execute(c parser.Command, v *VHS) error {
-	if c.Type == token.SOURCE {
-		err := ExecuteSourceTape(c, v)
-		if err != nil {
-			return fmt.Errorf("failed to execute source tape: %w", err)
-		}
-	} else {
-		err := CommandFuncs[c.Type](c, v)
-		if err != nil {
-			return fmt.Errorf("failed to execute command: %w", err)
-		}
+	err := CommandFuncs[c.Type](c, v)
+	if err != nil {
+		return fmt.Errorf("failed to execute command: %w", err)
 	}
 
 	if v.recording && v.Options.Test.Output != "" {
@@ -705,49 +695,6 @@ func ExecuteSetCursorBlink(c parser.Command, v *VHS) error {
 	v.Options.CursorBlink, err = strconv.ParseBool(c.Args)
 	if err != nil {
 		return fmt.Errorf("failed to parse cursor blink: %w", err)
-	}
-
-	return nil
-}
-
-const sourceDisplayMaxLength = 10
-
-// ExecuteSourceTape is a CommandFunc that executes all commands of source tape.
-func ExecuteSourceTape(c parser.Command, v *VHS) error {
-	tapePath := c.Args
-	var out io.Writer = os.Stdout
-	if quietFlag {
-		out = io.Discard
-	}
-
-	// read tape file
-	tape, err := os.ReadFile(tapePath)
-	if err != nil {
-		return fmt.Errorf("failed to read tape %s: %w", tapePath, err)
-	}
-
-	l := lexer.New(string(tape))
-	p := parser.New(l)
-
-	cmds := p.Parse()
-	if len(p.Errors()) != 0 {
-		return InvalidSyntaxError{p.Errors()}
-	}
-
-	displayPath := runewidth.Truncate(strings.TrimSuffix(tapePath, extension), sourceDisplayMaxLength, "…")
-
-	// Run all commands from the sourced tape file.
-	for _, cmd := range cmds {
-		// Output have to be avoid in order to not overwrite output of the original tape.
-		if cmd.Type == token.SOURCE ||
-			cmd.Type == token.OUTPUT {
-			continue
-		}
-		_, _ = fmt.Fprintf(out, "%s %s\n", GrayStyle.Render(displayPath+":"), Highlight(cmd, false))
-		err := CommandFuncs[cmd.Type](cmd, v)
-		if err != nil {
-			return fmt.Errorf("failed to execute command %s: %w", cmd.Type.String(), err)
-		}
 	}
 
 	return nil
