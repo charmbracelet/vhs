@@ -145,7 +145,7 @@ func (p *Parser) parseCommand() []Command {
 		token.LEFT,
 		token.RIGHT,
 		token.UP,
-    token.PAGE_UP,
+		token.PAGE_UP,
 		token.PAGE_DOWN:
 		return []Command{p.parseKeypress(p.cur.Type)}
 	case token.SET:
