@@ -727,7 +727,7 @@ func (p *Parser) parseSource() []Command {
 	}
 
 	cmd.Args = p.peek.Literal
-	filtered := make([]Command, 0, len(srcCmds))
+	var filtered []Command
 	for _, srcCmd := range srcCmds {
 		// Output have to be avoid in order to not overwrite output of the original tape.
 		if srcCmd.Type == token.SOURCE ||
