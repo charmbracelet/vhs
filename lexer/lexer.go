@@ -84,7 +84,7 @@ func (l *Lexer) NextToken() token.Token {
 		l.readChar()
 	case '/':
 		tok.Type = token.REGEX
-		tok.Literal = l.readString('/')
+		tok.Literal = l.readRegex('/')
 		l.readChar()
 	default:
 		if isDigit(l.ch) || (isDot(l.ch) && isDigit(l.peekChar())) {
@@ -133,6 +133,26 @@ func (l *Lexer) readString(endChar byte) string {
 	pos := l.pos + 1
 	for {
 		l.readChar()
+		if l.ch == endChar || l.ch == 0 || isNewLine(l.ch) {
+			break
+		}
+	}
+	return l.input[pos:l.pos]
+}
+
+// readRegex reads a regex pattern from the input, handling escaped delimiters.
+// /foo\/bar/ => Token(foo\/bar).
+func (l *Lexer) readRegex(endChar byte) string {
+	pos := l.pos + 1
+	for {
+		l.readChar()
+
+		// Handle escape sequences.
+		if l.ch == '\\' && l.peekChar() == endChar {
+			l.readChar() // Consume the escaped delimiter.
+			continue
+		}
+
 		if l.ch == endChar || l.ch == 0 || isNewLine(l.ch) {
 			break
 		}
