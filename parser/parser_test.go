@@ -258,6 +258,12 @@ func TestParseCtrl(t *testing.T) {
 			wantArgs: []string{"Space"},
 			wantErr:  false,
 		},
+		{
+			name:     "Ctrl+w 2",
+			tape:     "Ctrl+w 2",
+			wantArgs: []string{"w"},
+			wantErr:  false,
+		},
 	}
 
 	for _, tc := range tests {
