@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"time"
 
 	"github.com/charmbracelet/vhs/lexer"
 	"github.com/charmbracelet/vhs/parser"
@@ -137,6 +138,8 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 		}
 	}()
 
+	start := time.Now()
+
 	for _, cmd := range cmds[offset:] {
 		if ctx.Err() != nil {
 			teardown()
@@ -160,6 +163,16 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 			_, _ = fmt.Fprintln(out, Highlight(cmd, true))
 			continue
 		}
+
+		if withTimestampFlag {
+			elapsed := time.Since(start)
+			hours := int(elapsed.Hours())
+			minutes := int(elapsed.Minutes()) % 60
+			seconds := int(elapsed.Seconds()) % 60
+			stopwatch := fmt.Sprintf("%02d:%02d:%02d", hours, minutes, seconds)
+			fmt.Print(stopwatch, " : ")
+		}
+
 		_, _ = fmt.Fprintln(out, Highlight(cmd, !v.recording || cmd.Type == token.SHOW || cmd.Type == token.HIDE || isSetting))
 		err := Execute(cmd, &v)
 		if err != nil {
