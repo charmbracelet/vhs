@@ -157,7 +157,6 @@ func (p *Parser) parseCommand() []Command {
 	case token.TYPE:
 		return []Command{p.parseType()}
 	case token.CTRL:
-		// return []Command{p.parseCtrl()}
 		return p.parseCtrl()
 	case token.ALT:
 		return []Command{p.parseAlt()}
@@ -342,7 +341,7 @@ func (p *Parser) parseCtrl() []Command {
 	ctrlArgs := strings.Join(args, " ")
 	repeat, _ := strconv.Atoi(p.parseRepeat())
 
-	var cmds []Command
+	cmds := make([]Command, 0, repeat)
 	for range repeat {
 		cmds = append(cmds, Command{Type: token.CTRL, Args: ctrlArgs})
 	}
