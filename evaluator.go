@@ -117,7 +117,15 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	defer func() {
 		if v.Options.Video.Output.Frames != "" {
 			// Move the frames to the output directory.
-			_ = os.Rename(v.Options.Video.Input, v.Options.Video.Output.Frames)
+			err := os.Rename(v.Options.Video.Input, v.Options.Video.Output.Frames)
+			if err != nil {
+				// On some systems, Rename may fail with the error message
+				// "invalid cross-device link" when source and target are on
+				// different mounts. It may also fail, if the target (output)
+				// directory already exists, even if it's empty. CopyFS can
+				// handle the above, while keeping the existing files intact.
+				_ = os.CopyFS(v.Options.Video.Output.Frames, os.DirFS(v.Options.Video.Input))
+			}
 		}
 
 		_ = v.Cleanup()
