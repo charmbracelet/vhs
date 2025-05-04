@@ -574,13 +574,17 @@ func (p *Parser) parseType() Command {
 
 	cmd.Options = p.parseSpeed()
 
-	if p.peek.Type != token.STRING {
-		p.errors = append(p.errors, NewError(p.peek, p.cur.Literal+" expects string"))
+	if p.peek.Type != token.STRING && p.peek.Type != token.VAR {
+		p.errors = append(p.errors, NewError(p.peek, p.cur.Literal+" expects string or var"))
 	}
 
-	for p.peek.Type == token.STRING {
+	for p.peek.Type == token.STRING || p.peek.Type == token.VAR {
 		p.nextToken()
-		cmd.Args += p.cur.Literal
+		if p.cur.Type == token.STRING {
+			cmd.Args += p.cur.Literal
+		} else {
+			cmd.Args = os.Getenv(p.cur.Literal)
+		}
 
 		// If the next token is a string, add a space between them.
 		// Since tokens must be separated by a whitespace, this is most likely
@@ -590,7 +594,7 @@ func (p *Parser) parseType() Command {
 		// the tokens, however if the user was intending to type multiple spaces
 		// they would need to use a string literal.
 
-		if p.peek.Type == token.STRING {
+		if p.peek.Type == token.STRING || p.peek.Type == token.VAR {
 			cmd.Args += " "
 		}
 	}
