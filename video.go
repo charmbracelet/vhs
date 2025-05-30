@@ -80,6 +80,22 @@ func marginFillIsColor(marginFill string) bool {
 	return strings.HasPrefix(marginFill, "#")
 }
 
+// makeMedia takes a list of images (as frames) and converts them to a GIF/WebM/MP4.
+func makeMedia(opts VideoOptions, targetFile string) *exec.Cmd {
+	if targetFile == "" {
+		return nil
+	}
+
+	log.Println(GrayStyle.Render("Creating " + targetFile + "..."))
+	ensureDir(targetFile)
+
+	//nolint:gosec
+	return exec.Command(
+		"ffmpeg",
+		buildFFopts(opts, targetFile)...,
+	)
+}
+
 // ensureDir ensures that the file path of the output can be created by
 // creating all the necessary nested folders.
 func ensureDir(output string) {
@@ -138,48 +154,15 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 
 // MakeGIF takes a list of images (as frames) and converts them to a GIF.
 func MakeGIF(opts VideoOptions) *exec.Cmd {
-	if opts.Output.GIF == "" {
-		return nil
-	}
-
-	log.Println(GrayStyle.Render("Creating " + opts.Output.GIF + "..."))
-	ensureDir(opts.Output.GIF)
-
-	//nolint:gosec
-	return exec.Command(
-		"ffmpeg",
-		buildFFopts(opts, opts.Output.GIF)...,
-	)
+	return makeMedia(opts, opts.Output.GIF)
 }
 
 // MakeWebM takes a list of images (as frames) and converts them to a WebM.
 func MakeWebM(opts VideoOptions) *exec.Cmd {
-	if opts.Output.WebM == "" {
-		return nil
-	}
-
-	log.Println(GrayStyle.Render("Creating " + opts.Output.WebM + "..."))
-	ensureDir(opts.Output.WebM)
-
-	//nolint:gosec
-	return exec.Command(
-		"ffmpeg",
-		buildFFopts(opts, opts.Output.WebM)...,
-	)
+	return makeMedia(opts, opts.Output.WebM)
 }
 
 // MakeMP4 takes a list of images (as frames) and converts them to an MP4.
 func MakeMP4(opts VideoOptions) *exec.Cmd {
-	if opts.Output.MP4 == "" {
-		return nil
-	}
-
-	log.Println(GrayStyle.Render("Creating " + opts.Output.MP4 + "..."))
-	ensureDir(opts.Output.MP4)
-
-	//nolint:gosec
-	return exec.Command(
-		"ffmpeg",
-		buildFFopts(opts, opts.Output.MP4)...,
-	)
+	return makeMedia(opts, opts.Output.MP4)
 }
