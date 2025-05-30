@@ -157,7 +157,7 @@ func (p *Parser) parseCommand() []Command {
 	case token.TYPE:
 		return []Command{p.parseType()}
 	case token.CTRL:
-		return []Command{p.parseCtrl()}
+		return p.parseCtrl()
 	case token.ALT:
 		return []Command{p.parseAlt()}
 	case token.SHIFT:
@@ -287,7 +287,7 @@ func (p *Parser) parseTime() string {
 //	E.g:
 //	Ctrl+Shift+O
 //	Ctrl+Alt+Shift+P
-func (p *Parser) parseCtrl() Command {
+func (p *Parser) parseCtrl() []Command {
 	var args []string
 
 	inModifierChain := true
@@ -339,7 +339,13 @@ func (p *Parser) parseCtrl() Command {
 	}
 
 	ctrlArgs := strings.Join(args, " ")
-	return Command{Type: token.CTRL, Args: ctrlArgs}
+	repeat, _ := strconv.Atoi(p.parseRepeat())
+
+	cmds := make([]Command, 0, repeat)
+	for range repeat {
+		cmds = append(cmds, Command{Type: token.CTRL, Args: ctrlArgs})
+	}
+	return cmds
 }
 
 // parseAlt parses an alt command.
