@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 	"path/filepath"
 )
@@ -17,6 +18,9 @@ type ScreenshotOptions struct {
 	// screenshots represents a map holding screenshot path as key and frame as value.
 	screenshots map[string]int
 
+	// textScreenshots represents a map holding text screenshot path as key and content as value.
+	textScreenshots map[string]string
+
 	// Input represents location of cursor and text frames png files.
 	input string
 
@@ -29,6 +33,7 @@ func NewScreenshotOptions(input string, style *StyleOptions) ScreenshotOptions {
 		frameCapture:       false,
 		nextScreenshotPath: "",
 		screenshots:        make(map[string]int),
+		textScreenshots:    make(map[string]string),
 		input:              input,
 		style:              style,
 	}
@@ -38,6 +43,15 @@ func NewScreenshotOptions(input string, style *StyleOptions) ScreenshotOptions {
 // After storing frame it disables frame capture.
 func (opts *ScreenshotOptions) makeScreenshot(frame int) {
 	opts.screenshots[opts.nextScreenshotPath] = frame
+
+	opts.frameCapture = false
+	opts.nextScreenshotPath = ""
+}
+
+// makeTextScreenshot stores text content for a text screenshot.
+// After storing content it disables frame capture.
+func (opts *ScreenshotOptions) makeTextScreenshot(content string) {
+	opts.textScreenshots[opts.nextScreenshotPath] = content
 
 	opts.frameCapture = false
 	opts.nextScreenshotPath = ""
@@ -54,6 +68,12 @@ func MakeScreenshots(opts ScreenshotOptions) []*exec.Cmd {
 	cmds := []*exec.Cmd{}
 
 	for path, frame := range opts.screenshots {
+		// Handle text format screenshots differently
+		if filepath.Ext(path) == ".txt" {
+			// Text screenshots don't need ffmpeg, they'll be handled elsewhere
+			continue
+		}
+
 		cursorStream := filepath.Join(opts.input, fmt.Sprintf(cursorFrameFormat, frame))
 		textStream := filepath.Join(opts.input, fmt.Sprintf(textFrameFormat, frame))
 
@@ -98,4 +118,16 @@ func (opts *ScreenshotOptions) buildFFopts(targetFile, textStream, cursorStream 
 	args = append(args, targetFile)
 
 	return args
+}
+
+// MakeTextScreenshots writes text screenshots that were captured during recording.
+func MakeTextScreenshots(opts ScreenshotOptions) error {
+	for path, content := range opts.textScreenshots {
+		// Write to file
+		if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
+			return fmt.Errorf("failed to write text screenshot to %s: %w", path, err)
+		}
+	}
+
+	return nil
 }

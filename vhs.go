@@ -227,6 +227,11 @@ func (vhs *VHS) Render() error {
 	}
 
 	// Generate the video(s) with the frames.
+	// Generate text screenshots first
+	if err := MakeTextScreenshots(vhs.Options.Screenshot); err != nil {
+		return fmt.Errorf("failed to create text screenshots: %w", err)
+	}
+
 	var cmds []*exec.Cmd
 	cmds = append(cmds, MakeGIF(vhs.Options.Video))
 	cmds = append(cmds, MakeMP4(vhs.Options.Video))
@@ -378,7 +383,19 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 
 				// Capture current frame and disable frame capturing
 				if vhs.Options.Screenshot.frameCapture {
-					vhs.Options.Screenshot.makeScreenshot(counter)
+					// Check if this is a text screenshot
+					if filepath.Ext(vhs.Options.Screenshot.nextScreenshotPath) == ".txt" {
+						// Get terminal buffer content
+						buffer, err := vhs.Buffer()
+						if err != nil {
+							ch <- fmt.Errorf("error capturing text screenshot: %w", err)
+							continue
+						}
+						content := strings.Join(buffer, "\n")
+						vhs.Options.Screenshot.makeTextScreenshot(content)
+					} else {
+						vhs.Options.Screenshot.makeScreenshot(counter)
+					}
 				}
 			}
 		}
