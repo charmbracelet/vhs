@@ -756,12 +756,18 @@ Type "You will see this being typed."
 
 ### Screenshot
 
-The `Screenshot` command captures the current frame (png format).
+The `Screenshot` command captures the current frame in either PNG or text format.
 
 ```elixir
-# At any point...
+# Capture as PNG image
 Screenshot examples/screenshot.png
+
+# Capture as plain text
+Screenshot examples/screenshot.txt
 ```
+
+When using `.png` extension, VHS captures a visual screenshot of the terminal.
+When using `.txt` extension, VHS captures the terminal content as plain text without any styling.
 
 ### Copy / Paste
 
