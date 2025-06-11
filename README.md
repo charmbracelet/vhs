@@ -820,6 +820,12 @@ support syntax highlighting with tree-sitter:
 
 It works great with Neovim, Emacs, and so on!
 
+## Contributing
+
+See [contributing][contribute].
+
+[contribute]: https://github.com/charmbracelet/vhs/contribute
+
 ## Feedback
 
 We’d love to hear your thoughts on this project. Feel free to drop us a note!
