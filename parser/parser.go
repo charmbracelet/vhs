@@ -1,3 +1,4 @@
+// Package parser provides a parser for the VHS Tape language.
 package parser
 
 import (

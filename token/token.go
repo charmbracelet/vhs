@@ -1,3 +1,5 @@
+// Package token provides the token types and structures for the VHS Tape
+// language.
 package token
 
 import (

@@ -76,6 +76,7 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 		minHeight += video.Style.WindowBarSize
 	}
 	if video.Style.Height < minHeight || video.Style.Width < minWidth {
+		//nolint:staticcheck
 		v.Errors = append(
 			v.Errors,
 			fmt.Errorf(

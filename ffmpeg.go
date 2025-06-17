@@ -112,15 +112,15 @@ func calcTermDimensions(style StyleOptions) (int, int) {
 func (fb *FilterComplexBuilder) WithWindowBar(barStream int) *FilterComplexBuilder {
 	if fb.style.WindowBar != "" {
 		fb.filterComplex.WriteString(";")
-		fb.filterComplex.WriteString(
-			fmt.Sprintf(`
+		_, _ = fmt.Fprintf(
+			fb.filterComplex,
+			`
 			[%d]loop=-1[loopbar];
 			[loopbar][%s]overlay=0:%d[withbar]
 			`,
-				barStream,
-				fb.prevStageName,
-				fb.style.WindowBarSize,
-			),
+			barStream,
+			fb.prevStageName,
+			fb.style.WindowBarSize,
 		)
 
 		fb.prevStageName = "withbar"
@@ -133,14 +133,14 @@ func (fb *FilterComplexBuilder) WithWindowBar(barStream int) *FilterComplexBuild
 func (fb *FilterComplexBuilder) WithBorderRadius(cornerMarkStream int) *FilterComplexBuilder {
 	if fb.style.BorderRadius != 0 {
 		fb.filterComplex.WriteString(";")
-		fb.filterComplex.WriteString(
-			fmt.Sprintf(`
-				[%d]loop=-1[loopmask];
-				[%s][loopmask]alphamerge[rounded]
-				`,
-				cornerMarkStream,
-				fb.prevStageName,
-			),
+		_, _ = fmt.Fprintf(
+			fb.filterComplex,
+			`
+			[%d]loop=-1[loopmask];
+			[%s][loopmask]alphamerge[rounded]
+			`,
+			cornerMarkStream,
+			fb.prevStageName,
 		)
 		fb.prevStageName = "rounded"
 	}
@@ -155,16 +155,16 @@ func (fb *FilterComplexBuilder) WithMarginFill(marginStream int) *FilterComplexB
 		// ffmpeg will complain if the final filter ends with a semicolon,
 		// so we add one BEFORE we start adding filters.
 		fb.filterComplex.WriteString(";")
-		fb.filterComplex.WriteString(
-			fmt.Sprintf(`
+		_, _ = fmt.Fprintf(
+			fb.filterComplex,
+			`
 			[%d]scale=%d:%d[bg];
 			[bg][%s]overlay=(W-w)/2:(H-h)/2:shortest=1[withbg]
 			`,
-				marginStream,
-				fb.style.Width,
-				fb.style.Height,
-				fb.prevStageName,
-			),
+			marginStream,
+			fb.style.Width,
+			fb.style.Height,
+			fb.prevStageName,
 		)
 		fb.prevStageName = "withbg"
 	}
@@ -175,13 +175,13 @@ func (fb *FilterComplexBuilder) WithMarginFill(marginStream int) *FilterComplexB
 // WithGIF adds gif options to ffmepg filter_complex.
 func (fb *FilterComplexBuilder) WithGIF() *FilterComplexBuilder {
 	fb.filterComplex.WriteString(";")
-	fb.filterComplex.WriteString(
-		fmt.Sprintf(`
-			[%s]split[plt_a][plt_b];
-			[plt_a]palettegen=max_colors=256[plt];
-			[plt_b][plt]paletteuse[palette]`,
-			fb.prevStageName,
-		),
+	_, _ = fmt.Fprintf(
+		fb.filterComplex,
+		`
+		[%s]split[plt_a][plt_b];
+		[plt_a]palettegen=max_colors=256[plt];
+		[plt_b][plt]paletteuse[palette]`,
+		fb.prevStageName,
 	)
 	fb.prevStageName = "palette"
 

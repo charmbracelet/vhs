@@ -33,7 +33,7 @@ func (v *VHS) SaveOutput() error {
 	var err error
 	// Create output file (once)
 	once.Do(func() {
-		err = os.MkdirAll(filepath.Dir(v.Options.Test.Output), os.ModePerm)
+		err = os.MkdirAll(filepath.Dir(v.Options.Test.Output), 0o750)
 		if err != nil {
 			file, err = os.CreateTemp(os.TempDir(), "vhs-*.txt")
 			return

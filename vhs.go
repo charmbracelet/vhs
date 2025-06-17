@@ -187,7 +187,7 @@ func (vhs *VHS) Setup() {
 	vhs.Page.MustEval("term.fit")
 
 	_ = os.RemoveAll(vhs.Options.Video.Input)
-	_ = os.MkdirAll(vhs.Options.Video.Input, os.ModePerm)
+	_ = os.MkdirAll(vhs.Options.Video.Input, 0o750)
 }
 
 const cleanupWaitTime = 100 * time.Millisecond

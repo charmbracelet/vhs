@@ -667,7 +667,7 @@ func ExecuteSetWindowBar(c parser.Command, v *VHS) error {
 	return nil
 }
 
-// ExecuteSetWindowBar sets window bar size.
+// ExecuteSetWindowBarSize sets window bar size.
 func ExecuteSetWindowBarSize(c parser.Command, v *VHS) error {
 	windowBarSize, err := strconv.Atoi(c.Args)
 	if err != nil {
