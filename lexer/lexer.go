@@ -1,3 +1,4 @@
+// Package lexer provides a lexer for the VHS Tape language.
 package lexer
 
 import "github.com/charmbracelet/vhs/token"

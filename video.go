@@ -99,7 +99,7 @@ func makeMedia(opts VideoOptions, targetFile string) *exec.Cmd {
 // ensureDir ensures that the file path of the output can be created by
 // creating all the necessary nested folders.
 func ensureDir(output string) {
-	err := os.MkdirAll(filepath.Dir(output), os.ModePerm)
+	err := os.MkdirAll(filepath.Dir(output), 0o750)
 	if err != nil {
 		fmt.Println(ErrorStyle.Render("Unable to create output directory: "), output)
 	}

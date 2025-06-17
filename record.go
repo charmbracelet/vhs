@@ -94,7 +94,7 @@ func Record(_ *cobra.Command, _ []string) error {
 	in := io.MultiWriter(tape, terminal)
 
 	if shell != defaultShell {
-		tape.WriteString(fmt.Sprintf("%s Shell %s\n", token.SET, shell))
+		_, _ = fmt.Fprintf(tape, "%s Shell %s\n", token.SET, shell)
 	}
 
 	go func() {
@@ -104,7 +104,7 @@ func Record(_ *cobra.Command, _ []string) error {
 			time.Sleep(sleepThreshold)
 			if length == tape.Len() {
 				// Tape has not changed in a while, write a Sleep command.
-				tape.WriteString(fmt.Sprintf("\n%s\n", token.SLEEP))
+				_, _ = fmt.Fprintf(tape, "\n%s\n", token.SLEEP)
 			}
 		}
 	}()
