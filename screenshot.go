@@ -21,6 +21,9 @@ type ScreenshotOptions struct {
 	// textScreenshots represents a map holding text screenshot path as key and content as value.
 	textScreenshots map[string]string
 
+	// ansiScreenshots represents a map holding ANSI screenshot path as key and content as value.
+	ansiScreenshots map[string]string
+
 	// Input represents location of cursor and text frames png files.
 	input string
 
@@ -34,6 +37,7 @@ func NewScreenshotOptions(input string, style *StyleOptions) ScreenshotOptions {
 		nextScreenshotPath: "",
 		screenshots:        make(map[string]int),
 		textScreenshots:    make(map[string]string),
+		ansiScreenshots:    make(map[string]string),
 		input:              input,
 		style:              style,
 	}
@@ -52,6 +56,15 @@ func (opts *ScreenshotOptions) makeScreenshot(frame int) {
 // After storing content it disables frame capture.
 func (opts *ScreenshotOptions) makeTextScreenshot(content string) {
 	opts.textScreenshots[opts.nextScreenshotPath] = content
+
+	opts.frameCapture = false
+	opts.nextScreenshotPath = ""
+}
+
+// makeAnsiScreenshot stores ANSI content for an ANSI screenshot.
+// After storing content it disables frame capture.
+func (opts *ScreenshotOptions) makeAnsiScreenshot(content string) {
+	opts.ansiScreenshots[opts.nextScreenshotPath] = content
 
 	opts.frameCapture = false
 	opts.nextScreenshotPath = ""
@@ -126,6 +139,18 @@ func MakeTextScreenshots(opts ScreenshotOptions) error {
 		// Write to file
 		if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
 			return fmt.Errorf("failed to write text screenshot to %s: %w", path, err)
+		}
+	}
+
+	return nil
+}
+
+// MakeAnsiScreenshots writes ANSI screenshots that were captured during recording.
+func MakeAnsiScreenshots(opts ScreenshotOptions) error {
+	for path, content := range opts.ansiScreenshots {
+		// Write to file
+		if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
+			return fmt.Errorf("failed to write ANSI screenshot to %s: %w", path, err)
 		}
 	}
 

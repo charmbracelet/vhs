@@ -755,10 +755,10 @@ func (p *Parser) parseScreenshot() Command {
 
 	path := p.peek.Literal
 
-	// Check if path has .png or .txt extension
+	// Check if path has .png, .txt, or .ansi extension
 	ext := filepath.Ext(path)
-	if ext != ".png" && ext != ".txt" {
-		p.errors = append(p.errors, NewError(p.peek, "Expected file with .png or .txt extension"))
+	if ext != ".png" && ext != ".txt" && ext != ".ansi" {
+		p.errors = append(p.errors, NewError(p.peek, "Expected file with .png, .txt, or .ansi extension"))
 		p.nextToken()
 		return cmd
 	}

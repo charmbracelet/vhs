@@ -232,6 +232,11 @@ func (vhs *VHS) Render() error {
 		return fmt.Errorf("failed to create text screenshots: %w", err)
 	}
 
+	// Generate ANSI screenshots
+	if err := MakeAnsiScreenshots(vhs.Options.Screenshot); err != nil {
+		return fmt.Errorf("failed to create ANSI screenshots: %w", err)
+	}
+
 	var cmds []*exec.Cmd
 	cmds = append(cmds, MakeGIF(vhs.Options.Video))
 	cmds = append(cmds, MakeMP4(vhs.Options.Video))
@@ -393,6 +398,15 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 						}
 						content := strings.Join(buffer, "\n")
 						vhs.Options.Screenshot.makeTextScreenshot(content)
+					} else if filepath.Ext(vhs.Options.Screenshot.nextScreenshotPath) == ".ansi" {
+						// Get terminal buffer content with ANSI codes
+						buffer, err := vhs.AnsiBuffer()
+						if err != nil {
+							ch <- fmt.Errorf("error capturing ANSI screenshot: %w", err)
+							continue
+						}
+						content := strings.Join(buffer, "\n")
+						vhs.Options.Screenshot.makeAnsiScreenshot(content)
 					} else {
 						vhs.Options.Screenshot.makeScreenshot(counter)
 					}
