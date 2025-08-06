@@ -502,10 +502,11 @@ func (g *SVGGenerator) generateStyles() string {
 	g.writeNewline(&sb)
 
 	// Build optimized keyframes from timeline
+	keyframeCount := len(g.timeline)
 	for _, stop := range g.timeline {
 		offset := -float64(stop.StateIndex) * g.frameSpacing
 		sb.WriteString(fmt.Sprintf("  %s%% { transform: translateX(%spx); }",
-			formatCoord(stop.Percentage), formatCoord(offset)))
+			formatPercentage(stop.Percentage, keyframeCount), formatCoord(offset)))
 		g.writeNewline(&sb)
 	}
 
@@ -1066,6 +1067,45 @@ func formatCoord(val float64) string {
 	if strings.HasSuffix(formatted, ".0") {
 		return formatted[:len(formatted)-2]
 	}
+	return formatted
+}
+
+// formatPercentage formats a percentage value with appropriate precision
+// to avoid keyframe collisions in large animations.
+// The precision is dynamically calculated based on the number of keyframes.
+func formatPercentage(val float64, keyframeCount int) string {
+	// For whole numbers, keep minimal format
+	if val == float64(int(val)) {
+		return fmt.Sprintf("%d", int(val))
+	}
+	
+	// Dynamically determine precision based on keyframe count
+	// This ensures we have enough precision to avoid collisions
+	// while keeping the output as compact as possible
+	var precision int
+	switch {
+	case keyframeCount < 100:
+		precision = 1  // Up to 100 unique values
+	case keyframeCount < 1000:
+		precision = 2  // Up to 1,000 unique values
+	case keyframeCount < 10000:
+		precision = 3  // Up to 10,000 unique values
+	case keyframeCount < 100000:
+		precision = 4  // Up to 100,000 unique values
+	default:
+		precision = 5  // Up to 1,000,000 unique values
+	}
+	
+	// Format with calculated precision
+	formatStr := fmt.Sprintf("%%.%df", precision)
+	formatted := fmt.Sprintf(formatStr, val)
+	
+	// Remove trailing zeros but keep at least 1 decimal for consistency
+	formatted = strings.TrimRight(formatted, "0")
+	if strings.HasSuffix(formatted, ".") {
+		formatted = formatted[:len(formatted)-1]
+	}
+	
 	return formatted
 }
 
