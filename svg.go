@@ -17,7 +17,7 @@ const (
 	defaultCursorColor     = "#dddddd"
 	defaultBarColor        = "#2d2d2d"
 	defaultMarginColor     = "#000000"
-	
+
 	// Style constants.
 	nilValue                = "<nil>"
 	nullValue               = "null"
@@ -918,7 +918,6 @@ func (g *SVGGenerator) generateState(index int, state *TerminalState) string {
 	return sb.String()
 }
 
-
 // getColorClass returns the appropriate CSS class for a color.
 func (g *SVGGenerator) getColorClass(color string) string {
 	if !g.options.OptimizeSize {
@@ -1054,7 +1053,6 @@ func (g *SVGGenerator) writeNewline(sb *strings.Builder) {
 		sb.WriteString("\n")
 	}
 }
-
 
 // formatCoord formats a coordinate value with minimal decimal places.
 func formatCoord(val float64) string {
@@ -1496,10 +1494,6 @@ func CaptureSVGFrame(page *rod.Page, counter int, framerate int) (*SVGFrame, err
 					Bold:      charData.Get("bold").Bool(),
 					Italic:    charData.Get("italic").Bool(),
 					Underline: charData.Get("underline").Bool(),
-				}
-				// Debug log background colors
-				if bgColor != "" && bgColor != nilValue {
-					log.Printf("Captured background color %s at position (%d,%d)", bgColor, len(lineStyles), len(lineColors))
 				}
 				lineStyles = append(lineStyles, style)
 			}

@@ -171,7 +171,6 @@ func MakeMP4(opts VideoOptions) *exec.Cmd {
 
 // MakeSVG generates an animated SVG from captured frames.
 func MakeSVG(v *VHS) error {
-	log.Printf("MakeSVG called: SVG output path: %s, frames captured: %d", v.Options.Video.Output.SVG, len(v.svgFrames))
 	if v.Options.Video.Output.SVG == "" || len(v.svgFrames) == 0 {
 		if v.Options.Video.Output.SVG == "" {
 			log.Println("No SVG output path specified")

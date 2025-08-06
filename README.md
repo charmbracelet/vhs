@@ -41,17 +41,17 @@ This fork extends the original VHS with:
 </tr>
 <tr>
 <td align="center">
-<img src="./examples/neofetch/neofetch.gif" width="400" />
+<img src="./examples/neofetch/neofetch.gif" width="400" height="200" />
 
-**File size: 289KB**<br/>
+**File size: 275KB**<br/>
 Fixed resolution<br/>
 Pixelated when scaled<br/>
 No text selection
 </td>
 <td align="center">
-<img src="./examples/neofetch/neofetch.svg" width="400" />
+<img src="./examples/neofetch/neofetch.svg" width="400" height="200" />
 
-**File size: 554KB**<br/>
+**File size: 549KB**<br/>
 Infinitely scalable<br/>
 Crystal clear at any size<br/>
 Text is selectable
