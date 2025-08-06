@@ -13,7 +13,7 @@
 
 Write terminal GIFs as code for integration testing and demoing your CLI tools.
 
-<img alt="Welcome to VHS" src="https://raw.githubusercontent.com/agentstation/vhs/refs/heads/main/examples/neofetch/neofetch.svg" width="600" />
+<img alt="Welcome to VHS" src="https://raw.githubusercontent.com/agentstation/vhs/main/examples/neofetch/neofetch.svg" width="600" />
 
 The above example was generated with VHS ([view source](./examples/neofetch/neofetch.tape)) and demonstrates the crisp, scalable SVG output.
 
@@ -49,7 +49,7 @@ Pixelated when scaled<br/>
 No text selection
 </td>
 <td align="center">
-<img src="https://raw.githubusercontent.com/agentstation/vhs/refs/heads/main/examples/neofetch/neofetch.svg" width="400" height="200" />
+<img src="https://raw.githubusercontent.com/agentstation/vhs/main/examples/neofetch/neofetch.svg" width="400" height="200" />
 
 **File size: 549KB**<br/>
 Infinitely scalable<br/>
