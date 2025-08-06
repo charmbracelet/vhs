@@ -4,6 +4,7 @@
 #   Output <path>.gif               Create a GIF output at the given <path>
 #   Output <path>.mp4               Create an MP4 output at the given <path>
 #   Output <path>.webm              Create a WebM output at the given <path>
+#   Output <path>.svg               Create an SVG output at the given <path>
 #
 # Require:
 #   Require <string>                Ensure a program is on the $PATH to proceed
@@ -56,6 +57,7 @@
 #   Show                            Show the subsequent commands in the output
 
 Output examples/demo.gif
+Output examples/demo.svg
 
 Require echo
 

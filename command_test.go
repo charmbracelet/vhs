@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/charmbracelet/vhs/parser"
+	"github.com/agentstation/vhs/parser"
 )
 
 func TestCommand(t *testing.T) {

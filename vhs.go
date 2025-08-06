@@ -33,6 +33,7 @@ type VHS struct {
 	tty          *exec.Cmd
 	totalFrames  int
 	close        func() error
+	svgFrames    []SVGFrame
 }
 
 // Options is the set of options for the setup.
@@ -52,6 +53,13 @@ type Options struct {
 	CursorBlink   bool
 	Screenshot    ScreenshotOptions
 	Style         StyleOptions
+	SVG           SVGOptions
+	DebugConsole  bool // Enable browser console logging
+}
+
+// SVGOptions contains SVG-specific configuration options.
+type SVGOptions struct {
+	OptimizeSize bool
 }
 
 const (
@@ -87,6 +95,13 @@ func withSymbolsFallback(font string) string {
 	return font + fontsSeparator + strings.Join(symbolsFallback, fontsSeparator)
 }
 
+// DefaultSVGOptions returns the default SVG options.
+func DefaultSVGOptions() SVGOptions {
+	return SVGOptions{
+		OptimizeSize: true, // Default to optimized SVG output
+	}
+}
+
 // DefaultVHSOptions returns the default set of options to use for the setup function.
 func DefaultVHSOptions() Options {
 	style := DefaultStyleOptions()
@@ -107,6 +122,7 @@ func DefaultVHSOptions() Options {
 		Screenshot:    screenshot,
 		WaitTimeout:   defaultWaitTimeout,
 		WaitPattern:   defaultWaitPattern,
+		SVG:           DefaultSVGOptions(),
 	}
 }
 
@@ -146,6 +162,15 @@ func (vhs *VHS) Start() error {
 	page, err := browser.Page(proto.TargetCreateTarget{URL: fmt.Sprintf("http://localhost:%d", port)})
 	if err != nil {
 		return fmt.Errorf("could not open ttyd: %w", err)
+	}
+
+	// Enable console logging if debug is enabled
+	if vhs.Options.DebugConsole {
+		go page.EachEvent(func(e *proto.RuntimeConsoleAPICalled) {
+			for _, arg := range e.Args {
+				log.Printf("[Browser Console] %s", arg.Value)
+			}
+		})()
 	}
 
 	vhs.browser = browser
@@ -226,6 +251,12 @@ func (vhs *VHS) Render() error {
 		return err
 	}
 
+	// Ensure the font family and size are set in the style
+	if vhs.Options.Video.Style != nil {
+		vhs.Options.Video.Style.FontFamily = vhs.Options.FontFamily
+		vhs.Options.Video.Style.FontSize = vhs.Options.FontSize
+	}
+
 	// Generate the video(s) with the frames.
 	var cmds []*exec.Cmd
 	cmds = append(cmds, MakeGIF(vhs.Options.Video))
@@ -241,6 +272,11 @@ func (vhs *VHS) Render() error {
 		if err != nil {
 			log.Println(string(out))
 		}
+	}
+
+	// Generate SVG if requested
+	if err := MakeSVG(vhs); err != nil {
+		return fmt.Errorf("failed to generate SVG: %w", err)
 	}
 
 	return nil
@@ -374,6 +410,16 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 				); err != nil {
 					ch <- fmt.Errorf("error writing text frame: %w", err)
 					continue
+				}
+
+				// Capture SVG frame data if SVG output is requested
+				if vhs.Options.Video.Output.SVG != "" {
+					svgFrame, err := CaptureSVGFrame(vhs.Page, counter, vhs.Options.Video.Framerate)
+					if err != nil {
+						log.Printf("Error capturing SVG frame %d: %v", counter, err)
+					} else if svgFrame != nil {
+						vhs.svgFrames = append(vhs.svgFrames, *svgFrame)
+					}
 				}
 
 				// Capture current frame and disable frame capturing

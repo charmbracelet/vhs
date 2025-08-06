@@ -10,9 +10,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/agentstation/vhs/parser"
+	"github.com/agentstation/vhs/token"
 	"github.com/atotto/clipboard"
-	"github.com/charmbracelet/vhs/parser"
-	"github.com/charmbracelet/vhs/token"
 	"github.com/go-rod/rod/lib/input"
 )
 
@@ -366,6 +366,8 @@ func ExecuteOutput(c parser.Command, v *VHS) error {
 		v.Options.Video.Output.Frames = c.Args
 	case ".webm":
 		v.Options.Video.Output.WebM = c.Args
+	case ".svg":
+		v.Options.Video.Output.SVG = c.Args
 	default:
 		v.Options.Video.Output.GIF = c.Args
 	}
@@ -410,27 +412,30 @@ func ExecutePaste(_ parser.Command, v *VHS) error {
 
 // Settings maps the Set commands to their respective functions.
 var Settings = map[string]CommandFunc{
-	"FontFamily":    ExecuteSetFontFamily,
-	"FontSize":      ExecuteSetFontSize,
-	"Framerate":     ExecuteSetFramerate,
-	"Height":        ExecuteSetHeight,
-	"LetterSpacing": ExecuteSetLetterSpacing,
-	"LineHeight":    ExecuteSetLineHeight,
-	"PlaybackSpeed": ExecuteSetPlaybackSpeed,
-	"Padding":       ExecuteSetPadding,
-	"Theme":         ExecuteSetTheme,
-	"TypingSpeed":   ExecuteSetTypingSpeed,
-	"Width":         ExecuteSetWidth,
-	"Shell":         ExecuteSetShell,
-	"LoopOffset":    ExecuteLoopOffset,
-	"MarginFill":    ExecuteSetMarginFill,
-	"Margin":        ExecuteSetMargin,
-	"WindowBar":     ExecuteSetWindowBar,
-	"WindowBarSize": ExecuteSetWindowBarSize,
-	"BorderRadius":  ExecuteSetBorderRadius,
-	"WaitPattern":   ExecuteSetWaitPattern,
-	"WaitTimeout":   ExecuteSetWaitTimeout,
-	"CursorBlink":   ExecuteSetCursorBlink,
+	"FontFamily":          ExecuteSetFontFamily,
+	"FontSize":            ExecuteSetFontSize,
+	"Framerate":           ExecuteSetFramerate,
+	"Height":              ExecuteSetHeight,
+	"LetterSpacing":       ExecuteSetLetterSpacing,
+	"LineHeight":          ExecuteSetLineHeight,
+	"PlaybackSpeed":       ExecuteSetPlaybackSpeed,
+	"Padding":             ExecuteSetPadding,
+	"Theme":               ExecuteSetTheme,
+	"TypingSpeed":         ExecuteSetTypingSpeed,
+	"Width":               ExecuteSetWidth,
+	"Shell":               ExecuteSetShell,
+	"LoopOffset":          ExecuteLoopOffset,
+	"MarginFill":          ExecuteSetMarginFill,
+	"Margin":              ExecuteSetMargin,
+	"WindowBar":           ExecuteSetWindowBar,
+	"WindowBarSize":       ExecuteSetWindowBarSize,
+	"WindowBarTitle":      ExecuteSetWindowBarTitle,
+	"WindowBarFontFamily": ExecuteSetWindowBarFontFamily,
+	"WindowBarFontSize":   ExecuteSetWindowBarFontSize,
+	"BorderRadius":        ExecuteSetBorderRadius,
+	"WaitPattern":         ExecuteSetWaitPattern,
+	"WaitTimeout":         ExecuteSetWaitTimeout,
+	"CursorBlink":         ExecuteSetCursorBlink,
 }
 
 // ExecuteSet applies the settings on the running vhs specified by the
@@ -675,6 +680,28 @@ func ExecuteSetWindowBarSize(c parser.Command, v *VHS) error {
 	}
 
 	v.Options.Video.Style.WindowBarSize = windowBarSize
+	return nil
+}
+
+// ExecuteSetWindowBarTitle sets window bar title.
+func ExecuteSetWindowBarTitle(c parser.Command, v *VHS) error {
+	v.Options.Video.Style.WindowBarTitle = c.Args
+	return nil
+}
+
+// ExecuteSetWindowBarFontFamily sets window bar font family.
+func ExecuteSetWindowBarFontFamily(c parser.Command, v *VHS) error {
+	v.Options.Video.Style.WindowBarFontFamily = c.Args
+	return nil
+}
+
+// ExecuteSetWindowBarFontSize sets window bar font size.
+func ExecuteSetWindowBarFontSize(c parser.Command, v *VHS) error {
+	fontSize, err := strconv.Atoi(c.Args)
+	if err != nil {
+		return fmt.Errorf("failed to parse window bar font size: %w", err)
+	}
+	v.Options.Video.Style.WindowBarFontSize = fontSize
 	return nil
 }
 

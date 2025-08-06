@@ -7,6 +7,7 @@
 Output examples/neofetch/neofetch.gif
 Output examples/neofetch/neofetch.mp4
 Output examples/neofetch/neofetch.webm
+Output examples/neofetch/neofetch.svg
 Output examples/neofetch/frames/
 
 Set TypingSpeed 75ms

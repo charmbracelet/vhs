@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/charmbracelet/vhs/token"
+	"github.com/agentstation/vhs/token"
 )
 
 func TestNextToken(t *testing.T) {
@@ -130,6 +130,8 @@ func TestLexTapeFile(t *testing.T) {
 		{token.STRING, "examples/fixtures/all.mp4"},
 		{token.OUTPUT, "Output"},
 		{token.STRING, "examples/fixtures/all.webm"},
+		{token.OUTPUT, "Output"},
+		{token.STRING, "examples/fixtures/all.svg"},
 		{token.COMMENT, " Settings:"},
 		{token.SET, "Set"},
 		{token.SHELL, "Shell"},

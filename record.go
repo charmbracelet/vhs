@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/charmbracelet/vhs/token"
+	"github.com/agentstation/vhs/token"
 	"github.com/creack/pty"
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
@@ -70,7 +70,7 @@ var EscapeSequences = map[string]string{
 //
 //nolint:wrapcheck
 func Record(_ *cobra.Command, _ []string) error {
-	command := exec.Command(shell)
+	command := exec.Command(shell) //nolint:noctx
 
 	command.Env = append(os.Environ(), "VHS_RECORD=true")
 

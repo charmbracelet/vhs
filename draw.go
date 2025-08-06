@@ -305,6 +305,9 @@ func makeColorfulBar(termWidth int, termHeight int, isRight bool, opts StyleOpti
 		draw.Over,
 	)
 
+	// Draw title if provided
+	drawWindowBarTitle(img, opts)
+
 	f, err := os.Create(targetpng)
 	if err != nil {
 		fmt.Println(ErrorStyle.Render("Couldn't draw colorful bar: unable to save file."))
@@ -379,6 +382,9 @@ func makeRingBar(termWidth int, termHeight int, isRight bool, opts StyleOptions,
 		)
 	}
 
+	// Draw title if provided
+	drawWindowBarTitle(img, opts)
+
 	f, err := os.Create(targetpng)
 	if err != nil {
 		fmt.Println(ErrorStyle.Render("Couldn't draw ring bar: unable to save file."))
@@ -412,4 +418,28 @@ func parseHexColor(s string) (c color.RGBA, err error) {
 		err = fmt.Errorf("%s color of invalid length", s)
 	}
 	return
+}
+
+// drawWindowBarTitle draws the window bar title with proper font selection and positioning.
+func drawWindowBarTitle(img draw.Image, opts StyleOptions) {
+	if opts.WindowBarTitle == "" {
+		return
+	}
+
+	// Use WindowBarFontSize if specified, otherwise fall back to FontSize
+	fontSize := float64(opts.WindowBarFontSize)
+	if fontSize == 0 {
+		fontSize = float64(opts.FontSize)
+	}
+
+	// Use WindowBarFontFamily if specified, otherwise fall back to FontFamily
+	fontFamily := opts.WindowBarFontFamily
+	if fontFamily == "" {
+		fontFamily = opts.FontFamily
+	}
+
+	font := getWindowBarFont(fontFamily, fontSize)
+	textColor := &image.Uniform{color.RGBA{0xCC, 0xCC, 0xCC, 0xFF}}
+	y := getTextYPositionForFont(opts.WindowBarSize, font, int(fontSize))
+	drawCenteredText(img, font, opts.WindowBarTitle, y, textColor)
 }

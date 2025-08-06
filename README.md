@@ -4,16 +4,64 @@
   <img src="https://user-images.githubusercontent.com/42545625/198402537-12ca2f6c-0779-4eb8-a67c-8db9cb3df13c.png#gh-dark-mode-only" width="500" />
   <img src="https://user-images.githubusercontent.com/42545625/198402542-a305f669-a05a-4d91-b18b-ca76e72b655a.png#gh-light-mode-only" width="500" />
   <br>
-  <a href="https://github.com/charmbracelet/vhs/releases"><img src="https://img.shields.io/github/release/charmbracelet/vhs.svg" alt="Latest Release"></a>
-  <a href="https://pkg.go.dev/github.com/charmbracelet/vhs?tab=doc"><img src="https://godoc.org/github.com/golang/gddo?status.svg" alt="Go Docs"></a>
-  <a href="https://github.com/charmbracelet/vhs/actions"><img src="https://github.com/charmbracelet/vhs/workflows/build/badge.svg" alt="Build Status"></a>
+  <a href="https://github.com/agentstation/vhs/releases"><img src="https://img.shields.io/github/release/agentstation/vhs.svg" alt="Latest Release"></a>
+  <a href="https://pkg.go.dev/github.com/agentstation/vhs?tab=doc"><img src="https://godoc.org/github.com/golang/gddo?status.svg" alt="Go Docs"></a>
+  <a href="https://github.com/agentstation/vhs/actions"><img src="https://github.com/agentstation/vhs/workflows/build/badge.svg" alt="Build Status"></a>
 </p>
+
+> **Note**: This is a fork of the original [charmbracelet/vhs](https://github.com/charmbracelet/vhs) that adds native SVG output support and additional features. Features specific to this fork are marked with 🚀.
 
 Write terminal GIFs as code for integration testing and demoing your CLI tools.
 
-<img alt="Welcome to VHS" src="https://stuff.charm.sh/vhs/examples/neofetch_3.gif" width="600" />
+<img alt="Welcome to VHS" src="./examples/neofetch/neofetch.svg" width="600" />
 
-The above example was generated with VHS ([view source](./examples/neofetch/neofetch.tape)).
+The above example was generated with VHS ([view source](./examples/neofetch/neofetch.tape)) and demonstrates the crisp, scalable SVG output.
+
+## Fork Features 🚀
+
+This fork extends the original VHS with:
+
+- **Native SVG Output**: Generate scalable, animated SVGs that are often smaller than GIFs
+  - Why? Modern web browsers and documentation platforms benefit from vector graphics that scale perfectly on any display while using less bandwidth
+- **Window Bar Customization**: 
+  - Custom window titles with `Set WindowBarTitle`
+  - Custom title fonts with `Set WindowBarFontFamily` and `Set WindowBarFontSize`
+  - Why? Professional demos and documentation often need branded or contextual window titles
+- **Enhanced CLI Options**:
+  - `--no-svg-opt`: Control SVG optimization
+  - `--debug-console`: Enable browser console logging for debugging
+  - Why? Better developer experience for troubleshooting and fine-tuning output
+
+## SVG vs GIF Comparison 🚀
+
+<table>
+<tr>
+<th>GIF Output</th>
+<th>SVG Output</th>
+</tr>
+<tr>
+<td align="center">
+<img src="./examples/neofetch/neofetch.gif" width="400" />
+
+**File size: 289KB**<br/>
+Fixed resolution<br/>
+Pixelated when scaled<br/>
+No text selection
+</td>
+<td align="center">
+<img src="./examples/neofetch/neofetch.svg" width="400" />
+
+**File size: 554KB**<br/>
+Infinitely scalable<br/>
+Crystal clear at any size<br/>
+Text is selectable
+</td>
+</tr>
+</table>
+
+Try zooming in on both images above to see the difference in quality!
+
+**Note**: File sizes vary by content. Simple recordings with few colors often result in smaller SVGs, while complex outputs like neofetch with many colors may produce larger SVGs due to the need to preserve exact positioning and styling of each character.
 
 ## Tutorial
 
@@ -70,7 +118,7 @@ the `Output`) in the directory.
   <img width="600" alt="A GIF produced by the VHS code above" src="https://stuff.charm.sh/vhs/examples/demo.gif">
 </picture>
 
-For more examples see the [`examples/`](https://github.com/charmbracelet/vhs/tree/main/examples) directory.
+For more examples see the [`examples/`](https://github.com/agentstation/vhs/tree/main/examples) directory.
 
 ## Installation
 
@@ -80,7 +128,10 @@ For more examples see the [`examples/`](https://github.com/charmbracelet/vhs/tre
 Use a package manager:
 
 ```sh
-# macOS or Linux
+# 🚀 Install this fork with SVG support (macOS or Linux)
+brew install agentstation/tap/vhs
+
+# Original VHS (without SVG support)
 brew install vhs
 
 # Arch Linux (btw)
@@ -96,6 +147,10 @@ scoop install vhs
 Or, use Docker to run VHS directly, dependencies included:
 
 ```sh
+# 🚀 This fork
+docker run --rm -v $PWD:/vhs ghcr.io/agentstation/vhs <cassette>.tape
+
+# Original VHS
 docker run --rm -v $PWD:/vhs ghcr.io/charmbracelet/vhs <cassette>.tape
 ```
 
@@ -107,6 +162,10 @@ Or, download it:
 Or, just install it with `go`:
 
 ```sh
+# 🚀 Install this fork with SVG support
+go install github.com/agentstation/vhs@latest
+
+# Original VHS
 go install github.com/charmbracelet/vhs@latest
 ```
 
@@ -153,7 +212,7 @@ scoop install vhs
 
 </details>
 
-[releases]: https://github.com/charmbracelet/vhs/releases
+[releases]: https://github.com/agentstation/vhs/releases
 
 ## Record Tapes
 
@@ -247,8 +306,24 @@ will render them to the respective locations.
 Output out.gif
 Output out.mp4
 Output out.webm
+Output out.svg   # 🚀 Native SVG output with animations
 Output frames/ # a directory of frames as a PNG sequence
 ```
+
+🚀 **SVG Output** (Fork Feature): This fork adds native SVG output support with significant advantages:
+
+- **Perfect Quality**: Vector-based animations scale infinitely without pixelation - ideal for documentation, presentations, and high-DPI displays
+- **Text Selectable**: Terminal text remains selectable and searchable in SVG format
+- **Efficient Animations**: Uses CSS animations and frame deduplication for smooth playback
+- **Web-Friendly**: SVGs can be embedded directly in HTML/Markdown and styled with CSS
+- **Size Optimization**: Built-in optimization reduces file sizes through frame deduplication and minification
+
+File sizes vary based on content complexity:
+- **Simple terminal demos**: SVGs are often 50-90% smaller than GIFs
+  - Example: simple-demo.gif (82KB) vs simple-demo.svg (19KB) - 77% smaller!
+- **Complex outputs** (like neofetch with many colors): SVGs may be larger due to preserving exact text styling and background colors
+  - Example: neofetch.gif (289KB) vs neofetch.svg (554KB)
+- Use `--no-svg-opt` flag to disable optimization if needed
 
 ### Require
 
@@ -467,6 +542,30 @@ Set WindowBar Colorful
   <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-4VgviCu38DbaGtbRzhtOUI.gif">
   <img width="600" alt="Example of setting the margin" src="https://vhs.charm.sh/vhs-4VgviCu38DbaGtbRzhtOUI.gif">
 </picture>
+
+#### Set Window Bar Title 🚀
+
+Set a custom title for the window bar with the `Set WindowBarTitle` command.
+
+```elixir
+Set WindowBarTitle "My Demo"
+```
+
+#### Set Window Bar Font Family 🚀
+
+Set a custom font family for the window bar title with the `Set WindowBarFontFamily` command. Falls back to `FontFamily` if not specified.
+
+```elixir
+Set WindowBarFontFamily "Monaco"
+```
+
+#### Set Window Bar Font Size 🚀
+
+Set a custom font size for the window bar title with the `Set WindowBarFontSize` command. Falls back to `FontSize` if not specified.
+
+```elixir
+Set WindowBarFontSize 16
+```
 
 #### Set Border Radius
 
@@ -796,12 +895,35 @@ Source config.tape
 
 ---
 
+## CLI Options 🚀
+
+This fork adds several command-line options to enhance VHS functionality:
+
+### Output Control
+
+```sh
+# Disable SVG optimization for smaller output files (enabled by default)
+vhs demo.tape --no-svg-opt
+
+# Specify multiple output formats
+vhs demo.tape -o out.gif -o out.svg -o out.mp4
+```
+
+### Debugging
+
+```sh
+# Enable browser console logging for debugging
+vhs demo.tape --debug-console
+```
+
+---
+
 ## Continuous Integration
 
 You can hook up VHS to your CI pipeline to keep your GIFs up-to-date with
 the official VHS GitHub Action:
 
-> [⚙️ charmbracelet/vhs-action](https://github.com/charmbracelet/vhs-action)
+> [⚙️ charmbracelet/vhs-action](https://github.com/agentstation/vhs-action)
 
 VHS can also be used for integration testing. Use the `.txt` or `.ascii` output
 to generate golden files. Store these files in a git repository to ensure there
@@ -824,7 +946,7 @@ It works great with Neovim, Emacs, and so on!
 
 See [contributing][contribute].
 
-[contribute]: https://github.com/charmbracelet/vhs/contribute
+[contribute]: https://github.com/agentstation/vhs/contribute
 
 ## Feedback
 
@@ -836,7 +958,7 @@ We’d love to hear your thoughts on this project. Feel free to drop us a note!
 
 ## License
 
-[MIT](https://github.com/charmbracelet/vhs/raw/main/LICENSE)
+[MIT](https://github.com/agentstation/vhs/raw/main/LICENSE)
 
 ---
 
@@ -850,4 +972,4 @@ Part of [Charm](https://charm.sh).
   />
 </a>
 
-Charm热爱开源 • Charm loves open source
+Charm 热爱开源 • Charm loves open source

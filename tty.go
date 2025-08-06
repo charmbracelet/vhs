@@ -18,7 +18,7 @@ import (
 
 // randomPort returns a random port number that is not in use.
 func randomPort() int {
-	addr, _ := net.Listen("tcp", ":0") //nolint:gosec
+	addr, _ := net.Listen("tcp", ":0") //nolint:gosec,noctx
 	_ = addr.Close()
 	return addr.Addr().(*net.TCPAddr).Port
 }
@@ -38,7 +38,7 @@ func buildTtyCmd(port int, shell Shell) *exec.Cmd {
 
 	args = append(args, shell.Command...)
 
-	cmd := exec.Command("ttyd", args...)
+	cmd := exec.Command("ttyd", args...) //nolint:noctx
 	if shell.Env != nil {
 		cmd.Env = append(shell.Env, os.Environ()...)
 	}

@@ -4,6 +4,7 @@
 Output examples/fixtures/all.gif
 Output examples/fixtures/all.mp4
 Output examples/fixtures/all.webm
+Output examples/fixtures/all.svg
 
 # Settings:
 Set Shell "fish"

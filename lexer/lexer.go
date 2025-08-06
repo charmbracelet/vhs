@@ -1,7 +1,7 @@
 // Package lexer provides a lexer for the VHS Tape language.
 package lexer
 
-import "github.com/charmbracelet/vhs/token"
+import "github.com/agentstation/vhs/token"
 
 // Lexer is a lexer that tokenizes the input.
 type Lexer struct {

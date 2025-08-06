@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/charmbracelet/vhs/lexer"
-	"github.com/charmbracelet/vhs/token"
+	"github.com/agentstation/vhs/lexer"
+	"github.com/agentstation/vhs/token"
 )
 
 func TestParser(t *testing.T) {
@@ -123,6 +123,7 @@ func TestParseTapeFile(t *testing.T) {
 		{Type: token.OUTPUT, Options: ".gif", Args: "examples/fixtures/all.gif"},
 		{Type: token.OUTPUT, Options: ".mp4", Args: "examples/fixtures/all.mp4"},
 		{Type: token.OUTPUT, Options: ".webm", Args: "examples/fixtures/all.webm"},
+		{Type: token.OUTPUT, Options: ".svg", Args: "examples/fixtures/all.svg"},
 		{Type: token.SET, Options: "Shell", Args: "fish"},
 		{Type: token.SET, Options: "FontSize", Args: "22"},
 		{Type: token.SET, Options: "FontFamily", Args: "DejaVu Sans Mono"},

@@ -70,101 +70,107 @@ const (
 	RIGHT = "RIGHT"
 	UP    = "UP"
 
-	HIDE            = "HIDE"
-	OUTPUT          = "OUTPUT"
-	REQUIRE         = "REQUIRE"
-	SET             = "SET"
-	SHOW            = "SHOW"
-	SOURCE          = "SOURCE"
-	TYPE            = "TYPE"
-	SCREENSHOT      = "SCREENSHOT"
-	COPY            = "COPY"
-	PASTE           = "PASTE"
-	SHELL           = "SHELL"
-	ENV             = "ENV"
-	FONT_FAMILY     = "FONT_FAMILY" //nolint:revive
-	FONT_SIZE       = "FONT_SIZE"   //nolint:revive
-	FRAMERATE       = "FRAMERATE"
-	PLAYBACK_SPEED  = "PLAYBACK_SPEED" //nolint:revive
-	HEIGHT          = "HEIGHT"
-	WIDTH           = "WIDTH"
-	LETTER_SPACING  = "LETTER_SPACING" //nolint:revive
-	LINE_HEIGHT     = "LINE_HEIGHT"    //nolint:revive
-	TYPING_SPEED    = "TYPING_SPEED"   //nolint:revive
-	PADDING         = "PADDING"
-	THEME           = "THEME"
-	LOOP_OFFSET     = "LOOP_OFFSET"     //nolint:revive
-	MARGIN_FILL     = "MARGIN_FILL"     //nolint:revive
-	MARGIN          = "MARGIN"          //nolint:revive
-	WINDOW_BAR      = "WINDOW_BAR"      //nolint:revive
-	WINDOW_BAR_SIZE = "WINDOW_BAR_SIZE" //nolint:revive
-	BORDER_RADIUS   = "CORNER_RADIUS"   //nolint:revive
-	WAIT            = "WAIT"            //nolint:revive
-	WAIT_TIMEOUT    = "WAIT_TIMEOUT"    //nolint:revive
-	WAIT_PATTERN    = "WAIT_PATTERN"    //nolint:revive
-	CURSOR_BLINK    = "CURSOR_BLINK"    //nolint:revive
+	HIDE                   = "HIDE"
+	OUTPUT                 = "OUTPUT"
+	REQUIRE                = "REQUIRE"
+	SET                    = "SET"
+	SHOW                   = "SHOW"
+	SOURCE                 = "SOURCE"
+	TYPE                   = "TYPE"
+	SCREENSHOT             = "SCREENSHOT"
+	COPY                   = "COPY"
+	PASTE                  = "PASTE"
+	SHELL                  = "SHELL"
+	ENV                    = "ENV"
+	FONT_FAMILY            = "FONT_FAMILY" //nolint:revive
+	FONT_SIZE              = "FONT_SIZE"   //nolint:revive
+	FRAMERATE              = "FRAMERATE"
+	PLAYBACK_SPEED         = "PLAYBACK_SPEED" //nolint:revive
+	HEIGHT                 = "HEIGHT"
+	WIDTH                  = "WIDTH"
+	LETTER_SPACING         = "LETTER_SPACING" //nolint:revive
+	LINE_HEIGHT            = "LINE_HEIGHT"    //nolint:revive
+	TYPING_SPEED           = "TYPING_SPEED"   //nolint:revive
+	PADDING                = "PADDING"
+	THEME                  = "THEME"
+	LOOP_OFFSET            = "LOOP_OFFSET"            //nolint:revive
+	MARGIN_FILL            = "MARGIN_FILL"            //nolint:revive
+	MARGIN                 = "MARGIN"                 //nolint:revive
+	WINDOW_BAR             = "WINDOW_BAR"             //nolint:revive
+	WINDOW_BAR_SIZE        = "WINDOW_BAR_SIZE"        //nolint:revive
+	WINDOW_BAR_TITLE       = "WINDOW_BAR_TITLE"       //nolint:revive
+	WINDOW_BAR_FONT_FAMILY = "WINDOW_BAR_FONT_FAMILY" //nolint:revive
+	WINDOW_BAR_FONT_SIZE   = "WINDOW_BAR_FONT_SIZE"   //nolint:revive
+	BORDER_RADIUS          = "CORNER_RADIUS"          //nolint:revive
+	WAIT                   = "WAIT"                   //nolint:revive
+	WAIT_TIMEOUT           = "WAIT_TIMEOUT"           //nolint:revive
+	WAIT_PATTERN           = "WAIT_PATTERN"           //nolint:revive
+	CURSOR_BLINK           = "CURSOR_BLINK"           //nolint:revive
 )
 
 // Keywords maps keyword strings to tokens.
 var Keywords = map[string]Type{
-	"em":            EM,
-	"px":            PX,
-	"ms":            MILLISECONDS,
-	"s":             SECONDS,
-	"m":             MINUTES,
-	"Set":           SET,
-	"Sleep":         SLEEP,
-	"Type":          TYPE,
-	"Enter":         ENTER,
-	"Space":         SPACE,
-	"Backspace":     BACKSPACE,
-	"Delete":        DELETE,
-	"Insert":        INSERT,
-	"Ctrl":          CTRL,
-	"Alt":           ALT,
-	"Shift":         SHIFT,
-	"Down":          DOWN,
-	"Left":          LEFT,
-	"Right":         RIGHT,
-	"Up":            UP,
-	"PageUp":        PAGE_UP,
-	"PageDown":      PAGE_DOWN,
-	"Tab":           TAB,
-	"Escape":        ESCAPE,
-	"End":           END,
-	"Hide":          HIDE,
-	"Require":       REQUIRE,
-	"Show":          SHOW,
-	"Output":        OUTPUT,
-	"Shell":         SHELL,
-	"FontFamily":    FONT_FAMILY,
-	"MarginFill":    MARGIN_FILL,
-	"Margin":        MARGIN,
-	"WindowBar":     WINDOW_BAR,
-	"WindowBarSize": WINDOW_BAR_SIZE,
-	"BorderRadius":  BORDER_RADIUS,
-	"FontSize":      FONT_SIZE,
-	"Framerate":     FRAMERATE,
-	"Height":        HEIGHT,
-	"LetterSpacing": LETTER_SPACING,
-	"LineHeight":    LINE_HEIGHT,
-	"PlaybackSpeed": PLAYBACK_SPEED,
-	"TypingSpeed":   TYPING_SPEED,
-	"Padding":       PADDING,
-	"Theme":         THEME,
-	"Width":         WIDTH,
-	"LoopOffset":    LOOP_OFFSET,
-	"WaitTimeout":   WAIT_TIMEOUT,
-	"WaitPattern":   WAIT_PATTERN,
-	"Wait":          WAIT,
-	"Source":        SOURCE,
-	"CursorBlink":   CURSOR_BLINK,
-	"true":          BOOLEAN,
-	"false":         BOOLEAN,
-	"Screenshot":    SCREENSHOT,
-	"Copy":          COPY,
-	"Paste":         PASTE,
-	"Env":           ENV,
+	"em":                  EM,
+	"px":                  PX,
+	"ms":                  MILLISECONDS,
+	"s":                   SECONDS,
+	"m":                   MINUTES,
+	"Set":                 SET,
+	"Sleep":               SLEEP,
+	"Type":                TYPE,
+	"Enter":               ENTER,
+	"Space":               SPACE,
+	"Backspace":           BACKSPACE,
+	"Delete":              DELETE,
+	"Insert":              INSERT,
+	"Ctrl":                CTRL,
+	"Alt":                 ALT,
+	"Shift":               SHIFT,
+	"Down":                DOWN,
+	"Left":                LEFT,
+	"Right":               RIGHT,
+	"Up":                  UP,
+	"PageUp":              PAGE_UP,
+	"PageDown":            PAGE_DOWN,
+	"Tab":                 TAB,
+	"Escape":              ESCAPE,
+	"End":                 END,
+	"Hide":                HIDE,
+	"Require":             REQUIRE,
+	"Show":                SHOW,
+	"Output":              OUTPUT,
+	"Shell":               SHELL,
+	"FontFamily":          FONT_FAMILY,
+	"MarginFill":          MARGIN_FILL,
+	"Margin":              MARGIN,
+	"WindowBar":           WINDOW_BAR,
+	"WindowBarSize":       WINDOW_BAR_SIZE,
+	"WindowBarTitle":      WINDOW_BAR_TITLE,
+	"WindowBarFontFamily": WINDOW_BAR_FONT_FAMILY,
+	"WindowBarFontSize":   WINDOW_BAR_FONT_SIZE,
+	"BorderRadius":        BORDER_RADIUS,
+	"FontSize":            FONT_SIZE,
+	"Framerate":           FRAMERATE,
+	"Height":              HEIGHT,
+	"LetterSpacing":       LETTER_SPACING,
+	"LineHeight":          LINE_HEIGHT,
+	"PlaybackSpeed":       PLAYBACK_SPEED,
+	"TypingSpeed":         TYPING_SPEED,
+	"Padding":             PADDING,
+	"Theme":               THEME,
+	"Width":               WIDTH,
+	"LoopOffset":          LOOP_OFFSET,
+	"WaitTimeout":         WAIT_TIMEOUT,
+	"WaitPattern":         WAIT_PATTERN,
+	"Wait":                WAIT,
+	"Source":              SOURCE,
+	"CursorBlink":         CURSOR_BLINK,
+	"true":                BOOLEAN,
+	"false":               BOOLEAN,
+	"Screenshot":          SCREENSHOT,
+	"Copy":                COPY,
+	"Paste":               PASTE,
+	"Env":                 ENV,
 }
 
 // IsSetting returns whether a token is a setting.
@@ -173,7 +179,7 @@ func IsSetting(t Type) bool {
 	case SHELL, FONT_FAMILY, FONT_SIZE, LETTER_SPACING, LINE_HEIGHT,
 		FRAMERATE, TYPING_SPEED, THEME, PLAYBACK_SPEED, HEIGHT, WIDTH,
 		PADDING, LOOP_OFFSET, MARGIN_FILL, MARGIN, WINDOW_BAR,
-		WINDOW_BAR_SIZE, BORDER_RADIUS, CURSOR_BLINK, WAIT_TIMEOUT, WAIT_PATTERN:
+		WINDOW_BAR_SIZE, WINDOW_BAR_TITLE, WINDOW_BAR_FONT_FAMILY, WINDOW_BAR_FONT_SIZE, BORDER_RADIUS, CURSOR_BLINK, WAIT_TIMEOUT, WAIT_PATTERN:
 		return true
 	default:
 		return false

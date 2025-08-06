@@ -7,14 +7,28 @@ import (
 	"log"
 	"os"
 
-	"github.com/charmbracelet/vhs/lexer"
-	"github.com/charmbracelet/vhs/parser"
-	"github.com/charmbracelet/vhs/token"
+	"github.com/agentstation/vhs/lexer"
+	"github.com/agentstation/vhs/parser"
+	"github.com/agentstation/vhs/token"
 	"github.com/go-rod/rod"
 )
 
 // EvaluatorOption is a function that can be used to modify the VHS instance.
 type EvaluatorOption func(*VHS)
+
+// WithSVGOptimization returns an EvaluatorOption that sets the SVG optimization flag.
+func WithSVGOptimization(optimize bool) EvaluatorOption {
+	return func(v *VHS) {
+		v.Options.SVG.OptimizeSize = optimize
+	}
+}
+
+// WithDebugConsole returns an EvaluatorOption that enables browser console logging.
+func WithDebugConsole(debug bool) EvaluatorOption {
+	return func(v *VHS) {
+		v.Options.DebugConsole = debug
+	}
+}
 
 // Evaluate takes as input a tape string, an output writer, and an output file
 // and evaluates all the commands within the tape string and produces a GIF.
@@ -29,6 +43,13 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	}
 
 	v := New()
+
+	// Apply evaluator options early (before Start) for options like DebugConsole
+	// that need to be set before the browser is initialized
+	for _, opt := range opts {
+		opt(&v)
+	}
+
 	for _, cmd := range cmds {
 		if cmd.Type == token.SET && cmd.Options == "Shell" || cmd.Type == token.ENV {
 			err := Execute(cmd, &v)
@@ -155,7 +176,7 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 		isSetting := cmd.Type == token.SET && cmd.Options != "TypingSpeed"
 
 		if isSetting {
-			fmt.Println(ErrorStyle.Render(fmt.Sprintf("WARN: 'Set %s %s' has been ignored. Move the directive to the top of the file.\nLearn more: https://github.com/charmbracelet/vhs#settings", cmd.Options, cmd.Args)))
+			fmt.Println(ErrorStyle.Render(fmt.Sprintf("WARN: 'Set %s %s' has been ignored. Move the directive to the top of the file.\nLearn more: https://github.com/agentstation/vhs#settings", cmd.Options, cmd.Args)))
 		}
 		if isSetting || cmd.Type == token.REQUIRE {
 			_, _ = fmt.Fprintln(out, Highlight(cmd, true))

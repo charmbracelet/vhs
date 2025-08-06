@@ -17,8 +17,8 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/charmbracelet/vhs/lexer"
-	"github.com/charmbracelet/vhs/parser"
+	"github.com/agentstation/vhs/lexer"
+	"github.com/agentstation/vhs/parser"
 	version "github.com/hashicorp/go-version"
 	"github.com/mattn/go-isatty"
 	"github.com/spf13/cobra"
@@ -38,7 +38,9 @@ var (
 	publishFlag bool
 	outputs     *[]string
 
-	quietFlag bool
+	quietFlag    bool
+	noSVGOpt     bool
+	debugConsole bool
 
 	//nolint:wrapcheck
 	rootCmd = &cobra.Command{
@@ -90,25 +92,30 @@ var (
 			if quietFlag {
 				out = io.Discard
 			}
-			errs := Evaluate(cmd.Context(), string(input), out, func(v *VHS) {
-				// Output is being overridden, prevent all outputs
-				if len(*outputs) <= 0 {
-					publishFile = v.Options.Video.Output.GIF
-					return
-				}
-
-				for _, output := range *outputs {
-					if strings.HasSuffix(output, gif) {
-						v.Options.Video.Output.GIF = output
-					} else if strings.HasSuffix(output, webm) {
-						v.Options.Video.Output.WebM = output
-					} else if strings.HasSuffix(output, mp4) {
-						v.Options.Video.Output.MP4 = output
+			errs := Evaluate(cmd.Context(), string(input), out,
+				WithSVGOptimization(!noSVGOpt),
+				WithDebugConsole(debugConsole),
+				func(v *VHS) {
+					// Output is being overridden, prevent all outputs
+					if len(*outputs) <= 0 {
+						publishFile = v.Options.Video.Output.GIF
+						return
 					}
-				}
 
-				publishFile = v.Options.Video.Output.GIF
-			})
+					for _, output := range *outputs {
+						if strings.HasSuffix(output, gif) {
+							v.Options.Video.Output.GIF = output
+						} else if strings.HasSuffix(output, webm) {
+							v.Options.Video.Output.WebM = output
+						} else if strings.HasSuffix(output, mp4) {
+							v.Options.Video.Output.MP4 = output
+						} else if strings.HasSuffix(output, svg) {
+							v.Options.Video.Output.SVG = output
+						}
+					}
+
+					publishFile = v.Options.Video.Output.GIF
+				})
 
 			publishEnv, publishEnvSet := os.LookupEnv("VHS_PUBLISH")
 			if !publishEnvSet && !publishFlag && len(errs) == 0 {
@@ -256,6 +263,8 @@ func main() {
 func init() {
 	rootCmd.Flags().BoolVarP(&publishFlag, "publish", "p", false, "publish your GIF to vhs.charm.sh and get a shareable URL")
 	rootCmd.PersistentFlags().BoolVarP(&quietFlag, "quiet", "q", false, "quiet do not log messages. If publish flag is provided, it will log shareable URL")
+	rootCmd.Flags().BoolVar(&noSVGOpt, "no-svg-opt", false, "disable SVG output optimization")
+	rootCmd.Flags().BoolVar(&debugConsole, "debug-console", false, "enable browser console logging")
 
 	outputs = rootCmd.Flags().StringSliceP("output", "o", []string{}, "file name(s) of video output")
 	themesCmd.Flags().BoolVar(&markdown, "markdown", false, "output as markdown")
@@ -294,7 +303,7 @@ var versionRegex = regexp.MustCompile(`\d+\.\d+\.\d+`)
 
 // getVersion returns the parsed version of a program.
 func getVersion(program string) *version.Version {
-	cmd := exec.Command(program, "--version")
+	cmd := exec.Command(program, "--version") //nolint:noctx
 	out, err := cmd.Output()
 	if err != nil {
 		return nil

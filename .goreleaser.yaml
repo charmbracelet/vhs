@@ -1,0 +1,257 @@
+version: 2
+
+before:
+  hooks:
+    - go mod tidy
+    - rm -rf completions
+    - mkdir completions
+    - rm -rf manpages
+    - mkdir manpages
+    - sh -c 'go run . completion "bash" >./completions/vhs.bash'
+    - sh -c 'go run . completion "zsh" >./completions/vhs.zsh'
+    - sh -c 'go run . completion "fish" >./completions/vhs.fish'
+    - sh -c 'go run . man | gzip -c >./manpages/vhs.1.gz'
+
+builds:
+  - id: vhs
+    binary: vhs
+    env:
+      - CGO_ENABLED=0
+    main: "."
+    mod_timestamp: '{{ .CommitTimestamp }}'
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+      - -X main.Version={{.Version}}
+      - -X main.CommitSHA={{.ShortCommit}}
+      - -X main.CommitDate={{.Date}}
+    goos:
+      - linux
+      - darwin
+      - windows
+      - freebsd
+      - openbsd
+      - netbsd
+    goarch:
+      - amd64
+      - arm64
+      - "386"
+      - arm
+    goarm:
+      - "7"
+    ignore:
+      - goos: windows
+        goarch: arm64
+      - goos: windows
+        goarm: "7"
+
+archives:
+  - id: vhs
+    ids:
+      - vhs
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- .Version }}_
+      {{- .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+    files:
+      - LICENSE
+      - README.md
+      - completions/*
+      - manpages/*
+
+checksum:
+  name_template: 'checksums.txt'
+  algorithm: sha256
+
+sboms:
+  - artifacts: archive
+    documents:
+      - "${artifact}.sbom.json"
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  use: github
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^ci:"
+      - "^build:"
+      - "^chore:"
+      - "Merge pull request"
+      - "Merge branch"
+  groups:
+    - title: 'New Features'
+      regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
+      order: 0
+    - title: 'Bug fixes'
+      regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
+      order: 1
+    - title: 'Performance improvements'
+      regexp: '^.*?perf(\([[:word:]]+\))??!?:.+$'
+      order: 2
+    - title: Others
+      order: 999
+
+release:
+  github:
+    owner: agentstation
+    name: vhs
+  draft: false
+  prerelease: false
+  name_template: "v{{.Version}}"
+  header: |
+    ## VHS Fork with SVG Support {{ .Tag }}
+
+    This is a fork of [charmbracelet/vhs](https://github.com/charmbracelet/vhs) that adds native SVG output support and additional features.
+
+    ### 🚀 Fork Features
+
+    - **Native SVG Output**: Generate scalable, animated SVGs that are often smaller than GIFs
+    - **Window Bar Customization**: Custom titles and fonts with `Set WindowBarTitle`
+    - **Enhanced CLI Options**: `--no-svg-opt`, `--debug-console`
+
+    ### Installation
+
+    #### Homebrew (macOS and Linux)
+    ```bash
+    brew install agentstation/tap/vhs
+    ```
+
+    #### Docker
+    ```bash
+    docker run --rm -v $PWD:/vhs ghcr.io/agentstation/vhs:{{ .Tag }} <cassette>.tape
+    ```
+
+    #### Download Binary
+    Download the appropriate binary for your platform from the assets below.
+
+    #### Using Go
+    ```bash
+    go install github.com/agentstation/vhs@{{ .Tag }}
+    ```
+
+# Homebrew cask configuration
+homebrew_casks:
+  - repository:
+      owner: agentstation
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+    
+    name: vhs
+    
+    directory: Casks
+    
+    commit_author:
+      name: "GitHub Actions"
+      email: "actions@github.com"
+    
+    commit_msg_template: "Update vhs to {{ .Tag }}"
+    
+    homepage: "https://github.com/agentstation/vhs"
+    
+    description: "A tool for recording terminal GIFs and SVGs"
+    
+    license: "MIT"
+    
+    binary: vhs
+    
+    # Post-install hook for unsigned binaries (macOS)
+    hooks:
+      post:
+        install: |
+          if system_command("/usr/bin/xattr", args: ["-h"]).exit_status == 0
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/vhs"], sudo: false
+          end
+    
+    # Shell completions
+    completions:
+      bash: completions/vhs.bash
+      zsh: completions/vhs.zsh
+      fish: completions/vhs.fish
+    
+    # Custom caveats
+    caveats: |
+      VHS has been installed! 🎬
+
+      Quick start:
+        vhs new demo.tape           # Create a new tape file
+        vhs demo.tape              # Generate output (GIF/MP4/WebM/SVG)
+        vhs record > session.tape   # Record terminal session
+        vhs --help                 # Show all commands
+
+      SVG Output (Fork Feature):
+        Output demo.svg            # Generate animated SVG
+        vhs demo.tape --no-svg-opt # Disable SVG optimization
+
+      Shell completions have been installed to:
+        Bash: #{HOMEBREW_PREFIX}/etc/bash_completion.d
+        Zsh:  #{HOMEBREW_PREFIX}/share/zsh/site-functions
+        Fish: #{HOMEBREW_PREFIX}/share/fish/vendor_completions.d
+
+      Documentation: https://github.com/agentstation/vhs
+
+# Docker configuration
+dockers:
+  - id: vhs-amd64
+    ids:
+      - vhs
+    goos: linux
+    goarch: amd64
+    image_templates:
+      - "ghcr.io/agentstation/vhs:{{ .Tag }}-amd64"
+    dockerfile: Dockerfile
+    use: buildx
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source=https://github.com/agentstation/vhs"
+      - "--label=org.opencontainers.image.description=A tool for recording terminal GIFs and SVGs"
+      - "--label=org.opencontainers.image.licenses=MIT"
+      - "--platform=linux/amd64"
+  
+  - id: vhs-arm64
+    ids:
+      - vhs
+    goos: linux
+    goarch: arm64
+    image_templates:
+      - "ghcr.io/agentstation/vhs:{{ .Tag }}-arm64"
+    dockerfile: Dockerfile
+    use: buildx
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source=https://github.com/agentstation/vhs"
+      - "--label=org.opencontainers.image.description=A tool for recording terminal GIFs and SVGs"
+      - "--label=org.opencontainers.image.licenses=MIT"
+      - "--platform=linux/arm64"
+
+# Docker manifest for multi-arch support
+docker_manifests:
+  - name_template: "ghcr.io/agentstation/vhs:{{ .Tag }}"
+    image_templates:
+      - "ghcr.io/agentstation/vhs:{{ .Tag }}-amd64"
+      - "ghcr.io/agentstation/vhs:{{ .Tag }}-arm64"
+  - name_template: "ghcr.io/agentstation/vhs:latest"
+    image_templates:
+      - "ghcr.io/agentstation/vhs:{{ .Tag }}-amd64"
+      - "ghcr.io/agentstation/vhs:{{ .Tag }}-arm64"
