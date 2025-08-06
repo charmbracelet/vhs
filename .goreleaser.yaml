@@ -152,6 +152,10 @@ homebrew_casks:
     
     name: vhs
     
+    dependencies:
+      - formula: ffmpeg
+      - formula: ttyd
+    
     directory: Casks
     
     commit_author:
