@@ -1368,4 +1368,71 @@ func TestSVGGenerator_TypingAnimationCSS(t *testing.T) {
 		// Should have animation duration of 1.5s (from timestamp 0.0 to 1.5)
 		assertContains(t, svg, "animation: typing_0 1.5s", "Animation duration should be 1.5s")
 	})
+	
+	t.Run("backspace breaks typing pattern", func(t *testing.T) {
+		opts := createTestSVGConfig()
+		opts.Frames = []SVGFrame{
+			{Lines: []string{"$ "}, CursorX: 2, CursorY: 0, Timestamp: 0.0, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ h"}, CursorX: 3, CursorY: 0, Timestamp: 0.1, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ he"}, CursorX: 4, CursorY: 0, Timestamp: 0.2, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ hel"}, CursorX: 5, CursorY: 0, Timestamp: 0.3, CharWidth: 8.8, CharHeight: 20},
+			// Backspace - text gets shorter
+			{Lines: []string{"$ he"}, CursorX: 4, CursorY: 0, Timestamp: 0.4, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ hel"}, CursorX: 5, CursorY: 0, Timestamp: 0.5, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ help"}, CursorX: 6, CursorY: 0, Timestamp: 0.6, CharWidth: 8.8, CharHeight: 20},
+		}
+		
+		gen := NewSVGGenerator(opts)
+		gen.detectPatterns()
+		
+		// Should detect multiple patterns due to backspace
+		typingPatterns := 0
+		for _, p := range gen.patterns {
+			if p.Type == PatternTyping {
+				typingPatterns++
+			}
+		}
+		
+		// Backspace should break the pattern into multiple segments
+		if typingPatterns < 2 {
+			t.Errorf("Expected at least 2 typing patterns due to backspace, got %d", typingPatterns)
+		}
+		
+		// First pattern should end before the backspace
+		if gen.patterns[0].Type == PatternTyping && gen.patterns[0].EndFrame >= 4 {
+			t.Error("First typing pattern should end before backspace at frame 4")
+		}
+	})
+	
+	t.Run("handles deletion mid-word", func(t *testing.T) {
+		opts := createTestSVGConfig()
+		opts.Frames = []SVGFrame{
+			{Lines: []string{"$ "}, CursorX: 2, CursorY: 0, Timestamp: 0.0, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ h"}, CursorX: 3, CursorY: 0, Timestamp: 0.1, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ he"}, CursorX: 4, CursorY: 0, Timestamp: 0.2, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ hel"}, CursorX: 5, CursorY: 0, Timestamp: 0.3, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ hell"}, CursorX: 6, CursorY: 0, Timestamp: 0.4, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ hello"}, CursorX: 7, CursorY: 0, Timestamp: 0.5, CharWidth: 8.8, CharHeight: 20},
+			// Delete characters mid-word
+			{Lines: []string{"$ heo"}, CursorX: 5, CursorY: 0, Timestamp: 0.6, CharWidth: 8.8, CharHeight: 20},
+			// Continue typing
+			{Lines: []string{"$ heol"}, CursorX: 6, CursorY: 0, Timestamp: 0.7, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ heolp"}, CursorX: 7, CursorY: 0, Timestamp: 0.8, CharWidth: 8.8, CharHeight: 20},
+		}
+		
+		gen := NewSVGGenerator(opts)
+		gen.detectPatterns()
+		
+		// Deletion should create separate patterns
+		typingCount := 0
+		for _, p := range gen.patterns {
+			if p.Type == PatternTyping {
+				typingCount++
+			}
+		}
+		
+		if typingCount < 2 {
+			t.Errorf("Expected at least 2 typing patterns due to deletion, got %d", typingCount)
+		}
+	})
 }

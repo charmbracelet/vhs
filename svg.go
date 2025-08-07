@@ -613,10 +613,12 @@ func (g *SVGGenerator) detectTypingPattern(start int) (*FramePattern, int) {
 			
 			// Check if current line starts with previous line (typing appends)
 			if !strings.HasPrefix(currLine, prevLine) {
-				// Also check if it's a small edit (backspace + retype)
-				if len(currLine) < len(prevLine)-2 {
+				// If text got shorter, it's likely a backspace - break the pattern
+				if len(currLine) < len(prevLine) {
 					break
 				}
+				// If text changed but didn't grow from the previous, break
+				break
 			}
 			
 			// Check typing speed is reasonable (1-15 chars per frame is typical)
