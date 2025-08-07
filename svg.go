@@ -1102,9 +1102,7 @@ func formatPercentage(val float64, keyframeCount int) string {
 	
 	// Remove trailing zeros but keep at least 1 decimal for consistency
 	formatted = strings.TrimRight(formatted, "0")
-	if strings.HasSuffix(formatted, ".") {
-		formatted = formatted[:len(formatted)-1]
-	}
+	formatted = strings.TrimSuffix(formatted, ".")
 	
 	return formatted
 }
