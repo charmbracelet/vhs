@@ -1404,6 +1404,48 @@ func TestSVGGenerator_TypingAnimationCSS(t *testing.T) {
 		}
 	})
 	
+	t.Run("detects backspace pattern", func(t *testing.T) {
+		opts := createTestSVGConfig()
+		opts.Frames = []SVGFrame{
+			{Lines: []string{"$ hello"}, CursorX: 7, CursorY: 0, Timestamp: 0.0, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ hell"}, CursorX: 6, CursorY: 0, Timestamp: 0.1, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ hel"}, CursorX: 5, CursorY: 0, Timestamp: 0.2, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ he"}, CursorX: 4, CursorY: 0, Timestamp: 0.3, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ h"}, CursorX: 3, CursorY: 0, Timestamp: 0.4, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ "}, CursorX: 2, CursorY: 0, Timestamp: 0.5, CharWidth: 8.8, CharHeight: 20},
+		}
+		
+		gen := NewSVGGenerator(opts)
+		gen.detectPatterns()
+		
+		// Should detect one backspace pattern
+		backspacePatterns := 0
+		for _, p := range gen.patterns {
+			if p.Type == PatternBackspace {
+				backspacePatterns++
+				// Verify the deleted text
+				if p.DeletedText != "hello" {
+					t.Errorf("Expected deleted text 'hello', got '%s'", p.DeletedText)
+				}
+				// Verify deleted count
+				if p.DeletedCount != 5 {
+					t.Errorf("Expected 5 characters deleted, got %d", p.DeletedCount)
+				}
+			}
+		}
+		
+		if backspacePatterns != 1 {
+			t.Errorf("Expected 1 backspace pattern, got %d", backspacePatterns)
+		}
+		
+		// Check CSS generation
+		svg := gen.Generate()
+		assertContains(t, svg, "@keyframes backspace_", "Should generate backspace animation")
+		assertContains(t, svg, ".backspace_", "Should generate backspace class")
+		assertContains(t, svg, "from { width:", "Backspace should animate width")
+		assertContains(t, svg, "to { width: 0", "Backspace should animate to zero width")
+	})
+	
 	t.Run("handles deletion mid-word", func(t *testing.T) {
 		opts := createTestSVGConfig()
 		opts.Frames = []SVGFrame{

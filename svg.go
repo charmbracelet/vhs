@@ -93,6 +93,7 @@ type PatternType int
 const (
 	PatternStatic PatternType = iota
 	PatternTyping
+	PatternBackspace
 )
 
 // FramePattern represents a detected pattern in frame sequences.
@@ -107,6 +108,10 @@ type FramePattern struct {
 	Line     int
 	StartCol int
 	Text     string
+	
+	// For backspace patterns
+	DeletedText  string // Text that was deleted
+	DeletedCount int    // Number of characters deleted
 	
 	// Store the initial and final states
 	InitialState TerminalState
@@ -538,6 +543,13 @@ func (g *SVGGenerator) detectPatterns() {
 			continue
 		}
 		
+		// Try to detect backspace pattern
+		if pattern, consumed := g.detectBackspacePattern(i); pattern != nil {
+			g.patterns = append(g.patterns, *pattern)
+			i += consumed
+			continue
+		}
+		
 		// If no pattern detected, treat as static frame
 		frame := g.options.Frames[i]
 		g.patterns = append(g.patterns, FramePattern{
@@ -560,18 +572,26 @@ func (g *SVGGenerator) detectPatterns() {
 	if g.options.Debug {
 		typingPatterns := 0
 		typingFrames := 0
+		backspacePatterns := 0
+		backspaceFrames := 0
 		for _, p := range g.patterns {
-			if p.Type == PatternTyping {
+			switch p.Type {
+			case PatternTyping:
 				typingPatterns++
 				typingFrames += p.EndFrame - p.StartFrame + 1
+			case PatternBackspace:
+				backspacePatterns++
+				backspaceFrames += p.EndFrame - p.StartFrame + 1
 			}
 		}
 		log.Printf("Pattern detection analysis:")
 		log.Printf("  Total frames: %d", len(g.options.Frames))
 		log.Printf("  Detected patterns: %d", len(g.patterns))
-		log.Printf("  Typing patterns: %d", typingPatterns)
-		log.Printf("  Frames in typing patterns: %d (%.1f%%)",
-			typingFrames, float64(typingFrames)/float64(len(g.options.Frames))*100)
+		log.Printf("  Typing patterns: %d (frames: %d)", typingPatterns, typingFrames)
+		log.Printf("  Backspace patterns: %d (frames: %d)", backspacePatterns, backspaceFrames)
+		totalOptimized := typingFrames + backspaceFrames
+		log.Printf("  Total optimized frames: %d (%.1f%%)",
+			totalOptimized, float64(totalOptimized)/float64(len(g.options.Frames))*100)
 	}
 }
 
@@ -708,6 +728,126 @@ func (g *SVGGenerator) detectTypingPattern(start int) (*FramePattern, int) {
 	return pattern, framesInPattern
 }
 
+// detectBackspacePattern looks for consecutive frames where text is being deleted.
+func (g *SVGGenerator) detectBackspacePattern(start int) (*FramePattern, int) {
+	if start >= len(g.options.Frames)-1 {
+		return nil, 0
+	}
+	
+	firstFrame := g.options.Frames[start]
+	line := firstFrame.CursorY
+	
+	// Track the backspace sequence
+	end := start + 1
+	totalDeleted := 0
+	
+	for end < len(g.options.Frames) {
+		prev := g.options.Frames[end-1]
+		curr := g.options.Frames[end]
+		
+		// Check if still on the same line
+		if curr.CursorY != line {
+			break
+		}
+		
+		// Check that only the cursor line changed
+		if !g.isOnlyLineChanged(prev, curr, line) {
+			break
+		}
+		
+		// Check if text is getting shorter (backspace pattern)
+		if line < len(prev.Lines) && line < len(curr.Lines) {
+			prevLine := prev.Lines[line]
+			currLine := curr.Lines[line]
+			
+			// For backspace, current line should be shorter
+			if len(currLine) >= len(prevLine) {
+				break
+			}
+			
+			// Check if it's a prefix (deleting from end)
+			if !strings.HasPrefix(prevLine, currLine) {
+				// Could be deletion in middle, but for now we'll break
+				break
+			}
+			
+			// Track how many characters were deleted
+			deleted := len(prevLine) - len(currLine)
+			totalDeleted += deleted
+			
+			// Don't group huge deletions (likely line clear, not backspace)
+			if deleted > 10 {
+				break
+			}
+		} else {
+			break
+		}
+		
+		end++
+	}
+	
+	// Need at least 2 frames to consider it a backspace pattern
+	framesInPattern := end - start
+	if framesInPattern < 2 {
+		return nil, 0
+	}
+	
+	// Need to have deleted at least 2 characters to be worth optimizing
+	if totalDeleted < 2 {
+		return nil, 0
+	}
+	
+	// Extract what was deleted
+	lastFrame := g.options.Frames[end-1]
+	var deletedText string
+	
+	if line < len(firstFrame.Lines) && line < len(lastFrame.Lines) {
+		startLine := firstFrame.Lines[line]
+		endLine := lastFrame.Lines[line]
+		
+		if strings.HasPrefix(startLine, endLine) {
+			deletedText = startLine[len(endLine):]
+		}
+	}
+	
+	// Create states
+	initialState := TerminalState{
+		Lines:      firstFrame.Lines,
+		LineColors: firstFrame.LineColors,
+		CursorX:    firstFrame.CursorX,
+		CursorY:    firstFrame.CursorY,
+		CursorChar: firstFrame.CursorChar,
+	}
+	
+	finalState := TerminalState{
+		Lines:      lastFrame.Lines,
+		LineColors: lastFrame.LineColors,
+		CursorX:    lastFrame.CursorX,
+		CursorY:    lastFrame.CursorY,
+		CursorChar: lastFrame.CursorChar,
+	}
+	
+	pattern := &FramePattern{
+		Type:         PatternBackspace,
+		StartFrame:   start,
+		EndFrame:     end - 1,
+		StartTime:    firstFrame.Timestamp,
+		EndTime:      lastFrame.Timestamp,
+		Line:         line,
+		DeletedText:  deletedText,
+		DeletedCount: totalDeleted,
+		InitialState: initialState,
+		FinalState:   finalState,
+	}
+	
+	if g.options.Debug {
+		log.Printf("Detected backspace pattern: frames %d-%d, line %d, deleted: %q (saved %d frames)",
+			start, end-1, line, deletedText, framesInPattern-1)
+	}
+	
+	return pattern, framesInPattern
+}
+
 // isOnlyLineChanged checks if only the specified line changed between frames.
 func (g *SVGGenerator) isOnlyLineChanged(prev, curr SVGFrame, targetLine int) bool {
 	// Check if number of lines changed significantly
@@ -776,6 +916,41 @@ func (g *SVGGenerator) generateTypingCSS(sb *strings.Builder, index int, pattern
 	g.writeNewline(sb)
 }
 
+// generateBackspaceCSS generates CSS animation for a backspace pattern.
+func (g *SVGGenerator) generateBackspaceCSS(sb *strings.Builder, index int, pattern FramePattern) {
+	// Calculate the width of the deleted text
+	startWidth := float64(len(pattern.DeletedText)) * g.charWidth
+	duration := pattern.EndTime - pattern.StartTime
+	
+	// Generate the keyframe animation (reverse of typing)
+	sb.WriteString(fmt.Sprintf("@keyframes backspace_%d {", index))
+	g.writeNewline(sb)
+	sb.WriteString(fmt.Sprintf("  from { width: %spx; }", formatCoord(startWidth)))
+	g.writeNewline(sb)
+	sb.WriteString("  to { width: 0; }")
+	g.writeNewline(sb)
+	sb.WriteString("}")
+	g.writeNewline(sb)
+	
+	// Generate the class for this backspace animation
+	sb.WriteString(fmt.Sprintf(".backspace_%d {", index))
+	g.writeNewline(sb)
+	sb.WriteString("  overflow: hidden;")
+	g.writeNewline(sb)
+	sb.WriteString("  white-space: nowrap;")
+	g.writeNewline(sb)
+	sb.WriteString("  display: inline-block;")
+	g.writeNewline(sb)
+	sb.WriteString(fmt.Sprintf("  animation: backspace_%d %ss steps(%d, end) forwards;",
+		index, formatDuration(duration), pattern.DeletedCount))
+	g.writeNewline(sb)
+	sb.WriteString(fmt.Sprintf("  animation-delay: %ss;", formatDuration(pattern.StartTime)))
+	g.writeNewline(sb)
+	sb.WriteString("}")
+	g.writeNewline(sb)
+	g.writeNewline(sb)
+}
+
 // generateStyles creates the CSS styles and animations.
 func (g *SVGGenerator) generateStyles() string {
 	var sb strings.Builder
@@ -785,8 +960,11 @@ func (g *SVGGenerator) generateStyles() string {
 	
 	// Generate typing animations for detected patterns
 	for i, pattern := range g.patterns {
-		if pattern.Type == PatternTyping {
+		switch pattern.Type {
+		case PatternTyping:
 			g.generateTypingCSS(&sb, i, pattern)
+		case PatternBackspace:
+			g.generateBackspaceCSS(&sb, i, pattern)
 		}
 	}
 
