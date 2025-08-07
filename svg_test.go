@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"regexp"
 	"runtime"
 	"strings"
 	"testing"
@@ -1028,5 +1029,165 @@ func TestFormatDuration(t *testing.T) {
 		if result != tc.expected {
 			t.Errorf("formatDuration(%f) = %q, expected %q", tc.input, result, tc.expected)
 		}
+	}
+}
+
+// Test formatPercentage function with dynamic precision
+func TestFormatPercentage(t *testing.T) {
+	testCases := []struct {
+		name          string
+		input         float64
+		keyframeCount int
+		expected      string
+	}{
+		// Whole numbers always minimal
+		{"whole number 0", 0.0, 100, "0"},
+		{"whole number 100", 100.0, 1000, "100"},
+		{"whole number 50", 50.0, 10000, "50"},
+		
+		// Small frame counts (< 100) - 1 decimal
+		{"small count decimal", 12.345, 50, "12.3"},
+		{"small count trailing", 10.5000, 75, "10.5"},
+		
+		// Medium frame counts (< 1000) - 2 decimals
+		{"medium count decimal", 0.024038, 500, "0.02"},
+		{"medium count precision", 2.456, 800, "2.46"},
+		{"medium count trailing", 10.1000, 900, "10.1"},
+		
+		// Large frame counts (< 10000) - 3 decimals
+		{"large count decimal", 0.024038, 4161, "0.024"},
+		{"large count precision", 2.451923, 5000, "2.452"},
+		{"large count trailing", 99.9000, 8000, "99.9"},
+		
+		// Very large frame counts (< 100000) - 4 decimals
+		{"very large decimal", 0.00012, 50000, "0.0001"},
+		{"very large precision", 33.33333, 75000, "33.3333"},
+		
+		// Huge frame counts (>= 100000) - 5 decimals
+		{"huge count decimal", 0.000012, 150000, "0.00001"},
+		{"huge count precision", 12.345678, 200000, "12.34568"},
+		
+		// Edge cases
+		{"negative percentage", -5.5, 100, "-5.5"},
+		{"zero with decimals", 0.0001, 1000, "0"},
+	}
+	
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			result := formatPercentage(tc.input, tc.keyframeCount)
+			if result != tc.expected {
+				t.Errorf("formatPercentage(%f, %d) = %s; want %s", 
+					tc.input, tc.keyframeCount, result, tc.expected)
+			}
+		})
+	}
+}
+
+// Test dynamic precision prevents collisions
+func TestFormatPercentageDynamicPrecision(t *testing.T) {
+	testCases := []struct {
+		name       string
+		frameCount int
+	}{
+		{"small animation", 50},
+		{"medium animation", 500},
+		{"large animation", 4161},
+		{"very large animation", 50000},
+	}
+	
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			percentages := make(map[string]bool)
+			
+			for i := 0; i < tc.frameCount; i++ {
+				percentage := float64(i) / float64(tc.frameCount-1) * 100
+				formatted := formatPercentage(percentage, tc.frameCount)
+				
+				if percentages[formatted] {
+					t.Errorf("Duplicate percentage at frame %d/%d: %s (%.6f%%)", 
+						i, tc.frameCount, formatted, percentage)
+				}
+				percentages[formatted] = true
+			}
+			
+			if len(percentages) != tc.frameCount {
+				t.Errorf("Expected %d unique percentages, got %d", 
+					tc.frameCount, len(percentages))
+			}
+		})
+	}
+}
+
+// Test that large animations produce unique percentages
+func TestLargeAnimationPercentages(t *testing.T) {
+	// Test that 4161 frames produce unique percentages
+	percentages := make(map[string]bool)
+	totalFrames := 4161
+	
+	for i := 0; i < totalFrames; i++ {
+		percentage := float64(i) / float64(totalFrames-1) * 100
+		formatted := formatPercentage(percentage, totalFrames)
+		
+		if percentages[formatted] {
+			t.Errorf("Duplicate percentage at frame %d: %s (%.6f%%)", i, formatted, percentage)
+		}
+		percentages[formatted] = true
+	}
+	
+	if len(percentages) != totalFrames {
+		t.Errorf("Expected %d unique percentages, got %d", 
+			totalFrames, len(percentages))
+	}
+}
+
+// Test SVG keyframe generation with many frames
+func TestSVGKeyframeGeneration(t *testing.T) {
+	// Create config with many frames to test keyframe collision
+	opts := createTestSVGConfig()
+	opts.Frames = make([]SVGFrame, 1000)
+	for i := range opts.Frames {
+		opts.Frames[i] = SVGFrame{
+			Lines:      []string{fmt.Sprintf("Frame %d", i)},
+			CharWidth:  8.8,
+			CharHeight: 20,
+			CursorX:    i % 10,
+			CursorY:    0,
+		}
+	}
+	
+	gen := NewSVGGenerator(opts)
+	svg := gen.Generate()
+	
+	// Verify no duplicate keyframe percentages
+	keyframeRegex := regexp.MustCompile(`(\d+(?:\.\d+)?)\%\s*\{`)
+	matches := keyframeRegex.FindAllStringSubmatch(svg, -1)
+	
+	seen := make(map[string]bool)
+	duplicates := 0
+	for _, match := range matches {
+		if seen[match[1]] {
+			duplicates++
+			if duplicates <= 5 { // Only report first 5 duplicates
+				t.Errorf("Duplicate keyframe percentage found: %s%%", match[1])
+			}
+		}
+		seen[match[1]] = true
+	}
+	
+	if duplicates > 0 {
+		t.Errorf("Found %d duplicate keyframe percentages out of %d total keyframes", 
+			duplicates, len(matches))
+	}
+	
+	// Verify animation is present
+	if !strings.Contains(svg, "@keyframes slide") {
+		t.Error("SVG missing @keyframes slide animation")
+	}
+	
+	// Verify reasonable number of keyframes were generated
+	// With deduplication, we should have fewer keyframes than frames
+	if len(matches) > len(opts.Frames) {
+		t.Errorf("Too many keyframes generated: %d keyframes for %d frames", 
+			len(matches), len(opts.Frames))
 	}
 }
