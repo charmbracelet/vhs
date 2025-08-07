@@ -91,6 +91,9 @@ nix-env -iA nixpkgs.vhs
 
 # Windows using scoop
 scoop install vhs
+
+# Conda-forge
+pixi global install vhs
 ```
 
 Or, use Docker to run VHS directly, dependencies included:
