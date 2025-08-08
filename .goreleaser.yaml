@@ -30,21 +30,12 @@ builds:
       - linux
       - darwin
       - windows
-      - freebsd
-      - openbsd
-      - netbsd
     goarch:
       - amd64
       - arm64
-      - "386"
-      - arm
-    goarm:
-      - "7"
     ignore:
       - goos: windows
         goarch: arm64
-      - goos: windows
-        goarm: "7"
 
 archives:
   - id: vhs
@@ -207,7 +198,7 @@ homebrew_casks:
 
       Documentation: https://github.com/agentstation/vhs
 
-# Docker configuration
+# Docker configuration - optimized with caching
 dockers:
   - id: vhs-amd64
     ids:
@@ -220,6 +211,8 @@ dockers:
     use: buildx
     build_flag_templates:
       - "--pull"
+      - "--cache-from=type=gha"
+      - "--cache-to=type=gha,mode=max"
       - "--label=org.opencontainers.image.created={{.Date}}"
       - "--label=org.opencontainers.image.title={{.ProjectName}}"
       - "--label=org.opencontainers.image.revision={{.FullCommit}}"
@@ -240,6 +233,8 @@ dockers:
     use: buildx
     build_flag_templates:
       - "--pull"
+      - "--cache-from=type=gha"
+      - "--cache-to=type=gha,mode=max"
       - "--label=org.opencontainers.image.created={{.Date}}"
       - "--label=org.opencontainers.image.title={{.ProjectName}}"
       - "--label=org.opencontainers.image.revision={{.FullCommit}}"
