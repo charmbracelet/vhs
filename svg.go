@@ -582,6 +582,8 @@ func (g *SVGGenerator) detectPatterns() {
 			case PatternBackspace:
 				backspacePatterns++
 				backspaceFrames += p.EndFrame - p.StartFrame + 1
+			case PatternStatic:
+				// Static patterns don't need special handling for debug stats
 			}
 		}
 		log.Printf("Pattern detection analysis:")
@@ -888,17 +890,17 @@ func (g *SVGGenerator) generateTypingCSS(sb *strings.Builder, index int, pattern
 	duration := pattern.EndTime - pattern.StartTime
 	
 	// Generate the keyframe animation
-	sb.WriteString(fmt.Sprintf("@keyframes typing_%d {", index))
+	fmt.Fprintf(sb, "@keyframes typing_%d {", index)
 	g.writeNewline(sb)
 	sb.WriteString("  from { width: 0; }")
 	g.writeNewline(sb)
-	sb.WriteString(fmt.Sprintf("  to { width: %spx; }", formatCoord(textWidth)))
+	fmt.Fprintf(sb, "  to { width: %spx; }", formatCoord(textWidth))
 	g.writeNewline(sb)
 	sb.WriteString("}")
 	g.writeNewline(sb)
 	
 	// Generate the class for this typing animation
-	sb.WriteString(fmt.Sprintf(".typing_%d {", index))
+	fmt.Fprintf(sb, ".typing_%d {", index)
 	g.writeNewline(sb)
 	sb.WriteString("  overflow: hidden;")
 	g.writeNewline(sb)
@@ -906,10 +908,10 @@ func (g *SVGGenerator) generateTypingCSS(sb *strings.Builder, index int, pattern
 	g.writeNewline(sb)
 	sb.WriteString("  display: inline-block;")
 	g.writeNewline(sb)
-	sb.WriteString(fmt.Sprintf("  animation: typing_%d %ss steps(%d, end) forwards;",
-		index, formatDuration(duration), len(pattern.Text)))
+	fmt.Fprintf(sb, "  animation: typing_%d %ss steps(%d, end) forwards;",
+		index, formatDuration(duration), len(pattern.Text))
 	g.writeNewline(sb)
-	sb.WriteString(fmt.Sprintf("  animation-delay: %ss;", formatDuration(pattern.StartTime)))
+	fmt.Fprintf(sb, "  animation-delay: %ss;", formatDuration(pattern.StartTime))
 	g.writeNewline(sb)
 	sb.WriteString("}")
 	g.writeNewline(sb)
@@ -923,9 +925,9 @@ func (g *SVGGenerator) generateBackspaceCSS(sb *strings.Builder, index int, patt
 	duration := pattern.EndTime - pattern.StartTime
 	
 	// Generate the keyframe animation (reverse of typing)
-	sb.WriteString(fmt.Sprintf("@keyframes backspace_%d {", index))
+	fmt.Fprintf(sb, "@keyframes backspace_%d {", index)
 	g.writeNewline(sb)
-	sb.WriteString(fmt.Sprintf("  from { width: %spx; }", formatCoord(startWidth)))
+	fmt.Fprintf(sb, "  from { width: %spx; }", formatCoord(startWidth))
 	g.writeNewline(sb)
 	sb.WriteString("  to { width: 0; }")
 	g.writeNewline(sb)
@@ -933,7 +935,7 @@ func (g *SVGGenerator) generateBackspaceCSS(sb *strings.Builder, index int, patt
 	g.writeNewline(sb)
 	
 	// Generate the class for this backspace animation
-	sb.WriteString(fmt.Sprintf(".backspace_%d {", index))
+	fmt.Fprintf(sb, ".backspace_%d {", index)
 	g.writeNewline(sb)
 	sb.WriteString("  overflow: hidden;")
 	g.writeNewline(sb)
@@ -941,10 +943,10 @@ func (g *SVGGenerator) generateBackspaceCSS(sb *strings.Builder, index int, patt
 	g.writeNewline(sb)
 	sb.WriteString("  display: inline-block;")
 	g.writeNewline(sb)
-	sb.WriteString(fmt.Sprintf("  animation: backspace_%d %ss steps(%d, end) forwards;",
-		index, formatDuration(duration), pattern.DeletedCount))
+	fmt.Fprintf(sb, "  animation: backspace_%d %ss steps(%d, end) forwards;",
+		index, formatDuration(duration), pattern.DeletedCount)
 	g.writeNewline(sb)
-	sb.WriteString(fmt.Sprintf("  animation-delay: %ss;", formatDuration(pattern.StartTime)))
+	fmt.Fprintf(sb, "  animation-delay: %ss;", formatDuration(pattern.StartTime))
 	g.writeNewline(sb)
 	sb.WriteString("}")
 	g.writeNewline(sb)
@@ -965,6 +967,8 @@ func (g *SVGGenerator) generateStyles() string {
 			g.generateTypingCSS(&sb, i, pattern)
 		case PatternBackspace:
 			g.generateBackspaceCSS(&sb, i, pattern)
+		case PatternStatic:
+			// Static patterns don't need CSS animations
 		}
 	}
 
