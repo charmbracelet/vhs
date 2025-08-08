@@ -1191,3 +1191,290 @@ func TestSVGKeyframeGeneration(t *testing.T) {
 			len(matches), len(opts.Frames))
 	}
 }
+
+// Pattern Detection Tests
+func TestSVGGenerator_PatternDetection(t *testing.T) {
+	t.Run("detects simple typing pattern", func(t *testing.T) {
+		opts := createTestSVGConfig()
+		opts.Frames = []SVGFrame{
+			{Lines: []string{"$ "}, CursorX: 2, CursorY: 0, Timestamp: 0.0, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ h"}, CursorX: 3, CursorY: 0, Timestamp: 0.1, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ he"}, CursorX: 4, CursorY: 0, Timestamp: 0.2, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ hel"}, CursorX: 5, CursorY: 0, Timestamp: 0.3, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ hell"}, CursorX: 6, CursorY: 0, Timestamp: 0.4, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ hello"}, CursorX: 7, CursorY: 0, Timestamp: 0.5, CharWidth: 8.8, CharHeight: 20},
+		}
+		
+		gen := NewSVGGenerator(opts)
+		gen.detectPatterns()
+		
+		// Should detect one typing pattern
+		typingPatterns := 0
+		for _, p := range gen.patterns {
+			if p.Type == PatternTyping {
+				typingPatterns++
+				// Verify the detected text
+				if p.Text != "hello" {
+					t.Errorf("Expected typed text 'hello', got '%s'", p.Text)
+				}
+				// Verify it covers the right frames
+				if p.StartFrame != 0 || p.EndFrame != 5 {
+					t.Errorf("Expected pattern to cover frames 0-5, got %d-%d", p.StartFrame, p.EndFrame)
+				}
+			}
+		}
+		
+		if typingPatterns != 1 {
+			t.Errorf("Expected 1 typing pattern, got %d", typingPatterns)
+		}
+	})
+	
+	t.Run("detects multiple typing patterns", func(t *testing.T) {
+		opts := createTestSVGConfig()
+		opts.Frames = []SVGFrame{
+			// First typing sequence
+			{Lines: []string{"$ "}, CursorX: 2, CursorY: 0, Timestamp: 0.0, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ l"}, CursorX: 3, CursorY: 0, Timestamp: 0.1, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ ls"}, CursorX: 4, CursorY: 0, Timestamp: 0.2, CharWidth: 8.8, CharHeight: 20},
+			// Output (breaks pattern)
+			{Lines: []string{"$ ls", "file1.txt", "file2.txt"}, CursorX: 0, CursorY: 2, Timestamp: 0.3, CharWidth: 8.8, CharHeight: 20},
+			// Second typing sequence
+			{Lines: []string{"$ ls", "file1.txt", "file2.txt", "$ "}, CursorX: 2, CursorY: 3, Timestamp: 0.4, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ ls", "file1.txt", "file2.txt", "$ c"}, CursorX: 3, CursorY: 3, Timestamp: 0.5, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ ls", "file1.txt", "file2.txt", "$ ca"}, CursorX: 4, CursorY: 3, Timestamp: 0.6, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ ls", "file1.txt", "file2.txt", "$ cat"}, CursorX: 5, CursorY: 3, Timestamp: 0.7, CharWidth: 8.8, CharHeight: 20},
+		}
+		
+		gen := NewSVGGenerator(opts)
+		gen.detectPatterns()
+		
+		// Should detect two typing patterns
+		typingPatterns := 0
+		var detectedTexts []string
+		for _, p := range gen.patterns {
+			if p.Type == PatternTyping {
+				typingPatterns++
+				detectedTexts = append(detectedTexts, p.Text)
+			}
+		}
+		
+		if typingPatterns != 2 {
+			t.Errorf("Expected 2 typing patterns, got %d", typingPatterns)
+		}
+		
+		// Check the detected text
+		if len(detectedTexts) == 2 {
+			if detectedTexts[0] != "ls" {
+				t.Errorf("Expected first typed text 'ls', got '%s'", detectedTexts[0])
+			}
+			if detectedTexts[1] != "cat" {
+				t.Errorf("Expected second typed text 'cat', got '%s'", detectedTexts[1])
+			}
+		}
+	})
+	
+	t.Run("does not detect pattern with too few frames", func(t *testing.T) {
+		opts := createTestSVGConfig()
+		opts.Frames = []SVGFrame{
+			{Lines: []string{"$ "}, CursorX: 2, CursorY: 0, Timestamp: 0.0, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ h"}, CursorX: 3, CursorY: 0, Timestamp: 0.1, CharWidth: 8.8, CharHeight: 20},
+		}
+		
+		gen := NewSVGGenerator(opts)
+		gen.detectPatterns()
+		
+		// Should not detect typing pattern (too few frames)
+		for _, p := range gen.patterns {
+			if p.Type == PatternTyping {
+				t.Error("Should not detect typing pattern with only 2 frames")
+			}
+		}
+	})
+	
+	t.Run("handles mixed typing and static frames", func(t *testing.T) {
+		opts := createTestSVGConfig()
+		opts.Frames = []SVGFrame{
+			// Static frame
+			{Lines: []string{"Welcome"}, CursorX: 0, CursorY: 0, Timestamp: 0.0, CharWidth: 8.8, CharHeight: 20},
+			// Typing sequence
+			{Lines: []string{"Welcome", "$ "}, CursorX: 2, CursorY: 1, Timestamp: 1.0, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"Welcome", "$ e"}, CursorX: 3, CursorY: 1, Timestamp: 1.1, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"Welcome", "$ ec"}, CursorX: 4, CursorY: 1, Timestamp: 1.2, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"Welcome", "$ ech"}, CursorX: 5, CursorY: 1, Timestamp: 1.3, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"Welcome", "$ echo"}, CursorX: 6, CursorY: 1, Timestamp: 1.4, CharWidth: 8.8, CharHeight: 20},
+			// Static frame
+			{Lines: []string{"Welcome", "$ echo", "Hello"}, CursorX: 0, CursorY: 2, Timestamp: 1.5, CharWidth: 8.8, CharHeight: 20},
+		}
+		
+		gen := NewSVGGenerator(opts)
+		gen.detectPatterns()
+		
+		typingCount := 0
+		staticCount := 0
+		for _, p := range gen.patterns {
+			if p.Type == PatternTyping {
+				typingCount++
+			} else if p.Type == PatternStatic {
+				staticCount++
+			}
+		}
+		
+		if typingCount != 1 {
+			t.Errorf("Expected 1 typing pattern, got %d", typingCount)
+		}
+		
+		// Static frames: first frame, and last frame (total 2)
+		if staticCount != 2 {
+			t.Errorf("Expected 2 static patterns, got %d", staticCount)
+		}
+	})
+}
+
+// Typing Animation CSS Tests
+func TestSVGGenerator_TypingAnimationCSS(t *testing.T) {
+	t.Run("generates typing animation CSS", func(t *testing.T) {
+		opts := createTestSVGConfig()
+		opts.Frames = []SVGFrame{
+			{Lines: []string{"$ "}, CursorX: 2, CursorY: 0, Timestamp: 0.0, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ t"}, CursorX: 3, CursorY: 0, Timestamp: 0.1, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ te"}, CursorX: 4, CursorY: 0, Timestamp: 0.2, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ tes"}, CursorX: 5, CursorY: 0, Timestamp: 0.3, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ test"}, CursorX: 6, CursorY: 0, Timestamp: 0.4, CharWidth: 8.8, CharHeight: 20},
+		}
+		
+		gen := NewSVGGenerator(opts)
+		svg := gen.Generate()
+		
+		// Should contain typing animation CSS
+		assertContains(t, svg, "@keyframes typing_", "SVG should contain typing animation keyframes")
+		assertContains(t, svg, ".typing_", "SVG should contain typing animation class")
+		assertContains(t, svg, "overflow: hidden", "Typing animation should have overflow hidden")
+		assertContains(t, svg, "white-space: nowrap", "Typing animation should have nowrap")
+		assertContains(t, svg, "steps(", "Typing animation should use steps timing")
+	})
+	
+	t.Run("calculates correct animation duration", func(t *testing.T) {
+		opts := createTestSVGConfig()
+		opts.Frames = []SVGFrame{
+			{Lines: []string{"$ "}, CursorX: 2, CursorY: 0, Timestamp: 0.0, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ h"}, CursorX: 3, CursorY: 0, Timestamp: 0.5, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ hi"}, CursorX: 4, CursorY: 0, Timestamp: 1.0, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ hi!"}, CursorX: 5, CursorY: 0, Timestamp: 1.5, CharWidth: 8.8, CharHeight: 20},
+		}
+		
+		gen := NewSVGGenerator(opts)
+		svg := gen.Generate()
+		
+		// Should have animation duration of 1.5s (from timestamp 0.0 to 1.5)
+		assertContains(t, svg, "animation: typing_0 1.5s", "Animation duration should be 1.5s")
+	})
+	
+	t.Run("backspace breaks typing pattern", func(t *testing.T) {
+		opts := createTestSVGConfig()
+		opts.Frames = []SVGFrame{
+			{Lines: []string{"$ "}, CursorX: 2, CursorY: 0, Timestamp: 0.0, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ h"}, CursorX: 3, CursorY: 0, Timestamp: 0.1, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ he"}, CursorX: 4, CursorY: 0, Timestamp: 0.2, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ hel"}, CursorX: 5, CursorY: 0, Timestamp: 0.3, CharWidth: 8.8, CharHeight: 20},
+			// Backspace - text gets shorter
+			{Lines: []string{"$ he"}, CursorX: 4, CursorY: 0, Timestamp: 0.4, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ hel"}, CursorX: 5, CursorY: 0, Timestamp: 0.5, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ help"}, CursorX: 6, CursorY: 0, Timestamp: 0.6, CharWidth: 8.8, CharHeight: 20},
+		}
+		
+		gen := NewSVGGenerator(opts)
+		gen.detectPatterns()
+		
+		// Should detect multiple patterns due to backspace
+		typingPatterns := 0
+		for _, p := range gen.patterns {
+			if p.Type == PatternTyping {
+				typingPatterns++
+			}
+		}
+		
+		// Backspace should break the pattern into multiple segments
+		if typingPatterns < 2 {
+			t.Errorf("Expected at least 2 typing patterns due to backspace, got %d", typingPatterns)
+		}
+		
+		// First pattern should end before the backspace
+		if gen.patterns[0].Type == PatternTyping && gen.patterns[0].EndFrame >= 4 {
+			t.Error("First typing pattern should end before backspace at frame 4")
+		}
+	})
+	
+	t.Run("detects backspace pattern", func(t *testing.T) {
+		opts := createTestSVGConfig()
+		opts.Frames = []SVGFrame{
+			{Lines: []string{"$ hello"}, CursorX: 7, CursorY: 0, Timestamp: 0.0, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ hell"}, CursorX: 6, CursorY: 0, Timestamp: 0.1, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ hel"}, CursorX: 5, CursorY: 0, Timestamp: 0.2, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ he"}, CursorX: 4, CursorY: 0, Timestamp: 0.3, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ h"}, CursorX: 3, CursorY: 0, Timestamp: 0.4, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ "}, CursorX: 2, CursorY: 0, Timestamp: 0.5, CharWidth: 8.8, CharHeight: 20},
+		}
+		
+		gen := NewSVGGenerator(opts)
+		gen.detectPatterns()
+		
+		// Should detect one backspace pattern
+		backspacePatterns := 0
+		for _, p := range gen.patterns {
+			if p.Type == PatternBackspace {
+				backspacePatterns++
+				// Verify the deleted text
+				if p.DeletedText != "hello" {
+					t.Errorf("Expected deleted text 'hello', got '%s'", p.DeletedText)
+				}
+				// Verify deleted count
+				if p.DeletedCount != 5 {
+					t.Errorf("Expected 5 characters deleted, got %d", p.DeletedCount)
+				}
+			}
+		}
+		
+		if backspacePatterns != 1 {
+			t.Errorf("Expected 1 backspace pattern, got %d", backspacePatterns)
+		}
+		
+		// Check CSS generation
+		svg := gen.Generate()
+		assertContains(t, svg, "@keyframes backspace_", "Should generate backspace animation")
+		assertContains(t, svg, ".backspace_", "Should generate backspace class")
+		assertContains(t, svg, "from { width:", "Backspace should animate width")
+		assertContains(t, svg, "to { width: 0", "Backspace should animate to zero width")
+	})
+	
+	t.Run("handles deletion mid-word", func(t *testing.T) {
+		opts := createTestSVGConfig()
+		opts.Frames = []SVGFrame{
+			{Lines: []string{"$ "}, CursorX: 2, CursorY: 0, Timestamp: 0.0, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ h"}, CursorX: 3, CursorY: 0, Timestamp: 0.1, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ he"}, CursorX: 4, CursorY: 0, Timestamp: 0.2, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ hel"}, CursorX: 5, CursorY: 0, Timestamp: 0.3, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ hell"}, CursorX: 6, CursorY: 0, Timestamp: 0.4, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ hello"}, CursorX: 7, CursorY: 0, Timestamp: 0.5, CharWidth: 8.8, CharHeight: 20},
+			// Delete characters mid-word
+			{Lines: []string{"$ heo"}, CursorX: 5, CursorY: 0, Timestamp: 0.6, CharWidth: 8.8, CharHeight: 20},
+			// Continue typing
+			{Lines: []string{"$ heol"}, CursorX: 6, CursorY: 0, Timestamp: 0.7, CharWidth: 8.8, CharHeight: 20},
+			{Lines: []string{"$ heolp"}, CursorX: 7, CursorY: 0, Timestamp: 0.8, CharWidth: 8.8, CharHeight: 20},
+		}
+		
+		gen := NewSVGGenerator(opts)
+		gen.detectPatterns()
+		
+		// Deletion should create separate patterns
+		typingCount := 0
+		for _, p := range gen.patterns {
+			if p.Type == PatternTyping {
+				typingCount++
+			}
+		}
+		
+		if typingCount < 2 {
+			t.Errorf("Expected at least 2 typing patterns due to deletion, got %d", typingCount)
+		}
+	})
+}
