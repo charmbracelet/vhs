@@ -64,9 +64,9 @@ func (v *VHS) SaveOutput() error {
 	return nil
 }
 
-// Buffer returns the current buffer.
+// Buffer returns the visible lines from the terminal's viewport.
 func (v *VHS) Buffer() ([]string, error) {
-	// Get the current buffer.
+	// Capture the visible lines from the terminal.
 	buf, err := v.Page.Eval("() => Array.from({ length: term.rows }, (_, i) => term.buffer.active.getLine(i + term.buffer.active.viewportY).translateToString().trimEnd())")
 	if err != nil {
 		return nil, fmt.Errorf("read buffer: %w", err)
