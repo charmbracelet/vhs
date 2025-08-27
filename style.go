@@ -40,7 +40,7 @@ const (
 // Styles for syntax highlightin.
 var (
 	CommandStyle    = lipgloss.NewStyle().Foreground(lipgloss.Color("12"))
-	FaintStyle      = lipgloss.NewStyle().Foreground(lipgloss.AdaptiveColor{Light: "242", Dark: "238"})
+	FaintStyle      = lipgloss.NewStyle().Faint(true)
 	NoneStyle       = lipgloss.NewStyle()
 	KeywordStyle    = lipgloss.NewStyle()
 	URLStyle        = lipgloss.NewStyle().Foreground(lipgloss.Color("3"))
