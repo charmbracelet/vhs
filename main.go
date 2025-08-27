@@ -63,7 +63,11 @@ var (
 			// Set the input to the file contents if a file is given
 			// otherwise, use stdin
 			if len(args) > 0 && args[0] != "-" {
-				in, err = os.Open(args[0])
+				filename := args[0]
+				if !strings.HasSuffix(filename, extension) {
+					filename = filename + extension
+				}
+				in, err = os.Open(filename)
 				if err != nil {
 					return err
 				}
