@@ -81,6 +81,56 @@ func (v *VHS) Buffer() ([]string, error) {
 	return lines, nil
 }
 
+// AnsiBuffer returns the current buffer with ANSI escape codes preserved.
+func (v *VHS) AnsiBuffer() ([]string, error) {
+	// Get the current buffer with ANSI codes preserved using a different approach
+	// Since translateToString(true) might not work, we'll get the raw buffer data
+	buf, err := v.Page.Eval(`() => {
+		const lines = [];
+		for (let i = 0; i < term.rows; i++) {
+			const line = term.buffer.active.getLine(i);
+			if (line) {
+				// Get the line with formatting preserved
+				let lineStr = '';
+				for (let j = 0; j < line.length; j++) {
+					const cell = line.getCell(j);
+					if (cell) {
+						// Add ANSI codes for foreground color
+						if (cell.getFgColor() !== 0) {
+							lineStr += '\033[38;5;' + cell.getFgColor() + 'm';
+						}
+						// Add ANSI codes for background color  
+						if (cell.getBgColor() !== 0) {
+							lineStr += '\033[48;5;' + cell.getBgColor() + 'm';
+						}
+						// Add the character
+						lineStr += cell.getChars() || ' ';
+						// Reset if we had colors
+						if (cell.getFgColor() !== 0 || cell.getBgColor() !== 0) {
+							lineStr += '\033[0m';
+						}
+					}
+				}
+				lines.push(lineStr.trimEnd());
+			} else {
+				lines.push('');
+			}
+		}
+		return lines;
+	}`)
+	if err != nil {
+		return nil, fmt.Errorf("read ANSI buffer: %w", err)
+	}
+
+	arr := buf.Value.Arr()
+	lines := make([]string, 0, len(arr))
+	for _, line := range arr {
+		lines = append(lines, line.Str())
+	}
+
+	return lines, nil
+}
+
 // CurrentLine returns the current line from the buffer.
 func (v *VHS) CurrentLine() (string, error) {
 	buf, err := v.Page.Eval("() => term.buffer.active.getLine(term.buffer.active.cursorY+term.buffer.active.viewportY).translateToString().trimEnd()")
