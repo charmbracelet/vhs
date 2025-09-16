@@ -12,4 +12,11 @@ Sleep 1 Ctrl+U  Sleep 1
 # Type something really slowly!
 Type@500ms "Slow down there, partner."
 
+Sleep 1 Ctrl+U  Sleep 1
+
+# Type something from an external env var
+Type $SHELL
+
+Sleep 1 Ctrl+U  Sleep 1
+
 Sleep 1
