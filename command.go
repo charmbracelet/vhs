@@ -262,20 +262,45 @@ func ExecuteShift(c parser.Command, v *VHS) error {
 		return fmt.Errorf("failed to press Shift key: %w", err)
 	}
 
+	typedKeyword := false
 	if k, ok := token.Keywords[c.Args]; ok { //nolint:nestif
+		keywordHandled := true
+		var key input.Key
 		switch k {
 		case token.ENTER:
-			err = v.Page.Keyboard.Type(input.Enter)
-			if err != nil {
-				return fmt.Errorf("failed to type Enter key: %w", err)
-			}
+			key = input.Enter
 		case token.TAB:
-			err = v.Page.Keyboard.Type(input.Tab)
-			if err != nil {
-				return fmt.Errorf("failed to type Tab key: %w", err)
-			}
+			key = input.Tab
+		case token.DOWN:
+			key = input.ArrowDown
+		case token.UP:
+			key = input.ArrowUp
+		case token.LEFT:
+			key = input.ArrowLeft
+		case token.RIGHT:
+			key = input.ArrowRight
+		case token.PAGE_DOWN:
+			key = input.PageDown
+		case token.PAGE_UP:
+			key = input.PageUp
+		case token.HOME:
+			key = input.Home
+		case token.END:
+			key = input.End
+		default:
+			keywordHandled = false
 		}
-	} else {
+
+		if keywordHandled {
+			err = v.Page.Keyboard.Type(key)
+			if err != nil {
+				return fmt.Errorf("failed to type key %s: %w", c.Args, err)
+			}
+			typedKeyword = true
+		}
+	}
+
+	if !typedKeyword {
 		for _, r := range c.Args {
 			if k, ok := keymap[r]; ok {
 				err = v.Page.Keyboard.Type(k)
