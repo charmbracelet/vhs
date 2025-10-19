@@ -189,6 +189,14 @@ func ExecuteCtrl(c parser.Command, v *VHS) error {
 			inputKey = &input.Space
 		case "Backspace":
 			inputKey = &input.Backspace
+		case "Left":
+			inputKey = &input.ArrowLeft
+		case "Right":
+			inputKey = &input.ArrowRight
+		case "Up":
+			inputKey = &input.ArrowUp
+		case "Down":
+			inputKey = &input.ArrowDown
 		default:
 			r := rune(key[0])
 			if k, ok := keymap[r]; ok {
