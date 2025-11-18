@@ -85,7 +85,7 @@ func (l *Lexer) NextToken() token.Token {
 		l.readChar()
 	case '/':
 		tok.Type = token.REGEX
-		tok.Literal = l.readString('/')
+		tok.Literal = l.readRegex('/')
 		l.readChar()
 	default:
 		if isDigit(l.ch) || (isDot(l.ch) && isDigit(l.peekChar())) {
@@ -135,6 +135,47 @@ func (l *Lexer) readString(endChar byte) string {
 	for {
 		l.readChar()
 		if l.ch == endChar || l.ch == 0 || isNewLine(l.ch) {
+			break
+		}
+	}
+	return l.input[pos:l.pos]
+}
+
+// readRegex reads a regex pattern from the input, handling escaped delimiters.
+// It counts consecutive backslashes to determine if a delimiter is truly escaped.
+// Examples:
+//   /foo\/bar/ => Token(foo\/bar) - delimiter is escaped
+//   /foo\\/    => Token(foo\\)    - delimiter is NOT escaped (backslash is escaped)
+//   /foo\\\/bar/ => Token(foo\\\/bar) - delimiter is escaped
+func (l *Lexer) readRegex(endChar byte) string {
+	pos := l.pos + 1
+	for {
+		l.readChar()
+		if l.ch == 0 || isNewLine(l.ch) {
+			break
+		}
+
+		if l.ch == '\\' {
+			backslashCount := 0
+
+			for l.ch == '\\' && l.pos < len(l.input) {
+				backslashCount++
+				l.readChar()
+			}
+
+			if l.ch == endChar {
+				if backslashCount%2 == 1 {
+					continue
+				}
+				// Note: Even number of backslashes means the delimiter is NOT escaped
+				// This is the end of the regex
+				break
+			}
+
+			continue
+		}
+
+		if l.ch == endChar {
 			break
 		}
 	}
