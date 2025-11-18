@@ -31,6 +31,7 @@ Sleep 100ms
 Sleep 2
 Wait+Screen@1m /foobar/
 Wait+Screen@1m /foo\/bar/
+Wait+Screen@1m /foo\\/
 Wait+Screen@1m /foo\\\/bar/`
 
 	tests := []struct {
@@ -104,6 +105,13 @@ Wait+Screen@1m /foo\\\/bar/`
 		{token.NUMBER, "1"},
 		{token.MINUTES, "m"},
 		{token.REGEX, "foo\\/bar"},
+		{token.WAIT, "Wait"},
+		{token.PLUS, "+"},
+		{token.STRING, "Screen"},
+		{token.AT, "@"},
+		{token.NUMBER, "1"},
+		{token.MINUTES, "m"},
+		{token.REGEX, "foo\\\\"},
 		{token.WAIT, "Wait"},
 		{token.PLUS, "+"},
 		{token.STRING, "Screen"},
