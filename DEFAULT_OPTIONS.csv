@@ -1,45 +1,45 @@
-Option,Default Value,Type,Source File,Notes
-FontFamily,"JetBrains Mono, DejaVu Sans Mono, Menlo, Bitstream Vera Sans Mono, Inconsolata, Roboto Mono, Hack, Consolas, ui-monospace, monospace, Apple Symbols",string,vhs.go:69-80,Comma-separated font stack with symbol fallback
-FontSize,22,int,vhs.go:58,
-LetterSpacing,1.0,float64,vhs.go:61,
-LineHeight,1.0,float64,vhs.go:60,
-TypingSpeed,50ms,time.Duration,vhs.go:59,
-Shell,bash (Unix) / cmd (Windows),string,tty_unix.go:6 / tty_windows.go:6,Platform-dependent default
-Theme,DefaultTheme (custom VHS theme),Theme,themes.go:68-89,Uses custom colors defined in style.go
-CursorBlink,true,bool,vhs.go:63,
-LoopOffset,0,float64,(implicit zero value),Percentage for GIF loop offset
-WaitTimeout,15s,time.Duration,vhs.go:64,
-WaitPattern,>$,*regexp.Regexp,vhs.go:67,Regex matching prompt ending with >
-Width,1200,int,style.go:37,Video/screenshot width in pixels
-Height,600,int,style.go:32,Video/screenshot height in pixels
-Padding,60,int,style.go:34,Padding around terminal in pixels
-Margin,0,int,style.go:82,Margin around video in pixels
-MarginFill,#171717 (theme background),string,style.go:81,Uses DefaultTheme.Background
-WindowBar,"",string,style.go:83,Empty string means no window bar
-WindowBarSize,30,int,style.go:35,Height of window bar in pixels when enabled
-WindowBarColor,#171717 (theme background),string,style.go:85,Uses DefaultTheme.Background
-BorderRadius,0,int,style.go:86,Corner radius in pixels
-BackgroundColor,#171717 (theme background),string,style.go:87,Uses DefaultTheme.Background
-Framerate,50,int,video.go:62,Frames per second
-PlaybackSpeed,1.0,float64,style.go:36,Video playback speed multiplier
-MaxColors,256,int,style.go:33,Max colors for GIF output
-Theme.Background,#171717,string,style.go:9,
-Theme.Foreground,#dddddd,string,style.go:10,
-Theme.Cursor,#dddddd,string,themes.go:71,Same as Foreground
-Theme.CursorAccent,#171717,string,themes.go:72,Same as Background
-Theme.Black,#282a2e,string,style.go:11,ANSI color 0
-Theme.BrightBlack,#4d4d4d,string,style.go:12,ANSI color 8
-Theme.Red,#D74E6F,string,style.go:13,ANSI color 1
-Theme.BrightRed,#FE5F86,string,style.go:14,ANSI color 9
-Theme.Green,#31BB71,string,style.go:15,ANSI color 2
-Theme.BrightGreen,#00D787,string,style.go:16,ANSI color 10
-Theme.Yellow,#D3E561,string,style.go:17,ANSI color 3
-Theme.BrightYellow,#EBFF71,string,style.go:18,ANSI color 11
-Theme.Blue,#8056FF,string,style.go:19,ANSI color 4
-Theme.BrightBlue,#9B79FF,string,style.go:20,ANSI color 12
-Theme.Magenta,#ED61D7,string,style.go:21,ANSI color 5
-Theme.BrightMagenta,#FF7AEA,string,style.go:22,ANSI color 13
-Theme.Cyan,#04D7D7,string,style.go:23,ANSI color 6
-Theme.BrightCyan,#00FEFE,string,style.go:24,ANSI color 14
-Theme.White,#bfbfbf,string,style.go:25,ANSI color 7
-Theme.BrightWhite,#e6e6e6,string,style.go:26,ANSI color 15
+Option,Default Value,Type,Min,Max,Source File,Notes
+FontFamily,"JetBrains Mono, DejaVu Sans Mono, Menlo, Bitstream Vera Sans Mono, Inconsolata, Roboto Mono, Hack, Consolas, ui-monospace, monospace, Apple Symbols",string,,,vhs.go:69-80,Comma-separated font stack with symbol fallback
+FontSize,22,int,,,vhs.go:58,
+LetterSpacing,1.0,float64,,,vhs.go:61,
+LineHeight,1.0,float64,,,vhs.go:60,
+TypingSpeed,50ms,time.Duration,,,vhs.go:59,
+Shell,bash (Unix) / cmd (Windows),enum,,,tty_unix.go:6 / tty_windows.go:6,"Platform-dependent; valid values: bash, zsh, fish, powershell, pwsh, cmd, nu, osh, xonsh"
+Theme,DefaultTheme (custom VHS theme),Theme,,,themes.go:68-89,Uses custom colors defined in style.go; can be theme name or JSON
+CursorBlink,true,bool,,,vhs.go:63,
+LoopOffset,0,float64,0,100,(implicit zero value),Percentage (0-100%) for GIF loop offset
+WaitTimeout,15s,time.Duration,>0,,(parser validates positive),Must be positive duration
+WaitPattern,>$,*regexp.Regexp,,,vhs.go:67,Regex matching prompt ending with >
+Width,1200,int,,,style.go:37,Video/screenshot width in pixels
+Height,600,int,,,style.go:32,Video/screenshot height in pixels
+Padding,60,int,,,style.go:34,Padding around terminal in pixels
+Margin,0,int,,,style.go:82,Margin around video in pixels
+MarginFill,#171717 (theme background),string,,,style.go:81,"Uses DefaultTheme.Background; hex color (#RRGGBB) or image path"
+WindowBar,"",enum,,,style.go:83,"Empty (disabled), Colorful, ColorfulRight, Rings, or RingsRight"
+WindowBarSize,30,int,,,style.go:35,Height of window bar in pixels when enabled
+WindowBarColor,#171717 (theme background),string,,,style.go:85,Uses DefaultTheme.Background
+BorderRadius,0,int,,,style.go:86,Corner radius in pixels
+BackgroundColor,#171717 (theme background),string,,,style.go:87,Uses DefaultTheme.Background
+Framerate,50,int,,,video.go:62,Frames per second
+PlaybackSpeed,1.0,float64,,,style.go:36,Video playback speed multiplier
+MaxColors,256,int,,,style.go:33,Max colors for GIF output
+Theme.Background,#171717,string (hex),,,style.go:9,
+Theme.Foreground,#dddddd,string (hex),,,style.go:10,
+Theme.Cursor,#dddddd,string (hex),,,themes.go:71,Same as Foreground
+Theme.CursorAccent,#171717,string (hex),,,themes.go:72,Same as Background
+Theme.Black,#282a2e,string (hex),,,style.go:11,ANSI color 0
+Theme.BrightBlack,#4d4d4d,string (hex),,,style.go:12,ANSI color 8
+Theme.Red,#D74E6F,string (hex),,,style.go:13,ANSI color 1
+Theme.BrightRed,#FE5F86,string (hex),,,style.go:14,ANSI color 9
+Theme.Green,#31BB71,string (hex),,,style.go:15,ANSI color 2
+Theme.BrightGreen,#00D787,string (hex),,,style.go:16,ANSI color 10
+Theme.Yellow,#D3E561,string (hex),,,style.go:17,ANSI color 3
+Theme.BrightYellow,#EBFF71,string (hex),,,style.go:18,ANSI color 11
+Theme.Blue,#8056FF,string (hex),,,style.go:19,ANSI color 4
+Theme.BrightBlue,#9B79FF,string (hex),,,style.go:20,ANSI color 12
+Theme.Magenta,#ED61D7,string (hex),,,style.go:21,ANSI color 5
+Theme.BrightMagenta,#FF7AEA,string (hex),,,style.go:22,ANSI color 13
+Theme.Cyan,#04D7D7,string (hex),,,style.go:23,ANSI color 6
+Theme.BrightCyan,#00FEFE,string (hex),,,style.go:24,ANSI color 14
+Theme.White,#bfbfbf,string (hex),,,style.go:25,ANSI color 7
+Theme.BrightWhite,#e6e6e6,string (hex),,,style.go:26,ANSI color 15
