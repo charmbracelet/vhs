@@ -274,6 +274,7 @@ Setting must be administered at the top of the tape file. Any setting (except
 `TypingSpeed`) applied after a non-setting or non-output command will be
 ignored.
 
+> [!Note]
 > Default values for all options can be found in [DEFAULTS.md](./DEFAULTS.md).
 
 #### Set Shell
