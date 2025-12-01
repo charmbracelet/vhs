@@ -13,7 +13,7 @@ require (
 	github.com/charmbracelet/wish v1.4.7
 	github.com/creack/pty v1.1.24
 	github.com/go-rod/rod v0.116.2
-	github.com/hashicorp/go-version v1.7.0
+	github.com/hashicorp/go-version v1.8.0
 	github.com/mattn/go-isatty v0.0.20
 	github.com/mattn/go-runewidth v0.0.19
 	github.com/muesli/go-app-paths v0.2.2
