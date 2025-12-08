@@ -59,6 +59,8 @@ func Highlight(c parser.Command, faint bool) string {
 	case token.TYPE:
 		optionsStyle = TimeStyle
 		argsStyle = StringStyle
+	case token.PLAYBACK:
+		argsStyle = NumberStyle
 	case token.HIDE, token.SHOW:
 		return FaintStyle.Render(c.Type.String())
 	}
