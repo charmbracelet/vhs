@@ -33,7 +33,10 @@ Sleep 100ms
 Sleep 3
 Wait
 Wait+Screen
-Wait@100ms /foobar/`
+Wait@100ms /foobar/
+Playback@2.0
+Playback@0.5
+Playback@1`
 
 	expected := []Command{
 		{Type: token.SET, Options: "TypingSpeed", Args: "100ms"},
@@ -59,6 +62,9 @@ Wait@100ms /foobar/`
 		{Type: token.WAIT, Args: "Line"},
 		{Type: token.WAIT, Args: "Screen"},
 		{Type: token.WAIT, Options: "100ms", Args: "Line foobar"},
+		{Type: token.PLAYBACK, Args: "2.0"},
+		{Type: token.PLAYBACK, Args: "0.5"},
+		{Type: token.PLAYBACK, Args: "1"},
 	}
 
 	l := lexer.New(input)
@@ -425,5 +431,37 @@ func TestParseScreeenshot(t *testing.T) {
 		}
 
 		test.run(t)
+	})
+}
+
+func TestParsePlayback(t *testing.T) {
+	t.Run("valid playback commands", func(t *testing.T) {
+		l := lexer.New("Playback@2.0")
+		p := New(l)
+		cmds := p.Parse()
+		if len(p.errors) > 0 {
+			t.Errorf("expected no errors, got %v", p.errors)
+		}
+		if len(cmds) != 1 || cmds[0].Type != token.PLAYBACK || cmds[0].Args != "2.0" {
+			t.Errorf("expected Playback command with args 2.0, got %v", cmds)
+		}
+	})
+
+	t.Run("missing @ symbol", func(t *testing.T) {
+		l := lexer.New("Playback 2.0")
+		p := New(l)
+		_ = p.Parse()
+		if len(p.errors) == 0 {
+			t.Error("expected error for missing @")
+		}
+	})
+
+	t.Run("zero speed", func(t *testing.T) {
+		l := lexer.New("Playback@0")
+		p := New(l)
+		_ = p.Parse()
+		if len(p.errors) == 0 {
+			t.Error("expected error for zero speed")
+		}
 	})
 }

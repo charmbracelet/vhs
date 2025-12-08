@@ -32,7 +32,10 @@ Sleep 2
 Wait+Screen@1m /foobar/
 Wait+Screen@1m /foo\/bar/
 Wait+Screen@1m /foo\\/
-Wait+Screen@1m /foo\\\/bar/`
+Wait+Screen@1m /foo\\\/bar/
+Playback@2.0
+Playback@0.5
+Playback@1`
 
 	tests := []struct {
 		expectedType    token.Type
@@ -119,6 +122,15 @@ Wait+Screen@1m /foo\\\/bar/`
 		{token.NUMBER, "1"},
 		{token.MINUTES, "m"},
 		{token.REGEX, "foo\\\\\\/bar"},
+		{token.PLAYBACK, "Playback"},
+		{token.AT, "@"},
+		{token.NUMBER, "2.0"},
+		{token.PLAYBACK, "Playback"},
+		{token.AT, "@"},
+		{token.NUMBER, "0.5"},
+		{token.PLAYBACK, "Playback"},
+		{token.AT, "@"},
+		{token.NUMBER, "1"},
 	}
 
 	l := New(input)
