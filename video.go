@@ -47,15 +47,23 @@ type VideoOutputs struct {
 	Frames string
 }
 
+// PlaybackSection represents a contiguous range of frames with a specific
+// playback speed.
+type PlaybackSection struct {
+	StartFrame int
+	Speed      float64
+}
+
 // VideoOptions is the set of options for converting frames to a GIF.
 type VideoOptions struct {
-	Framerate     int
-	PlaybackSpeed float64
-	Input         string
-	MaxColors     int
-	Output        VideoOutputs
-	StartingFrame int
-	Style         *StyleOptions
+	Framerate        int
+	PlaybackSpeed    float64
+	PlaybackSections []PlaybackSection
+	Input            string
+	MaxColors        int
+	Output           VideoOutputs
+	StartingFrame    int
+	Style            *StyleOptions
 }
 
 const (
