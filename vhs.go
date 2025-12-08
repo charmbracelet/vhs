@@ -21,18 +21,20 @@ import (
 
 // VHS is the object that controls the setup.
 type VHS struct {
-	Options      *Options
-	Errors       []error
-	Page         *rod.Page
-	browser      *rod.Browser
-	TextCanvas   *rod.Element
-	CursorCanvas *rod.Element
-	mutex        *sync.Mutex
-	started      bool
-	recording    bool
-	tty          *exec.Cmd
-	totalFrames  int
-	close        func() error
+	Options          *Options
+	Errors           []error
+	Page             *rod.Page
+	browser          *rod.Browser
+	TextCanvas       *rod.Element
+	CursorCanvas     *rod.Element
+	mutex            *sync.Mutex
+	started          bool
+	recording        bool
+	tty              *exec.Cmd
+	totalFrames      int
+	currentFrame     int
+	playbackSections []PlaybackSection
+	close            func() error
 }
 
 // Options is the set of options for the setup.
@@ -226,6 +228,9 @@ func (vhs *VHS) Render() error {
 		return err
 	}
 
+	// Copy playback sections to video options for rendering
+	vhs.FinalizePlaybackSections()
+
 	// Generate the video(s) with the frames.
 	var cmds []*exec.Cmd
 	cmds = append(cmds, MakeGIF(vhs.Options.Video))
@@ -359,6 +364,10 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 				}
 
 				counter++
+				vhs.mutex.Lock()
+				vhs.currentFrame = counter
+				vhs.mutex.Unlock()
+
 				if err := os.WriteFile(
 					filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(cursorFrameFormat, counter)),
 					cursor,
@@ -409,4 +418,23 @@ func (vhs *VHS) ScreenshotNextFrame(path string) {
 	defer vhs.mutex.Unlock()
 
 	vhs.Options.Screenshot.enableFrameCapture(path)
+}
+
+// AddPlaybackSection records a playback section boundary at the current frame.
+func (vhs *VHS) AddPlaybackSection(speed float64) {
+	vhs.mutex.Lock()
+	defer vhs.mutex.Unlock()
+	vhs.playbackSections = append(vhs.playbackSections, PlaybackSection{
+		StartFrame: vhs.currentFrame,
+		Speed:      speed,
+	})
+}
+
+// FinalizePlaybackSections copies playback sections to VideoOptions for rendering.
+func (vhs *VHS) FinalizePlaybackSections() {
+	vhs.mutex.Lock()
+	defer vhs.mutex.Unlock()
+	if len(vhs.playbackSections) > 0 {
+		vhs.Options.Video.PlaybackSections = vhs.playbackSections
+	}
 }

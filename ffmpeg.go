@@ -21,20 +21,35 @@ func NewVideoFilterBuilder(videoOpts *VideoOptions) *FilterComplexBuilder {
 	filterCode := strings.Builder{}
 	termWidth, termHeight := calcTermDimensions(*videoOpts.Style)
 
+	// Base overlay and scale
 	filterCode.WriteString(
 		fmt.Sprintf(`
 		[0][1]overlay[merged];
-		[merged]scale=%d:%d:force_original_aspect_ratio=1[scaled];
-		[scaled]fps=%d,setpts=PTS/%f[speed];
+		[merged]scale=%d:%d:force_original_aspect_ratio=1[scaled]`,
+			termWidth-double(videoOpts.Style.Padding),
+			termHeight-double(videoOpts.Style.Padding),
+		),
+	)
+
+	// Apply speed: either uniform or per-section
+	if len(videoOpts.PlaybackSections) > 0 {
+		buildPlaybackSections(&filterCode, videoOpts)
+	} else {
+		filterCode.WriteString(
+			fmt.Sprintf(`;
+		[scaled]fps=%d,setpts=PTS/%f[speed]`,
+				videoOpts.Framerate,
+				videoOpts.PlaybackSpeed,
+			),
+		)
+	}
+
+	// Padding and borders
+	filterCode.WriteString(
+		fmt.Sprintf(`;
 		[speed]pad=%d:%d:(ow-iw)/2:(oh-ih)/2:%s[padded];
 		[padded]fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s[padded]
 		`,
-			termWidth-double(videoOpts.Style.Padding),
-			termHeight-double(videoOpts.Style.Padding),
-
-			videoOpts.Framerate,
-			videoOpts.PlaybackSpeed,
-
 			termWidth,
 			termHeight,
 			videoOpts.Style.BackgroundColor,
@@ -54,6 +69,48 @@ func NewVideoFilterBuilder(videoOpts *VideoOptions) *FilterComplexBuilder {
 		style:         videoOpts.Style,
 		prevStageName: "padded",
 	}
+}
+
+// buildPlaybackSections generates FFmpeg filter for variable playback speed.
+func buildPlaybackSections(filterCode *strings.Builder, opts *VideoOptions) {
+	sections := opts.PlaybackSections
+	n := len(sections)
+	framerate := opts.Framerate
+
+	// Apply fps first
+	filterCode.WriteString(fmt.Sprintf(`;
+		[scaled]fps=%d[fpsout]`, framerate))
+
+	// Split into n streams
+	filterCode.WriteString(fmt.Sprintf(`;
+		[fpsout]split=%d`, n))
+	for i := 0; i < n; i++ {
+		filterCode.WriteString(fmt.Sprintf("[s%d]", i))
+	}
+
+	// Process each section with trim and speed adjustment
+	for i, section := range sections {
+		startTime := float64(section.StartFrame) / float64(framerate)
+
+		// Calculate end time: next section's start or use a large value for last section
+		var endTime float64
+		if i < n-1 {
+			endTime = float64(sections[i+1].StartFrame) / float64(framerate)
+		} else {
+			// Last section extends to the end (use large value, ffmpeg will handle EOF)
+			endTime = 86400.0 // 24 hours, effectively unlimited
+		}
+
+		filterCode.WriteString(fmt.Sprintf(`;
+		[s%d]trim=start=%f:end=%f,setpts=PTS-STARTPTS,setpts=PTS/%f[v%d]`,
+			i, startTime, endTime, section.Speed, i))
+	}
+
+	// Concat all sections
+	for i := 0; i < n; i++ {
+		filterCode.WriteString(fmt.Sprintf("[v%d]", i))
+	}
+	filterCode.WriteString(fmt.Sprintf("concat=n=%d:v=1:a=0[speed]", n))
 }
 
 // NewScreenshotFilterComplexBuilder returns instance of FilterComplexBuilder with screenshot config.
