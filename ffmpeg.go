@@ -89,24 +89,27 @@ func buildPlaybackSections(filterCode *strings.Builder, opts *VideoOptions) {
 	}
 
 	// Process each section with trim and speed adjustment
+	startingFrame := opts.StartingFrame
 	for i, section := range sections {
-		startTime := float64(section.StartFrame) / float64(framerate)
-
-		// Calculate end time: next section's start or use a large value for last section
-		var endTime float64
+		// Convert frame numbers to time
+		// FFmpeg uses -start_number StartingFrame, so frame StartingFrame is at time 0
+		startTime := float64(section.StartFrame-startingFrame) / float64(framerate)
+		var trimFilter string
 		if i < n-1 {
-			endTime = float64(sections[i+1].StartFrame) / float64(framerate)
+			endTime := float64(sections[i+1].StartFrame-startingFrame) / float64(framerate)
+			trimFilter = fmt.Sprintf("trim=start=%f:end=%f", startTime, endTime)
 		} else {
-			// Last section extends to the end (use large value, ffmpeg will handle EOF)
-			endTime = 86400.0 // 24 hours, effectively unlimited
+			trimFilter = fmt.Sprintf("trim=start=%f", startTime)
 		}
 
 		filterCode.WriteString(fmt.Sprintf(`;
-		[s%d]trim=start=%f:end=%f,setpts=PTS-STARTPTS,setpts=PTS/%f[v%d]`,
-			i, startTime, endTime, section.Speed, i))
+		[s%d]%s,setpts=PTS-STARTPTS,setpts=PTS/%f[v%d]`,
+			i, trimFilter, section.Speed, i))
 	}
 
 	// Concat all sections
+	filterCode.WriteString(`;
+		`)
 	for i := 0; i < n; i++ {
 		filterCode.WriteString(fmt.Sprintf("[v%d]", i))
 	}

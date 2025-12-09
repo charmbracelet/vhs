@@ -431,10 +431,23 @@ func (vhs *VHS) AddPlaybackSection(speed float64) {
 }
 
 // FinalizePlaybackSections copies playback sections to VideoOptions for rendering.
+// It prepends an initial section from the start to the first playback command.
 func (vhs *VHS) FinalizePlaybackSections() {
 	vhs.mutex.Lock()
 	defer vhs.mutex.Unlock()
-	if len(vhs.playbackSections) > 0 {
-		vhs.Options.Video.PlaybackSections = vhs.playbackSections
+	if len(vhs.playbackSections) == 0 {
+		return
 	}
+
+	// Prepend initial section from start to first playback command
+	finalSections := make([]PlaybackSection, 0, len(vhs.playbackSections)+1)
+	if vhs.playbackSections[0].StartFrame > vhs.Options.Video.StartingFrame {
+		// Add initial section with default speed
+		finalSections = append(finalSections, PlaybackSection{
+			StartFrame: vhs.Options.Video.StartingFrame,
+			Speed:      vhs.Options.Video.PlaybackSpeed,
+		})
+	}
+	finalSections = append(finalSections, vhs.playbackSections...)
+	vhs.Options.Video.PlaybackSections = finalSections
 }
