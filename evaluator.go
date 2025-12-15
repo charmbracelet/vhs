@@ -30,7 +30,7 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 
 	v := New()
 	for _, cmd := range cmds {
-		if cmd.Type == token.SET && cmd.Options == "Shell" || cmd.Type == token.ENV {
+		if cmd.Type == token.SET && (cmd.Options == "Shell" || cmd.Options == "PromptColor") || cmd.Type == token.ENV {
 			err := Execute(cmd, &v)
 			if err != nil {
 				return []error{err}
@@ -56,7 +56,7 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	for i, cmd := range cmds {
 		if cmd.Type == token.SET || cmd.Type == token.OUTPUT || cmd.Type == token.REQUIRE {
 			_, _ = fmt.Fprintln(out, Highlight(cmd, false))
-			if cmd.Options != "Shell" {
+			if cmd.Options != "Shell" && cmd.Options != "PromptColor" {
 				err := Execute(cmd, &v)
 				if err != nil {
 					return []error{err}
