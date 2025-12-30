@@ -115,7 +115,7 @@ func (fb *FilterComplexBuilder) WithWindowBar(barStream int) *FilterComplexBuild
 		_, _ = fmt.Fprintf(
 			fb.filterComplex,
 			`
-			[%d]loop=-1[loopbar];
+			[%d]loop=-1:1:0[loopbar];
 			[loopbar][%s]overlay=0:%d[withbar]
 			`,
 			barStream,
@@ -136,7 +136,7 @@ func (fb *FilterComplexBuilder) WithBorderRadius(cornerMarkStream int) *FilterCo
 		_, _ = fmt.Fprintf(
 			fb.filterComplex,
 			`
-			[%d]loop=-1[loopmask];
+			[%d]loop=-1:1:0[loopmask];
 			[%s][loopmask]alphamerge[rounded]
 			`,
 			cornerMarkStream,
