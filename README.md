@@ -226,7 +226,7 @@ There are a few basic types of VHS commands:
 - [`Set <Setting> Value`](#settings): set recording settings
 - [`Type "<characters>"`](#type): emulate typing
 - [`Left`](#arrow-keys) [`Right`](#arrow-keys) [`Up`](#arrow-keys) [`Down`](#arrow-keys): arrow keys
-- [`Backspace`](#backspace) [`Enter`](#enter) [`Tab`](#tab) [`Space`](#space): special keys
+- [`Escape`](#escape) [`Backspace`](#backspace) [`Enter`](#enter) [`Tab`](#tab) [`Space`](#space): special keys
 - [`Ctrl[+Alt][+Shift]+<char>`](#ctrl): press control + key and/or modifier
 - [`Sleep <time>`](#sleep): wait for a certain amount of time
 - [`Wait[+Screen][+Line] /regex/`](#wait): wait for specific conditions
@@ -565,6 +565,16 @@ the key press every interval of `<time>`.
 ```
 Key[@<time>] [count]
 ```
+
+#### Escape
+
+Press the escape key with the `Escape` command.
+
+```elixir
+Escape
+```
+
+todo: Add a .gif example of pressing escape
 
 #### Backspace
 
