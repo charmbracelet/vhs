@@ -21,18 +21,19 @@ import (
 
 // VHS is the object that controls the setup.
 type VHS struct {
-	Options      *Options
-	Errors       []error
-	Page         *rod.Page
-	browser      *rod.Browser
-	TextCanvas   *rod.Element
-	CursorCanvas *rod.Element
-	mutex        *sync.Mutex
-	started      bool
-	recording    bool
-	tty          *exec.Cmd
-	totalFrames  int
-	close        func() error
+	Options           *Options
+	Errors            []error
+	Page              *rod.Page
+	browser           *rod.Browser
+	TextCanvas        *rod.Element
+	CursorCanvas      *rod.Element
+	mutex             *sync.Mutex
+	started           bool
+	recording         bool
+	tty               *exec.Cmd
+	totalFrames       int
+	close             func() error
+	AsciinemaRecorder *AsciinemaRecorder
 }
 
 // Options is the set of options for the setup.
@@ -188,6 +189,26 @@ func (vhs *VHS) Setup() {
 
 	_ = os.RemoveAll(vhs.Options.Video.Input)
 	_ = os.MkdirAll(vhs.Options.Video.Input, 0o750)
+
+	// Initialize asciinema recorder if output is set
+	if vhs.Options.Video.Output.Asciinema != "" {
+		// Get terminal dimensions from xterm.js
+		cols, _ := vhs.Page.Eval("() => term.cols")
+		rows, _ := vhs.Page.Eval("() => term.rows")
+		colsInt := 80
+		rowsInt := 24
+		if cols.Value.Int() > 0 {
+			colsInt = cols.Value.Int()
+		}
+		if rows.Value.Int() > 0 {
+			rowsInt = rows.Value.Int()
+		}
+		vhs.AsciinemaRecorder = NewAsciinemaRecorder(
+			vhs.Options.Video.Output.Asciinema,
+			colsInt,
+			rowsInt,
+		)
+	}
 }
 
 const cleanupWaitTime = 100 * time.Millisecond
@@ -221,6 +242,15 @@ func (vhs *VHS) Cleanup() error {
 
 // Render starts rendering the individual frames into a video.
 func (vhs *VHS) Render() error {
+	// Save asciinema recording if active
+	if vhs.AsciinemaRecorder != nil {
+		fmt.Println("Creating asciinema recording...")
+		if err := vhs.AsciinemaRecorder.Save(); err != nil {
+			return fmt.Errorf("failed to save asciinema recording: %w", err)
+		}
+		fmt.Printf("Saved asciinema recording with %d events\n", vhs.AsciinemaRecorder.EventCount())
+	}
+
 	// Apply Loop Offset by modifying frame sequence
 	if err := vhs.ApplyLoopOffset(); err != nil {
 		return err
@@ -351,6 +381,11 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 					continue
 				}
 
+				// Capture asciinema frame if recorder is active
+				if vhs.AsciinemaRecorder != nil {
+					vhs.captureAsciinemaFrame()
+				}
+
 				cursor, cursorErr := vhs.CursorCanvas.CanvasToImage("image/png", quality)
 				text, textErr := vhs.TextCanvas.CanvasToImage("image/png", quality)
 				if textErr != nil || cursorErr != nil {
@@ -385,6 +420,26 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 	}()
 
 	return ch
+}
+
+// captureAsciinemaFrame captures the current terminal state for asciinema.
+func (vhs *VHS) captureAsciinemaFrame() {
+	if vhs.AsciinemaRecorder == nil {
+		return
+	}
+
+	// Get the current buffer content from xterm.js
+	buf, err := vhs.Page.Eval("() => Array(term.rows).fill(0).map((e, i) => term.buffer.active.getLine(i).translateToString().trimEnd())")
+	if err != nil {
+		return
+	}
+
+	lines := make([]string, 0)
+	for _, line := range buf.Value.Arr() {
+		lines = append(lines, line.Str())
+	}
+
+	vhs.AsciinemaRecorder.CaptureFrame(lines)
 }
 
 // ResumeRecording indicates to VHS that the recording should be resumed.
