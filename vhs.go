@@ -12,6 +12,7 @@ import (
 	"regexp"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/go-rod/rod"
@@ -32,7 +33,10 @@ type VHS struct {
 	recording    bool
 	tty          *exec.Cmd
 	totalFrames  int
+	currentFrame int64
 	close        func() error
+	KeyLogger    *KeyLogger
+	KeyLogFile   string
 }
 
 // Options is the set of options for the setup.
@@ -118,6 +122,7 @@ func New() VHS {
 		Options:   &opts,
 		recording: true,
 		mutex:     mu,
+		KeyLogger: NewKeyLogger(),
 	}
 }
 
@@ -359,6 +364,7 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 				}
 
 				counter++
+				atomic.StoreInt64(&vhs.currentFrame, int64(counter))
 				if err := os.WriteFile(
 					filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(cursorFrameFormat, counter)),
 					cursor,
@@ -393,6 +399,7 @@ func (vhs *VHS) ResumeRecording() {
 	defer vhs.mutex.Unlock()
 
 	vhs.recording = true
+	vhs.KeyLogger.Resume()
 }
 
 // PauseRecording indicates to VHS that the recording should be paused.
@@ -401,6 +408,7 @@ func (vhs *VHS) PauseRecording() {
 	defer vhs.mutex.Unlock()
 
 	vhs.recording = false
+	vhs.KeyLogger.Pause()
 }
 
 // ScreenshotNextFrame indicates to VHS that screenshot of next frame must be taken.

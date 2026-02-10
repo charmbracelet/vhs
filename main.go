@@ -36,6 +36,7 @@ var (
 	ttydMinVersion = version.Must(version.NewVersion("1.7.2"))
 
 	publishFlag bool
+	keyLogFile  string
 	outputs     *[]string
 
 	quietFlag bool
@@ -91,6 +92,9 @@ var (
 				out = io.Discard
 			}
 			errs := Evaluate(cmd.Context(), string(input), out, func(v *VHS) {
+				// Save keylog file specified on command line
+				v.KeyLogFile = keyLogFile
+
 				// Output is being overridden, prevent all outputs
 				if len(*outputs) <= 0 {
 					publishFile = v.Options.Video.Output.GIF
@@ -255,6 +259,7 @@ func main() {
 
 func init() {
 	rootCmd.Flags().BoolVarP(&publishFlag, "publish", "p", false, "publish your GIF to vhs.charm.sh and get a shareable URL")
+	rootCmd.Flags().StringVarP(&keyLogFile, "keylog", "k", "", "file name to log key events as JSON")
 	rootCmd.PersistentFlags().BoolVarP(&quietFlag, "quiet", "q", false, "quiet do not log messages. If publish flag is provided, it will log shareable URL")
 
 	outputs = rootCmd.Flags().StringSliceP("output", "o", []string{}, "file name(s) of video output")
