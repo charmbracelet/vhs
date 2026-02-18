@@ -306,10 +306,6 @@ func getVersion(program string) *version.Version {
 // ensureDependencies ensures that all dependencies are correctly installed
 // and versioned before continuing.
 func ensureDependencies() error {
-	_, ffmpegErr := exec.LookPath("ffmpeg")
-	if ffmpegErr != nil {
-		return fmt.Errorf("ffmpeg is not installed. Install it from: http://ffmpeg.org")
-	}
 	_, ttydErr := exec.LookPath("ttyd")
 	if ttydErr != nil {
 		return fmt.Errorf("ttyd is not installed. Install it from: https://github.com/tsl0922/ttyd")

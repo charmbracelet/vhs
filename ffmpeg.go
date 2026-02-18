@@ -3,8 +3,15 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
+	"sync"
+)
+
+var (
+	haveFFMpegErr  error
+	haveFFMpegOnce sync.Once
 )
 
 // FilterComplexBuilder generates -filter_complex option of ffmepg.
@@ -14,6 +21,16 @@ type FilterComplexBuilder struct {
 	termWidth     int
 	termHeight    int
 	prevStageName string
+}
+
+func checkFFMpegDependency() error {
+	haveFFMpegOnce.Do(func() {
+		_, ffmpegErr := exec.LookPath("ffmpeg")
+		if ffmpegErr != nil {
+			haveFFMpegErr = fmt.Errorf("ffmpeg is not installed. Install it from: http://ffmpeg.org")
+		}
+	})
+	return haveFFMpegErr
 }
 
 // NewVideoFilterBuilder returns instance of FilterComplexBuilder with video config.
