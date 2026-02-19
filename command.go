@@ -144,9 +144,9 @@ func ExecuteWait(c parser.Command, v *VHS) error {
 				return nil
 			}
 		case "Screen":
-			lines, err := v.Buffer()
+			lines, err := v.VisibleLines()
 			if err != nil {
-				return fmt.Errorf("failed to get buffer: %w", err)
+				return fmt.Errorf("failed to get visible lines: %w", err)
 			}
 			last = strings.Join(lines, "\n")
 
