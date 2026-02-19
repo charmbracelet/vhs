@@ -434,8 +434,9 @@ func (vhs *VHS) captureAsciinemaFrame() {
 		return
 	}
 
-	lines := make([]string, 0)
-	for _, line := range buf.Value.Arr() {
+	arr := buf.Value.Arr()
+	lines := make([]string, 0, len(arr))
+	for _, line := range arr {
 		lines = append(lines, line.Str())
 	}
 

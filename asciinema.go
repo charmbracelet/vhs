@@ -30,7 +30,7 @@ type AsciinemaEvent struct {
 
 // MarshalJSON implements custom JSON marshaling for AsciinemaEvent.
 func (e AsciinemaEvent) MarshalJSON() ([]byte, error) {
-	return json.Marshal([]interface{}{e.Time, e.Type, e.Data})
+	return json.Marshal([]interface{}{e.Time, e.Type, e.Data}) //nolint:wrapcheck
 }
 
 // AsciinemaRecorder captures terminal output for asciinema format.
@@ -116,7 +116,7 @@ func (r *AsciinemaRecorder) Save() error {
 
 	// Ensure directory exists
 	if dir := filepath.Dir(r.output); dir != "." {
-		if err := os.MkdirAll(dir, os.ModePerm); err != nil {
+		if err := os.MkdirAll(dir, 0o750); err != nil {
 			return fmt.Errorf("failed to create output directory: %w", err)
 		}
 	}
@@ -125,7 +125,7 @@ func (r *AsciinemaRecorder) Save() error {
 	if err != nil {
 		return fmt.Errorf("failed to create asciinema file: %w", err)
 	}
-	defer file.Close()
+	defer file.Close() //nolint:errcheck
 
 	// Write header
 	header := AsciinemaHeader{
@@ -144,7 +144,7 @@ func (r *AsciinemaRecorder) Save() error {
 	if err != nil {
 		return fmt.Errorf("failed to marshal header: %w", err)
 	}
-	fmt.Fprintln(file, string(headerJSON))
+	_, _ = fmt.Fprintln(file, string(headerJSON))
 
 	// Write events
 	for _, event := range r.events {
@@ -152,7 +152,7 @@ func (r *AsciinemaRecorder) Save() error {
 		if err != nil {
 			continue
 		}
-		fmt.Fprintln(file, string(eventJSON))
+		_, _ = fmt.Fprintln(file, string(eventJSON))
 	}
 
 	return nil
