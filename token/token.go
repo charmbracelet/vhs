@@ -49,6 +49,18 @@ const (
 	END       = "END"
 	ENTER     = "ENTER"
 	ESCAPE    = "ESCAPE"
+	F1        = "F1"
+	F2        = "F2"
+	F3        = "F3"
+	F4        = "F4"
+	F5        = "F5"
+	F6        = "F6"
+	F7        = "F7"
+	F8        = "F8"
+	F9        = "F9"
+	F10       = "F10"
+	F11       = "F11"
+	F12       = "F12"
 	HOME      = "HOME"
 	INSERT    = "INSERT"
 	PAGE_DOWN = "PAGE_DOWN" //nolint:revive
@@ -129,6 +141,18 @@ var Keywords = map[string]Type{
 	"Up":            UP,
 	"PageUp":        PAGE_UP,
 	"PageDown":      PAGE_DOWN,
+	"F1":            F1,
+	"F2":            F2,
+	"F3":            F3,
+	"F4":            F4,
+	"F5":            F5,
+	"F6":            F6,
+	"F7":            F7,
+	"F8":            F8,
+	"F9":            F9,
+	"F10":           F10,
+	"F11":           F11,
+	"F12":           F12,
 	"Tab":           TAB,
 	"Escape":        ESCAPE,
 	"End":           END,
@@ -185,6 +209,7 @@ func IsCommand(t Type) bool {
 	switch t {
 	case TYPE, SLEEP,
 		UP, DOWN, RIGHT, LEFT, PAGE_UP, PAGE_DOWN,
+		F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12,
 		ENTER, BACKSPACE, DELETE, TAB,
 		ESCAPE, HOME, INSERT, END, CTRL, SOURCE, SCREENSHOT, COPY, PASTE, WAIT:
 		return true
