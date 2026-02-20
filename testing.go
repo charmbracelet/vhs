@@ -81,6 +81,15 @@ func (v *VHS) Buffer() ([]string, error) {
 	return lines, nil
 }
 
+// PromptCount returns the number of prompt markers detected so far.
+func (v *VHS) PromptCount() (int, error) {
+	buf, err := v.Page.Eval("() => window.__vhs_prompt_count || 0")
+	if err != nil {
+		return 0, fmt.Errorf("read prompt count: %w", err)
+	}
+	return buf.Value.Int(), nil
+}
+
 // CurrentLine returns the current line from the buffer.
 func (v *VHS) CurrentLine() (string, error) {
 	buf, err := v.Page.Eval("() => term.buffer.active.getLine(term.buffer.active.cursorY+term.buffer.active.viewportY).translateToString().trimEnd()")
