@@ -186,6 +186,21 @@ func (vhs *VHS) Setup() {
 	// Fit the terminal into the window
 	vhs.Page.MustEval("term.fit")
 
+	// Install a write hook to track prompt markers for the AwaitPrompt command.
+	vhs.Page.MustEval(`() => {
+		window.__vhs_prompt_count = 0;
+		var ow = term.write.bind(term);
+		term.write = function(d, c) {
+			var t = typeof d === 'string' ? d : new TextDecoder().decode(d);
+			var idx = t.indexOf('\x1b]7777;');
+			while (idx !== -1) {
+				window.__vhs_prompt_count++;
+				idx = t.indexOf('\x1b]7777;', idx + 1);
+			}
+			return ow(d, c);
+		};
+	}`)
+
 	_ = os.RemoveAll(vhs.Options.Video.Input)
 	_ = os.MkdirAll(vhs.Options.Video.Input, 0o750)
 }
