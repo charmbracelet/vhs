@@ -21,13 +21,16 @@ const (
 // DefaultPromptColor is the default color for the shell prompt.
 const DefaultPromptColor = "#5B56E0"
 
+// DefaultPrompt is the default prompt symbol.
+const DefaultPrompt = ">"
+
 // Shell is a type that contains a prompt and the command to set up the shell.
 type Shell struct {
 	Name string
 }
 
-// ShellConfig returns the shell configuration with the given prompt color.
-func ShellConfig(name, promptColor string) (env []string, command []string) {
+// ShellConfig returns the shell configuration with the given prompt and color.
+func ShellConfig(name, promptColor, prompt string) (env []string, command []string) {
 	// Parse hex color to RGB components
 	r, g, b := hexToRGB(promptColor)
 	hexNoHash := strings.TrimPrefix(promptColor, "#")
@@ -35,12 +38,12 @@ func ShellConfig(name, promptColor string) (env []string, command []string) {
 	switch name {
 	case bash:
 		return []string{
-				fmt.Sprintf("PS1=\\[\\e[38;2;%d;%d;%dm\\]> \\[\\e[0m\\]", r, g, b),
+				fmt.Sprintf("PS1=\\[\\e[38;2;%d;%d;%dm\\]%s \\[\\e[0m\\]", r, g, b, prompt),
 				"BASH_SILENCE_DEPRECATION_WARNING=1",
 			},
 			[]string{"bash", "--noprofile", "--norc", "--login", "+o", "history"}
 	case zsh:
-		return []string{fmt.Sprintf(`PROMPT=%%F{#%s}> %%F{reset_color}`, hexNoHash)},
+		return []string{fmt.Sprintf(`PROMPT=%%F{#%s}%s %%F{reset_color}`, hexNoHash, prompt)},
 			[]string{"zsh", "--histnostore", "--no-rcs"}
 	case fish:
 		return nil, []string{
@@ -49,7 +52,7 @@ func ShellConfig(name, promptColor string) (env []string, command []string) {
 			"--no-config",
 			"--private",
 			"-C", "function fish_greeting; end",
-			"-C", fmt.Sprintf(`function fish_prompt; set_color %s; echo -n "> "; set_color normal; end`, hexNoHash),
+			"-C", fmt.Sprintf(`function fish_prompt; set_color %s; echo -n "%s "; set_color normal; end`, hexNoHash, prompt),
 		}
 	case powershell:
 		return nil, []string{
@@ -58,7 +61,7 @@ func ShellConfig(name, promptColor string) (env []string, command []string) {
 			"-NoExit",
 			"-NoProfile",
 			"-Command",
-			fmt.Sprintf(`Set-PSReadLineOption -HistorySaveStyle SaveNothing; function prompt { Write-Host '>' -NoNewLine -ForegroundColor ([System.Drawing.Color]::FromArgb(%d,%d,%d)); return ' ' }`, r, g, b),
+			fmt.Sprintf(`Set-PSReadLineOption -HistorySaveStyle SaveNothing; function prompt { Write-Host '%s' -NoNewLine -ForegroundColor ([System.Drawing.Color]::FromArgb(%d,%d,%d)); return ' ' }`, prompt, r, g, b),
 		}
 	case pwsh:
 		return nil, []string{
@@ -68,17 +71,17 @@ func ShellConfig(name, promptColor string) (env []string, command []string) {
 			"-NoExit",
 			"-NoProfile",
 			"-Command",
-			fmt.Sprintf(`Set-PSReadLineOption -HistorySaveStyle SaveNothing; Function prompt { Write-Host -ForegroundColor ([System.Drawing.Color]::FromArgb(%d,%d,%d)) -NoNewLine '>'; return ' ' }`, r, g, b),
+			fmt.Sprintf(`Set-PSReadLineOption -HistorySaveStyle SaveNothing; Function prompt { Write-Host -ForegroundColor ([System.Drawing.Color]::FromArgb(%d,%d,%d)) -NoNewLine '%s'; return ' ' }`, r, g, b, prompt),
 		}
 	case cmdexe:
-		return nil, []string{"cmd.exe", "/k", "prompt=^> "}
+		return nil, []string{"cmd.exe", "/k", fmt.Sprintf("prompt=%s ", prompt)}
 	case nushell:
-		return nil, []string{"nu", "--execute", fmt.Sprintf("$env.PROMPT_COMMAND = {'\033[;38;2;%d;%d;%dm>\033[m '}; $env.PROMPT_COMMAND_RIGHT = {''}", r, g, b)}
+		return nil, []string{"nu", "--execute", fmt.Sprintf("$env.PROMPT_COMMAND = {'\033[;38;2;%d;%d;%dm%s\033[m '}; $env.PROMPT_COMMAND_RIGHT = {''}", r, g, b, prompt)}
 	case osh:
-		return []string{fmt.Sprintf("PS1=\\[\\e[38;2;%d;%d;%dm\\]> \\[\\e[0m\\]", r, g, b)},
+		return []string{fmt.Sprintf("PS1=\\[\\e[38;2;%d;%d;%dm\\]%s \\[\\e[0m\\]", r, g, b, prompt)},
 			[]string{"osh", "--norc"}
 	case xonsh:
-		return nil, []string{"xonsh", "--no-rc", "-D", fmt.Sprintf("PROMPT=\033[;38;2;%d;%d;%dm>\033[m ", r, g, b)}
+		return nil, []string{"xonsh", "--no-rc", "-D", fmt.Sprintf("PROMPT=\033[;38;2;%d;%d;%dm%s\033[m ", r, g, b, prompt)}
 	default:
 		return nil, nil
 	}

@@ -24,7 +24,7 @@ func randomPort() int {
 }
 
 // buildTtyCmd builds the ttyd exec.Command on the given port.
-func buildTtyCmd(port int, shell Shell, promptColor string) *exec.Cmd {
+func buildTtyCmd(port int, shell Shell, promptColor, prompt string) *exec.Cmd {
 	args := []string{
 		fmt.Sprintf("--port=%d", port),
 		"--interface", "127.0.0.1",
@@ -36,7 +36,7 @@ func buildTtyCmd(port int, shell Shell, promptColor string) *exec.Cmd {
 		"--writable",
 	}
 
-	env, command := ShellConfig(shell.Name, promptColor)
+	env, command := ShellConfig(shell.Name, promptColor, prompt)
 	args = append(args, command...)
 
 	cmd := exec.Command("ttyd", args...)
