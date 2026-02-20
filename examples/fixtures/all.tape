@@ -57,6 +57,10 @@ PageDown
 PageDown 2
 PageDown@1 3
 
+ScrollDown
+ScrollDown 2
+ScrollDown@1 3
+
 Enter
 Enter 2
 Enter@1 3
@@ -84,6 +88,10 @@ Up@1 3
 PageUp
 PageUp 2
 PageUp@1 3
+
+ScrollUp
+ScrollUp 2
+ScrollUp@1 3
 
 Down
 Down 2
