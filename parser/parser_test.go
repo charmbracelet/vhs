@@ -33,7 +33,9 @@ Sleep 100ms
 Sleep 3
 Wait
 Wait+Screen
-Wait@100ms /foobar/`
+Wait@100ms /foobar/
+AwaitPrompt
+AwaitPrompt@30s`
 
 	expected := []Command{
 		{Type: token.SET, Options: "TypingSpeed", Args: "100ms"},
@@ -59,6 +61,8 @@ Wait@100ms /foobar/`
 		{Type: token.WAIT, Args: "Line"},
 		{Type: token.WAIT, Args: "Screen"},
 		{Type: token.WAIT, Options: "100ms", Args: "Line foobar"},
+		{Type: token.AWAIT_PROMPT},
+		{Type: token.AWAIT_PROMPT, Options: "30s"},
 	}
 
 	l := lexer.New(input)
@@ -81,6 +85,62 @@ Wait@100ms /foobar/`
 			t.Errorf("Expected command %d to have options %s, got %s", i, expected[i].Options, cmd.Options)
 		}
 	}
+}
+
+func TestParseAwaitPrompt(t *testing.T) {
+	t.Run("bare AwaitPrompt", func(t *testing.T) {
+		l := lexer.New("AwaitPrompt")
+		p := New(l)
+		cmds := p.Parse()
+		if len(cmds) != 1 {
+			t.Fatalf("Expected 1 command, got %d", len(cmds))
+		}
+		if cmds[0].Type != token.AWAIT_PROMPT {
+			t.Errorf("Expected AWAIT_PROMPT, got %s", cmds[0].Type)
+		}
+		if cmds[0].Options != "" {
+			t.Errorf("Expected empty options, got %s", cmds[0].Options)
+		}
+	})
+
+	t.Run("AwaitPrompt with timeout", func(t *testing.T) {
+		l := lexer.New("AwaitPrompt@30s")
+		p := New(l)
+		cmds := p.Parse()
+		if len(cmds) != 1 {
+			t.Fatalf("Expected 1 command, got %d", len(cmds))
+		}
+		if cmds[0].Type != token.AWAIT_PROMPT {
+			t.Errorf("Expected AWAIT_PROMPT, got %s", cmds[0].Type)
+		}
+		if cmds[0].Options != "30s" {
+			t.Errorf("Expected options '30s', got %s", cmds[0].Options)
+		}
+	})
+
+	t.Run("AwaitPrompt with millisecond timeout", func(t *testing.T) {
+		l := lexer.New("AwaitPrompt@500ms")
+		p := New(l)
+		cmds := p.Parse()
+		if len(cmds) != 1 {
+			t.Fatalf("Expected 1 command, got %d", len(cmds))
+		}
+		if cmds[0].Options != "500ms" {
+			t.Errorf("Expected options '500ms', got %s", cmds[0].Options)
+		}
+	})
+
+	t.Run("AwaitPrompt with minute timeout", func(t *testing.T) {
+		l := lexer.New("AwaitPrompt@2m")
+		p := New(l)
+		cmds := p.Parse()
+		if len(cmds) != 1 {
+			t.Fatalf("Expected 1 command, got %d", len(cmds))
+		}
+		if cmds[0].Options != "2m" {
+			t.Errorf("Expected options '2m', got %s", cmds[0].Options)
+		}
+	})
 }
 
 func TestParserErrors(t *testing.T) {

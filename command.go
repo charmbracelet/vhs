@@ -67,7 +67,8 @@ var CommandFuncs = map[parser.CommandType]CommandFunc{
 	token.COPY:       ExecuteCopy,
 	token.PASTE:      ExecutePaste,
 	token.ENV:        ExecuteEnv,
-	token.WAIT:       ExecuteWait,
+	token.AWAIT_PROMPT: ExecuteAwaitPrompt,
+	token.WAIT:         ExecuteWait,
 }
 
 // ExecuteNoop is a no-op command that does nothing.
@@ -164,6 +165,47 @@ func ExecuteWait(c parser.Command, v *VHS) error {
 			continue
 		case <-timeoutT.C:
 			return fmt.Errorf("timeout waiting for %q to match %s; last value was: %s", c.Args, rx.String(), last)
+		}
+	}
+}
+
+// ExecuteAwaitPrompt waits for the shell to emit a new prompt marker.
+// It detects prompt markers (OSC 7777) that are embedded in each shell's prompt
+// configuration. Unlike Wait (which matches terminal content), AwaitPrompt
+// detects when the shell has finished executing a command and is ready for input.
+func ExecuteAwaitPrompt(c parser.Command, v *VHS) error {
+	timeout := v.Options.WaitTimeout
+	if c.Options != "" {
+		t, err := time.ParseDuration(c.Options)
+		if err != nil {
+			return fmt.Errorf("failed to parse duration: %w", err)
+		}
+		timeout = t
+	}
+
+	// Record the current prompt count so we can detect the next one.
+	baseline, err := v.PromptCount()
+	if err != nil {
+		return fmt.Errorf("failed to read prompt count: %w", err)
+	}
+
+	checkT := time.NewTicker(WaitTick)
+	defer checkT.Stop()
+	timeoutT := time.NewTimer(timeout)
+	defer timeoutT.Stop()
+
+	for {
+		select {
+		case <-checkT.C:
+			current, err := v.PromptCount()
+			if err != nil {
+				return fmt.Errorf("failed to read prompt count: %w", err)
+			}
+			if current > baseline {
+				return nil
+			}
+		case <-timeoutT.C:
+			return fmt.Errorf("timeout waiting for shell prompt (waited %s)", timeout)
 		}
 	}
 }
