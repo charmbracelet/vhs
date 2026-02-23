@@ -362,6 +362,8 @@ func ExecuteOutput(c parser.Command, v *VHS) error {
 		v.Options.Video.Output.MP4 = c.Args
 	case ".test", ".ascii", ".txt":
 		v.Options.Test.Output = c.Args
+	case ".cast":
+		v.Options.Video.Output.Asciicast = c.Args
 	case ".png":
 		v.Options.Video.Output.Frames = c.Args
 	case ".webm":

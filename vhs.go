@@ -30,6 +30,7 @@ type VHS struct {
 	mutex        *sync.Mutex
 	started      bool
 	recording    bool
+	AsciicastFrames [][]string
 	tty          *exec.Cmd
 	totalFrames  int
 	close        func() error
@@ -243,6 +244,11 @@ func (vhs *VHS) Render() error {
 		}
 	}
 
+	// Generate asciicast output if requested.
+	if err := GenerateAsciicast(vhs); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -376,6 +382,13 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 					continue
 				}
 
+
+				// Capture terminal buffer for asciicast output.
+				if vhs.Options.Video.Output.Asciicast != "" {
+					if lines, err := vhs.Buffer(); err == nil {
+						vhs.AsciicastFrames = append(vhs.AsciicastFrames, lines)
+					}
+				}
 				// Capture current frame and disable frame capturing
 				if vhs.Options.Screenshot.frameCapture {
 					vhs.Options.Screenshot.makeScreenshot(counter)
