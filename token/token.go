@@ -42,21 +42,23 @@ const (
 	EOF     = "EOF"
 	ILLEGAL = "ILLEGAL"
 
-	ALT       = "ALT"
-	BACKSPACE = "BACKSPACE"
-	CTRL      = "CTRL"
-	DELETE    = "DELETE"
-	END       = "END"
-	ENTER     = "ENTER"
-	ESCAPE    = "ESCAPE"
-	HOME      = "HOME"
-	INSERT    = "INSERT"
-	PAGE_DOWN = "PAGE_DOWN" //nolint:revive
-	PAGE_UP   = "PAGE_UP"   //nolint:revive
-	SLEEP     = "SLEEP"
-	SPACE     = "SPACE"
-	TAB       = "TAB"
-	SHIFT     = "SHIFT"
+	ALT         = "ALT"
+	BACKSPACE   = "BACKSPACE"
+	CTRL        = "CTRL"
+	DELETE      = "DELETE"
+	END         = "END"
+	ENTER       = "ENTER"
+	ESCAPE      = "ESCAPE"
+	HOME        = "HOME"
+	INSERT      = "INSERT"
+	PAGE_DOWN   = "PAGE_DOWN"   //nolint:revive
+	PAGE_UP     = "PAGE_UP"     //nolint:revive
+	SCROLL_DOWN = "SCROLL_DOWN" //nolint:revive
+	SCROLL_UP   = "SCROLL_UP"   //nolint:revive
+	SLEEP       = "SLEEP"
+	SPACE       = "SPACE"
+	TAB         = "TAB"
+	SHIFT       = "SHIFT"
 
 	COMMENT = "COMMENT"
 	NUMBER  = "NUMBER"
@@ -129,6 +131,8 @@ var Keywords = map[string]Type{
 	"Up":            UP,
 	"PageUp":        PAGE_UP,
 	"PageDown":      PAGE_DOWN,
+	"ScrollUp":      SCROLL_UP,
+	"ScrollDown":    SCROLL_DOWN,
 	"Tab":           TAB,
 	"Escape":        ESCAPE,
 	"End":           END,
@@ -184,7 +188,7 @@ func IsSetting(t Type) bool {
 func IsCommand(t Type) bool {
 	switch t {
 	case TYPE, SLEEP,
-		UP, DOWN, RIGHT, LEFT, PAGE_UP, PAGE_DOWN,
+		UP, DOWN, RIGHT, LEFT, PAGE_UP, PAGE_DOWN, SCROLL_UP, SCROLL_DOWN,
 		ENTER, BACKSPACE, DELETE, TAB,
 		ESCAPE, HOME, INSERT, END, CTRL, SOURCE, SCREENSHOT, COPY, PASTE, WAIT:
 		return true

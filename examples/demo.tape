@@ -54,6 +54,8 @@
 # Display:
 #   Hide                            Hide the subsequent commands from the output
 #   Show                            Show the subsequent commands in the output
+#   ScrollUp[@<time>] [number]      Scroll terminal viewport up by rows
+#   ScrollDown[@<time>] [number]    Scroll terminal viewport down by rows
 
 Output examples/demo.gif
 
