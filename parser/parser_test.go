@@ -291,6 +291,42 @@ func TestParseCtrl(t *testing.T) {
 	}
 }
 
+func TestParseShift(t *testing.T) {
+	tests := []struct {
+		name    string
+		tape    string
+		wantArg string
+	}{
+		{
+			name:    "Shift+Down",
+			tape:    "Shift+Down",
+			wantArg: "Down",
+		},
+		{
+			name:    "Shift+Tab",
+			tape:    "Shift+Tab",
+			wantArg: "Tab",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			l := lexer.New(tc.tape)
+			p := New(l)
+
+			cmd := p.parseShift()
+
+			if len(p.errors) > 0 {
+				t.Fatalf("unexpected parse errors: %v", p.errors)
+			}
+
+			if cmd.Args != tc.wantArg {
+				t.Errorf("want arg %q, got %q", tc.wantArg, cmd.Args)
+			}
+		})
+	}
+}
+
 type parseSourceTest struct {
 	tape      string
 	srcTape   string

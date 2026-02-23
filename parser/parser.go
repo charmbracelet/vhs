@@ -376,11 +376,20 @@ func (p *Parser) parseAlt() Command {
 func (p *Parser) parseShift() Command {
 	if p.peek.Type == token.PLUS {
 		p.nextToken()
-		if p.peek.Type == token.STRING ||
-			p.peek.Type == token.ENTER ||
-			p.peek.Type == token.LEFT_BRACKET ||
-			p.peek.Type == token.RIGHT_BRACKET ||
-			p.peek.Type == token.TAB {
+		switch p.peek.Type {
+		case token.STRING,
+			token.ENTER,
+			token.LEFT_BRACKET,
+			token.RIGHT_BRACKET,
+			token.TAB,
+			token.DOWN,
+			token.UP,
+			token.LEFT,
+			token.RIGHT,
+			token.PAGE_DOWN,
+			token.PAGE_UP,
+			token.HOME,
+			token.END:
 			c := p.peek.Literal
 			p.nextToken()
 			return Command{Type: token.SHIFT, Args: c}

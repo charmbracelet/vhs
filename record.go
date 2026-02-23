@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"regexp"
+	"slices"
 	"strings"
 	"time"
 
@@ -23,43 +24,52 @@ const sleepThreshold = 500 * time.Millisecond
 
 // EscapeSequences is a map of escape sequences to their VHS commands.
 var EscapeSequences = map[string]string{
-	"\x1b[A":  token.UP,
-	"\x1b[B":  token.DOWN,
-	"\x1b[C":  token.RIGHT,
-	"\x1b[D":  token.LEFT,
-	"\x1b[1~": token.HOME,
-	"\x1b[2~": token.INSERT,
-	"\x1b[3~": token.DELETE,
-	"\x1b[4~": token.END,
-	"\x1b[5~": token.PAGE_UP,
-	"\x1b[6~": token.PAGE_DOWN,
-	"\x01":    token.CTRL + "+A",
-	"\x02":    token.CTRL + "+B",
-	"\x03":    token.CTRL + "+C",
-	"\x04":    token.CTRL + "+D",
-	"\x05":    token.CTRL + "+E",
-	"\x06":    token.CTRL + "+F",
-	"\x07":    token.CTRL + "+G",
-	"\x08":    token.BACKSPACE,
-	"\x09":    token.TAB,
-	"\x0b":    token.CTRL + "+K",
-	"\x0c":    token.CTRL + "+L",
-	"\x0d":    token.ENTER,
-	"\x0e":    token.CTRL + "+N",
-	"\x0f":    token.CTRL + "+O",
-	"\x10":    token.CTRL + "+P",
-	"\x11":    token.CTRL + "+Q",
-	"\x12":    token.CTRL + "+R",
-	"\x13":    token.CTRL + "+S",
-	"\x14":    token.CTRL + "+T",
-	"\x15":    token.CTRL + "+U",
-	"\x16":    token.CTRL + "+V",
-	"\x17":    token.CTRL + "+W",
-	"\x18":    token.CTRL + "+X",
-	"\x19":    token.CTRL + "+Y",
-	"\x1a":    token.CTRL + "+Z",
-	"\x1b":    token.ESCAPE,
-	"\x7f":    token.BACKSPACE,
+	"\x1b[A":    token.UP,
+	"\x1b[B":    token.DOWN,
+	"\x1b[C":    token.RIGHT,
+	"\x1b[D":    token.LEFT,
+	"\x1b[1;2A": token.SHIFT + "+Up",
+	"\x1b[1;2B": token.SHIFT + "+Down",
+	"\x1b[1;2C": token.SHIFT + "+Right",
+	"\x1b[1;2D": token.SHIFT + "+Left",
+	"\x1b[1;2F": token.SHIFT + "+End",
+	"\x1b[1;2H": token.SHIFT + "+Home",
+	"\x1b[1~":   token.HOME,
+	"\x1b[2~":   token.INSERT,
+	"\x1b[3~":   token.DELETE,
+	"\x1b[4~":   token.END,
+	"\x1b[5~":   token.PAGE_UP,
+	"\x1b[5;2~": token.SHIFT + "+PageUp",
+	"\x1b[6~":   token.PAGE_DOWN,
+	"\x1b[6;2~": token.SHIFT + "+PageDown",
+	"\x1b[Z":    token.SHIFT + "+Tab",
+	"\x01":      token.CTRL + "+A",
+	"\x02":      token.CTRL + "+B",
+	"\x03":      token.CTRL + "+C",
+	"\x04":      token.CTRL + "+D",
+	"\x05":      token.CTRL + "+E",
+	"\x06":      token.CTRL + "+F",
+	"\x07":      token.CTRL + "+G",
+	"\x08":      token.BACKSPACE,
+	"\x09":      token.TAB,
+	"\x0b":      token.CTRL + "+K",
+	"\x0c":      token.CTRL + "+L",
+	"\x0d":      token.ENTER,
+	"\x0e":      token.CTRL + "+N",
+	"\x0f":      token.CTRL + "+O",
+	"\x10":      token.CTRL + "+P",
+	"\x11":      token.CTRL + "+Q",
+	"\x12":      token.CTRL + "+R",
+	"\x13":      token.CTRL + "+S",
+	"\x14":      token.CTRL + "+T",
+	"\x15":      token.CTRL + "+U",
+	"\x16":      token.CTRL + "+V",
+	"\x17":      token.CTRL + "+W",
+	"\x18":      token.CTRL + "+X",
+	"\x19":      token.CTRL + "+Y",
+	"\x1a":      token.CTRL + "+Z",
+	"\x1b":      token.ESCAPE,
+	"\x7f":      token.BACKSPACE,
 }
 
 // Record is a command that starts a pseudo-terminal for the user to begin
@@ -142,7 +152,22 @@ func inputToTape(input string) string {
 	s = oscResponse.ReplaceAllString(s, "")
 
 	// Substitute escape sequences for commands
-	for sequence, command := range EscapeSequences {
+	sequences := make([]string, 0, len(EscapeSequences))
+	for sequence := range EscapeSequences {
+		sequences = append(sequences, sequence)
+	}
+	slices.SortFunc(sequences, func(a, b string) int {
+		if len(a) == len(b) {
+			return strings.Compare(a, b)
+		}
+		if len(a) > len(b) {
+			return -1
+		}
+		return 1
+	})
+
+	for _, sequence := range sequences {
+		command := EscapeSequences[sequence]
 		s = strings.ReplaceAll(s, sequence, "\n"+command+"\n")
 	}
 
@@ -179,6 +204,11 @@ func inputToTape(input string) string {
 		} else if strings.HasPrefix(lines[i], token.ALT) {
 			for j := 0; j < repeat; j++ {
 				sanitized.WriteString("Alt" + strings.TrimPrefix(lines[i], token.ALT) + "\n")
+			}
+			continue
+		} else if strings.HasPrefix(lines[i], token.SHIFT) {
+			for j := 0; j < repeat; j++ {
+				sanitized.WriteString("Shift" + strings.TrimPrefix(lines[i], token.SHIFT) + "\n")
 			}
 			continue
 		} else if strings.HasPrefix(lines[i], token.SET) {
