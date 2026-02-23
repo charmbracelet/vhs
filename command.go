@@ -431,6 +431,7 @@ var Settings = map[string]CommandFunc{
 	"WaitPattern":   ExecuteSetWaitPattern,
 	"WaitTimeout":   ExecuteSetWaitTimeout,
 	"CursorBlink":   ExecuteSetCursorBlink,
+	"PromptColor":   ExecuteSetPromptColor,
 }
 
 // ExecuteSet applies the settings on the running vhs specified by the
@@ -697,6 +698,12 @@ func ExecuteSetCursorBlink(c parser.Command, v *VHS) error {
 		return fmt.Errorf("failed to parse cursor blink: %w", err)
 	}
 
+	return nil
+}
+
+// ExecuteSetPromptColor sets the prompt color.
+func ExecuteSetPromptColor(c parser.Command, v *VHS) error {
+	v.Options.PromptColor = c.Args
 	return nil
 }
 

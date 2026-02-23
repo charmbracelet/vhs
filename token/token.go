@@ -103,6 +103,7 @@ const (
 	WAIT_TIMEOUT    = "WAIT_TIMEOUT"    //nolint:revive
 	WAIT_PATTERN    = "WAIT_PATTERN"    //nolint:revive
 	CURSOR_BLINK    = "CURSOR_BLINK"    //nolint:revive
+	PROMPT_COLOR    = "PROMPT_COLOR"    //nolint:revive
 )
 
 // Keywords maps keyword strings to tokens.
@@ -159,6 +160,7 @@ var Keywords = map[string]Type{
 	"Wait":          WAIT,
 	"Source":        SOURCE,
 	"CursorBlink":   CURSOR_BLINK,
+	"PromptColor":   PROMPT_COLOR,
 	"true":          BOOLEAN,
 	"false":         BOOLEAN,
 	"Screenshot":    SCREENSHOT,
@@ -173,7 +175,8 @@ func IsSetting(t Type) bool {
 	case SHELL, FONT_FAMILY, FONT_SIZE, LETTER_SPACING, LINE_HEIGHT,
 		FRAMERATE, TYPING_SPEED, THEME, PLAYBACK_SPEED, HEIGHT, WIDTH,
 		PADDING, LOOP_OFFSET, MARGIN_FILL, MARGIN, WINDOW_BAR,
-		WINDOW_BAR_SIZE, BORDER_RADIUS, CURSOR_BLINK, WAIT_TIMEOUT, WAIT_PATTERN:
+		WINDOW_BAR_SIZE, BORDER_RADIUS, CURSOR_BLINK, WAIT_TIMEOUT, WAIT_PATTERN,
+		PROMPT_COLOR:
 		return true
 	default:
 		return false
