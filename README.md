@@ -543,6 +543,9 @@ Type "Whatever you want"
 
 # Type something really slowly!
 Type@500ms "Slow down there, partner."
+
+# Type something from an external env var
+Type $SHELL
 ```
 
 Escape single and double quotes with backticks.

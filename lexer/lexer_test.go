@@ -16,6 +16,7 @@ Set CursorBlink false
 Type "echo 'Hello, world!'"
 Enter
 Type@.1 "echo 'Hello, world!'"
+Type $SHELL
 Left 3
 Sleep 1
 Right@100ms 3
@@ -56,6 +57,8 @@ Wait+Screen@1m /foo\\\/bar/`
 		{token.AT, "@"},
 		{token.NUMBER, ".1"},
 		{token.STRING, "echo 'Hello, world!'"},
+		{token.TYPE, "Type"},
+		{token.VAR, "SHELL"},
 		{token.LEFT, "Left"},
 		{token.NUMBER, "3"},
 		{token.SLEEP, "Sleep"},
@@ -230,6 +233,8 @@ func TestLexTapeFile(t *testing.T) {
 		{token.STRING, "\"Single\" Quote"},
 		{token.TYPE, "Type"},
 		{token.STRING, `"Backtick" 'Quote'`},
+		{token.TYPE, "Type"},
+		{token.VAR, "SOME_ENV_VAR"},
 		{token.COMMENT, " Keys:"},
 		{token.BACKSPACE, "Backspace"},
 		{token.BACKSPACE, "Backspace"},
