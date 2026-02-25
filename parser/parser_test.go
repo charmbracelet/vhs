@@ -258,6 +258,12 @@ func TestParseCtrl(t *testing.T) {
 			wantArgs: []string{"Space"},
 			wantErr:  false,
 		},
+		{
+			name:     "Ctrl+w 2",
+			tape:     "Ctrl+w 2",
+			wantArgs: []string{"w"},
+			wantErr:  false,
+		},
 	}
 
 	for _, tc := range tests {
@@ -265,7 +271,7 @@ func TestParseCtrl(t *testing.T) {
 			l := lexer.New(tc.tape)
 			p := New(l)
 
-			cmd := p.parseCtrl()
+			cmds := p.parseCtrl()
 			if tc.wantErr {
 				if len(p.errors) == 0 {
 					t.Errorf("Expected to parse with errors but was success")
@@ -277,14 +283,16 @@ func TestParseCtrl(t *testing.T) {
 				t.Errorf("Expected to parse with no errors but was failure")
 			}
 
-			args := strings.Split(cmd.Args, " ")
-			if len(tc.wantArgs) != len(args) {
-				t.Fatalf("Unable to parse args, expected args %d, got %d", len(tc.wantArgs), len(args))
-			}
+			for _, cmd := range cmds {
+				args := strings.Split(cmd.Args, " ")
+				if len(tc.wantArgs) != len(args) {
+					t.Fatalf("Unable to parse args, expected args %d, got %d", len(tc.wantArgs), len(args))
+				}
 
-			for i, arg := range args {
-				if tc.wantArgs[i] != arg {
-					t.Errorf("Arg %d is wrong, expected %s, got %s", i, tc.wantArgs[i], arg)
+				for i, arg := range args {
+					if tc.wantArgs[i] != arg {
+						t.Errorf("Arg %d is wrong, expected %s, got %s", i, tc.wantArgs[i], arg)
+					}
 				}
 			}
 		})
