@@ -55,6 +55,7 @@ const (
 	PAGE_UP   = "PAGE_UP"   //nolint:revive
 	SLEEP     = "SLEEP"
 	SPACE     = "SPACE"
+	PLAYBACK  = "PLAYBACK"
 	TAB       = "TAB"
 	SHIFT     = "SHIFT"
 
@@ -158,6 +159,7 @@ var Keywords = map[string]Type{
 	"WaitPattern":   WAIT_PATTERN,
 	"Wait":          WAIT,
 	"Source":        SOURCE,
+	"Playback":      PLAYBACK,
 	"CursorBlink":   CURSOR_BLINK,
 	"true":          BOOLEAN,
 	"false":         BOOLEAN,
@@ -183,7 +185,7 @@ func IsSetting(t Type) bool {
 // IsCommand returns whether the string is a command.
 func IsCommand(t Type) bool {
 	switch t {
-	case TYPE, SLEEP,
+	case TYPE, SLEEP, PLAYBACK,
 		UP, DOWN, RIGHT, LEFT, PAGE_UP, PAGE_DOWN,
 		ENTER, BACKSPACE, DELETE, TAB,
 		ESCAPE, HOME, INSERT, END, CTRL, SOURCE, SCREENSHOT, COPY, PASTE, WAIT:

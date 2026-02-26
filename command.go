@@ -68,6 +68,7 @@ var CommandFuncs = map[parser.CommandType]CommandFunc{
 	token.PASTE:      ExecutePaste,
 	token.ENV:        ExecuteEnv,
 	token.WAIT:       ExecuteWait,
+	token.PLAYBACK:   ExecutePlayback,
 }
 
 // ExecuteNoop is a no-op command that does nothing.
@@ -321,6 +322,16 @@ func ExecuteSleep(c parser.Command, _ *VHS) error {
 		return fmt.Errorf("failed to parse duration: %w", err)
 	}
 	time.Sleep(dur)
+	return nil
+}
+
+// ExecutePlayback records a playback speed section boundary at the current frame.
+func ExecutePlayback(c parser.Command, v *VHS) error {
+	speed, err := strconv.ParseFloat(c.Args, 64)
+	if err != nil {
+		return fmt.Errorf("failed to parse playback speed: %w", err)
+	}
+	v.AddPlaybackSection(speed)
 	return nil
 }
 

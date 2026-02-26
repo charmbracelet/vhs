@@ -229,6 +229,7 @@ There are a few basic types of VHS commands:
 - [`Backspace`](#backspace) [`Enter`](#enter) [`Tab`](#tab) [`Space`](#space): special keys
 - [`Ctrl[+Alt][+Shift]+<char>`](#ctrl): press control + key and/or modifier
 - [`Sleep <time>`](#sleep): wait for a certain amount of time
+- [`Playback@<speed>`](#playback): change playback speed for subsequent commands
 - [`Wait[+Screen][+Line] /regex/`](#wait): wait for specific conditions
 - [`Hide`](#hide): hide commands from output
 - [`Show`](#show): stop hiding commands from output
@@ -495,12 +496,32 @@ Set Framerate 60
 
 #### Set Playback Speed
 
-Set the playback speed of the final render.
+Set the global playback speed of the final render.
 
 ```elixir
 Set PlaybackSpeed 0.5 # Make output 2 times slower
 Set PlaybackSpeed 1.0 # Keep output at normal speed (default)
 Set PlaybackSpeed 2.0 # Make output 2 times faster
+```
+
+### Playback
+
+Set the playback speed for subsequent sections or commands. Unlike `Set PlaybackSpeed` which applies globally to the entire output, `Playback@` lets you vary the speed at different points in your recording.
+
+```elixir
+Type "Normal speed here"
+
+Playback@2
+# This renders at 2x speed
+Type "SlowCommand"
+Enter
+Sleep 1s
+
+Playback@0.5
+Type "This plays in slow motion"
+
+Playback@1
+Type "Back to normal speed"
 ```
 
 #### Set Loop Offset
