@@ -40,7 +40,7 @@ func buildTtyCmd(port int, shell Shell) *exec.Cmd {
 
 	cmd := exec.Command("ttyd", args...)
 	if shell.Env != nil {
-		cmd.Env = append(shell.Env, os.Environ()...)
+		cmd.Env = append(append(shell.Env, os.Environ()...), shell.OverwriteEnv...)
 	}
 	return cmd
 }
