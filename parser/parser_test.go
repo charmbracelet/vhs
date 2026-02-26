@@ -412,7 +412,7 @@ func TestParseScreeenshot(t *testing.T) {
 	t.Run("should return error when screenshot extension is NOT (.png)", func(t *testing.T) {
 		test := &parseScreenshotTest{
 			tape:   "Screenshot step_one_screenshot.jpg",
-			errors: []string{"Expected file with .png extension"},
+			errors: []string{"Expected file with .png, .txt, or .ansi extension"},
 		}
 
 		test.run(t)

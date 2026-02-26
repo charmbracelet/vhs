@@ -45,4 +45,18 @@ func TestScreenshot(t *testing.T) {
 			t.Errorf("nextScreenshotPath: %s, expected: %s", opts.nextScreenshotPath, path)
 		}
 	})
+
+	t.Run("MakeTextScreenshots should process text screenshots", func(t *testing.T) {
+		opts := ScreenshotOptions{
+			textScreenshots: map[string]string{
+				"test.txt": "Hello World\nLine 2",
+			},
+		}
+
+		// This should not error because we're just writing files
+		err := MakeTextScreenshots(opts)
+		if err != nil {
+			t.Errorf("Expected no error when processing text screenshots, got: %v", err)
+		}
+	})
 }
