@@ -210,7 +210,7 @@ func ExecuteWait(c parser.Command, v *VHS) error {
 }
 
 // ExecuteAwaitPrompt waits for the shell to emit a new prompt marker.
-// It detects prompt markers (OSC 7777) that are embedded in each shell's prompt
+// It detects prompt markers (OSC 133;A) that are embedded in each shell's prompt
 // configuration. Unlike Wait (which matches terminal content), AwaitPrompt
 // detects when the shell has finished executing a command and is ready for input.
 func ExecuteAwaitPrompt(c parser.Command, v *VHS) error {

@@ -6,12 +6,13 @@ import (
 )
 
 func TestShellPromptMarker(t *testing.T) {
-	// Every shell configuration should embed the OSC 7777 prompt marker
-	// so that AwaitPrompt can detect when a command has finished.
+	// Every shell configuration should embed the OSC 133;A prompt marker
+	// (FinalTerm shell integration) so that AwaitPrompt can detect when a
+	// command has finished.
 	//
 	// The marker format varies by shell:
-	//   - Most shells: \e]7777;\a (ESC ] 7777 ; BEL)
-	//   - cmd.exe: $E]7777;$E\ (using ST terminator instead of BEL)
+	//   - Most shells: \e]133;A\a (ESC ] 133;A BEL)
+	//   - cmd.exe: $E]133;A$E\ (using ST terminator instead of BEL)
 	shellNames := []string{
 		bash,
 		zsh,
@@ -34,8 +35,8 @@ func TestShellPromptMarker(t *testing.T) {
 			// Combine env and command into a single string to search
 			combined := strings.Join(shell.Env, " ") + " " + strings.Join(shell.Command, " ")
 
-			if !strings.Contains(combined, "7777") {
-				t.Errorf("Shell %q does not contain OSC 7777 marker.\nenv: %v\ncommand: %v", name, shell.Env, shell.Command)
+			if !strings.Contains(combined, "133") {
+				t.Errorf("Shell %q does not contain OSC 133;A marker.\nenv: %v\ncommand: %v", name, shell.Env, shell.Command)
 			}
 		})
 	}

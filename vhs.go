@@ -192,10 +192,10 @@ func (vhs *VHS) Setup() {
 		var ow = term.write.bind(term);
 		term.write = function(d, c) {
 			var t = typeof d === 'string' ? d : new TextDecoder().decode(d);
-			var idx = t.indexOf('\x1b]7777;');
+			var idx = t.indexOf('\x1b]133;A');
 			while (idx !== -1) {
 				window.__vhs_prompt_count++;
-				idx = t.indexOf('\x1b]7777;', idx + 1);
+				idx = t.indexOf('\x1b]133;A', idx + 1);
 			}
 			return ow(d, c);
 		};
