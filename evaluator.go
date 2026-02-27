@@ -114,6 +114,9 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	ctx, cancel := context.WithCancel(ctx)
 	ch := v.Record(ctx)
 
+	// Start key logging
+	v.KeyLogger.Start(&v.currentFrame, v.Options.Video.Framerate)
+
 	// Clean up temporary files at the end.
 	defer func() {
 		if v.Options.Video.Output.Frames != "" {
@@ -182,6 +185,9 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	}
 
 	teardown()
+	if err := v.KeyLogger.Save(v.KeyLogFile); err != nil {
+		return []error{err}
+	}
 	if err := v.Render(); err != nil {
 		return []error{err}
 	}

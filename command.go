@@ -92,6 +92,7 @@ func ExecuteKey(k input.Key) CommandFunc {
 			repeat = 1
 		}
 		for i := 0; i < repeat; i++ {
+			v.KeyLogger.LogKey(c.Type.String())
 			err = v.Page.Keyboard.Type(k)
 			if err != nil {
 				return fmt.Errorf("failed to type key %c: %w", k, err)
@@ -171,6 +172,7 @@ func ExecuteWait(c parser.Command, v *VHS) error {
 // ExecuteCtrl is a CommandFunc that presses the argument keys and/or modifiers
 // with the ctrl key held down on the running instance of vhs.
 func ExecuteCtrl(c parser.Command, v *VHS) error {
+	v.KeyLogger.LogKey("Ctrl+" + c.Args)
 	// Create key combination by holding ControlLeft
 	action := v.Page.KeyActions().Press(input.ControlLeft)
 	keys := strings.Split(c.Args, " ")
@@ -218,6 +220,7 @@ func ExecuteCtrl(c parser.Command, v *VHS) error {
 // ExecuteAlt is a CommandFunc that presses the argument key with the alt key
 // held down on the running instance of vhs.
 func ExecuteAlt(c parser.Command, v *VHS) error {
+	v.KeyLogger.LogKey("Alt+" + c.Args)
 	err := v.Page.Keyboard.Press(input.AltLeft)
 	if err != nil {
 		return fmt.Errorf("failed to press Alt key: %w", err)
@@ -257,6 +260,7 @@ func ExecuteAlt(c parser.Command, v *VHS) error {
 // ExecuteShift is a CommandFunc that presses the argument key with the shift
 // key held down on the running instance of vhs.
 func ExecuteShift(c parser.Command, v *VHS) error {
+	v.KeyLogger.LogKey("Shift+" + c.Args)
 	err := v.Page.Keyboard.Press(input.ShiftLeft)
 	if err != nil {
 		return fmt.Errorf("failed to press Shift key: %w", err)
@@ -335,6 +339,11 @@ func ExecuteType(c parser.Command, v *VHS) error {
 		}
 	}
 	for _, r := range c.Args {
+		if r == ' ' { // make in consistent in the log file
+			v.KeyLogger.LogKey("Space")
+		} else {
+			v.KeyLogger.LogKey(string(r))
+		}
 		k, ok := keymap[r]
 		if ok {
 			err := v.Page.Keyboard.Type(k)
