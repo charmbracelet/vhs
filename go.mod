@@ -5,7 +5,7 @@ go 1.24.1
 require (
 	github.com/agnivade/levenshtein v1.2.1
 	github.com/atotto/clipboard v0.1.4
-	github.com/caarlos0/env/v11 v11.3.1
+	github.com/caarlos0/env/v11 v11.4.0
 	github.com/charmbracelet/glamour v0.10.0
 	github.com/charmbracelet/keygen v0.5.4
 	github.com/charmbracelet/lipgloss v1.1.1-0.20250404203927-76690c660834
@@ -15,14 +15,14 @@ require (
 	github.com/go-rod/rod v0.116.2
 	github.com/hashicorp/go-version v1.8.0
 	github.com/mattn/go-isatty v0.0.20
-	github.com/mattn/go-runewidth v0.0.19
+	github.com/mattn/go-runewidth v0.0.20
 	github.com/muesli/go-app-paths v0.2.2
 	github.com/muesli/mango-cobra v1.3.0
 	github.com/muesli/roff v0.1.0
 	github.com/muesli/termenv v0.16.0
 	github.com/spf13/cobra v1.10.2
-	golang.org/x/crypto v0.47.0
-	golang.org/x/term v0.39.0
+	golang.org/x/crypto v0.48.0
+	golang.org/x/term v0.40.0
 )
 
 require (
@@ -67,8 +67,8 @@ require (
 	github.com/yuin/goldmark v1.7.8 // indirect
 	github.com/yuin/goldmark-emoji v1.0.5 // indirect
 	golang.org/x/exp v0.0.0-20240719175910-8a7402abbf56 // indirect
-	golang.org/x/net v0.48.0 // indirect
+	golang.org/x/net v0.49.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
-	golang.org/x/sys v0.40.0 // indirect
-	golang.org/x/text v0.33.0 // indirect
+	golang.org/x/sys v0.41.0 // indirect
+	golang.org/x/text v0.34.0 // indirect
 )
