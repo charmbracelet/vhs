@@ -424,6 +424,8 @@ Set Theme "Catppuccin Frappe"
 
 See the full list by running `vhs themes`, or in [THEMES.md](./THEMES.md).
 
+You can preview all available themes live at [windowsterminalthemes.dev](https://windowsterminalthemes.dev/).
+
 #### Set Padding
 
 Set the padding (in pixels) of the terminal frame with the `Set Padding`
