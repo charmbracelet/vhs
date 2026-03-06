@@ -33,7 +33,11 @@ Sleep 100ms
 Sleep 3
 Wait
 Wait+Screen
-Wait@100ms /foobar/`
+Wait@100ms /foobar/
+Overlay "Hello"
+Overlay@3s "Hello"
+Overlay@500ms "Hello World"
+Overlay "Hello" "#000000" "#ffffff"`
 
 	expected := []Command{
 		{Type: token.SET, Options: "TypingSpeed", Args: "100ms"},
@@ -59,6 +63,10 @@ Wait@100ms /foobar/`
 		{Type: token.WAIT, Args: "Line"},
 		{Type: token.WAIT, Args: "Screen"},
 		{Type: token.WAIT, Options: "100ms", Args: "Line foobar"},
+		{Type: token.OVERLAY, Options: "", Args: "Hello"},
+		{Type: token.OVERLAY, Options: "3s", Args: "Hello"},
+		{Type: token.OVERLAY, Options: "500ms", Args: "Hello World"},
+		{Type: token.OVERLAY, Options: "", Args: "Hello\t#000000\t#ffffff"},
 	}
 
 	l := lexer.New(input)
@@ -193,6 +201,8 @@ func TestParseTapeFile(t *testing.T) {
 		{Type: token.ALT, Options: "", Args: "."},
 		{Type: token.ALT, Options: "", Args: "L"},
 		{Type: token.ALT, Options: "", Args: "i"},
+		{Type: token.OVERLAY, Options: "", Args: "text"},
+		{Type: token.OVERLAY, Options: "2s", Args: "text"},
 		{Type: token.HIDE, Options: "", Args: ""},
 		{Type: token.SHOW, Options: "", Args: ""},
 	}
