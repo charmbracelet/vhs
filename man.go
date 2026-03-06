@@ -51,6 +51,7 @@ The following is a list of all possible commands in VHS:
 * %Screenshot% <path>.png
 * %Copy% "<string>"
 * %Paste%
+* %Overlay%[@<time>] "<string>" ["<bg>" "<fg>"]
 `
 
 	manOutput = `The Output command instructs VHS where to save the output of the recording.

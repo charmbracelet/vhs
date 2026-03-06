@@ -103,6 +103,7 @@ const (
 	WAIT_TIMEOUT    = "WAIT_TIMEOUT"    //nolint:revive
 	WAIT_PATTERN    = "WAIT_PATTERN"    //nolint:revive
 	CURSOR_BLINK    = "CURSOR_BLINK"    //nolint:revive
+	OVERLAY         = "OVERLAY"
 )
 
 // Keywords maps keyword strings to tokens.
@@ -165,6 +166,7 @@ var Keywords = map[string]Type{
 	"Copy":          COPY,
 	"Paste":         PASTE,
 	"Env":           ENV,
+	"Overlay":       OVERLAY,
 }
 
 // IsSetting returns whether a token is a setting.
@@ -186,7 +188,7 @@ func IsCommand(t Type) bool {
 	case TYPE, SLEEP,
 		UP, DOWN, RIGHT, LEFT, PAGE_UP, PAGE_DOWN,
 		ENTER, BACKSPACE, DELETE, TAB,
-		ESCAPE, HOME, INSERT, END, CTRL, SOURCE, SCREENSHOT, COPY, PASTE, WAIT:
+		ESCAPE, HOME, INSERT, END, CTRL, SOURCE, SCREENSHOT, COPY, PASTE, WAIT, OVERLAY:
 		return true
 	default:
 		return false

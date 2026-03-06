@@ -56,6 +56,7 @@ var CommandTypes = []CommandType{ //nolint: deadcode
 	token.COPY,
 	token.PASTE,
 	token.ENV,
+	token.OVERLAY,
 }
 
 // String returns the string representation of the command.
@@ -181,6 +182,8 @@ func (p *Parser) parseCommand() []Command {
 		return []Command{p.parsePaste()}
 	case token.ENV:
 		return []Command{p.parseEnv()}
+	case token.OVERLAY:
+		return []Command{p.parseOverlay()}
 	default:
 		p.errors = append(p.errors, NewError(p.cur, "Invalid command: "+p.cur.Literal))
 		return []Command{{Type: token.ILLEGAL}}
@@ -594,6 +597,38 @@ func (p *Parser) parseType() Command {
 		if p.peek.Type == token.STRING {
 			cmd.Args += " "
 		}
+	}
+
+	return cmd
+}
+
+// parseOverlay parses an overlay command.
+// An overlay command takes an optional duration, a string to display,
+// and optional background and foreground colors.
+//
+//	Overlay[@<time>] "<string>" ["<bg>" "<fg>"]
+func (p *Parser) parseOverlay() Command {
+	cmd := Command{Type: token.OVERLAY}
+
+	cmd.Options = p.parseSpeed()
+
+	if p.peek.Type != token.STRING {
+		p.errors = append(p.errors, NewError(p.peek, p.cur.Literal+" expects string"))
+	}
+
+	p.nextToken()
+	cmd.Args = p.cur.Literal
+
+	// Optional background color
+	if p.peek.Type == token.STRING {
+		p.nextToken()
+		cmd.Args += "\t" + p.cur.Literal
+	}
+
+	// Optional foreground color
+	if p.peek.Type == token.STRING {
+		p.nextToken()
+		cmd.Args += "\t" + p.cur.Literal
 	}
 
 	return cmd

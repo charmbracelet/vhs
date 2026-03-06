@@ -68,6 +68,7 @@ var CommandFuncs = map[parser.CommandType]CommandFunc{
 	token.PASTE:      ExecutePaste,
 	token.ENV:        ExecuteEnv,
 	token.WAIT:       ExecuteWait,
+	token.OVERLAY:    ExecuteOverlay,
 }
 
 // ExecuteNoop is a no-op command that does nothing.
@@ -695,6 +696,69 @@ func ExecuteSetCursorBlink(c parser.Command, v *VHS) error {
 	v.Options.CursorBlink, err = strconv.ParseBool(c.Args)
 	if err != nil {
 		return fmt.Errorf("failed to parse cursor blink: %w", err)
+	}
+
+	return nil
+}
+
+// ExecuteOverlay draws a text overlay on the terminal canvas for the specified duration.
+// The overlay is non-blocking: it displays while subsequent commands continue executing.
+func ExecuteOverlay(c parser.Command, v *VHS) error {
+	durationMS := 3000
+	if c.Options != "" {
+		d, err := time.ParseDuration(c.Options)
+		if err != nil {
+			return fmt.Errorf("failed to parse overlay duration: %w", err)
+		}
+		durationMS = int(d.Milliseconds())
+	}
+
+	parts := strings.SplitN(c.Args, "\t", 3)
+	text := parts[0]
+	bgColor := "white"
+	fgColor := "black"
+	if len(parts) >= 2 {
+		bgColor = parts[1]
+	}
+	if len(parts) >= 3 {
+		fgColor = parts[2]
+	}
+
+	_, err := v.Page.Eval(`(text, bgColor, fgColor, durationMS) => {
+		const canvas = document.querySelector('canvas.xterm-text-layer');
+		const ctx = canvas.getContext('2d');
+		const padding = 12;
+		const margin = 16;
+		const draw = () => {
+			ctx.save();
+			ctx.font = 'bold 24px monospace';
+			const metrics = ctx.measureText(text);
+			const textWidth = metrics.width;
+			const textHeight = 24;
+			const boxWidth = textWidth + padding * 2;
+			const boxHeight = textHeight + padding * 2;
+			const x = canvas.width - boxWidth - margin;
+			const y = canvas.height - boxHeight - margin;
+			ctx.fillStyle = bgColor;
+			ctx.beginPath();
+			ctx.roundRect(x, y, boxWidth, boxHeight, 8);
+			ctx.fill();
+			ctx.fillStyle = fgColor;
+			ctx.textAlign = 'left';
+			ctx.textBaseline = 'middle';
+			ctx.fillText(text, x + padding, y + boxHeight / 2);
+			ctx.restore();
+			window._vhsOverlayRAF = requestAnimationFrame(draw);
+		};
+		window._vhsOverlayRAF = requestAnimationFrame(draw);
+		setTimeout(() => {
+			cancelAnimationFrame(window._vhsOverlayRAF);
+			delete window._vhsOverlayRAF;
+			term.refresh(0, term.rows - 1);
+		}, durationMS);
+	}`, text, bgColor, fgColor, durationMS)
+	if err != nil {
+		return fmt.Errorf("failed to show overlay: %w", err)
 	}
 
 	return nil

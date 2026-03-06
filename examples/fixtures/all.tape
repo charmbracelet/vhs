@@ -99,6 +99,10 @@ Alt+.
 Alt+L
 Alt+i
 
+# Overlay:
+Overlay "text"
+Overlay@2s "text"
+
 # Display:
 Hide
 Show
