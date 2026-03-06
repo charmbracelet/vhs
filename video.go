@@ -41,6 +41,7 @@ func randomDir() string {
 // VideoOutputs is a mapping from file type to file path for all video outputs
 // of VHS.
 type VideoOutputs struct {
+	Asciicast string
 	GIF    string
 	WebM   string
 	MP4    string
@@ -70,7 +71,7 @@ func DefaultVideoOptions() VideoOptions {
 		Framerate:     defaultFramerate,
 		Input:         randomDir(),
 		MaxColors:     defaultMaxColors,
-		Output:        VideoOutputs{GIF: "", WebM: "", MP4: "", Frames: ""},
+		Output:        VideoOutputs{GIF: "", WebM: "", MP4: "", Frames: "", Asciicast: ""},
 		PlaybackSpeed: defaultPlaybackSpeed,
 		StartingFrame: defaultStartingFrame,
 	}
