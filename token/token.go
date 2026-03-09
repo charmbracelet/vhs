@@ -29,8 +29,8 @@ const (
 	DASH      = "-"
 
 	MINUS         = "-"
-	RIGHT_BRACKET = "]" //nolint:revive
-	LEFT_BRACKET  = "[" //nolint:revive
+	RIGHT_BRACKET = "]"
+	LEFT_BRACKET  = "["
 	CARET         = "^"
 
 	EM           = "EM"
@@ -51,10 +51,10 @@ const (
 	ESCAPE      = "ESCAPE"
 	HOME        = "HOME"
 	INSERT      = "INSERT"
-	PAGE_DOWN   = "PAGE_DOWN"   //nolint:revive
-	PAGE_UP     = "PAGE_UP"     //nolint:revive
-	SCROLL_DOWN = "SCROLL_DOWN" //nolint:revive
-	SCROLL_UP   = "SCROLL_UP"   //nolint:revive
+	PAGE_DOWN   = "PAGE_DOWN"
+	PAGE_UP     = "PAGE_UP"
+	SCROLL_DOWN = "SCROLL_DOWN"
+	SCROLL_UP   = "SCROLL_UP"
 	SLEEP       = "SLEEP"
 	SPACE       = "SPACE"
 	TAB         = "TAB"
@@ -84,27 +84,27 @@ const (
 	PASTE           = "PASTE"
 	SHELL           = "SHELL"
 	ENV             = "ENV"
-	FONT_FAMILY     = "FONT_FAMILY" //nolint:revive
-	FONT_SIZE       = "FONT_SIZE"   //nolint:revive
+	FONT_FAMILY     = "FONT_FAMILY"
+	FONT_SIZE       = "FONT_SIZE"
 	FRAMERATE       = "FRAMERATE"
-	PLAYBACK_SPEED  = "PLAYBACK_SPEED" //nolint:revive
+	PLAYBACK_SPEED  = "PLAYBACK_SPEED"
 	HEIGHT          = "HEIGHT"
 	WIDTH           = "WIDTH"
-	LETTER_SPACING  = "LETTER_SPACING" //nolint:revive
-	LINE_HEIGHT     = "LINE_HEIGHT"    //nolint:revive
-	TYPING_SPEED    = "TYPING_SPEED"   //nolint:revive
+	LETTER_SPACING  = "LETTER_SPACING"
+	LINE_HEIGHT     = "LINE_HEIGHT"
+	TYPING_SPEED    = "TYPING_SPEED"
 	PADDING         = "PADDING"
 	THEME           = "THEME"
-	LOOP_OFFSET     = "LOOP_OFFSET"     //nolint:revive
-	MARGIN_FILL     = "MARGIN_FILL"     //nolint:revive
-	MARGIN          = "MARGIN"          //nolint:revive
-	WINDOW_BAR      = "WINDOW_BAR"      //nolint:revive
-	WINDOW_BAR_SIZE = "WINDOW_BAR_SIZE" //nolint:revive
-	BORDER_RADIUS   = "CORNER_RADIUS"   //nolint:revive
-	WAIT            = "WAIT"            //nolint:revive
-	WAIT_TIMEOUT    = "WAIT_TIMEOUT"    //nolint:revive
-	WAIT_PATTERN    = "WAIT_PATTERN"    //nolint:revive
-	CURSOR_BLINK    = "CURSOR_BLINK"    //nolint:revive
+	LOOP_OFFSET     = "LOOP_OFFSET"
+	MARGIN_FILL     = "MARGIN_FILL"
+	MARGIN          = "MARGIN"
+	WINDOW_BAR      = "WINDOW_BAR"
+	WINDOW_BAR_SIZE = "WINDOW_BAR_SIZE"
+	BORDER_RADIUS   = "CORNER_RADIUS"
+	WAIT            = "WAIT"
+	WAIT_TIMEOUT    = "WAIT_TIMEOUT"
+	WAIT_PATTERN    = "WAIT_PATTERN"
+	CURSOR_BLINK    = "CURSOR_BLINK"
 )
 
 // Keywords maps keyword strings to tokens.

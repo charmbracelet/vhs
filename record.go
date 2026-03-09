@@ -167,9 +167,9 @@ func inputToTape(input string) string {
 		if token.Type(lines[i]) == token.SLEEP { //nolint:nestif
 			sleep := sleepThreshold * time.Duration(repeat)
 			if sleep >= time.Minute {
-				sanitized.WriteString(fmt.Sprintf("%s %gs", token.Type(token.SLEEP), sleep.Seconds()))
+				_, _ = fmt.Fprintf(&sanitized, "%s %gs", token.Type(token.SLEEP), sleep.Seconds())
 			} else {
-				sanitized.WriteString(fmt.Sprintf("%s %s", token.Type(token.SLEEP), sleep))
+				_, _ = fmt.Fprintf(&sanitized, "%s %s", token.Type(token.SLEEP), sleep)
 			}
 		} else if strings.HasPrefix(lines[i], token.CTRL) {
 			for j := 0; j < repeat; j++ {
@@ -184,13 +184,13 @@ func inputToTape(input string) string {
 		} else if strings.HasPrefix(lines[i], token.SET) {
 			sanitized.WriteString("Set" + strings.TrimPrefix(lines[i], token.SET))
 		} else if token.IsCommand(token.Type(lines[i])) {
-			sanitized.WriteString(fmt.Sprint(token.Type(lines[i])))
+			_, _ = fmt.Fprint(&sanitized, token.Type(lines[i]))
 			if repeat > 1 {
-				sanitized.WriteString(fmt.Sprint(" ", repeat))
+				_, _ = fmt.Fprint(&sanitized, " ", repeat)
 			}
 		} else {
 			if lines[i] != "" {
-				sanitized.WriteString(fmt.Sprintln(token.Type(token.TYPE), quote(lines[i])))
+				_, _ = fmt.Fprintln(&sanitized, token.Type(token.TYPE), quote(lines[i]))
 			}
 			continue
 		}

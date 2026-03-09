@@ -26,7 +26,7 @@ func NewError(token token.Token, msg string) Error {
 type CommandType token.Type
 
 // CommandTypes is a list of the available commands that can be executed.
-var CommandTypes = []CommandType{ //nolint: deadcode
+var CommandTypes = []CommandType{
 	token.BACKSPACE,
 	token.DELETE,
 	token.INSERT,
@@ -685,7 +685,7 @@ func (p *Parser) parseSource() []Command {
 	}
 
 	// Check if tape exist
-	if _, err := os.Stat(srcPath); os.IsNotExist(err) {
+	if _, err := os.Stat(srcPath); os.IsNotExist(err) { //nolint:gosec
 		notFoundErr := fmt.Sprintf("File %s not found", srcPath)
 		p.errors = append(p.errors, NewError(p.peek, notFoundErr))
 		p.nextToken()
@@ -693,7 +693,7 @@ func (p *Parser) parseSource() []Command {
 	}
 
 	// Check if source tape contains nested Source command
-	d, err := os.ReadFile(srcPath)
+	d, err := os.ReadFile(srcPath) //nolint:gosec
 	if err != nil {
 		readErr := fmt.Sprintf("Unable to read file: %s", srcPath)
 		p.errors = append(p.errors, NewError(p.peek, readErr))
