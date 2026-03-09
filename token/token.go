@@ -99,6 +99,7 @@ const (
 	WINDOW_BAR      = "WINDOW_BAR"      //nolint:revive
 	WINDOW_BAR_SIZE = "WINDOW_BAR_SIZE" //nolint:revive
 	BORDER_RADIUS   = "CORNER_RADIUS"   //nolint:revive
+	AWAIT_PROMPT    = "AWAIT_PROMPT"    //nolint:revive
 	WAIT            = "WAIT"            //nolint:revive
 	WAIT_TIMEOUT    = "WAIT_TIMEOUT"    //nolint:revive
 	WAIT_PATTERN    = "WAIT_PATTERN"    //nolint:revive
@@ -156,6 +157,7 @@ var Keywords = map[string]Type{
 	"LoopOffset":    LOOP_OFFSET,
 	"WaitTimeout":   WAIT_TIMEOUT,
 	"WaitPattern":   WAIT_PATTERN,
+	"AwaitPrompt":   AWAIT_PROMPT,
 	"Wait":          WAIT,
 	"Source":        SOURCE,
 	"CursorBlink":   CURSOR_BLINK,
@@ -186,7 +188,7 @@ func IsCommand(t Type) bool {
 	case TYPE, SLEEP,
 		UP, DOWN, RIGHT, LEFT, PAGE_UP, PAGE_DOWN,
 		ENTER, BACKSPACE, DELETE, TAB,
-		ESCAPE, HOME, INSERT, END, CTRL, SOURCE, SCREENSHOT, COPY, PASTE, WAIT:
+		ESCAPE, HOME, INSERT, END, CTRL, SOURCE, SCREENSHOT, COPY, PASTE, AWAIT_PROMPT, WAIT:
 		return true
 	default:
 		return false
