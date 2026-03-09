@@ -107,7 +107,7 @@ func ensureDir(output string) {
 
 // buildFFopts assembles an ffmpeg command from some VideoOptions.
 func buildFFopts(opts VideoOptions, targetFile string) []string {
-	var args []string
+	var args []string //nolint:prealloc
 	streamCounter := 2
 
 	streamBuilder := NewStreamBuilder(streamCounter, opts.Input, opts.Style)

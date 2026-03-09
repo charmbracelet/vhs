@@ -6,3 +6,5 @@ on:
 jobs:
   lint:
     uses: charmbracelet/meta/.github/workflows/lint.yml@main
+    with:
+      golangci_path: .golangci.yml

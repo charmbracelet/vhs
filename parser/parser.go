@@ -26,7 +26,7 @@ func NewError(token token.Token, msg string) Error {
 type CommandType token.Type
 
 // CommandTypes is a list of the available commands that can be executed.
-var CommandTypes = []CommandType{ //nolint: deadcode
+var CommandTypes = []CommandType{
 	token.BACKSPACE,
 	token.DELETE,
 	token.INSERT,
