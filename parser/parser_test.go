@@ -26,6 +26,8 @@ Right 3
 Left 3
 Up@50ms
 Down 2
+ScrollUp 4
+ScrollDown@100ms 2
 Ctrl+C
 Ctrl+L
 Alt+.
@@ -51,6 +53,8 @@ Wait@100ms /foobar/`
 		{Type: token.LEFT, Options: "", Args: "3"},
 		{Type: token.UP, Options: "50ms", Args: "1"},
 		{Type: token.DOWN, Options: "", Args: "2"},
+		{Type: token.SCROLL_UP, Options: "", Args: "4"},
+		{Type: token.SCROLL_DOWN, Options: "100ms", Args: "2"},
 		{Type: token.CTRL, Options: "", Args: "C"},
 		{Type: token.CTRL, Options: "", Args: "L"},
 		{Type: token.ALT, Options: "", Args: "."},
@@ -163,6 +167,9 @@ func TestParseTapeFile(t *testing.T) {
 		{Type: token.PAGE_DOWN, Options: "", Args: "1"},
 		{Type: token.PAGE_DOWN, Options: "", Args: "2"},
 		{Type: token.PAGE_DOWN, Options: "1s", Args: "3"},
+		{Type: token.SCROLL_DOWN, Options: "", Args: "1"},
+		{Type: token.SCROLL_DOWN, Options: "", Args: "2"},
+		{Type: token.SCROLL_DOWN, Options: "1s", Args: "3"},
 		{Type: token.ENTER, Options: "", Args: "1"},
 		{Type: token.ENTER, Options: "", Args: "2"},
 		{Type: token.ENTER, Options: "1s", Args: "3"},
@@ -184,6 +191,9 @@ func TestParseTapeFile(t *testing.T) {
 		{Type: token.PAGE_UP, Options: "", Args: "1"},
 		{Type: token.PAGE_UP, Options: "", Args: "2"},
 		{Type: token.PAGE_UP, Options: "1s", Args: "3"},
+		{Type: token.SCROLL_UP, Options: "", Args: "1"},
+		{Type: token.SCROLL_UP, Options: "", Args: "2"},
+		{Type: token.SCROLL_UP, Options: "1s", Args: "3"},
 		{Type: token.DOWN, Options: "", Args: "1"},
 		{Type: token.DOWN, Options: "", Args: "2"},
 		{Type: token.DOWN, Options: "1s", Args: "3"},
