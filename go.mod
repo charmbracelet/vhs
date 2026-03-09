@@ -1,6 +1,6 @@
 module github.com/charmbracelet/vhs
 
-go 1.24.13
+go 1.25.8
 
 require (
 	github.com/agnivade/levenshtein v1.2.1
