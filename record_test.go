@@ -81,6 +81,11 @@ PageUp 8
 PageDown 4
 `,
 		},
+		{
+			name:  "Shift+Arrow",
+			input: "\x1b[1;2B\n\x1b[1;2A\n\x1b[1;2C\n\x1b[1;2D\nexit\n",
+			want:  "Shift+Down\nShift+Up\nShift+Right\nShift+Left\n",
+		},
 	}
 	for _, tc := range tests {
 		got := inputToTape(tc.input)
