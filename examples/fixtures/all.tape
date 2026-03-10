@@ -35,6 +35,7 @@ Type@500ms "All"
 Type "Double Quote"
 Type '"Single" Quote'
 Type `"Backtick" 'Quote'`
+Type $SOME_ENV_VAR
 
 # Keys:
 Backspace

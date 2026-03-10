@@ -63,6 +63,7 @@ const (
 	COMMENT = "COMMENT"
 	NUMBER  = "NUMBER"
 	STRING  = "STRING"
+	VAR     = "VAR"
 	JSON    = "JSON"
 	REGEX   = "REGEX"
 	BOOLEAN = "BOOLEAN"
