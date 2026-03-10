@@ -44,7 +44,7 @@ func (v *VHS) SaveOutput() error {
 		return fmt.Errorf("failed to create output file: %w", err)
 	}
 
-	lines, err := v.Buffer()
+	lines, err := v.VisibleLines()
 	if err != nil {
 		return fmt.Errorf("failed to get buffer: %w", err)
 	}
@@ -64,10 +64,10 @@ func (v *VHS) SaveOutput() error {
 	return nil
 }
 
-// Buffer returns the current buffer.
-func (v *VHS) Buffer() ([]string, error) {
-	// Get the current buffer.
-	buf, err := v.Page.Eval("() => Array(term.rows).fill(0).map((e, i) => term.buffer.active.getLine(i).translateToString().trimEnd())")
+// VisibleLines returns the visible lines from the terminal's viewport.
+func (v *VHS) VisibleLines() ([]string, error) {
+	// Capture the visible lines from the terminal.
+	buf, err := v.Page.Eval("() => Array.from({ length: term.rows }, (_, i) => term.buffer.active.getLine(i + term.buffer.active.viewportY).translateToString().trimEnd())")
 	if err != nil {
 		return nil, fmt.Errorf("read buffer: %w", err)
 	}
