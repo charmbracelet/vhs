@@ -166,3 +166,69 @@ func MakeWebM(opts VideoOptions) *exec.Cmd {
 func MakeMP4(opts VideoOptions) *exec.Cmd {
 	return makeMedia(opts, opts.Output.MP4)
 }
+
+// MakeFrames generates styled PNG frames from raw frames by applying padding,
+// window bar, margins, and border radius using FFmpeg.
+func MakeFrames(opts VideoOptions, totalFrames int) []*exec.Cmd {
+	if opts.Output.Frames == "" {
+		return nil
+	}
+
+	ensureDir(filepath.Join(opts.Output.Frames, "frame.png"))
+	log.Println(GrayStyle.Render("Creating frames in " + opts.Output.Frames + "..."))
+
+	cmds := []*exec.Cmd{}
+
+	for frame := opts.StartingFrame; frame <= totalFrames; frame++ {
+		cursorStream := filepath.Join(opts.Input, fmt.Sprintf(cursorFrameFormat, frame))
+		textStream := filepath.Join(opts.Input, fmt.Sprintf(textFrameFormat, frame))
+
+		// Skip if frame files don't exist
+		if _, err := os.Stat(textStream); err != nil {
+			continue
+		}
+
+		outputPath := filepath.Join(opts.Output.Frames, fmt.Sprintf(textFrameFormat, frame))
+		args := buildFrameFFopts(opts, outputPath, textStream, cursorStream)
+
+		cmds = append(cmds, exec.Command(
+			"ffmpeg",
+			args...,
+		))
+	}
+
+	return cmds
+}
+
+// buildFrameFFopts assembles ffmpeg arguments for processing a single frame with styling.
+func buildFrameFFopts(opts VideoOptions, targetFile, textStream, cursorStream string) []string {
+	var args []string
+	streamCounter := 2
+
+	streamBuilder := NewStreamBuilder(streamCounter, opts.Input, opts.Style)
+
+	// Input frame options
+	// Stream 0: text frame
+	// Stream 1: cursor frame
+	streamBuilder.args = append(streamBuilder.args,
+		"-y",
+		"-i", textStream,
+		"-i", cursorStream,
+	)
+
+	streamBuilder = streamBuilder.
+		WithMargin().
+		WithBar().
+		WithCorner()
+
+	filterBuilder := NewScreenshotFilterComplexBuilder(opts.Style).
+		WithWindowBar(streamBuilder.barStream).
+		WithBorderRadius(streamBuilder.cornerStream).
+		WithMarginFill(streamBuilder.marginStream)
+
+	args = append(args, streamBuilder.Build()...)
+	args = append(args, filterBuilder.Build()...)
+	args = append(args, targetFile)
+
+	return args
+}

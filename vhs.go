@@ -232,6 +232,7 @@ func (vhs *VHS) Render() error {
 	cmds = append(cmds, MakeMP4(vhs.Options.Video))
 	cmds = append(cmds, MakeWebM(vhs.Options.Video))
 	cmds = append(cmds, MakeScreenshots(vhs.Options.Screenshot)...)
+	cmds = append(cmds, MakeFrames(vhs.Options.Video, vhs.totalFrames)...)
 
 	for _, cmd := range cmds {
 		if cmd == nil {

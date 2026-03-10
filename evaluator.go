@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"os"
 
 	"github.com/charmbracelet/vhs/lexer"
 	"github.com/charmbracelet/vhs/parser"
@@ -116,11 +115,6 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 
 	// Clean up temporary files at the end.
 	defer func() {
-		if v.Options.Video.Output.Frames != "" {
-			// Move the frames to the output directory.
-			_ = os.Rename(v.Options.Video.Input, v.Options.Video.Output.Frames)
-		}
-
 		_ = v.Cleanup()
 	}()
 
