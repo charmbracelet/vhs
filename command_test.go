@@ -8,12 +8,12 @@ import (
 )
 
 func TestCommand(t *testing.T) {
-	const numberOfCommands = 30
+	const numberOfCommands = 32
 	if len(parser.CommandTypes) != numberOfCommands {
 		t.Errorf("Expected %d commands, got %d", numberOfCommands, len(parser.CommandTypes))
 	}
 
-	const numberOfCommandFuncs = 30
+	const numberOfCommandFuncs = 32
 	if len(CommandFuncs) != numberOfCommandFuncs {
 		t.Errorf("Expected %d commands, got %d", numberOfCommandFuncs, len(CommandFuncs))
 	}

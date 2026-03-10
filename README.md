@@ -227,6 +227,7 @@ There are a few basic types of VHS commands:
 - [`Type "<characters>"`](#type): emulate typing
 - [`Left`](#arrow-keys) [`Right`](#arrow-keys) [`Up`](#arrow-keys) [`Down`](#arrow-keys): arrow keys
 - [`Backspace`](#backspace) [`Enter`](#enter) [`Tab`](#tab) [`Space`](#space): special keys
+- [`ScrollUp`](#scroll-up--down) [`ScrollDown`](#scroll-up--down): scroll terminal viewport
 - [`Ctrl[+Alt][+Shift]+<char>`](#ctrl): press control + key and/or modifier
 - [`Sleep <time>`](#sleep): wait for a certain amount of time
 - [`Wait[+Screen][+Line] /regex/`](#wait): wait for specific conditions
@@ -665,6 +666,18 @@ Press the Page Up / Down keys with the `PageUp` or `PageDown` commands.
 ```elixir
 PageUp 3
 PageDown 5
+```
+
+#### Scroll Up / Down
+
+Scroll the terminal viewport directly with `ScrollUp` and `ScrollDown`.
+Both commands use the same optional `@time` and repeat count shape as other
+repeatable key commands: `ScrollUp[@<time>] [count]`.
+
+```elixir
+ScrollUp 10
+ScrollDown 4
+ScrollDown@100ms 12
 ```
 
 ### Wait

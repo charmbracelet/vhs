@@ -236,7 +236,7 @@ func (vhs *VHS) Render() error {
 	}
 
 	// Generate the video(s) with the frames.
-	var cmds []*exec.Cmd
+	var cmds []*exec.Cmd //nolint:prealloc
 	cmds = append(cmds, MakeGIF(vhs.Options.Video))
 	cmds = append(cmds, MakeMP4(vhs.Options.Video))
 	cmds = append(cmds, MakeWebM(vhs.Options.Video))

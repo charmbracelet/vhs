@@ -19,6 +19,8 @@ Type@.1 "echo 'Hello, world!'"
 Left 3
 Sleep 1
 Right@100ms 3
+ScrollUp 3
+ScrollDown@100ms 2
 Sleep 500ms
 Ctrl+C
 Enter
@@ -65,6 +67,13 @@ Wait+Screen@1m /foo\\\/bar/`
 		{token.NUMBER, "100"},
 		{token.MILLISECONDS, "ms"},
 		{token.NUMBER, "3"},
+		{token.SCROLL_UP, "ScrollUp"},
+		{token.NUMBER, "3"},
+		{token.SCROLL_DOWN, "ScrollDown"},
+		{token.AT, "@"},
+		{token.NUMBER, "100"},
+		{token.MILLISECONDS, "ms"},
+		{token.NUMBER, "2"},
 		{token.SLEEP, "Sleep"},
 		{token.NUMBER, "500"},
 		{token.MILLISECONDS, "ms"},
@@ -266,6 +275,13 @@ func TestLexTapeFile(t *testing.T) {
 		{token.AT, "@"},
 		{token.NUMBER, "1"},
 		{token.NUMBER, "3"},
+		{token.SCROLL_DOWN, "ScrollDown"},
+		{token.SCROLL_DOWN, "ScrollDown"},
+		{token.NUMBER, "2"},
+		{token.SCROLL_DOWN, "ScrollDown"},
+		{token.AT, "@"},
+		{token.NUMBER, "1"},
+		{token.NUMBER, "3"},
 		{token.ENTER, "Enter"},
 		{token.ENTER, "Enter"},
 		{token.NUMBER, "2"},
@@ -312,6 +328,13 @@ func TestLexTapeFile(t *testing.T) {
 		{token.PAGE_UP, "PageUp"},
 		{token.NUMBER, "2"},
 		{token.PAGE_UP, "PageUp"},
+		{token.AT, "@"},
+		{token.NUMBER, "1"},
+		{token.NUMBER, "3"},
+		{token.SCROLL_UP, "ScrollUp"},
+		{token.SCROLL_UP, "ScrollUp"},
+		{token.NUMBER, "2"},
+		{token.SCROLL_UP, "ScrollUp"},
 		{token.AT, "@"},
 		{token.NUMBER, "1"},
 		{token.NUMBER, "3"},

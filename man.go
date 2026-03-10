@@ -41,6 +41,8 @@ The following is a list of all possible commands in VHS:
 * %Up% [repeat]
 * %PageUp% [repeat]
 * %PageDown% [repeat]
+* %ScrollUp% [repeat]
+* %ScrollDown% [repeat]
 * %Hide%
 * %Show%
 * %Wait%[+Screen][@<timeout>] /<regexp>/

@@ -21,30 +21,28 @@ func NewVideoFilterBuilder(videoOpts *VideoOptions) *FilterComplexBuilder {
 	filterCode := strings.Builder{}
 	termWidth, termHeight := calcTermDimensions(*videoOpts.Style)
 
-	filterCode.WriteString(
-		fmt.Sprintf(`
+	_, _ = fmt.Fprintf(&filterCode, `
 		[0][1]overlay[merged];
 		[merged]scale=%d:%d:force_original_aspect_ratio=1[scaled];
 		[scaled]fps=%d,setpts=PTS/%f[speed];
 		[speed]pad=%d:%d:(ow-iw)/2:(oh-ih)/2:%s[padded];
 		[padded]fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s[padded]
 		`,
-			termWidth-double(videoOpts.Style.Padding),
-			termHeight-double(videoOpts.Style.Padding),
+		termWidth-double(videoOpts.Style.Padding),
+		termHeight-double(videoOpts.Style.Padding),
 
-			videoOpts.Framerate,
-			videoOpts.PlaybackSpeed,
+		videoOpts.Framerate,
+		videoOpts.PlaybackSpeed,
 
-			termWidth,
-			termHeight,
-			videoOpts.Style.BackgroundColor,
+		termWidth,
+		termHeight,
+		videoOpts.Style.BackgroundColor,
 
-			videoOpts.Style.Padding,
-			videoOpts.Style.Padding,
-			videoOpts.Style.Padding,
-			videoOpts.Style.Padding,
-			videoOpts.Style.BackgroundColor,
-		),
+		videoOpts.Style.Padding,
+		videoOpts.Style.Padding,
+		videoOpts.Style.Padding,
+		videoOpts.Style.Padding,
+		videoOpts.Style.BackgroundColor,
 	)
 
 	return &FilterComplexBuilder{
@@ -61,26 +59,24 @@ func NewScreenshotFilterComplexBuilder(style *StyleOptions) *FilterComplexBuilde
 	filterCode := strings.Builder{}
 	termWidth, termHeight := calcTermDimensions(*style)
 
-	filterCode.WriteString(
-		fmt.Sprintf(`
+	_, _ = fmt.Fprintf(&filterCode, `
 		[0][1]overlay[merged];
 		[merged]scale=%d:%d:force_original_aspect_ratio=1[scaled];
 		[scaled]pad=%d:%d:(ow-iw)/2:(oh-ih)/2:%s[padded];
 		[padded]fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s[padded]
 		`,
-			termWidth-double(style.Padding),
-			termHeight-double(style.Padding),
+		termWidth-double(style.Padding),
+		termHeight-double(style.Padding),
 
-			termWidth,
-			termHeight,
-			style.BackgroundColor,
+		termWidth,
+		termHeight,
+		style.BackgroundColor,
 
-			style.Padding,
-			style.Padding,
-			style.Padding,
-			style.Padding,
-			style.BackgroundColor,
-		),
+		style.Padding,
+		style.Padding,
+		style.Padding,
+		style.Padding,
+		style.BackgroundColor,
 	)
 
 	return &FilterComplexBuilder{

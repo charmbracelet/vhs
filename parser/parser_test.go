@@ -26,6 +26,8 @@ Right 3
 Left 3
 Up@50ms
 Down 2
+ScrollUp 4
+ScrollDown@100ms 2
 Ctrl+C
 Ctrl+L
 Alt+.
@@ -51,6 +53,8 @@ Wait@100ms /foobar/`
 		{Type: token.LEFT, Options: "", Args: "3"},
 		{Type: token.UP, Options: "50ms", Args: "1"},
 		{Type: token.DOWN, Options: "", Args: "2"},
+		{Type: token.SCROLL_UP, Options: "", Args: "4"},
+		{Type: token.SCROLL_DOWN, Options: "100ms", Args: "2"},
 		{Type: token.CTRL, Options: "", Args: "C"},
 		{Type: token.CTRL, Options: "", Args: "L"},
 		{Type: token.ALT, Options: "", Args: "."},
@@ -163,6 +167,9 @@ func TestParseTapeFile(t *testing.T) {
 		{Type: token.PAGE_DOWN, Options: "", Args: "1"},
 		{Type: token.PAGE_DOWN, Options: "", Args: "2"},
 		{Type: token.PAGE_DOWN, Options: "1s", Args: "3"},
+		{Type: token.SCROLL_DOWN, Options: "", Args: "1"},
+		{Type: token.SCROLL_DOWN, Options: "", Args: "2"},
+		{Type: token.SCROLL_DOWN, Options: "1s", Args: "3"},
 		{Type: token.ENTER, Options: "", Args: "1"},
 		{Type: token.ENTER, Options: "", Args: "2"},
 		{Type: token.ENTER, Options: "1s", Args: "3"},
@@ -184,6 +191,9 @@ func TestParseTapeFile(t *testing.T) {
 		{Type: token.PAGE_UP, Options: "", Args: "1"},
 		{Type: token.PAGE_UP, Options: "", Args: "2"},
 		{Type: token.PAGE_UP, Options: "1s", Args: "3"},
+		{Type: token.SCROLL_UP, Options: "", Args: "1"},
+		{Type: token.SCROLL_UP, Options: "", Args: "2"},
+		{Type: token.SCROLL_UP, Options: "1s", Args: "3"},
 		{Type: token.DOWN, Options: "", Args: "1"},
 		{Type: token.DOWN, Options: "", Args: "2"},
 		{Type: token.DOWN, Options: "1s", Args: "3"},
@@ -243,8 +253,52 @@ func TestParseCtrl(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			tape:    "Ctrl+Alt+Right",
-			wantErr: true,
+			name:     "should parse Ctrl+Left",
+			tape:     "Ctrl+Left",
+			wantArgs: []string{"Left"},
+			wantErr:  false,
+		},
+		{
+			name:     "should parse Ctrl+Right",
+			tape:     "Ctrl+Right",
+			wantArgs: []string{"Right"},
+			wantErr:  false,
+		},
+		{
+			name:     "should parse Ctrl+Up",
+			tape:     "Ctrl+Up",
+			wantArgs: []string{"Up"},
+			wantErr:  false,
+		},
+		{
+			name:     "should parse Ctrl+Down",
+			tape:     "Ctrl+Down",
+			wantArgs: []string{"Down"},
+			wantErr:  false,
+		},
+		{
+			name:     "should parse Ctrl+Alt+Left",
+			tape:     "Ctrl+Alt+Left",
+			wantArgs: []string{"Alt", "Left"},
+			wantErr:  false,
+		},
+		{
+			name:     "should parse Ctrl+Alt+Right",
+			tape:     "Ctrl+Alt+Right",
+			wantArgs: []string{"Alt", "Right"},
+			wantErr:  false,
+		},
+		{
+			name:     "should parse Ctrl+Alt+Up",
+			tape:     "Ctrl+Alt+Up",
+			wantArgs: []string{"Alt", "Up"},
+			wantErr:  false,
+		},
+		{
+			name:     "should parse Ctrl+Alt+Down",
+			tape:     "Ctrl+Alt+Down",
+			wantArgs: []string{"Alt", "Down"},
+			wantErr:  false,
 		},
 		{
 			name:     "Ctrl+Backspace",

@@ -40,36 +40,38 @@ type CommandFunc func(c parser.Command, v *VHS) error
 
 // CommandFuncs maps command types to their executable functions.
 var CommandFuncs = map[parser.CommandType]CommandFunc{
-	token.BACKSPACE:  ExecuteKey(input.Backspace),
-	token.DELETE:     ExecuteKey(input.Delete),
-	token.INSERT:     ExecuteKey(input.Insert),
-	token.DOWN:       ExecuteKey(input.ArrowDown),
-	token.ENTER:      ExecuteKey(input.Enter),
-	token.LEFT:       ExecuteKey(input.ArrowLeft),
-	token.RIGHT:      ExecuteKey(input.ArrowRight),
-	token.SPACE:      ExecuteKey(input.Space),
-	token.UP:         ExecuteKey(input.ArrowUp),
-	token.TAB:        ExecuteKey(input.Tab),
-	token.ESCAPE:     ExecuteKey(input.Escape),
-	token.PAGE_UP:    ExecuteKey(input.PageUp),
-	token.PAGE_DOWN:  ExecuteKey(input.PageDown),
-	token.HIDE:       ExecuteHide,
-	token.REQUIRE:    ExecuteRequire,
-	token.SHOW:       ExecuteShow,
-	token.SET:        ExecuteSet,
-	token.OUTPUT:     ExecuteOutput,
-	token.SLEEP:      ExecuteSleep,
-	token.TYPE:       ExecuteType,
-	token.CTRL:       ExecuteCtrl,
-	token.ALT:        ExecuteAlt,
-	token.SHIFT:      ExecuteShift,
-	token.ILLEGAL:    ExecuteNoop,
-	token.SCREENSHOT: ExecuteScreenshot,
-	token.COPY:       ExecuteCopy,
-	token.PASTE:      ExecutePaste,
-	token.ENV:        ExecuteEnv,
-	token.WAIT:       ExecuteWait,
-	token.OVERLAY:    ExecuteOverlay,
+	token.BACKSPACE:   ExecuteKey(input.Backspace),
+	token.DELETE:      ExecuteKey(input.Delete),
+	token.INSERT:      ExecuteKey(input.Insert),
+	token.DOWN:        ExecuteKey(input.ArrowDown),
+	token.ENTER:       ExecuteKey(input.Enter),
+	token.LEFT:        ExecuteKey(input.ArrowLeft),
+	token.RIGHT:       ExecuteKey(input.ArrowRight),
+	token.SPACE:       ExecuteKey(input.Space),
+	token.UP:          ExecuteKey(input.ArrowUp),
+	token.TAB:         ExecuteKey(input.Tab),
+	token.ESCAPE:      ExecuteKey(input.Escape),
+	token.PAGE_UP:     ExecuteKey(input.PageUp),
+	token.PAGE_DOWN:   ExecuteKey(input.PageDown),
+	token.SCROLL_UP:   ExecuteScroll(-1),
+	token.SCROLL_DOWN: ExecuteScroll(1),
+	token.HIDE:        ExecuteHide,
+	token.REQUIRE:     ExecuteRequire,
+	token.SHOW:        ExecuteShow,
+	token.SET:         ExecuteSet,
+	token.OUTPUT:      ExecuteOutput,
+	token.SLEEP:       ExecuteSleep,
+	token.TYPE:        ExecuteType,
+	token.CTRL:        ExecuteCtrl,
+	token.ALT:         ExecuteAlt,
+	token.SHIFT:       ExecuteShift,
+	token.ILLEGAL:     ExecuteNoop,
+	token.SCREENSHOT:  ExecuteScreenshot,
+	token.COPY:        ExecuteCopy,
+	token.PASTE:       ExecutePaste,
+	token.ENV:         ExecuteEnv,
+	token.WAIT:        ExecuteWait,
+  token.OVERLAY:    ExecuteOverlay,
 }
 
 // ExecuteNoop is a no-op command that does nothing.
@@ -98,6 +100,44 @@ func ExecuteKey(k input.Key) CommandFunc {
 			err = v.Page.Keyboard.Type(k)
 			if err != nil {
 				return fmt.Errorf("failed to type key %c: %w", k, err)
+			}
+			time.Sleep(typingSpeed)
+		}
+
+		return nil
+	}
+}
+
+// ExecuteScroll returns a command function that scrolls xterm's viewport.
+//
+// The direction argument is expected to be:
+//
+//	-1 for ScrollUp
+//	+1 for ScrollDown
+//
+// Each command repeat applies one viewport row movement with the same timing
+// semantics as other repeatable key-like commands (Options is the per-step
+// delay, Args is repeat count).
+//
+// A caller that wires an unexpected direction (for example 10) will still call
+// xterm's scroll API with that value and produce larger jumps per step.
+func ExecuteScroll(direction int) CommandFunc {
+	return func(c parser.Command, v *VHS) error {
+		typingSpeed, err := time.ParseDuration(c.Options)
+		if err != nil {
+			typingSpeed = v.Options.TypingSpeed
+		}
+		repeat, err := strconv.Atoi(c.Args)
+		if err != nil {
+			repeat = 1
+		}
+
+		for i := 0; i < repeat; i++ {
+			// ScrollUp/ScrollDown are viewport operations implemented directly via
+			// xterm's scroll API.
+			_, err = v.Page.Eval(fmt.Sprintf("() => term.scrollLines(%d)", direction))
+			if err != nil {
+				return fmt.Errorf("failed to scroll viewport: %w", err)
 			}
 			time.Sleep(typingSpeed)
 		}
@@ -193,6 +233,14 @@ func ExecuteCtrl(c parser.Command, v *VHS) error {
 			inputKey = &input.Space
 		case "Backspace":
 			inputKey = &input.Backspace
+		case "Left":
+			inputKey = &input.ArrowLeft
+		case "Right":
+			inputKey = &input.ArrowRight
+		case "Up":
+			inputKey = &input.ArrowUp
+		case "Down":
+			inputKey = &input.ArrowDown
 		default:
 			r := rune(key[0])
 			if k, ok := keymap[r]; ok {

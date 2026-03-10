@@ -51,7 +51,7 @@ func (opts *ScreenshotOptions) enableFrameCapture(path string) {
 
 // MakeScreenshots generates screenshots by given ScreenshotOptions.
 func MakeScreenshots(opts ScreenshotOptions) []*exec.Cmd {
-	cmds := []*exec.Cmd{}
+	cmds := []*exec.Cmd{} //nolint:prealloc
 
 	for path, frame := range opts.screenshots {
 		cursorStream := filepath.Join(opts.input, fmt.Sprintf(cursorFrameFormat, frame))
@@ -70,7 +70,7 @@ func MakeScreenshots(opts ScreenshotOptions) []*exec.Cmd {
 
 // buildFFopts assembles an ffmpeg command from some VideoOptions.
 func (opts *ScreenshotOptions) buildFFopts(targetFile, textStream, cursorStream string) []string {
-	var args []string
+	var args []string //nolint:prealloc
 	streamCounter := 2
 
 	streamBuilder := NewStreamBuilder(streamCounter, opts.input, opts.style)

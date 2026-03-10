@@ -26,7 +26,7 @@ func NewError(token token.Token, msg string) Error {
 type CommandType token.Type
 
 // CommandTypes is a list of the available commands that can be executed.
-var CommandTypes = []CommandType{ //nolint: deadcode
+var CommandTypes = []CommandType{
 	token.BACKSPACE,
 	token.DELETE,
 	token.INSERT,
@@ -39,6 +39,8 @@ var CommandTypes = []CommandType{ //nolint: deadcode
 	token.LEFT,
 	token.PAGE_UP,
 	token.PAGE_DOWN,
+	token.SCROLL_UP,
+	token.SCROLL_DOWN,
 	token.RIGHT,
 	token.SET,
 	token.OUTPUT,
@@ -148,7 +150,9 @@ func (p *Parser) parseCommand() []Command {
 		token.RIGHT,
 		token.UP,
 		token.PAGE_UP,
-		token.PAGE_DOWN:
+		token.PAGE_DOWN,
+		token.SCROLL_UP,
+		token.SCROLL_DOWN:
 		return []Command{p.parseKeypress(p.cur.Type)}
 	case token.SET:
 		return []Command{p.parseSet()}
@@ -326,6 +330,10 @@ func (p *Parser) parseCtrl() Command {
 			peek.Type == token.RIGHT_BRACKET,
 			peek.Type == token.CARET,
 			peek.Type == token.BACKSLASH,
+			peek.Type == token.LEFT,
+			peek.Type == token.RIGHT,
+			peek.Type == token.UP,
+			peek.Type == token.DOWN,
 			peek.Type == token.STRING && len(peek.Literal) == 1:
 			args = append(args, peek.Literal)
 		default:
@@ -822,7 +830,7 @@ func (p *Parser) parseSource() []Command {
 	}
 
 	// Check if tape exist
-	if _, err := os.Stat(srcPath); os.IsNotExist(err) {
+	if _, err := os.Stat(srcPath); os.IsNotExist(err) { //nolint:gosec
 		notFoundErr := fmt.Sprintf("File %s not found", srcPath)
 		p.errors = append(p.errors, NewError(p.peek, notFoundErr))
 		p.nextToken()
@@ -830,7 +838,7 @@ func (p *Parser) parseSource() []Command {
 	}
 
 	// Check if source tape contains nested Source command
-	d, err := os.ReadFile(srcPath)
+	d, err := os.ReadFile(srcPath) //nolint:gosec
 	if err != nil {
 		readErr := fmt.Sprintf("Unable to read file: %s", srcPath)
 		p.errors = append(p.errors, NewError(p.peek, readErr))
