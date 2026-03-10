@@ -71,7 +71,7 @@ var CommandFuncs = map[parser.CommandType]CommandFunc{
 	token.PASTE:       ExecutePaste,
 	token.ENV:         ExecuteEnv,
 	token.WAIT:        ExecuteWait,
-  token.OVERLAY:    ExecuteOverlay,
+	token.OVERLAY:     ExecuteOverlay,
 }
 
 // ExecuteNoop is a no-op command that does nothing.

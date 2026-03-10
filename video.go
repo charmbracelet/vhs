@@ -56,7 +56,7 @@ type VideoOptions struct {
 	Output        VideoOutputs
 	StartingFrame int
 	Style         *StyleOptions
-	CaptionFile string
+	CaptionFile   string
 }
 
 const (

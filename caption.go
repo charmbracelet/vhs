@@ -381,7 +381,7 @@ func GenerateCaptionFile(events []KeyEvent, overlays []OverlayEvent, videoOpts V
 	if err != nil {
 		return "", fmt.Errorf("failed to create caption file: %w", err)
 	}
-	defer f.Close()
+	defer f.Close() //nolint:errcheck
 
 	data := ASSHeaderData{
 		ResX:                  width,
@@ -411,7 +411,7 @@ func GenerateCaptionFile(events []KeyEvent, overlays []OverlayEvent, videoOpts V
 	if err := ASSHeader.Execute(f, data); err != nil {
 		return "", fmt.Errorf("failed to write caption header: %w", err)
 	}
-	fmt.Fprintln(f)
+	_, _ = fmt.Fprintln(f)
 
 	alpha := opacityToASSAlpha(opts.BoxOpacity)
 	highlightColor := hexToASSBGR(opts.HighlightColor)
@@ -424,13 +424,13 @@ func GenerateCaptionFile(events []KeyEvent, overlays []OverlayEvent, videoOpts V
 		plainText := captionWindowPlainText(normalized, w)
 		bgLine := fmt.Sprintf(`Dialogue: 0,%s,%s,KeysBG,,0,0,0,,{\3a&H%s&\1a&HFF&}%s`,
 			start, end, alpha, plainText)
-		fmt.Fprintln(f, bgLine)
+		_, _ = fmt.Fprintln(f, bgLine)
 
 		// Layer 1: visible colored text with no box
 		coloredText := captionWindowColoredText(normalized, w, highlightColor)
 		fgLine := fmt.Sprintf(`Dialogue: 1,%s,%s,KeysFG,,0,0,0,,%s`,
 			start, end, coloredText)
-		fmt.Fprintln(f, fgLine)
+		_, _ = fmt.Fprintln(f, fgLine)
 	}
 
 	overlayAlpha := opacityToASSAlpha(overlayOpts.BoxOpacity)
@@ -443,12 +443,12 @@ func GenerateCaptionFile(events []KeyEvent, overlays []OverlayEvent, videoOpts V
 		// Layer 2: invisible text with opaque box
 		bgLine := fmt.Sprintf(`Dialogue: 2,%s,%s,OverlayBG,,0,0,0,,{\3a&H%s&\1a&HFF&}%s`,
 			start, end, overlayAlpha, text)
-		fmt.Fprintln(f, bgLine)
+		_, _ = fmt.Fprintln(f, bgLine)
 
 		// Layer 3: visible text
 		fgLine := fmt.Sprintf(`Dialogue: 3,%s,%s,OverlayFG,,0,0,0,,%s`,
 			start, end, text)
-		fmt.Fprintln(f, fgLine)
+		_, _ = fmt.Fprintln(f, fgLine)
 	}
 
 	return assPath, nil
