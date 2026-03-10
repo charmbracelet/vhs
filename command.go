@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"sync/atomic"
 	"time"
 
 	"github.com/atotto/clipboard"
@@ -68,6 +69,7 @@ var CommandFuncs = map[parser.CommandType]CommandFunc{
 	token.PASTE:      ExecutePaste,
 	token.ENV:        ExecuteEnv,
 	token.WAIT:       ExecuteWait,
+	token.OVERLAY:    ExecuteOverlay,
 }
 
 // ExecuteNoop is a no-op command that does nothing.
@@ -455,6 +457,16 @@ var Settings = map[string]CommandFunc{
 	"CaptionMarginLeft":      ExecuteSetCaptionMarginLeft,
 	"CaptionMarginRight":     ExecuteSetCaptionMarginRight,
 	"CaptionMarginVertical":  ExecuteSetCaptionMarginVertical,
+	"OverlayFont":            ExecuteSetOverlayFont,
+	"OverlayFontSize":        ExecuteSetOverlayFontSize,
+	"OverlayFontColor":       ExecuteSetOverlayFontColor,
+	"OverlayBoxColor":        ExecuteSetOverlayBoxColor,
+	"OverlayBoxOpacity":      ExecuteSetOverlayBoxOpacity,
+	"OverlayBoxPadding":      ExecuteSetOverlayBoxPadding,
+	"OverlayAlignment":       ExecuteSetOverlayAlignment,
+	"OverlayMarginLeft":      ExecuteSetOverlayMarginLeft,
+	"OverlayMarginRight":     ExecuteSetOverlayMarginRight,
+	"OverlayMarginVertical":  ExecuteSetOverlayMarginVertical,
 }
 
 // ExecuteSet applies the settings on the running vhs specified by the
@@ -879,6 +891,112 @@ func ExecuteSetCaptionBoxPadding(c parser.Command, v *VHS) error {
 		return fmt.Errorf("failed to parse caption box padding: %w", err)
 	}
 	v.Options.Caption.BoxPadding = p
+	return nil
+}
+
+// ExecuteOverlay records a text overlay event at the current frame timestamp.
+func ExecuteOverlay(c parser.Command, v *VHS) error {
+	durationMs := int64(defaultOverlayDurationMs)
+	if c.Options != "" {
+		dur, err := time.ParseDuration(c.Options)
+		if err != nil {
+			return fmt.Errorf("failed to parse overlay duration: %w", err)
+		}
+		durationMs = dur.Milliseconds()
+	}
+
+	frameNum := atomic.LoadInt64(&v.currentFrame)
+	timeMs := frameNum * 1000 / int64(v.Options.Video.Framerate)
+
+	v.OverlayEvents = append(v.OverlayEvents, OverlayEvent{
+		StartMs:    timeMs,
+		DurationMs: durationMs,
+		Text:       c.Args,
+	})
+	return nil
+}
+
+// ExecuteSetOverlayFont sets the overlay font family.
+func ExecuteSetOverlayFont(c parser.Command, v *VHS) error {
+	v.Options.Overlay.Font = c.Args
+	return nil
+}
+
+// ExecuteSetOverlayFontSize sets the overlay font size.
+func ExecuteSetOverlayFontSize(c parser.Command, v *VHS) error {
+	size, err := strconv.Atoi(c.Args)
+	if err != nil {
+		return fmt.Errorf("failed to parse overlay font size: %w", err)
+	}
+	v.Options.Overlay.FontSize = size
+	return nil
+}
+
+// ExecuteSetOverlayFontColor sets the overlay text color.
+func ExecuteSetOverlayFontColor(c parser.Command, v *VHS) error {
+	v.Options.Overlay.FontColor = c.Args
+	return nil
+}
+
+// ExecuteSetOverlayBoxColor sets the overlay background box fill color.
+func ExecuteSetOverlayBoxColor(c parser.Command, v *VHS) error {
+	v.Options.Overlay.BoxColor = c.Args
+	return nil
+}
+
+// ExecuteSetOverlayBoxOpacity sets the overlay box opacity.
+func ExecuteSetOverlayBoxOpacity(c parser.Command, v *VHS) error {
+	opacity, err := strconv.ParseFloat(c.Args, 64)
+	if err != nil {
+		return fmt.Errorf("failed to parse overlay box opacity: %w", err)
+	}
+	v.Options.Overlay.BoxOpacity = opacity
+	return nil
+}
+
+// ExecuteSetOverlayBoxPadding sets the overlay box padding.
+func ExecuteSetOverlayBoxPadding(c parser.Command, v *VHS) error {
+	p, err := strconv.Atoi(c.Args)
+	if err != nil {
+		return fmt.Errorf("failed to parse overlay box padding: %w", err)
+	}
+	v.Options.Overlay.BoxPadding = p
+	return nil
+}
+
+// ExecuteSetOverlayAlignment sets the overlay alignment.
+func ExecuteSetOverlayAlignment(c parser.Command, v *VHS) error {
+	v.Options.Overlay.Alignment = CaptionAlignment(c.Args)
+	return nil
+}
+
+// ExecuteSetOverlayMarginLeft sets the overlay left margin.
+func ExecuteSetOverlayMarginLeft(c parser.Command, v *VHS) error {
+	m, err := strconv.Atoi(c.Args)
+	if err != nil {
+		return fmt.Errorf("failed to parse overlay margin left: %w", err)
+	}
+	v.Options.Overlay.MarginLeft = m
+	return nil
+}
+
+// ExecuteSetOverlayMarginRight sets the overlay right margin.
+func ExecuteSetOverlayMarginRight(c parser.Command, v *VHS) error {
+	m, err := strconv.Atoi(c.Args)
+	if err != nil {
+		return fmt.Errorf("failed to parse overlay margin right: %w", err)
+	}
+	v.Options.Overlay.MarginRight = m
+	return nil
+}
+
+// ExecuteSetOverlayMarginVertical sets the overlay vertical margin.
+func ExecuteSetOverlayMarginVertical(c parser.Command, v *VHS) error {
+	m, err := strconv.Atoi(c.Args)
+	if err != nil {
+		return fmt.Errorf("failed to parse overlay margin vertical: %w", err)
+	}
+	v.Options.Overlay.MarginVertical = m
 	return nil
 }
 

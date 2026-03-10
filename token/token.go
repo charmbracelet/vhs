@@ -119,6 +119,18 @@ const (
 	CAPTION_MARGIN_VERTICAL  = "CAPTION_MARGIN_VERTICAL"  //nolint:revive
 	CAPTION_ALIGNMENT        = "CAPTION_ALIGNMENT"        //nolint:revive
 	CAPTION_BOX_PADDING      = "CAPTION_BOX_PADDING"      //nolint:revive
+
+	OVERLAY                 = "OVERLAY"
+	OVERLAY_FONT            = "OVERLAY_FONT"             //nolint:revive
+	OVERLAY_FONT_SIZE       = "OVERLAY_FONT_SIZE"        //nolint:revive
+	OVERLAY_FONT_COLOR      = "OVERLAY_FONT_COLOR"       //nolint:revive
+	OVERLAY_BOX_COLOR       = "OVERLAY_BOX_COLOR"        //nolint:revive
+	OVERLAY_BOX_OPACITY     = "OVERLAY_BOX_OPACITY"      //nolint:revive
+	OVERLAY_BOX_PADDING     = "OVERLAY_BOX_PADDING"      //nolint:revive
+	OVERLAY_ALIGNMENT       = "OVERLAY_ALIGNMENT"        //nolint:revive
+	OVERLAY_MARGIN_LEFT     = "OVERLAY_MARGIN_LEFT"      //nolint:revive
+	OVERLAY_MARGIN_RIGHT    = "OVERLAY_MARGIN_RIGHT"     //nolint:revive
+	OVERLAY_MARGIN_VERTICAL = "OVERLAY_MARGIN_VERTICAL"  //nolint:revive
 )
 
 // Keywords maps keyword strings to tokens.
@@ -190,6 +202,17 @@ var Keywords = map[string]Type{
 	"CaptionMarginVertical":  CAPTION_MARGIN_VERTICAL,
 	"CaptionAlignment":       CAPTION_ALIGNMENT,
 	"CaptionBoxPadding":      CAPTION_BOX_PADDING,
+	"Overlay":                OVERLAY,
+	"OverlayFont":            OVERLAY_FONT,
+	"OverlayFontSize":        OVERLAY_FONT_SIZE,
+	"OverlayFontColor":       OVERLAY_FONT_COLOR,
+	"OverlayBoxColor":        OVERLAY_BOX_COLOR,
+	"OverlayBoxOpacity":      OVERLAY_BOX_OPACITY,
+	"OverlayBoxPadding":      OVERLAY_BOX_PADDING,
+	"OverlayAlignment":       OVERLAY_ALIGNMENT,
+	"OverlayMarginLeft":      OVERLAY_MARGIN_LEFT,
+	"OverlayMarginRight":     OVERLAY_MARGIN_RIGHT,
+	"OverlayMarginVertical":  OVERLAY_MARGIN_VERTICAL,
 	"true":                   BOOLEAN,
 	"false":                  BOOLEAN,
 	"Screenshot":             SCREENSHOT,
@@ -209,7 +232,11 @@ func IsSetting(t Type) bool {
 		CAPTION_HIGHLIGHT_COLOR, CAPTION_FONT_COLOR, CAPTION_BOX_COLOR,
 		CAPTION_BOX_OPACITY, CAPTION_KEY_STYLE,
 		CAPTION_MARGIN_LEFT, CAPTION_MARGIN_RIGHT, CAPTION_MARGIN_VERTICAL,
-		CAPTION_ALIGNMENT, CAPTION_BOX_PADDING:
+		CAPTION_ALIGNMENT, CAPTION_BOX_PADDING,
+		OVERLAY_FONT, OVERLAY_FONT_SIZE, OVERLAY_FONT_COLOR,
+		OVERLAY_BOX_COLOR, OVERLAY_BOX_OPACITY, OVERLAY_BOX_PADDING,
+		OVERLAY_ALIGNMENT, OVERLAY_MARGIN_LEFT, OVERLAY_MARGIN_RIGHT,
+		OVERLAY_MARGIN_VERTICAL:
 		return true
 	default:
 		return false
@@ -222,7 +249,8 @@ func IsCommand(t Type) bool {
 	case TYPE, SLEEP,
 		UP, DOWN, RIGHT, LEFT, PAGE_UP, PAGE_DOWN,
 		ENTER, BACKSPACE, DELETE, TAB,
-		ESCAPE, HOME, INSERT, END, CTRL, SOURCE, SCREENSHOT, COPY, PASTE, WAIT:
+		ESCAPE, HOME, INSERT, END, CTRL, SOURCE, SCREENSHOT, COPY, PASTE, WAIT,
+		OVERLAY:
 		return true
 	default:
 		return false

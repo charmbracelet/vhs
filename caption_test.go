@@ -12,7 +12,7 @@ import (
 func keyEvents(ms ...int64) []KeyEvent {
 	out := make([]KeyEvent, len(ms))
 	for i, t := range ms {
-		out[i] = KeyEvent{Ms: t, Key: "a"}
+		out[i] = KeyEvent{StartMs: t, Key: "a"}
 	}
 	return out
 }
@@ -272,15 +272,15 @@ func TestGenerateCaptionFile(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	events := []KeyEvent{
-		{Ms: 0, Key: "h"},
-		{Ms: 100, Key: "i"},
-		{Ms: 200, Key: "Enter"},
+		{StartMs: 0, Key: "h"},
+		{StartMs: 100, Key: "i"},
+		{StartMs: 200, Key: "Enter"},
 	}
 	opts := DefaultCaptionOptions()
 	opts.Enabled = true
 
 	videoOpts := VideoOptions{PlaybackSpeed: 1.0, Input: tmpDir, Style: &StyleOptions{Width: 800, Height: 600}}
-	path, err := GenerateCaptionFile(events, videoOpts, opts)
+	path, err := GenerateCaptionFile(events, nil, videoOpts, opts, DefaultOverlayOptions())
 	if err != nil {
 		t.Fatalf("GenerateCaptionFile failed: %v", err)
 	}
@@ -317,13 +317,13 @@ func TestGenerateCaptionFile(t *testing.T) {
 func TestGenerateCaptionFileDefaultFont(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	events := []KeyEvent{{Ms: 0, Key: "a"}}
+	events := []KeyEvent{{StartMs: 0, Key: "a"}}
 	opts := DefaultCaptionOptions()
 	opts.Enabled = true
 
 	// When CaptionFont is empty, should default to the OS-appropriate font
 	videoOpts := VideoOptions{PlaybackSpeed: 1.0, Input: tmpDir, Style: &StyleOptions{Width: 800, Height: 600}}
-	path, err := GenerateCaptionFile(events, videoOpts, opts)
+	path, err := GenerateCaptionFile(events, nil, videoOpts, opts, DefaultOverlayOptions())
 	if err != nil {
 		t.Fatalf("GenerateCaptionFile failed: %v", err)
 	}
@@ -343,13 +343,13 @@ func TestGenerateCaptionFileDefaultFont(t *testing.T) {
 func TestGenerateCaptionFileExplicitFontOverride(t *testing.T) {
 	tmpDir := t.TempDir()
 
-	events := []KeyEvent{{Ms: 0, Key: "a"}}
+	events := []KeyEvent{{StartMs: 0, Key: "a"}}
 	opts := DefaultCaptionOptions()
 	opts.Enabled = true
 	opts.Font = "JetBrainsMonoNL NFM"
 
 	videoOpts := VideoOptions{PlaybackSpeed: 1.0, Input: tmpDir, Style: &StyleOptions{Width: 800, Height: 600}}
-	path, err := GenerateCaptionFile(events, videoOpts, opts)
+	path, err := GenerateCaptionFile(events, nil, videoOpts, opts, DefaultOverlayOptions())
 	if err != nil {
 		t.Fatalf("GenerateCaptionFile failed: %v", err)
 	}
@@ -373,14 +373,14 @@ func TestGenerateCaptionFilePlaybackSpeed(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	events := []KeyEvent{
-		{Ms: 0, Key: "a"},
-		{Ms: 2000, Key: "b"},
+		{StartMs: 0, Key: "a"},
+		{StartMs: 2000, Key: "b"},
 	}
 	opts := DefaultCaptionOptions()
 	opts.Enabled = true
 
 	videoOpts := VideoOptions{PlaybackSpeed: 2.0, Input: tmpDir, Style: &StyleOptions{Width: 800, Height: 600}}
-	path, err := GenerateCaptionFile(events, videoOpts, opts)
+	path, err := GenerateCaptionFile(events, nil, videoOpts, opts, DefaultOverlayOptions())
 	if err != nil {
 		t.Fatalf("GenerateCaptionFile failed: %v", err)
 	}
@@ -403,7 +403,7 @@ func TestCaptionFontSizeConsistentAcrossHeights(t *testing.T) {
 	for _, height := range []int{384, 600, 768, 1080} {
 		t.Run(fmt.Sprintf("height_%d", height), func(t *testing.T) {
 			tmpDir := t.TempDir()
-			events := []KeyEvent{{Ms: 0, Key: "a"}}
+			events := []KeyEvent{{StartMs: 0, Key: "a"}}
 			opts := DefaultCaptionOptions()
 			opts.FontSize = fontSize
 
@@ -412,7 +412,7 @@ func TestCaptionFontSizeConsistentAcrossHeights(t *testing.T) {
 				Input:         tmpDir,
 				Style:         &StyleOptions{Width: 800, Height: height},
 			}
-			path, err := GenerateCaptionFile(events, videoOpts, opts)
+			path, err := GenerateCaptionFile(events, nil, videoOpts, opts, DefaultOverlayOptions())
 			if err != nil {
 				t.Fatalf("GenerateCaptionFile failed: %v", err)
 			}
@@ -440,7 +440,7 @@ func TestGenerateCaptionFileEmpty(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	videoOpts := VideoOptions{PlaybackSpeed: 1.0, Input: tmpDir, Style: &StyleOptions{Width: 800, Height: 600}}
-	path, err := GenerateCaptionFile([]KeyEvent{}, videoOpts, DefaultCaptionOptions())
+	path, err := GenerateCaptionFile([]KeyEvent{}, nil, videoOpts, DefaultCaptionOptions(), DefaultOverlayOptions())
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}

@@ -10,6 +10,52 @@ import (
 	"text/template"
 )
 
+// OverlayEvent represents a single text overlay at a specific point in the recording.
+type OverlayEvent struct {
+	StartMs    int64
+	DurationMs int64
+	Text       string
+}
+
+// OverlayOptions holds configuration for text overlays.
+type OverlayOptions struct {
+	Font           string
+	FontSize       int
+	Alignment      CaptionAlignment
+	FontColor      string // #RRGGBB hex
+	BoxColor       string // #RRGGBB hex
+	BoxOpacity     float64
+	BoxPadding     int
+	MarginLeft     int
+	MarginRight    int
+	MarginVertical int
+}
+
+const defaultOverlayDurationMs = 3000
+
+// DefaultOverlayOptions returns overlay options with sensible defaults.
+func DefaultOverlayOptions() OverlayOptions {
+	font := "monospace"
+	switch runtime.GOOS {
+	case "windows":
+		font = "Consolas"
+	case "darwin":
+		font = "Menlo"
+	}
+	return OverlayOptions{
+		Font:           font,
+		FontSize:       22,
+		Alignment:      AlignTopCenter,
+		FontColor:      "#FFFFFF",
+		BoxColor:       "#000000",
+		BoxOpacity:     0.5,
+		BoxPadding:     10,
+		MarginLeft:     20,
+		MarginRight:    20,
+		MarginVertical: 20,
+	}
+}
+
 // CaptionOptions holds configuration for keystroke captioning.
 type CaptionOptions struct {
 	Enabled           bool
@@ -171,10 +217,10 @@ func captionWindows(events []KeyEvent, inactivityTimerMs, maxKeys int) []Caption
 		isTruncated := windowStart > sessionStart
 
 		var showUntil int
-		if i+1 < n && int(events[i+1].Ms)-int(current.Ms) < inactivityTimerMs {
-			showUntil = int(events[i+1].Ms)
+		if i+1 < n && int(events[i+1].StartMs)-int(current.StartMs) < inactivityTimerMs {
+			showUntil = int(events[i+1].StartMs)
 		} else {
-			showUntil = int(current.Ms) + inactivityTimerMs
+			showUntil = int(current.StartMs) + inactivityTimerMs
 			sessionStart = i + 1
 		}
 
@@ -203,6 +249,9 @@ func msToASS(ms int) string {
 
 func assEscape(s string) string {
 	s = strings.ReplaceAll(s, `\`, `\\`)
+	// Restore ASS newline sequences that were double-escaped
+	s = strings.ReplaceAll(s, `\\N`, `\N`)
+	s = strings.ReplaceAll(s, `\\n`, `\n`)
 	s = strings.ReplaceAll(s, "{", `\{`)
 	s = strings.ReplaceAll(s, "}", `\}`)
 	return s
@@ -255,30 +304,47 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+{{- if .HasCaption}}
 Style: KeysBG,{{.Font}},{{.FontSize}},&H00FFFFFF,&H000000FF,{{.BoxColor}},&H00000000,1,0,0,0,100,100,0,0,3,{{.BoxPadding}},0,{{.Alignment}},{{.MarginLeft}},{{.MarginRight}},{{.MarginVertical}},1
 Style: KeysFG,{{.Font}},{{.FontSize}},{{.FontColor}},&H000000FF,&H00000000,&H00000000,1,0,0,0,100,100,0,0,1,0,0,{{.Alignment}},{{.MarginLeft}},{{.MarginRight}},{{.MarginVertical}},1
+{{- end}}
+{{- if .HasOverlay}}
+Style: OverlayBG,{{.OverlayFont}},{{.OverlayFontSize}},&H00FFFFFF,&H000000FF,{{.OverlayBoxColor}},&H00000000,1,0,0,0,100,100,0,0,3,{{.OverlayBoxPadding}},0,{{.OverlayAlignment}},{{.OverlayMarginLeft}},{{.OverlayMarginRight}},{{.OverlayMarginVertical}},1
+Style: OverlayFG,{{.OverlayFont}},{{.OverlayFontSize}},{{.OverlayFontColor}},&H000000FF,&H00000000,&H00000000,1,0,0,0,100,100,0,0,1,0,0,{{.OverlayAlignment}},{{.OverlayMarginLeft}},{{.OverlayMarginRight}},{{.OverlayMarginVertical}},1
+{{- end}}
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text`
 
 type ASSHeaderData struct {
-	ResX, ResY     int
-	Font           string
-	FontColor      string
-	FontSize       int
-	Alignment      int
-	MarginLeft     int
-	MarginRight    int
-	MarginVertical int
-	BoxColor       string
-	BoxPadding     int
+	ResX, ResY            int
+	Font                  string
+	FontColor             string
+	FontSize              int
+	Alignment             int
+	MarginLeft            int
+	MarginRight           int
+	MarginVertical        int
+	BoxColor              string
+	BoxPadding            int
+	HasCaption            bool
+	HasOverlay            bool
+	OverlayFont           string
+	OverlayFontColor      string
+	OverlayFontSize       int
+	OverlayAlignment      int
+	OverlayMarginLeft     int
+	OverlayMarginRight    int
+	OverlayMarginVertical int
+	OverlayBoxColor       string
+	OverlayBoxPadding     int
 }
 
 var ASSHeader = template.Must(template.New("captionASS").Parse(ASSHeaderTemplate))
 
-// GenerateCaptionFile creates an ASS subtitle file from key events and returns its path.
-func GenerateCaptionFile(events []KeyEvent, videoOpts VideoOptions, opts CaptionOptions) (string, error) {
-	if len(events) == 0 {
+// GenerateCaptionFile creates an ASS subtitle file from key events and/or overlay events and returns its path.
+func GenerateCaptionFile(events []KeyEvent, overlays []OverlayEvent, videoOpts VideoOptions, opts CaptionOptions, overlayOpts OverlayOptions) (string, error) {
+	if len(events) == 0 && len(overlays) == 0 {
 		return "", nil
 	}
 
@@ -286,18 +352,27 @@ func GenerateCaptionFile(events []KeyEvent, videoOpts VideoOptions, opts Caption
 	playbackSpeed := videoOpts.PlaybackSpeed
 	tempDir := videoOpts.Input
 
+	// Normalize caption events: apply key style and adjust for playback speed.
 	normalized := make([]KeyEvent, len(events))
 	for i, e := range events {
 		normalized[i] = KeyEvent{
-			Ms:  e.Ms,
-			Key: opts.KeyStyle.Normalize(e.Key),
+			StartMs: e.StartMs,
+			Key:     opts.KeyStyle.Normalize(e.Key),
 		}
 	}
 
-	// Adjust timestamps for playback speed
+	// Normalize overlay events: copy so we can adjust timestamps in place.
+	normalizedOverlays := make([]OverlayEvent, len(overlays))
+	copy(normalizedOverlays, overlays)
+
+	// Adjust all timestamps for playback speed.
 	if playbackSpeed != 0 && playbackSpeed != 1.0 {
 		for i := range normalized {
-			normalized[i].Ms = int64(float64(normalized[i].Ms) / playbackSpeed)
+			normalized[i].StartMs = int64(float64(normalized[i].StartMs) / playbackSpeed)
+		}
+		for i := range normalizedOverlays {
+			normalizedOverlays[i].StartMs = int64(float64(normalizedOverlays[i].StartMs) / playbackSpeed)
+			normalizedOverlays[i].DurationMs = int64(float64(normalizedOverlays[i].DurationMs) / playbackSpeed)
 		}
 	}
 
@@ -309,18 +384,30 @@ func GenerateCaptionFile(events []KeyEvent, videoOpts VideoOptions, opts Caption
 	defer f.Close()
 
 	data := ASSHeaderData{
-		ResX:           width,
-		ResY:           height,
-		Font:           opts.Font,
-		FontSize:       opts.FontSize,
-		Alignment:      opts.Alignment.ASSValue(),
-		MarginLeft:     opts.MarginLeft,
-		MarginRight:    opts.MarginRight,
-		MarginVertical: opts.MarginVertical,
-		BoxPadding:     opts.BoxPadding,
-		FontColor:      hexToASSBGR(opts.FontColor),
-		BoxColor:       hexToASSBGR(opts.BoxColor),
+		ResX:                  width,
+		ResY:                  height,
+		HasCaption:            len(events) > 0,
+		HasOverlay:            len(overlays) > 0,
+		Font:                  opts.Font,
+		FontSize:              opts.FontSize,
+		Alignment:             opts.Alignment.ASSValue(),
+		MarginLeft:            opts.MarginLeft,
+		MarginRight:           opts.MarginRight,
+		MarginVertical:        opts.MarginVertical,
+		BoxPadding:            opts.BoxPadding,
+		FontColor:             hexToASSBGR(opts.FontColor),
+		BoxColor:              hexToASSBGR(opts.BoxColor),
+		OverlayFont:           overlayOpts.Font,
+		OverlayFontSize:       overlayOpts.FontSize,
+		OverlayAlignment:      overlayOpts.Alignment.ASSValue(),
+		OverlayMarginLeft:     overlayOpts.MarginLeft,
+		OverlayMarginRight:    overlayOpts.MarginRight,
+		OverlayMarginVertical: overlayOpts.MarginVertical,
+		OverlayBoxPadding:     overlayOpts.BoxPadding,
+		OverlayFontColor:      hexToASSBGR(overlayOpts.FontColor),
+		OverlayBoxColor:       hexToASSBGR(overlayOpts.BoxColor),
 	}
+
 	if err := ASSHeader.Execute(f, data); err != nil {
 		return "", fmt.Errorf("failed to write caption header: %w", err)
 	}
@@ -330,7 +417,7 @@ func GenerateCaptionFile(events []KeyEvent, videoOpts VideoOptions, opts Caption
 	highlightColor := hexToASSBGR(opts.HighlightColor)
 
 	for _, w := range captionWindows(normalized, opts.InactivityTimerMs, max(opts.MaxKeysOnscreen, 1)) {
-		start := msToASS(int(normalized[w.Last].Ms))
+		start := msToASS(int(normalized[w.Last].StartMs))
 		end := msToASS(w.ShowUntil)
 
 		// Layer 0: invisible text with seamless opaque box (no inline overrides = no seams)
@@ -343,6 +430,24 @@ func GenerateCaptionFile(events []KeyEvent, videoOpts VideoOptions, opts Caption
 		coloredText := captionWindowColoredText(normalized, w, highlightColor)
 		fgLine := fmt.Sprintf(`Dialogue: 1,%s,%s,KeysFG,,0,0,0,,%s`,
 			start, end, coloredText)
+		fmt.Fprintln(f, fgLine)
+	}
+
+	overlayAlpha := opacityToASSAlpha(overlayOpts.BoxOpacity)
+
+	for _, o := range normalizedOverlays {
+		start := msToASS(int(o.StartMs))
+		end := msToASS(int(o.StartMs + o.DurationMs))
+		text := assEscape(o.Text)
+
+		// Layer 2: invisible text with opaque box
+		bgLine := fmt.Sprintf(`Dialogue: 2,%s,%s,OverlayBG,,0,0,0,,{\3a&H%s&\1a&HFF&}%s`,
+			start, end, overlayAlpha, text)
+		fmt.Fprintln(f, bgLine)
+
+		// Layer 3: visible text
+		fgLine := fmt.Sprintf(`Dialogue: 3,%s,%s,OverlayFG,,0,0,0,,%s`,
+			start, end, text)
 		fmt.Fprintln(f, fgLine)
 	}
 

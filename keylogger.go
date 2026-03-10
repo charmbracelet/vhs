@@ -6,8 +6,8 @@ import (
 
 // KeyEvent represents a single key press and timing information.
 type KeyEvent struct {
-	// Ms is the number of milliseconds relative to the recording start.
-	Ms int64 `json:"ms"`
+	// StartMs is the number of milliseconds relative to the recording start.
+	StartMs int64 `json:"ms"`
 
 	// Key is the string representation of the key pressed.
 	Key string `json:"key"`
@@ -60,8 +60,8 @@ func (l *KeyLogger) LogKey(key string) {
 	timeMs := frameNum * 1000 / int64(l.framerate)
 
 	event := KeyEvent{
-		Ms:  timeMs,
-		Key: key,
+		StartMs: timeMs,
+		Key:     key,
 	}
 	l.events = append(l.events, event)
 }

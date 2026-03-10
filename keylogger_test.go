@@ -25,16 +25,16 @@ func TestKeyLogger_Basic(t *testing.T) {
 	}
 
 	// Verify ordering of events
-	if l.events[0].Ms >= l.events[1].Ms {
+	if l.events[0].StartMs >= l.events[1].StartMs {
 		t.Error("Expected first event to have earlier timestamp")
 	}
 
 	// Verify correct timestamps
-	if l.events[0].Ms != 0 {
-		t.Errorf("Expected first event at 0ms, got %d", l.events[0].Ms)
+	if l.events[0].StartMs != 0 {
+		t.Errorf("Expected first event at 0ms, got %d", l.events[0].StartMs)
 	}
-	if l.events[1].Ms != 100 {
-		t.Errorf("Expected second event at 100ms, got %d", l.events[1].Ms)
+	if l.events[1].StartMs != 100 {
+		t.Errorf("Expected second event at 100ms, got %d", l.events[1].StartMs)
 	}
 
 	// Verify correct keys
@@ -139,8 +139,8 @@ func TestKeyLogger_FrameAlignment(t *testing.T) {
 			}
 
 			for i, want := range tt.wantMs {
-				if l.events[i].Ms != want {
-					t.Errorf("Event %d: expected %dms, got %dms", i, want, l.events[i].Ms)
+				if l.events[i].StartMs != want {
+					t.Errorf("Event %d: expected %dms, got %dms", i, want, l.events[i].StartMs)
 				}
 			}
 

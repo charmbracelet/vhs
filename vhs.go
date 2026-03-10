@@ -22,20 +22,21 @@ import (
 
 // VHS is the object that controls the setup.
 type VHS struct {
-	Options      *Options
-	Errors       []error
-	Page         *rod.Page
-	browser      *rod.Browser
-	TextCanvas   *rod.Element
-	CursorCanvas *rod.Element
-	mutex        *sync.Mutex
-	started      bool
-	recording    bool
-	tty          *exec.Cmd
-	totalFrames  int
-	currentFrame int64
-	close        func() error
-	KeyLogger    *KeyLogger
+	Options       *Options
+	Errors        []error
+	Page          *rod.Page
+	browser       *rod.Browser
+	TextCanvas    *rod.Element
+	CursorCanvas  *rod.Element
+	mutex         *sync.Mutex
+	started       bool
+	recording     bool
+	tty           *exec.Cmd
+	totalFrames   int
+	currentFrame  int64
+	close         func() error
+	KeyLogger     *KeyLogger
+	OverlayEvents []OverlayEvent
 }
 
 // Options is the set of options for the setup.
@@ -56,6 +57,7 @@ type Options struct {
 	Screenshot    ScreenshotOptions
 	Style         StyleOptions
 	Caption       CaptionOptions
+	Overlay       OverlayOptions
 }
 
 const (
@@ -112,6 +114,7 @@ func DefaultVHSOptions() Options {
 		WaitTimeout:   defaultWaitTimeout,
 		WaitPattern:   defaultWaitPattern,
 		Caption:       DefaultCaptionOptions(),
+		Overlay:       DefaultOverlayOptions(),
 	}
 }
 
