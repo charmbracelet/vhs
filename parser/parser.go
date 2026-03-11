@@ -58,6 +58,9 @@ var CommandTypes = []CommandType{
 	token.COPY,
 	token.PASTE,
 	token.ENV,
+	token.OVERLAY,
+	token.CAPTION_ON,
+	token.CAPTION_OFF,
 }
 
 // String returns the string representation of the command.
@@ -185,6 +188,12 @@ func (p *Parser) parseCommand() []Command {
 		return []Command{p.parsePaste()}
 	case token.ENV:
 		return []Command{p.parseEnv()}
+	case token.OVERLAY:
+		return []Command{p.parseOverlay()}
+	case token.CAPTION_ON:
+		return []Command{p.parseCaptionOn()}
+	case token.CAPTION_OFF:
+		return []Command{p.parseCaptionOff()}
 	default:
 		p.errors = append(p.errors, NewError(p.cur, "Invalid command: "+p.cur.Literal))
 		return []Command{{Type: token.ILLEGAL}}
@@ -496,22 +505,10 @@ func (p *Parser) parseSet() Command {
 	case token.MARGIN_FILL:
 		cmd.Args = p.peek.Literal
 		p.nextToken()
-
-		marginFill := p.cur.Literal
-
-		// Check if margin color is a valid hex string
-		if strings.HasPrefix(marginFill, "#") {
-			_, err := strconv.ParseUint(marginFill[1:], 16, 64)
-
-			if err != nil || len(marginFill) != 7 {
-				p.errors = append(
-					p.errors,
-					NewError(
-						p.cur,
-						"\""+marginFill+"\" is not a valid color.",
-					),
-				)
-			}
+		// Margin fill can take non-hex values, so only check on hex values
+		if strings.HasPrefix(p.cur.Literal, "#") && !isValidHexColor(p.cur.Literal) {
+			p.errors = append(p.errors,
+				NewError(p.cur, "\""+p.cur.Literal+"\" is not a valid color."))
 		}
 	case token.CURSOR_BLINK:
 		cmd.Args = p.peek.Literal
@@ -522,6 +519,123 @@ func (p *Parser) parseSet() Command {
 				p.errors,
 				NewError(p.cur, "expected boolean value."),
 			)
+		}
+
+	case token.CAPTION_KEY_STYLE:
+		cmd.Args = p.peek.Literal
+		p.nextToken()
+		if p.cur.Literal != "vim" && p.cur.Literal != "icon" {
+			p.errors = append(
+				p.errors,
+				NewError(p.cur, "CaptionKeyStyle must be \"vim\" or \"icon\""),
+			)
+		}
+
+	case token.CAPTION_ALIGNMENT:
+		cmd.Args = p.peek.Literal
+		p.nextToken()
+		validAlignments := map[string]bool{
+			"bottom-left": true, "bottom-center": true, "bottom-right": true,
+			"middle-left": true, "middle-center": true, "middle-right": true,
+			"top-left": true, "top-center": true, "top-right": true,
+		}
+		if !validAlignments[p.cur.Literal] {
+			p.errors = append(
+				p.errors,
+				NewError(p.cur, "CaptionAlignment must be one of: bottom-left, bottom-center, bottom-right, middle-left, middle-center, middle-right, top-left, top-center, top-right"),
+			)
+		}
+
+	case token.CAPTION_BOX_OPACITY:
+		cmd.Args = p.peek.Literal
+		p.nextToken()
+		val, err := strconv.ParseFloat(p.cur.Literal, 64)
+		if err != nil || val < 0 || val > 1 {
+			p.errors = append(
+				p.errors,
+				NewError(p.cur, "CaptionBoxOpacity must be a float between 0 and 1"),
+			)
+		}
+
+	case token.CAPTION_FONT:
+		cmd.Args = p.peek.Literal
+		p.nextToken()
+		if len(p.cur.Literal) > 31 {
+			p.errors = append(p.errors,
+				NewError(p.cur, "CaptionFont must not be longer than 31 characters per ASS specification"))
+		}
+
+	case token.CAPTION_HIGHLIGHT_COLOR:
+		cmd.Args = p.peek.Literal
+		p.nextToken()
+		if !isValidHexColor(p.cur.Literal) {
+			p.errors = append(p.errors,
+				NewError(p.cur, "CaptionHighlightColor must be a hex color in #RRGGBB format"))
+		}
+
+	case token.CAPTION_FONT_COLOR:
+		cmd.Args = p.peek.Literal
+		p.nextToken()
+		if !isValidHexColor(p.cur.Literal) {
+			p.errors = append(p.errors,
+				NewError(p.cur, "CaptionFontColor must be a hex color in #RRGGBB format"))
+		}
+
+	case token.CAPTION_BOX_COLOR:
+		cmd.Args = p.peek.Literal
+		p.nextToken()
+		if !isValidHexColor(p.cur.Literal) {
+			p.errors = append(p.errors,
+				NewError(p.cur, "CaptionBoxColor must be a hex color in #RRGGBB format"))
+		}
+
+	case token.CAPTION_INACTIVITY_TIMER:
+		cmd.Args = p.parseTime()
+
+	case token.OVERLAY_FONT:
+		cmd.Args = p.peek.Literal
+		p.nextToken()
+		if len(p.cur.Literal) > 31 {
+			p.errors = append(p.errors,
+				NewError(p.cur, "OverlayFont must not be longer than 31 characters per ASS specification"))
+		}
+
+	case token.OVERLAY_FONT_COLOR:
+		cmd.Args = p.peek.Literal
+		p.nextToken()
+		if !isValidHexColor(p.cur.Literal) {
+			p.errors = append(p.errors,
+				NewError(p.cur, "OverlayFontColor must be a hex color in #RRGGBB format"))
+		}
+
+	case token.OVERLAY_BOX_COLOR:
+		cmd.Args = p.peek.Literal
+		p.nextToken()
+		if !isValidHexColor(p.cur.Literal) {
+			p.errors = append(p.errors,
+				NewError(p.cur, "OverlayBoxColor must be a hex color in #RRGGBB format"))
+		}
+
+	case token.OVERLAY_BOX_OPACITY:
+		cmd.Args = p.peek.Literal
+		p.nextToken()
+		val, err := strconv.ParseFloat(p.cur.Literal, 64)
+		if err != nil || val < 0 || val > 1 {
+			p.errors = append(p.errors,
+				NewError(p.cur, "OverlayBoxOpacity must be a float between 0 and 1"))
+		}
+
+	case token.OVERLAY_ALIGNMENT:
+		cmd.Args = p.peek.Literal
+		p.nextToken()
+		validAlignments := map[string]bool{
+			"bottom-left": true, "bottom-center": true, "bottom-right": true,
+			"middle-left": true, "middle-center": true, "middle-right": true,
+			"top-left": true, "top-center": true, "top-right": true,
+		}
+		if !validAlignments[p.cur.Literal] {
+			p.errors = append(p.errors,
+				NewError(p.cur, "OverlayAlignment must be one of: bottom-left, bottom-center, bottom-right, middle-left, middle-center, middle-right, top-left, top-center, top-right"))
 		}
 
 	default:
@@ -572,6 +686,20 @@ func (p *Parser) parseRequire() Command {
 func (p *Parser) parseShow() Command {
 	cmd := Command{Type: token.SHOW}
 	return cmd
+}
+
+// parseCaptionOn parses a CaptionOn command.
+//
+//	CaptionOn
+func (p *Parser) parseCaptionOn() Command {
+	return Command{Type: token.CAPTION_ON}
+}
+
+// parseCaptionOff parses a CaptionOff command.
+//
+//	CaptionOff
+func (p *Parser) parseCaptionOff() Command {
+	return Command{Type: token.CAPTION_OFF}
 }
 
 // parseType parses a type command.
@@ -661,6 +789,31 @@ func (p *Parser) parseEnv() Command {
 
 	cmd.Args = p.peek.Literal
 	p.nextToken()
+
+	return cmd
+}
+
+// parseOverlay parses an overlay command.
+// An overlay command takes an optional duration and a string to display.
+//
+//	Overlay[@<duration>] "<string>"
+func (p *Parser) parseOverlay() Command {
+	cmd := Command{Type: token.OVERLAY}
+
+	cmd.Options = p.parseSpeed()
+
+	if p.peek.Type != token.STRING {
+		p.errors = append(p.errors, NewError(p.peek, p.cur.Literal+" expects string"))
+	}
+
+	for p.peek.Type == token.STRING {
+		p.nextToken()
+		cmd.Args += p.cur.Literal
+
+		if p.peek.Type == token.STRING {
+			cmd.Args += " "
+		}
+	}
 
 	return cmd
 }
@@ -795,4 +948,13 @@ func isValidWindowBar(w string) bool {
 	return w == "" ||
 		w == "Colorful" || w == "ColorfulRight" ||
 		w == "Rings" || w == "RingsRight"
+}
+
+// isValidHexColor checks if a string is a valid #RRGGBB hex color.
+func isValidHexColor(color string) bool {
+	if !strings.HasPrefix(color, "#") || len(color) != 7 {
+		return false
+	}
+	_, err := strconv.ParseUint(color[1:], 16, 64)
+	return err == nil
 }

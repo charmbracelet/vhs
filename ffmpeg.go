@@ -104,6 +104,30 @@ func calcTermDimensions(style StyleOptions) (int, int) {
 	return width, height
 }
 
+// WithCaptions adds ASS subtitle overlay to ffmpeg filter_complex.
+func (fb *FilterComplexBuilder) WithCaptions(assFilePath string) *FilterComplexBuilder {
+	if assFilePath == "" {
+		return fb
+	}
+	// Escape special characters for ffmpeg filter syntax
+	escaped := strings.ReplaceAll(assFilePath, `\`, `\\`)
+	escaped = strings.ReplaceAll(escaped, `:`, `\:`)
+	escaped = strings.ReplaceAll(escaped, `'`, `'\''`)
+
+	fb.filterComplex.WriteString(";")
+	_, _ = fmt.Fprintf(
+		fb.filterComplex,
+		`
+		[%s]ass='%s'[captioned]
+		`,
+		fb.prevStageName,
+		escaped,
+	)
+	fb.prevStageName = "captioned"
+
+	return fb
+}
+
 // WithWindowBar adds window bar options to ffmepg filter_complex.
 func (fb *FilterComplexBuilder) WithWindowBar(barStream int) *FilterComplexBuilder {
 	if fb.style.WindowBar != "" {
