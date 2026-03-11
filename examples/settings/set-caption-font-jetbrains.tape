@@ -7,8 +7,9 @@ Set FontSize 18
 Set TypingSpeed 0.1
 Set Theme "Catppuccin Macchiato"
 
-Set Caption true
 Set CaptionFont "JetBrains Mono"
+
+CaptionOn
 
 Type "Change the font"
 Sleep 1.1s

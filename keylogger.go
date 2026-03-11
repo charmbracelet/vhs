@@ -17,6 +17,7 @@ type KeyEvent struct {
 type KeyLogger struct {
 	events    []KeyEvent
 	paused    bool
+	enabled   bool
 	frame     *int64 // pointer to shared frame counter
 	framerate int
 }
@@ -48,11 +49,21 @@ func (l *KeyLogger) Resume() {
 	l.paused = false
 }
 
+// Enable turns on caption key logging.
+func (l *KeyLogger) Enable() {
+	l.enabled = true
+}
+
+// Disable turns off caption key logging.
+func (l *KeyLogger) Disable() {
+	l.enabled = false
+}
+
 // LogKey records the current key and time at which it occurred with respect
 // to the current frame being captured. If key logging has not been started or
 // if it has been paused, this does nothing.
 func (l *KeyLogger) LogKey(key string) {
-	if l.frame == nil || l.paused {
+	if l.frame == nil || l.paused || !l.enabled {
 		return
 	}
 

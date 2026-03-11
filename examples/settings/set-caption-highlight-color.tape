@@ -7,8 +7,9 @@ Set FontSize 18
 Set TypingSpeed 0.1
 Set Theme "Catppuccin Macchiato"
 
-Set Caption true
 Set CaptionHighlightColor "#77FFEF"
+
+CaptionOn
 
 Type "Follow me if you can!"
 Sleep 2s

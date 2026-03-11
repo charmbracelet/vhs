@@ -8,7 +8,8 @@ Set TypingSpeed 0.1
 Set Theme "Catppuccin Macchiato"
 
 Set Shell zsh
-Set Caption true
+
+CaptionOn
 
 # Set up line editing to demo control keys
 Hide

@@ -72,6 +72,8 @@ var CommandFuncs = map[parser.CommandType]CommandFunc{
 	token.ENV:         ExecuteEnv,
 	token.WAIT:        ExecuteWait,
 	token.OVERLAY:     ExecuteOverlay,
+	token.CAPTION_ON:  ExecuteCaptionOn,
+	token.CAPTION_OFF: ExecuteCaptionOff,
 }
 
 // ExecuteNoop is a no-op command that does nothing.
@@ -490,7 +492,6 @@ var Settings = map[string]CommandFunc{
 	"WaitPattern":            ExecuteSetWaitPattern,
 	"WaitTimeout":            ExecuteSetWaitTimeout,
 	"CursorBlink":            ExecuteSetCursorBlink,
-	"Caption":                ExecuteSetCaption,
 	"CaptionFont":            ExecuteSetCaptionFont,
 	"CaptionFontSize":        ExecuteSetCaptionFontSize,
 	"CaptionKeyStyle":        ExecuteSetCaptionKeyStyle,
@@ -791,7 +792,7 @@ func ExecuteScreenshot(c parser.Command, v *VHS) error {
 }
 
 // ensureLibass checks that ffmpeg was compiled with libass support, which is
-// required for Set Caption true. We run `ffmpeg -filters` and look for the
+// required for CaptionOn. We run `ffmpeg -filters` and look for the
 // "ass" filter rather than letting the render fail late with a cryptic error.
 func ensureLibass() error {
 	// ffmpeg -filters writes to stderr, so capture combined output
@@ -808,21 +809,21 @@ func ensureLibass() error {
 			return nil
 		}
 	}
-	return fmt.Errorf("ffmpeg was not compiled with libass support, which is required for Set Caption true.\nReinstall ffmpeg with libass (e.g. `brew install ffmpeg` on macOS)")
+	return fmt.Errorf("ffmpeg was not compiled with libass support, which is required for CaptionOn.\nReinstall ffmpeg with libass (e.g. `brew install ffmpeg-full` on macOS)")
 }
 
-// ExecuteSetCaption enables or disables captions.
-func ExecuteSetCaption(c parser.Command, v *VHS) error {
-	enabled, err := strconv.ParseBool(c.Args)
-	if err != nil {
-		return fmt.Errorf("failed to parse caption: %w", err)
+// ExecuteCaptionOn enables caption key logging.
+func ExecuteCaptionOn(_ parser.Command, v *VHS) error {
+	if err := ensureLibass(); err != nil {
+		return err
 	}
-	if enabled {
-		if err := ensureLibass(); err != nil {
-			return err
-		}
-	}
-	v.Options.Caption.Enabled = enabled
+	v.KeyLogger.Enable()
+	return nil
+}
+
+// ExecuteCaptionOff disables caption key logging.
+func ExecuteCaptionOff(_ parser.Command, v *VHS) error {
+	v.KeyLogger.Disable()
 	return nil
 }
 

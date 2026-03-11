@@ -62,7 +62,7 @@ func Highlight(c parser.Command, faint bool) string {
 	case token.OVERLAY:
 		optionsStyle = TimeStyle
 		argsStyle = StringStyle
-	case token.HIDE, token.SHOW:
+	case token.HIDE, token.SHOW, token.CAPTION_ON, token.CAPTION_OFF:
 		return FaintStyle.Render(c.Type.String())
 	}
 

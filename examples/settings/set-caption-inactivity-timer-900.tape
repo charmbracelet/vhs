@@ -7,8 +7,9 @@ Set FontSize 18
 Set TypingSpeed 0.1
 Set Theme "Catppuccin Macchiato"
 
-Set Caption true
 Set CaptionInactivityTimer 900ms
+
+CaptionOn
 
 Type "T-minus "
 Sleep 1s

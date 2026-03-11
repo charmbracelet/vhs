@@ -193,6 +193,7 @@ func TestAssEscape(t *testing.T) {
 		{`a\b`, `a\\b`},
 		{`{tag}`, `\{tag\}`},
 		{`a\{b}`, `a\\\{b\}`},
+		{`a\Nb`, `a\Nb`},
 	}
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
@@ -276,11 +277,9 @@ func TestGenerateCaptionFile(t *testing.T) {
 		{StartMs: 100, Key: "i"},
 		{StartMs: 200, Key: "Enter"},
 	}
-	opts := DefaultCaptionOptions()
-	opts.Enabled = true
 
 	videoOpts := VideoOptions{PlaybackSpeed: 1.0, Input: tmpDir, Style: &StyleOptions{Width: 800, Height: 600}}
-	path, err := GenerateCaptionFile(events, nil, videoOpts, opts, DefaultOverlayOptions())
+	path, err := GenerateCaptionFile(events, nil, videoOpts, DefaultCaptionOptions(), DefaultOverlayOptions())
 	if err != nil {
 		t.Fatalf("GenerateCaptionFile failed: %v", err)
 	}
@@ -318,12 +317,10 @@ func TestGenerateCaptionFileDefaultFont(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	events := []KeyEvent{{StartMs: 0, Key: "a"}}
-	opts := DefaultCaptionOptions()
-	opts.Enabled = true
 
 	// When CaptionFont is empty, should default to the OS-appropriate font
 	videoOpts := VideoOptions{PlaybackSpeed: 1.0, Input: tmpDir, Style: &StyleOptions{Width: 800, Height: 600}}
-	path, err := GenerateCaptionFile(events, nil, videoOpts, opts, DefaultOverlayOptions())
+	path, err := GenerateCaptionFile(events, nil, videoOpts, DefaultCaptionOptions(), DefaultOverlayOptions())
 	if err != nil {
 		t.Fatalf("GenerateCaptionFile failed: %v", err)
 	}
@@ -345,7 +342,6 @@ func TestGenerateCaptionFileExplicitFontOverride(t *testing.T) {
 
 	events := []KeyEvent{{StartMs: 0, Key: "a"}}
 	opts := DefaultCaptionOptions()
-	opts.Enabled = true
 	opts.Font = "JetBrainsMonoNL NFM"
 
 	videoOpts := VideoOptions{PlaybackSpeed: 1.0, Input: tmpDir, Style: &StyleOptions{Width: 800, Height: 600}}
@@ -376,11 +372,9 @@ func TestGenerateCaptionFilePlaybackSpeed(t *testing.T) {
 		{StartMs: 0, Key: "a"},
 		{StartMs: 2000, Key: "b"},
 	}
-	opts := DefaultCaptionOptions()
-	opts.Enabled = true
 
 	videoOpts := VideoOptions{PlaybackSpeed: 2.0, Input: tmpDir, Style: &StyleOptions{Width: 800, Height: 600}}
-	path, err := GenerateCaptionFile(events, nil, videoOpts, opts, DefaultOverlayOptions())
+	path, err := GenerateCaptionFile(events, nil, videoOpts, DefaultCaptionOptions(), DefaultOverlayOptions())
 	if err != nil {
 		t.Fatalf("GenerateCaptionFile failed: %v", err)
 	}

@@ -14,6 +14,7 @@ func TestKeyLogger_Basic(t *testing.T) {
 
 	var frame int64
 	l.Start(&frame, 50) // 50 fps
+	l.Enable()
 
 	l.LogKey("a")
 	frame = 5 // 100ms at 50fps
@@ -52,6 +53,7 @@ func TestKeyLogger_PauseResume(t *testing.T) {
 
 	var frame int64
 	l.Start(&frame, 50) // 50 fps
+	l.Enable()
 
 	l.LogKey("a")
 	l.Pause()
@@ -78,6 +80,7 @@ func TestKeyLogger_Events(t *testing.T) {
 
 	var frame int64
 	l.Start(&frame, 50) // 50 fps
+	l.Enable()
 
 	l.LogKey("a")
 	l.LogKey("b")
@@ -92,6 +95,77 @@ func TestKeyLogger_Events(t *testing.T) {
 	for i, expected := range expectedKeys {
 		if events[i].Key != expected {
 			t.Errorf("Event %d: expected key '%s', got '%s'", i, expected, events[i].Key)
+		}
+	}
+}
+
+func TestKeyLogger_EnableDisable(t *testing.T) {
+	l := NewKeyLogger()
+
+	var frame int64
+	l.Start(&frame, 50)
+
+	// Not enabled by default — keys should be ignored
+	l.LogKey("a")
+	if len(l.events) != 0 {
+		t.Errorf("Expected 0 events when disabled, got %d", len(l.events))
+	}
+
+	l.Enable()
+	l.LogKey("b")
+	if len(l.events) != 1 {
+		t.Errorf("Expected 1 event after Enable, got %d", len(l.events))
+	}
+
+	l.Disable()
+	l.LogKey("c")
+	if len(l.events) != 1 {
+		t.Errorf("Expected 1 event after Disable, got %d", len(l.events))
+	}
+
+	l.Enable()
+	l.LogKey("d")
+	if len(l.events) != 2 {
+		t.Errorf("Expected 2 events after re-Enable, got %d", len(l.events))
+	}
+
+	if l.events[0].Key != "b" || l.events[1].Key != "d" {
+		t.Errorf("Expected keys 'b' and 'd', got '%s' and '%s'", l.events[0].Key, l.events[1].Key)
+	}
+}
+
+func TestKeyLogger_PauseAndEnabledInteraction(t *testing.T) {
+	l := NewKeyLogger()
+
+	var frame int64
+	l.Start(&frame, 50)
+	l.Enable()
+
+	l.LogKey("a") // logged
+	l.Pause()
+	l.LogKey("b") // paused — not logged
+	l.Resume()
+	l.LogKey("c") // logged (enabled + not paused)
+
+	// Disable while not paused
+	l.Disable()
+	l.LogKey("d") // disabled — not logged
+
+	// Pause while disabled, then enable
+	l.Pause()
+	l.Enable()
+	l.LogKey("e") // paused — not logged even though enabled
+
+	l.Resume()
+	l.LogKey("f") // enabled + not paused — logged
+
+	if len(l.events) != 3 {
+		t.Errorf("Expected 3 events, got %d", len(l.events))
+	}
+	expectedKeys := []string{"a", "c", "f"}
+	for i, expected := range expectedKeys {
+		if l.events[i].Key != expected {
+			t.Errorf("Event %d: expected key '%s', got '%s'", i, expected, l.events[i].Key)
 		}
 	}
 }
@@ -128,6 +202,7 @@ func TestKeyLogger_FrameAlignment(t *testing.T) {
 			l := NewKeyLogger()
 			var frame int64
 			l.Start(&frame, tt.framerate)
+			l.Enable()
 
 			for _, f := range tt.frames {
 				frame = f

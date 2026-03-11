@@ -7,8 +7,9 @@ Set FontSize 18
 Set TypingSpeed 0.1
 Set Theme "Catppuccin Macchiato"
 
-Set Caption true
 Set CaptionFontSize 18
+
+CaptionOn
 
 Type "Smaller captions"
 Sleep 2s

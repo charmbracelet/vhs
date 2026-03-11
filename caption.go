@@ -35,13 +35,7 @@ const defaultOverlayDurationMs = 3000
 
 // DefaultOverlayOptions returns overlay options with sensible defaults.
 func DefaultOverlayOptions() OverlayOptions {
-	font := "monospace"
-	switch runtime.GOOS {
-	case "windows":
-		font = "Consolas"
-	case "darwin":
-		font = "Menlo"
-	}
+	font := defaultOSFont()
 	return OverlayOptions{
 		Font:           font,
 		FontSize:       22,
@@ -58,7 +52,6 @@ func DefaultOverlayOptions() OverlayOptions {
 
 // CaptionOptions holds configuration for keystroke captioning.
 type CaptionOptions struct {
-	Enabled           bool
 	Font              string
 	FontSize          int
 	KeyStyle          KeyStyle
@@ -77,13 +70,7 @@ type CaptionOptions struct {
 
 // DefaultCaptionOptions returns caption options with sensible defaults.
 func DefaultCaptionOptions() CaptionOptions {
-	font := "monospace"
-	switch runtime.GOOS {
-	case "windows":
-		font = "Consolas"
-	case "darwin":
-		font = "Menlo"
-	}
+	font := defaultOSFont()
 	return CaptionOptions{
 		Font:              font,
 		FontSize:          22,
@@ -100,6 +87,17 @@ func DefaultCaptionOptions() CaptionOptions {
 		MarginRight:       20,
 		MarginVertical:    20,
 	}
+}
+
+func defaultOSFont() string {
+	font := "monospace"
+	switch runtime.GOOS {
+	case "windows":
+		font = "Consolas"
+	case "darwin":
+		font = "Menlo"
+	}
+	return font
 }
 
 // KeyStyle represents the rendering style for key captions.

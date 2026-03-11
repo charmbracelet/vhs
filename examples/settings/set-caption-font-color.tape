@@ -7,8 +7,9 @@ Set FontSize 18
 Set TypingSpeed 0.1
 Set Theme "Catppuccin Macchiato"
 
-Set Caption true
 Set CaptionFontColor "#FF893E"
+
+CaptionOn
 
 Type "Look at me! I'm orange now!"
 Sleep 2s

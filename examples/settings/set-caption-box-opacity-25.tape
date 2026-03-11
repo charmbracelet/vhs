@@ -7,8 +7,9 @@ Set FontSize 18
 Set TypingSpeed 0.1
 Set Theme "Catppuccin Macchiato"
 
-Set Caption true
 Set CaptionBoxOpacity 0.25
+
+CaptionOn
 
 Enter 8
 Type "You can see this text behind the caption box with opacity!"

@@ -7,8 +7,9 @@ Set FontSize 18
 Set TypingSpeed 0.1
 Set Theme "Catppuccin Macchiato"
 
-Set Caption true
 Set CaptionBoxColor "#777777"
+
+CaptionOn
 
 Type "I'm feeling a bit gray today!"
 Sleep 2s

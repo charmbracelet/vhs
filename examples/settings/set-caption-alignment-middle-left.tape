@@ -7,8 +7,9 @@ Set FontSize 18
 Set TypingSpeed 0.1
 Set Theme "Catppuccin Macchiato"
 
-Set Caption true
 Set CaptionAlignment "middle-left"
+
+CaptionOn
 
 Type "Where should I go? middle-left"
 Sleep 2s

@@ -59,6 +59,8 @@ var CommandTypes = []CommandType{
 	token.PASTE,
 	token.ENV,
 	token.OVERLAY,
+	token.CAPTION_ON,
+	token.CAPTION_OFF,
 }
 
 // String returns the string representation of the command.
@@ -188,6 +190,10 @@ func (p *Parser) parseCommand() []Command {
 		return []Command{p.parseEnv()}
 	case token.OVERLAY:
 		return []Command{p.parseOverlay()}
+	case token.CAPTION_ON:
+		return []Command{p.parseCaptionOn()}
+	case token.CAPTION_OFF:
+		return []Command{p.parseCaptionOff()}
 	default:
 		p.errors = append(p.errors, NewError(p.cur, "Invalid command: "+p.cur.Literal))
 		return []Command{{Type: token.ILLEGAL}}
@@ -515,14 +521,6 @@ func (p *Parser) parseSet() Command {
 			)
 		}
 
-	case token.CAPTION:
-		cmd.Args = p.peek.Literal
-		p.nextToken()
-		if p.cur.Type != token.BOOLEAN {
-			p.errors = append(p.errors,
-				NewError(p.cur, "expected boolean value."))
-		}
-
 	case token.CAPTION_KEY_STYLE:
 		cmd.Args = p.peek.Literal
 		p.nextToken()
@@ -688,6 +686,20 @@ func (p *Parser) parseRequire() Command {
 func (p *Parser) parseShow() Command {
 	cmd := Command{Type: token.SHOW}
 	return cmd
+}
+
+// parseCaptionOn parses a CaptionOn command.
+//
+//	CaptionOn
+func (p *Parser) parseCaptionOn() Command {
+	return Command{Type: token.CAPTION_ON}
+}
+
+// parseCaptionOff parses a CaptionOff command.
+//
+//	CaptionOff
+func (p *Parser) parseCaptionOff() Command {
+	return Command{Type: token.CAPTION_OFF}
 }
 
 // parseType parses a type command.

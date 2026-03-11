@@ -187,18 +187,14 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	teardown()
 
 	// Generate caption/overlay ASS file
-	hasCaptions := v.Options.Caption.Enabled && len(v.KeyLogger.Events()) > 0
+	hasCaptions := len(v.KeyLogger.Events()) > 0
 	hasOverlays := len(v.OverlayEvents) > 0
 
 	if hasCaptions || hasOverlays {
 		if err := ensureLibass(); err != nil {
 			return []error{err}
 		}
-		var captionEvents []KeyEvent
-		if hasCaptions {
-			captionEvents = v.KeyLogger.Events()
-		}
-		assPath, err := GenerateCaptionFile(captionEvents, v.OverlayEvents, v.Options.Video, v.Options.Caption, v.Options.Overlay)
+		assPath, err := GenerateCaptionFile(v.KeyLogger.Events(), v.OverlayEvents, v.Options.Video, v.Options.Caption, v.Options.Overlay)
 		if err != nil {
 			return []error{err}
 		}
