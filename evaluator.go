@@ -47,10 +47,12 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	// Let's wait until we can access the window.term variable.
 	//
 	// This is necessary because some SET commands modify the terminal.
+	log.Printf("[DEBUG] Waiting for window.term to initialize...")
 	err := v.Page.Wait(rod.Eval("() => window.term != undefined"))
 	if err != nil {
 		return []error{err}
 	}
+	log.Printf("[DEBUG] window.term is ready")
 
 	var offset int
 	for i, cmd := range cmds {
@@ -91,7 +93,9 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	}
 
 	// Setup the terminal session so we can start executing commands.
+	log.Printf("[DEBUG] Running v.Setup()...")
 	v.Setup()
+	log.Printf("[DEBUG] Setup complete")
 
 	// If the first command (after Settings and Outputs) is a Hide command, we can
 	// begin executing the commands before we start recording to avoid capturing
@@ -111,8 +115,10 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	}
 
 	// Begin recording frames as we are now in a recording state.
+	log.Printf("[DEBUG] Starting recording...")
 	ctx, cancel := context.WithCancel(ctx) //nolint:gosec
 	ch := v.Record(ctx)
+	log.Printf("[DEBUG] Recording started")
 
 	// Clean up temporary files at the end.
 	defer func() {
@@ -138,7 +144,9 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 		}
 	}()
 
-	for _, cmd := range cmds[offset:] {
+	log.Printf("[DEBUG] Executing %d commands starting at offset %d", len(cmds)-offset, offset)
+	for ci, cmd := range cmds[offset:] {
+		log.Printf("[DEBUG] Command %d: type=%v options=%q args=%q", ci, cmd.Type, cmd.Options, cmd.Args)
 		if ctx.Err() != nil {
 			teardown()
 			return []error{ctx.Err()}
