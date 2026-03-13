@@ -133,17 +133,13 @@ func (vhs *VHS) Start() error {
 	}
 
 	port := randomPort()
-	log.Printf("[DEBUG] Starting ttyd on port %d", port)
 	vhs.tty = buildTtyCmd(port, vhs.Options.Shell)
 	if err := vhs.tty.Start(); err != nil {
 		return fmt.Errorf("could not start tty: %w", err)
 	}
-	log.Printf("[DEBUG] ttyd started (pid %d)", vhs.tty.Process.Pid)
 
 	path, _ := launcher.LookPath()
-	log.Printf("[DEBUG] Browser path: %s", path)
 	enableNoSandbox := os.Getenv("VHS_NO_SANDBOX") != ""
-	log.Printf("[DEBUG] Launching browser (no-sandbox=%v)...", enableNoSandbox)
 	u, err := launcher.New().
 		Leakless(false).
 		Bin(path).
@@ -155,14 +151,11 @@ func (vhs *VHS) Start() error {
 	if err != nil {
 		return fmt.Errorf("could not launch browser: %w", err)
 	}
-	log.Printf("[DEBUG] Browser launched, control URL: %s", u)
 	browser := rod.New().ControlURL(u).MustConnect()
-	log.Printf("[DEBUG] Browser connected, opening page http://localhost:%d", port)
 	page, err := browser.Page(proto.TargetCreateTarget{URL: fmt.Sprintf("http://localhost:%d", port)})
 	if err != nil {
 		return fmt.Errorf("could not open ttyd: %w", err)
 	}
-	log.Printf("[DEBUG] Page opened successfully")
 
 	vhs.browser = browser
 	vhs.Page = page
@@ -188,7 +181,6 @@ func (vhs *VHS) Setup() {
 	width := vhs.Options.Video.Style.Width - double(padding) - double(margin)
 	height := vhs.Options.Video.Style.Height - double(padding) - double(margin) - bar
 	vhs.Page = vhs.Page.MustSetViewport(width, height, 0, false)
-	log.Printf("[DEBUG] Viewport set to %dx%d", width, height)
 
 	// Find xterm.js canvases for the text and cursor layer for recording.
 	// Newer versions of xterm.js (bundled with ttyd 1.7.7+) may use a DOM
@@ -196,24 +188,17 @@ func (vhs *VHS) Setup() {
 	// Chrome, RDP sessions). In that case, fall back to screenshotting
 	// the .xterm-screen element.
 	//
-	// IMPORTANT: Use a temporary timeout page for the Element() lookup only.
-	// Do NOT store elements obtained from Timeout() -- their context expires,
-	// causing all subsequent Screenshot()/CanvasToImage() calls to fail with
-	// "context deadline exceeded".
-	log.Printf("[DEBUG] Looking for canvas.xterm-text-layer...")
+	// Use a temporary timeout page for the Element() lookup only.
+	// Do not store elements obtained from Timeout() -- their context expires,
+	// causing all subsequent Screenshot()/CanvasToImage() calls to fail.
 	probe, _ := vhs.Page.Timeout(5 * time.Second).Element("canvas.xterm-text-layer")
 	if probe != nil {
-		log.Printf("[DEBUG] Found canvas text layer (canvas renderer)")
 		vhs.TextCanvas, _ = vhs.Page.Element("canvas.xterm-text-layer")
 		vhs.CursorCanvas, _ = vhs.Page.Element("canvas.xterm-cursor-layer")
 	} else {
-		log.Printf("[DEBUG] Canvas not found, trying DOM renderer fallback (.xterm-screen)...")
 		vhs.Screen, _ = vhs.Page.Element(".xterm-screen")
 		if vhs.Screen != nil {
 			vhs.useDOMFallback = true
-			log.Printf("[DEBUG] Using DOM renderer fallback")
-		} else {
-			log.Printf("[DEBUG] WARNING: Neither canvas nor DOM screen element found")
 		}
 	}
 
