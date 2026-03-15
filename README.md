@@ -686,8 +686,8 @@ The `Wait` command allows you to wait for something to appear on the screen.
 This is useful when you need to wait on something to complete, even if you don't
 know how long it'll take, while including it in the recording like a spinner or
 loading state.
-The command takes a regular expression as an argument, and optionally allows to
-set the duration to wait and if you want to check the whole screen or just the
+The command takes a regular expression as an argument, and optionally allows you
+to set the duration to wait and if you want to check the whole screen or just the
 last line (the scope).
 
 ```elixir
