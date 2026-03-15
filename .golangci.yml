@@ -30,18 +30,6 @@ linters:
       - text: '(slog|log)\.\w+'
         linters:
           - noctx
-      - text: "var-naming"
-        linters:
-          - revive
-      - text: "G705"
-        linters:
-          - gosec
-      - text: "G115"
-        linters:
-          - gosec
-      - text: "os/exec.Command must not be called"
-        linters:
-          - noctx
     generated: lax
     presets:
       - common-false-positives
