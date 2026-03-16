@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"sync/atomic"
 	"time"
 
 	"github.com/atotto/clipboard"
@@ -70,6 +71,9 @@ var CommandFuncs = map[parser.CommandType]CommandFunc{
 	token.PASTE:       ExecutePaste,
 	token.ENV:         ExecuteEnv,
 	token.WAIT:        ExecuteWait,
+	token.OVERLAY:     ExecuteOverlay,
+	token.CAPTION_ON:  ExecuteCaptionOn,
+	token.CAPTION_OFF: ExecuteCaptionOff,
 }
 
 // ExecuteNoop is a no-op command that does nothing.
@@ -94,6 +98,7 @@ func ExecuteKey(k input.Key) CommandFunc {
 			repeat = 1
 		}
 		for i := 0; i < repeat; i++ {
+			v.KeyLogger.LogKey(c.Type.String())
 			err = v.Page.Keyboard.Type(k)
 			if err != nil {
 				return fmt.Errorf("failed to type key %c: %w", k, err)
@@ -211,6 +216,7 @@ func ExecuteWait(c parser.Command, v *VHS) error {
 // ExecuteCtrl is a CommandFunc that presses the argument keys and/or modifiers
 // with the ctrl key held down on the running instance of vhs.
 func ExecuteCtrl(c parser.Command, v *VHS) error {
+	v.KeyLogger.LogKey("Ctrl+" + c.Args)
 	// Create key combination by holding ControlLeft
 	action := v.Page.KeyActions().Press(input.ControlLeft)
 	keys := strings.Split(c.Args, " ")
@@ -266,6 +272,7 @@ func ExecuteCtrl(c parser.Command, v *VHS) error {
 // ExecuteAlt is a CommandFunc that presses the argument key with the alt key
 // held down on the running instance of vhs.
 func ExecuteAlt(c parser.Command, v *VHS) error {
+	v.KeyLogger.LogKey("Alt+" + c.Args)
 	err := v.Page.Keyboard.Press(input.AltLeft)
 	if err != nil {
 		return fmt.Errorf("failed to press Alt key: %w", err)
@@ -305,6 +312,7 @@ func ExecuteAlt(c parser.Command, v *VHS) error {
 // ExecuteShift is a CommandFunc that presses the argument key with the shift
 // key held down on the running instance of vhs.
 func ExecuteShift(c parser.Command, v *VHS) error {
+	v.KeyLogger.LogKey("Shift+" + c.Args)
 	err := v.Page.Keyboard.Press(input.ShiftLeft)
 	if err != nil {
 		return fmt.Errorf("failed to press Shift key: %w", err)
@@ -383,6 +391,11 @@ func ExecuteType(c parser.Command, v *VHS) error {
 		}
 	}
 	for _, r := range c.Args {
+		if r == ' ' { // make in consistent in the log file
+			v.KeyLogger.LogKey("Space")
+		} else {
+			v.KeyLogger.LogKey(string(r))
+		}
 		k, ok := keymap[r]
 		if ok {
 			err := v.Page.Keyboard.Type(k)
@@ -458,27 +471,51 @@ func ExecutePaste(_ parser.Command, v *VHS) error {
 
 // Settings maps the Set commands to their respective functions.
 var Settings = map[string]CommandFunc{
-	"FontFamily":    ExecuteSetFontFamily,
-	"FontSize":      ExecuteSetFontSize,
-	"Framerate":     ExecuteSetFramerate,
-	"Height":        ExecuteSetHeight,
-	"LetterSpacing": ExecuteSetLetterSpacing,
-	"LineHeight":    ExecuteSetLineHeight,
-	"PlaybackSpeed": ExecuteSetPlaybackSpeed,
-	"Padding":       ExecuteSetPadding,
-	"Theme":         ExecuteSetTheme,
-	"TypingSpeed":   ExecuteSetTypingSpeed,
-	"Width":         ExecuteSetWidth,
-	"Shell":         ExecuteSetShell,
-	"LoopOffset":    ExecuteLoopOffset,
-	"MarginFill":    ExecuteSetMarginFill,
-	"Margin":        ExecuteSetMargin,
-	"WindowBar":     ExecuteSetWindowBar,
-	"WindowBarSize": ExecuteSetWindowBarSize,
-	"BorderRadius":  ExecuteSetBorderRadius,
-	"WaitPattern":   ExecuteSetWaitPattern,
-	"WaitTimeout":   ExecuteSetWaitTimeout,
-	"CursorBlink":   ExecuteSetCursorBlink,
+	"FontFamily":             ExecuteSetFontFamily,
+	"FontSize":               ExecuteSetFontSize,
+	"Framerate":              ExecuteSetFramerate,
+	"Height":                 ExecuteSetHeight,
+	"LetterSpacing":          ExecuteSetLetterSpacing,
+	"LineHeight":             ExecuteSetLineHeight,
+	"PlaybackSpeed":          ExecuteSetPlaybackSpeed,
+	"Padding":                ExecuteSetPadding,
+	"Theme":                  ExecuteSetTheme,
+	"TypingSpeed":            ExecuteSetTypingSpeed,
+	"Width":                  ExecuteSetWidth,
+	"Shell":                  ExecuteSetShell,
+	"LoopOffset":             ExecuteLoopOffset,
+	"MarginFill":             ExecuteSetMarginFill,
+	"Margin":                 ExecuteSetMargin,
+	"WindowBar":              ExecuteSetWindowBar,
+	"WindowBarSize":          ExecuteSetWindowBarSize,
+	"BorderRadius":           ExecuteSetBorderRadius,
+	"WaitPattern":            ExecuteSetWaitPattern,
+	"WaitTimeout":            ExecuteSetWaitTimeout,
+	"CursorBlink":            ExecuteSetCursorBlink,
+	"CaptionFont":            ExecuteSetCaptionFont,
+	"CaptionFontSize":        ExecuteSetCaptionFontSize,
+	"CaptionKeyStyle":        ExecuteSetCaptionKeyStyle,
+	"CaptionMaxKeys":         ExecuteSetCaptionMaxKeys,
+	"CaptionInactivityTimer": ExecuteSetCaptionInactivityTimer,
+	"CaptionAlignment":       ExecuteSetCaptionAlignment,
+	"CaptionFontColor":       ExecuteSetCaptionFontColor,
+	"CaptionHighlightColor":  ExecuteSetCaptionHighlightColor,
+	"CaptionBoxColor":        ExecuteSetCaptionBoxColor,
+	"CaptionBoxOpacity":      ExecuteSetCaptionBoxOpacity,
+	"CaptionBoxPadding":      ExecuteSetCaptionBoxPadding,
+	"CaptionMarginLeft":      ExecuteSetCaptionMarginLeft,
+	"CaptionMarginRight":     ExecuteSetCaptionMarginRight,
+	"CaptionMarginVertical":  ExecuteSetCaptionMarginVertical,
+	"OverlayFont":            ExecuteSetOverlayFont,
+	"OverlayFontSize":        ExecuteSetOverlayFontSize,
+	"OverlayFontColor":       ExecuteSetOverlayFontColor,
+	"OverlayBoxColor":        ExecuteSetOverlayBoxColor,
+	"OverlayBoxOpacity":      ExecuteSetOverlayBoxOpacity,
+	"OverlayBoxPadding":      ExecuteSetOverlayBoxPadding,
+	"OverlayAlignment":       ExecuteSetOverlayAlignment,
+	"OverlayMarginLeft":      ExecuteSetOverlayMarginLeft,
+	"OverlayMarginRight":     ExecuteSetOverlayMarginRight,
+	"OverlayMarginVertical":  ExecuteSetOverlayMarginVertical,
 }
 
 // ExecuteSet applies the settings on the running vhs specified by the
@@ -751,6 +788,264 @@ func ExecuteSetCursorBlink(c parser.Command, v *VHS) error {
 // ExecuteScreenshot is a CommandFunc that indicates a new screenshot must be taken.
 func ExecuteScreenshot(c parser.Command, v *VHS) error {
 	v.ScreenshotNextFrame(c.Args)
+	return nil
+}
+
+// ensureLibass checks that ffmpeg was compiled with libass support, which is
+// required for CaptionOn. We run `ffmpeg -filters` and look for the
+// "ass" filter rather than letting the render fail late with a cryptic error.
+func ensureLibass() error {
+	// ffmpeg -filters writes to stderr, so capture combined output
+	cmd := exec.Command("ffmpeg", "-filters")
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("could not query ffmpeg filters: %w", err)
+	}
+	// Each filter line looks like: " T. ass  V->V  Render ASS subtitles"
+	// Match " ass " with surrounding spaces to avoid false positives (bass, allpass, etc.)
+	for _, line := range strings.Split(string(out), "\n") {
+		fields := strings.Fields(line)
+		if len(fields) >= 2 && fields[1] == "ass" {
+			return nil
+		}
+	}
+	return fmt.Errorf("ffmpeg was not compiled with libass support, which is required for CaptionOn.\nReinstall ffmpeg with libass (e.g. `brew install ffmpeg-full` on macOS)")
+}
+
+// ExecuteCaptionOn enables caption key logging.
+func ExecuteCaptionOn(_ parser.Command, v *VHS) error {
+	if err := ensureLibass(); err != nil {
+		return err
+	}
+	v.KeyLogger.Enable()
+	return nil
+}
+
+// ExecuteCaptionOff disables caption key logging.
+func ExecuteCaptionOff(_ parser.Command, v *VHS) error {
+	v.KeyLogger.Disable()
+	return nil
+}
+
+// ExecuteSetCaptionFont sets the caption font family.
+func ExecuteSetCaptionFont(c parser.Command, v *VHS) error {
+	v.Options.Caption.Font = c.Args
+	return nil
+}
+
+// ExecuteSetCaptionFontSize sets the caption font size.
+func ExecuteSetCaptionFontSize(c parser.Command, v *VHS) error {
+	size, err := strconv.Atoi(c.Args)
+	if err != nil {
+		return fmt.Errorf("failed to parse caption font size: %w", err)
+	}
+	v.Options.Caption.FontSize = size
+	return nil
+}
+
+// ExecuteSetCaptionMaxKeys sets the caption sliding window size.
+func ExecuteSetCaptionMaxKeys(c parser.Command, v *VHS) error {
+	n, err := strconv.Atoi(c.Args)
+	if err != nil {
+		return fmt.Errorf("failed to parse caption max keys: %w", err)
+	}
+	v.Options.Caption.MaxKeysOnscreen = n
+	return nil
+}
+
+// ExecuteSetCaptionInactivityTimer sets the caption inactivity timer.
+func ExecuteSetCaptionInactivityTimer(c parser.Command, v *VHS) error {
+	dur, err := time.ParseDuration(c.Args)
+	if err != nil {
+		return fmt.Errorf("failed to parse caption inactivity timer: %w", err)
+	}
+	v.Options.Caption.InactivityTimerMs = int(dur.Milliseconds())
+	return nil
+}
+
+// ExecuteSetCaptionHighlightColor sets the caption highlight color.
+func ExecuteSetCaptionHighlightColor(c parser.Command, v *VHS) error {
+	v.Options.Caption.HighlightColor = c.Args
+	return nil
+}
+
+// ExecuteSetCaptionFontColor sets the caption text color for non-highlighted keys.
+func ExecuteSetCaptionFontColor(c parser.Command, v *VHS) error {
+	v.Options.Caption.FontColor = c.Args
+	return nil
+}
+
+// ExecuteSetCaptionBoxColor sets the caption background box fill color.
+func ExecuteSetCaptionBoxColor(c parser.Command, v *VHS) error {
+	v.Options.Caption.BoxColor = c.Args
+	return nil
+}
+
+// ExecuteSetCaptionBoxOpacity sets the caption box opacity.
+func ExecuteSetCaptionBoxOpacity(c parser.Command, v *VHS) error {
+	opacity, err := strconv.ParseFloat(c.Args, 64)
+	if err != nil {
+		return fmt.Errorf("failed to parse caption box opacity: %w", err)
+	}
+	v.Options.Caption.BoxOpacity = opacity
+	return nil
+}
+
+// ExecuteSetCaptionKeyStyle sets the caption key rendering style.
+func ExecuteSetCaptionKeyStyle(c parser.Command, v *VHS) error {
+	v.Options.Caption.KeyStyle = KeyStyle(c.Args)
+	return nil
+}
+
+// ExecuteSetCaptionMarginLeft sets the caption left margin.
+func ExecuteSetCaptionMarginLeft(c parser.Command, v *VHS) error {
+	m, err := strconv.Atoi(c.Args)
+	if err != nil {
+		return fmt.Errorf("failed to parse caption margin left: %w", err)
+	}
+	v.Options.Caption.MarginLeft = m
+	return nil
+}
+
+// ExecuteSetCaptionMarginRight sets the caption right margin.
+func ExecuteSetCaptionMarginRight(c parser.Command, v *VHS) error {
+	m, err := strconv.Atoi(c.Args)
+	if err != nil {
+		return fmt.Errorf("failed to parse caption margin right: %w", err)
+	}
+	v.Options.Caption.MarginRight = m
+	return nil
+}
+
+// ExecuteSetCaptionMarginVertical sets the caption vertical margin.
+func ExecuteSetCaptionMarginVertical(c parser.Command, v *VHS) error {
+	m, err := strconv.Atoi(c.Args)
+	if err != nil {
+		return fmt.Errorf("failed to parse caption margin vertical: %w", err)
+	}
+	v.Options.Caption.MarginVertical = m
+	return nil
+}
+
+// ExecuteSetCaptionAlignment sets the caption alignment.
+func ExecuteSetCaptionAlignment(c parser.Command, v *VHS) error {
+	v.Options.Caption.Alignment = CaptionAlignment(c.Args)
+	return nil
+}
+
+// ExecuteSetCaptionBoxPadding sets the caption box padding.
+func ExecuteSetCaptionBoxPadding(c parser.Command, v *VHS) error {
+	p, err := strconv.Atoi(c.Args)
+	if err != nil {
+		return fmt.Errorf("failed to parse caption box padding: %w", err)
+	}
+	v.Options.Caption.BoxPadding = p
+	return nil
+}
+
+// ExecuteOverlay records a text overlay event at the current frame timestamp.
+func ExecuteOverlay(c parser.Command, v *VHS) error {
+	durationMs := int64(defaultOverlayDurationMs)
+	if c.Options != "" {
+		dur, err := time.ParseDuration(c.Options)
+		if err != nil {
+			return fmt.Errorf("failed to parse overlay duration: %w", err)
+		}
+		durationMs = dur.Milliseconds()
+	}
+
+	frameNum := atomic.LoadInt64(&v.currentFrame)
+	timeMs := frameNum * 1000 / int64(v.Options.Video.Framerate)
+
+	v.OverlayEvents = append(v.OverlayEvents, OverlayEvent{
+		StartMs:    timeMs,
+		DurationMs: durationMs,
+		Text:       c.Args,
+	})
+	return nil
+}
+
+// ExecuteSetOverlayFont sets the overlay font family.
+func ExecuteSetOverlayFont(c parser.Command, v *VHS) error {
+	v.Options.Overlay.Font = c.Args
+	return nil
+}
+
+// ExecuteSetOverlayFontSize sets the overlay font size.
+func ExecuteSetOverlayFontSize(c parser.Command, v *VHS) error {
+	size, err := strconv.Atoi(c.Args)
+	if err != nil {
+		return fmt.Errorf("failed to parse overlay font size: %w", err)
+	}
+	v.Options.Overlay.FontSize = size
+	return nil
+}
+
+// ExecuteSetOverlayFontColor sets the overlay text color.
+func ExecuteSetOverlayFontColor(c parser.Command, v *VHS) error {
+	v.Options.Overlay.FontColor = c.Args
+	return nil
+}
+
+// ExecuteSetOverlayBoxColor sets the overlay background box fill color.
+func ExecuteSetOverlayBoxColor(c parser.Command, v *VHS) error {
+	v.Options.Overlay.BoxColor = c.Args
+	return nil
+}
+
+// ExecuteSetOverlayBoxOpacity sets the overlay box opacity.
+func ExecuteSetOverlayBoxOpacity(c parser.Command, v *VHS) error {
+	opacity, err := strconv.ParseFloat(c.Args, 64)
+	if err != nil {
+		return fmt.Errorf("failed to parse overlay box opacity: %w", err)
+	}
+	v.Options.Overlay.BoxOpacity = opacity
+	return nil
+}
+
+// ExecuteSetOverlayBoxPadding sets the overlay box padding.
+func ExecuteSetOverlayBoxPadding(c parser.Command, v *VHS) error {
+	p, err := strconv.Atoi(c.Args)
+	if err != nil {
+		return fmt.Errorf("failed to parse overlay box padding: %w", err)
+	}
+	v.Options.Overlay.BoxPadding = p
+	return nil
+}
+
+// ExecuteSetOverlayAlignment sets the overlay alignment.
+func ExecuteSetOverlayAlignment(c parser.Command, v *VHS) error {
+	v.Options.Overlay.Alignment = CaptionAlignment(c.Args)
+	return nil
+}
+
+// ExecuteSetOverlayMarginLeft sets the overlay left margin.
+func ExecuteSetOverlayMarginLeft(c parser.Command, v *VHS) error {
+	m, err := strconv.Atoi(c.Args)
+	if err != nil {
+		return fmt.Errorf("failed to parse overlay margin left: %w", err)
+	}
+	v.Options.Overlay.MarginLeft = m
+	return nil
+}
+
+// ExecuteSetOverlayMarginRight sets the overlay right margin.
+func ExecuteSetOverlayMarginRight(c parser.Command, v *VHS) error {
+	m, err := strconv.Atoi(c.Args)
+	if err != nil {
+		return fmt.Errorf("failed to parse overlay margin right: %w", err)
+	}
+	v.Options.Overlay.MarginRight = m
+	return nil
+}
+
+// ExecuteSetOverlayMarginVertical sets the overlay vertical margin.
+func ExecuteSetOverlayMarginVertical(c parser.Command, v *VHS) error {
+	m, err := strconv.Atoi(c.Args)
+	if err != nil {
+		return fmt.Errorf("failed to parse overlay margin vertical: %w", err)
+	}
+	v.Options.Overlay.MarginVertical = m
 	return nil
 }
 
