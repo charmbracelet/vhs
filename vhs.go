@@ -21,21 +21,49 @@ import (
 
 // VHS is the object that controls the setup.
 type VHS struct {
-	Options      *Options
-	Errors       []error
-	Page         *rod.Page
-	browser      *rod.Browser
-	TextCanvas   *rod.Element
-	CursorCanvas *rod.Element
-	mutex        *sync.Mutex
-	started      bool
-	recording    bool
-	tty          *exec.Cmd
-	totalFrames  int
-	close        func() error
+	Options        *Options
+	Errors         []error
+	Page           *rod.Page
+	browser        *rod.Browser
+	TextCanvas     *rod.Element
+	CursorCanvas   *rod.Element
+	OverlayCanvas  *rod.Element
+	mutex          *sync.Mutex
+	mu             sync.Mutex // protects subtitle state
+	started        bool
+	recording      bool
+	tty            *exec.Cmd
+	totalFrames    int
+	close          func() error
+	subtitleText   string // current subtitle text (empty = hidden)
+	hasOverlay     bool   // true if any overlay was used during recording
 }
 
 // Options is the set of options for the setup.
+// SubtitleOptions holds configuration for subtitle overlays.
+type SubtitleOptions struct {
+	FontSize     int
+	FontFamily   string
+	Color        string
+	Background   string
+	Position     string // "top", "center", "bottom"
+	Padding      int
+	BorderRadius int
+}
+
+// DefaultSubtitleOptions returns sane defaults for subtitles.
+func DefaultSubtitleOptions() SubtitleOptions {
+	return SubtitleOptions{
+		FontSize:     24,
+		FontFamily:   "system-ui, -apple-system, sans-serif",
+		Color:        "#ffffff",
+		Background:   "rgba(0,0,0,0.75)",
+		Position:     "bottom",
+		Padding:      12,
+		BorderRadius: 8,
+	}
+}
+
 type Options struct {
 	Shell         Shell
 	FontFamily    string
@@ -52,6 +80,7 @@ type Options struct {
 	CursorBlink   bool
 	Screenshot    ScreenshotOptions
 	Style         StyleOptions
+	Subtitle      SubtitleOptions
 }
 
 const (
@@ -107,6 +136,7 @@ func DefaultVHSOptions() Options {
 		Screenshot:    screenshot,
 		WaitTimeout:   defaultWaitTimeout,
 		WaitPattern:   defaultWaitPattern,
+		Subtitle:      DefaultSubtitleOptions(),
 	}
 }
 
@@ -177,6 +207,20 @@ func (vhs *VHS) Setup() {
 	vhs.TextCanvas, _ = vhs.Page.Element("canvas.xterm-text-layer")
 	vhs.CursorCanvas, _ = vhs.Page.Element("canvas.xterm-cursor-layer")
 
+	// Create an overlay canvas sized to the full output dimensions (including padding/margins).
+	// This ensures subtitle positions are relative to the final styled frame.
+	outWidth := vhs.Options.Video.Style.Width
+	outHeight := vhs.Options.Video.Style.Height
+	vhs.Page.MustEval(fmt.Sprintf(`() => {
+		const overlay = document.createElement('canvas');
+		overlay.id = 'vhs-overlay';
+		overlay.width = %d;
+		overlay.height = %d;
+		overlay.style.cssText = 'position:absolute; left:-9999px; top:-9999px;';
+		document.body.appendChild(overlay);
+	}`, outWidth, outHeight))
+	vhs.OverlayCanvas, _ = vhs.Page.Element("#vhs-overlay")
+
 	// Apply options to the terminal
 	// By this point the setting commands have been executed, so the `opts` struct is up to date.
 	vhs.Page.MustEval(fmt.Sprintf("() => { term.options = { fontSize: %d, fontFamily: '%s', letterSpacing: %f, lineHeight: %f, theme: %s, cursorBlink: %t } }",
@@ -208,6 +252,88 @@ func (vhs *VHS) terminate() error {
 	return vhs.tty.Process.Kill()
 }
 
+// renderOverlay draws the current subtitle (or clears) onto the overlay canvas.
+func (vhs *VHS) renderOverlay(text string) {
+	opts := vhs.Options.Subtitle
+
+	if text == "" {
+		// Clear the overlay canvas
+		vhs.Page.MustEval(`() => {
+			const c = document.getElementById('vhs-overlay');
+			if (c) { c.getContext('2d').clearRect(0, 0, c.width, c.height); }
+		}`)
+		return
+	}
+
+	escaped := strings.ReplaceAll(text, "\\", "\\\\")
+	escaped = strings.ReplaceAll(escaped, "'", "\\'")
+
+	// Determine Y position
+	var positionJS string
+	switch opts.Position {
+	case "top":
+		positionJS = fmt.Sprintf("const y = %d + boxHeight / 2;", opts.Padding+20)
+	case "center":
+		positionJS = "const y = c.height / 2;"
+	default: // "bottom"
+		positionJS = fmt.Sprintf("const y = c.height - %d - boxHeight / 2;", opts.Padding+20)
+	}
+
+	js := fmt.Sprintf(`() => {
+		const c = document.getElementById('vhs-overlay');
+		if (!c) return;
+		const ctx = c.getContext('2d');
+		ctx.clearRect(0, 0, c.width, c.height);
+
+		const text = '%s';
+		const fontSize = %d;
+		const fontFamily = '%s';
+		const padding = %d;
+		const borderRadius = %d;
+
+		ctx.font = fontSize + 'px ' + fontFamily;
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'middle';
+
+		const metrics = ctx.measureText(text);
+		const textWidth = metrics.width;
+		const boxWidth = textWidth + padding * 4;
+		const boxHeight = fontSize * 1.4 + padding * 2;
+		const x = c.width / 2;
+		%s
+
+		// Draw background pill (with roundRect fallback)
+		const bx = x - boxWidth / 2;
+		const by = y - boxHeight / 2;
+		ctx.fillStyle = '%s';
+		ctx.beginPath();
+		if (ctx.roundRect) {
+			ctx.roundRect(bx, by, boxWidth, boxHeight, borderRadius);
+		} else {
+			ctx.rect(bx, by, boxWidth, boxHeight);
+		}
+		ctx.fill();
+
+		// Draw text
+		ctx.fillStyle = '%s';
+		ctx.fillText(text, x, y);
+	}`,
+		escaped,
+		opts.FontSize,
+		opts.FontFamily,
+		opts.Padding,
+		opts.BorderRadius,
+		positionJS,
+		opts.Background,
+		opts.Color,
+	)
+
+	_, err := vhs.Page.Eval(js)
+	if err != nil {
+		log.Printf("renderOverlay JS error: %v", err)
+	}
+}
+
 // Cleanup individual frames.
 //
 //nolint:wrapcheck
@@ -225,6 +351,9 @@ func (vhs *VHS) Render() error {
 	if err := vhs.ApplyLoopOffset(); err != nil {
 		return err
 	}
+
+	// Pass overlay flag to video options
+	vhs.Options.Video.HasOverlay = vhs.hasOverlay
 
 	// Generate the video(s) with the frames.
 	var cmds []*exec.Cmd //nolint:prealloc
@@ -358,6 +487,16 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 					continue
 				}
 
+				// Render subtitle onto overlay canvas if active
+				vhs.mu.Lock()
+				subtitleText := vhs.subtitleText
+				hasOverlay := vhs.hasOverlay
+				vhs.mu.Unlock()
+
+				if hasOverlay {
+					vhs.renderOverlay(subtitleText)
+				}
+
 				counter++
 				if err := os.WriteFile(
 					filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(cursorFrameFormat, counter)),
@@ -374,6 +513,23 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 				); err != nil {
 					ch <- fmt.Errorf("error writing text frame: %w", err)
 					continue
+				}
+
+				// Capture overlay frame
+				if hasOverlay {
+					overlay, overlayErr := vhs.OverlayCanvas.CanvasToImage("image/png", quality)
+					if overlayErr != nil {
+						ch <- fmt.Errorf("error capturing overlay frame: %w", overlayErr)
+						continue
+					}
+					if err := os.WriteFile(
+						filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(overlayFrameFormat, counter)),
+						overlay,
+						0o600,
+					); err != nil {
+						ch <- fmt.Errorf("error writing overlay frame: %w", err)
+						continue
+					}
 				}
 
 				// Capture current frame and disable frame capturing
