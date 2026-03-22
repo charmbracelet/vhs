@@ -70,6 +70,7 @@ var CommandFuncs = map[parser.CommandType]CommandFunc{
 	token.PASTE:       ExecutePaste,
 	token.ENV:         ExecuteEnv,
 	token.WAIT:        ExecuteWait,
+	token.SUBTITLE:    ExecuteSubtitle,
 }
 
 // ExecuteNoop is a no-op command that does nothing.
@@ -476,9 +477,16 @@ var Settings = map[string]CommandFunc{
 	"WindowBar":     ExecuteSetWindowBar,
 	"WindowBarSize": ExecuteSetWindowBarSize,
 	"BorderRadius":  ExecuteSetBorderRadius,
-	"WaitPattern":   ExecuteSetWaitPattern,
-	"WaitTimeout":   ExecuteSetWaitTimeout,
-	"CursorBlink":   ExecuteSetCursorBlink,
+	"WaitPattern":              ExecuteSetWaitPattern,
+	"WaitTimeout":              ExecuteSetWaitTimeout,
+	"CursorBlink":              ExecuteSetCursorBlink,
+	"SubtitleFontSize":         ExecuteSetSubtitleFontSize,
+	"SubtitleFontFamily":       ExecuteSetSubtitleFontFamily,
+	"SubtitleColor":            ExecuteSetSubtitleColor,
+	"SubtitleBackground":       ExecuteSetSubtitleBackground,
+	"SubtitlePosition":         ExecuteSetSubtitlePosition,
+	"SubtitlePadding":          ExecuteSetSubtitlePadding,
+	"SubtitleBorderRadius":     ExecuteSetSubtitleBorderRadius,
 }
 
 // ExecuteSet applies the settings on the running vhs specified by the
@@ -773,3 +781,67 @@ func getJSONTheme(s string) (Theme, error) {
 	}
 	return t, nil
 }
+
+// ExecuteSubtitle stores subtitle state. The actual rendering happens in the
+// Record loop where we draw onto the overlay canvas before each frame capture.
+func ExecuteSubtitle(c parser.Command, v *VHS) error {
+	v.mu.Lock()
+	defer v.mu.Unlock()
+	v.subtitleText = c.Args
+	v.hasOverlay = true
+	return nil
+}
+
+// Subtitle setting executors
+
+func ExecuteSetSubtitleFontSize(c parser.Command, v *VHS) error {
+	fontSize, err := strconv.Atoi(c.Args)
+	if err != nil {
+		return fmt.Errorf("invalid SubtitleFontSize: %s", c.Args)
+	}
+	v.Options.Subtitle.FontSize = fontSize
+	return nil
+}
+
+func ExecuteSetSubtitleFontFamily(c parser.Command, v *VHS) error {
+	v.Options.Subtitle.FontFamily = c.Args
+	return nil
+}
+
+func ExecuteSetSubtitleColor(c parser.Command, v *VHS) error {
+	v.Options.Subtitle.Color = c.Args
+	return nil
+}
+
+func ExecuteSetSubtitleBackground(c parser.Command, v *VHS) error {
+	v.Options.Subtitle.Background = c.Args
+	return nil
+}
+
+func ExecuteSetSubtitlePosition(c parser.Command, v *VHS) error {
+	pos := strings.ToLower(c.Args)
+	if pos != "top" && pos != "center" && pos != "bottom" {
+		return fmt.Errorf("invalid SubtitlePosition: %s (expected top, center, or bottom)", c.Args)
+	}
+	v.Options.Subtitle.Position = pos
+	return nil
+}
+
+func ExecuteSetSubtitlePadding(c parser.Command, v *VHS) error {
+	padding, err := strconv.Atoi(c.Args)
+	if err != nil {
+		return fmt.Errorf("invalid SubtitlePadding: %s", c.Args)
+	}
+	v.Options.Subtitle.Padding = padding
+	return nil
+}
+
+func ExecuteSetSubtitleBorderRadius(c parser.Command, v *VHS) error {
+	radius, err := strconv.Atoi(c.Args)
+	if err != nil {
+		return fmt.Errorf("invalid SubtitleBorderRadius: %s", c.Args)
+	}
+	v.Options.Subtitle.BorderRadius = radius
+	return nil
+}
+

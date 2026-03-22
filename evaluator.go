@@ -110,6 +110,14 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 		}
 	}
 
+	// Check if any Subtitle commands exist — if so, enable overlay stream
+	for _, cmd := range cmds {
+		if cmd.Type == token.SUBTITLE {
+			v.hasOverlay = true
+			break
+		}
+	}
+
 	// Begin recording frames as we are now in a recording state.
 	ctx, cancel := context.WithCancel(ctx) //nolint:gosec
 	ch := v.Record(ctx)
