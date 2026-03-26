@@ -353,6 +353,26 @@ Set Height 1000
   <img width="300" alt="Example of changing the height of the terminal" src="https://stuff.charm.sh/vhs/examples/height.gif">
 </picture>
 
+#### Set Lines
+
+Set the terminal height by line count with the `Set Lines` command.
+`Rows` is an alias for `Lines`.
+
+```elixir
+Set Lines 24
+Set Rows 24
+```
+
+#### Set Columns
+
+Set the terminal width by column count with the `Set Columns` command.
+`Cols` is an alias for `Columns`.
+
+```elixir
+Set Columns 80
+Set Cols 80
+```
+
 #### Set Letter Spacing
 
 Set the spacing between letters (tracking) with the `Set LetterSpacing`

@@ -479,6 +479,10 @@ var Settings = map[string]CommandFunc{
 	"WaitPattern":   ExecuteSetWaitPattern,
 	"WaitTimeout":   ExecuteSetWaitTimeout,
 	"CursorBlink":   ExecuteSetCursorBlink,
+	"Lines":         ExecuteSetLines,
+	"Columns":       ExecuteSetColumns,
+	"Rows":          ExecuteSetLines,
+	"Cols":          ExecuteSetColumns,
 }
 
 // ExecuteSet applies the settings on the running vhs specified by the
@@ -541,6 +545,45 @@ func ExecuteSetWidth(c parser.Command, v *VHS) error {
 	}
 	v.Options.Video.Style.Width = width
 
+	return nil
+}
+
+// ExecuteSetLines sets terminal height by line count.
+// It computes the pixel height from font size and line height.
+func ExecuteSetLines(c parser.Command, v *VHS) error {
+	lines, err := strconv.Atoi(c.Args)
+	if err != nil {
+		return fmt.Errorf("failed to parse lines: %w", err)
+	}
+	if lines < 1 || lines > 500 {
+		return fmt.Errorf("lines must be between 1 and 500, got %d", lines)
+	}
+	lineHeightPx := float64(v.Options.FontSize) * v.Options.LineHeight
+	contentHeight := int(lineHeightPx*float64(lines)) + 1
+	padding := v.Options.Video.Style.Padding
+	margin := v.Options.Video.Style.Margin
+	bar := v.Options.Video.Style.WindowBarSize
+	v.Options.Video.Style.Height = contentHeight + 2*padding + 2*margin + bar
+	return nil
+}
+
+// ExecuteSetColumns sets terminal width by column count.
+// It computes the pixel width from font size and letter spacing.
+func ExecuteSetColumns(c parser.Command, v *VHS) error {
+	cols, err := strconv.Atoi(c.Args)
+	if err != nil {
+		return fmt.Errorf("failed to parse columns: %w", err)
+	}
+	if cols < 1 || cols > 500 {
+		return fmt.Errorf("columns must be between 1 and 500, got %d", cols)
+	}
+	charWidth := float64(v.Options.FontSize) * 0.6
+	letterSpacing := v.Options.LetterSpacing
+	effectiveCharWidth := charWidth + letterSpacing
+	contentWidth := int(effectiveCharWidth*float64(cols)) + 1
+	padding := v.Options.Video.Style.Padding
+	margin := v.Options.Video.Style.Margin
+	v.Options.Video.Style.Width = contentWidth + 2*padding + 2*margin
 	return nil
 }
 
