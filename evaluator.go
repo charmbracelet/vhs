@@ -42,7 +42,12 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	if err := v.Start(); err != nil {
 		return []error{err}
 	}
-	defer func() { _ = v.close() }()
+	defer func() {
+		_ = v.close()
+		if v.tty != nil && v.tty.Process != nil {
+			_ = v.tty.Process.Kill()
+		}
+	}()
 
 	// Let's wait until we can access the window.term variable.
 	//

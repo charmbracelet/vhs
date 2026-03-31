@@ -140,11 +140,14 @@ func (vhs *VHS) Start() error {
 	enableNoSandbox := os.Getenv("VHS_NO_SANDBOX") != ""
 	u, err := launcher.New().Leakless(false).Bin(path).NoSandbox(enableNoSandbox).Launch()
 	if err != nil {
+		_ = vhs.tty.Process.Kill()
 		return fmt.Errorf("could not launch browser: %w", err)
 	}
 	browser := rod.New().ControlURL(u).MustConnect()
 	page, err := browser.Page(proto.TargetCreateTarget{URL: fmt.Sprintf("http://localhost:%d", port)})
 	if err != nil {
+		browser.MustClose()
+		_ = vhs.tty.Process.Kill()
 		return fmt.Errorf("could not open ttyd: %w", err)
 	}
 
