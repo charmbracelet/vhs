@@ -152,6 +152,58 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 	return args
 }
 
+// MakeFrames processes each raw frame through ffmpeg to apply styling (padding,
+// window bar, border radius, margin) and writes the styled frames to the output
+// directory.
+func MakeFrames(opts VideoOptions, totalFrames int) []*exec.Cmd {
+	if opts.Output.Frames == "" {
+		return nil
+	}
+
+	log.Println(GrayStyle.Render("Creating " + opts.Output.Frames + "..."))
+	ensureDir(filepath.Join(opts.Output.Frames, "frame.png"))
+
+	var cmds []*exec.Cmd
+	for i := 0; i < totalFrames; i++ {
+		frameNum := opts.StartingFrame + i
+		textStream := filepath.Join(opts.Input, fmt.Sprintf(textFrameFormat, frameNum))
+		cursorStream := filepath.Join(opts.Input, fmt.Sprintf(cursorFrameFormat, frameNum))
+
+		if _, err := os.Stat(textStream); err != nil {
+			continue
+		}
+
+		targetFile := filepath.Join(opts.Output.Frames, fmt.Sprintf("frame-%05d.png", i+1))
+
+		streamCounter := 2
+		streamBuilder := NewStreamBuilder(streamCounter, opts.Input, opts.Style)
+		streamBuilder.args = append(streamBuilder.args,
+			"-y",
+			"-i", textStream,
+			"-i", cursorStream,
+		)
+
+		streamBuilder = streamBuilder.
+			WithMargin().
+			WithBar().
+			WithCorner()
+
+		filterBuilder := NewScreenshotFilterComplexBuilder(opts.Style).
+			WithWindowBar(streamBuilder.barStream).
+			WithBorderRadius(streamBuilder.cornerStream).
+			WithMarginFill(streamBuilder.marginStream)
+
+		var args []string
+		args = append(args, streamBuilder.Build()...)
+		args = append(args, filterBuilder.Build()...)
+		args = append(args, targetFile)
+
+		cmds = append(cmds, exec.Command("ffmpeg", args...)) //nolint:gosec
+	}
+
+	return cmds
+}
+
 // MakeGIF takes a list of images (as frames) and converts them to a GIF.
 func MakeGIF(opts VideoOptions) *exec.Cmd {
 	return makeMedia(opts, opts.Output.GIF)
