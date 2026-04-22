@@ -1,0 +1,117 @@
+ID,Name,Gender,Eye color,Race,Hair color,Height,Publisher,Skin color,Alignment,Weight
+0,A-Bomb,Male,yellow,Human,No Hair,203,Marvel Comics,-,good,441
+1,Abe Sapien,Male,blue,Icthyo Sapien,No Hair,191,Dark Horse Comics,blue,good,65
+2,Abin Sur,Male,blue,Ungaran,No Hair,185,DC Comics,red,good,90
+3,Abomination,Male,green,Human / Radiation,No Hair,203,Marvel Comics,-,bad,441
+4,Abraxas,Male,blue,Cosmic Entity,Black,-99,Marvel Comics,-,bad,-99
+5,Absorbing Man,Male,blue,Human,No Hair,193,Marvel Comics,-,bad,122
+6,Adam Monroe,Male,blue,-,Blond,-99,NBC - Heroes,-,good,-99
+7,Adam Strange,Male,blue,Human,Blond,185,DC Comics,-,good,88
+8,Agent 13,Female,blue,-,Blond,173,Marvel Comics,-,good,61
+9,Agent Bob,Male,brown,Human,Brown,178,Marvel Comics,-,good,81
+10,Agent Zero,Male,-,-,-,191,Marvel Comics,-,good,104
+11,Air-Walker,Male,blue,-,White,188,Marvel Comics,-,bad,108
+12,Ajax,Male,brown,Cyborg,Black,193,Marvel Comics,-,bad,90
+13,Alan Scott,Male,blue,-,Blond,180,DC Comics,-,good,90
+14,Alex Mercer,Male,-,Human,-,-99,Wildstorm,-,bad,-99
+15,Alex Woolsly,Male,-,-,-,-99,NBC - Heroes,-,good,-99
+16,Alfred Pennyworth,Male,blue,Human,Black,178,DC Comics,-,good,72
+17,Alien,Male,-,Xenomorph XX121,No Hair,244,Dark Horse Comics,black,bad,169
+18,Allan Quatermain,Male,-,-,-,-99,Wildstorm,-,good,-99
+19,Amazo,Male,red,Android,-,257,DC Comics,-,bad,173
+20,Ammo,Male,brown,Human,Black,188,Marvel Comics,-,bad,101
+21,Ando Masahashi,Male,-,-,-,-99,NBC - Heroes,-,good,-99
+22,Angel,Male,blue,-,Blond,183,Marvel Comics,-,good,68
+23,Angel,Male,-,Vampire,-,-99,Dark Horse Comics,-,good,-99
+24,Angel Dust,Female,yellow,Mutant,Black,165,Marvel Comics,-,good,57
+25,Angel Salvadore,Female,brown,-,Black,163,Marvel Comics,-,good,54
+26,Angela,Female,-,-,-,-99,Image Comics,-,bad,-99
+27,Animal Man,Male,blue,Human,Blond,183,DC Comics,-,good,83
+28,Annihilus,Male,green,-,No Hair,180,Marvel Comics,-,bad,90
+29,Ant-Man,Male,blue,Human,Blond,211,Marvel Comics,-,good,122
+30,Ant-Man II,Male,blue,Human,Blond,183,Marvel Comics,-,good,86
+31,Anti-Monitor,Male,yellow,God / Eternal,No Hair,61,DC Comics,-,bad,-99
+32,Anti-Spawn,Male,-,-,-,-99,Image Comics,-,bad,-99
+33,Anti-Venom,Male,blue,Symbiote,Blond,229,Marvel Comics,-,-,358
+34,Apocalypse,Male,red,Mutant,Black,213,Marvel Comics,grey,bad,135
+35,Aquababy,Male,blue,-,Blond,-99,DC Comics,-,good,-99
+36,Aqualad,Male,blue,Atlantean,Black,178,DC Comics,-,good,106
+37,Aquaman,Male,blue,Atlantean,Blond,185,DC Comics,-,good,146
+38,Arachne,Female,blue,Human,Blond,175,Marvel Comics,-,good,63
+39,Archangel,Male,blue,Mutant,Blond,183,Marvel Comics,blue,good,68
+40,Arclight,Female,violet,-,Purple,173,Marvel Comics,-,bad,57
+41,Ardina,Female,white,Alien,Orange,193,Marvel Comics,gold,good,98
+42,Ares,Male,brown,-,Brown,185,Marvel Comics,-,good,270
+43,Ariel,Female,purple,-,Pink,165,Marvel Comics,-,good,59
+44,Armor,Female,black,-,Black,163,Marvel Comics,-,good,50
+45,Arsenal,Male,-,Human,-,-99,DC Comics,-,good,-99
+46,Astro Boy,Male,brown,-,Black,-99,,-,good,-99
+47,Atlas,Male,brown,Mutant,Red,183,Marvel Comics,-,good,101
+48,Atlas,Male,blue,God / Eternal,Brown,198,DC Comics,-,bad,126
+49,Atom,Male,blue,-,Red,178,DC Comics,-,good,68
+50,Atom,Male,-,-,-,-99,DC Comics,-,good,-99
+51,Atom Girl,Female,black,-,Black,168,DC Comics,-,good,54
+52,Atom II,Male,brown,Human,Auburn,183,DC Comics,-,good,81
+53,Atom III,Male,-,-,Red,-99,DC Comics,-,good,-99
+54,Atom IV,Male,brown,-,Black,-99,DC Comics,-,good,72
+55,Aurora,Female,blue,Mutant,Black,180,Marvel Comics,-,good,63
+56,Azazel,Male,yellow,Neyaphem,Black,183,Marvel Comics,red,bad,67
+57,Azrael,Male,brown,Human,Black,-99,DC Comics,-,good,-99
+58,Aztar,Male,-,-,-,-99,DC Comics,-,good,-99
+59,Bane,Male,-,Human,-,203,DC Comics,-,bad,180
+60,Banshee,Male,green,Human,Strawberry Blond,183,Marvel Comics,-,good,77
+61,Bantam,Male,brown,-,Black,165,Marvel Comics,-,good,54
+62,Batgirl,Female,-,-,-,-99,DC Comics,-,good,-99
+63,Batgirl,Female,green,Human,Red,170,DC Comics,-,good,57
+64,Batgirl III,Female,-,-,-,-99,DC Comics,-,good,-99
+65,Batgirl IV,Female,green,Human,Black,165,DC Comics,-,good,52
+66,Batgirl V,Female,-,-,-,-99,DC Comics,-,good,-99
+67,Batgirl VI,Female,blue,-,Blond,168,DC Comics,-,good,61
+68,Batman,Male,blue,Human,black,188,DC Comics,-,good,95
+69,Batman,Male,blue,Human,Black,178,DC Comics,-,good,77
+70,Batman II,Male,blue,Human,Black,178,DC Comics,-,good,79
+71,Battlestar,Male,brown,-,Black,198,Marvel Comics,-,good,133
+72,Batwoman V,Female,green,Human,Red,178,DC Comics,-,good,-99
+73,Beak,Male,black,-,White,175,Marvel Comics,-,good,63
+74,Beast,Male,blue,Mutant,Blue,180,Marvel Comics,blue,good,181
+75,Beast Boy,Male,green,Human,Green,173,DC Comics,green,good,68
+76,Beetle,Male,-,-,-,-99,Marvel Comics,-,bad,-99
+77,Ben 10,Male,-,-,-,-99,DC Comics,-,good,-99
+78,Beta Ray Bill,Male,-,-,No Hair,201,Marvel Comics,-,good,216
+79,Beyonder,Male,-,God / Eternal,-,-99,Marvel Comics,-,good,-99
+80,Big Barda,Female,blue,New God,Black,188,DC Comics,-,bad,135
+81,Big Daddy,Male,-,-,-,-99,Icon Comics,-,good,-99
+82,Big Man,Male,blue,-,Brown,165,Marvel Comics,-,bad,71
+83,Bill Harken,Male,-,Alpha,-,-99,SyFy,-,good,-99
+84,Billy Kincaid,Male,-,-,-,-99,Image Comics,-,bad,-99
+85,Binary,Female,blue,-,Blond,180,Marvel Comics,-,good,54
+86,Bionic Woman,Female,blue,Cyborg,Black,-99,,-,good,-99
+87,Bird-Brain,-,-,-,-,-99,Marvel Comics,-,good,-99
+88,Bird-Man,Male,-,Human,-,-99,Marvel Comics,-,bad,-99
+89,Bird-Man II,Male,-,Human,-,-99,Marvel Comics,-,bad,-99
+90,Birdman,Male,-,God / Eternal,-,-99,Hanna-Barbera,-,good,-99
+91,Bishop,Male,brown,Mutant,No Hair,198,Marvel Comics,-,good,124
+92,Bizarro,Male,black,Bizarro,Black,191,DC Comics,white,neutral,155
+93,Black Abbott,Male,red,-,Black,-99,Marvel Comics,-,bad,-99
+94,Black Adam,Male,brown,-,Black,191,DC Comics,-,bad,113
+95,Black Bolt,Male,blue,Inhuman,Black,188,Marvel Comics,-,good,95
+96,Black Canary,Female,blue,Human,Blond,165,DC Comics,-,good,58
+97,Black Canary,Female,blue,Metahuman,Blond,170,DC Comics,-,good,59
+98,Black Cat,Female,green,Human,Blond,178,Marvel Comics,-,good,54
+99,Black Flash,Male,-,God / Eternal,-,-99,DC Comics,-,neutral,-99
+100,Black Goliath,Male,-,-,-,-99,Marvel Comics,-,good,-99
+101,Black Knight III,Male,brown,Human,Brown,183,Marvel Comics,-,good,86
+102,Black Lightning,Male,brown,-,No Hair,185,DC Comics,-,good,90
+103,Black Mamba,Female,green,-,Black,170,Marvel Comics,-,bad,52
+104,Black Manta,Male,black,Human,No Hair,188,DC Comics,-,bad,92
+105,Black Panther,Male,brown,Human,Black,183,Marvel Comics,-,good,90
+106,Black Widow,Female,green,Human,Auburn,170,Marvel Comics,-,good,59
+107,Black Widow II,Female,blue,-,Blond,170,Marvel Comics,-,good,61
+108,Blackout,Male,red,Demon,White,191,Marvel Comics,white,bad,104
+109,Blackwing,Male,blue,-,Black,185,Marvel Comics,-,bad,86
+110,Blackwulf,Male,red,Alien,White,188,Marvel Comics,-,-,88
+111,Blade,Male,brown,Vampire,Black,188,Marvel Comics,-,good,97
+112,Blaquesmith,-,black,-,No Hair,-99,Marvel Comics,-,good,-99
+113,Bling!,Female,-,-,-,168,Marvel Comics,-,good,68
+114,Blink,Female,green,Mutant,Magenta,165,Marvel Comics,pink,good,56
+115,Blizzard,Male,-,-,-,-99,Marvel Comics,-,bad,-9

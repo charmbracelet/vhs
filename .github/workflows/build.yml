@@ -1,0 +1,12 @@
+name: build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    uses: charmbracelet/meta/.github/workflows/build.yml@main
+
+  snapshot:
+    uses: charmbracelet/meta/.github/workflows/snapshot.yml@main
+    secrets:
+      goreleaser_key: ${{ secrets.GORELEASER_KEY }}
