@@ -143,7 +143,7 @@ func (vhs *VHS) Start() error {
 		return fmt.Errorf("could not launch browser: %w", err)
 	}
 	browser := rod.New().ControlURL(u).MustConnect()
-	page, err := browser.Page(proto.TargetCreateTarget{URL: fmt.Sprintf("http://localhost:%d", port)})
+	page, err := browser.Page(proto.TargetCreateTarget{URL: ttyURL(port)})
 	if err != nil {
 		return fmt.Errorf("could not open ttyd: %w", err)
 	}
@@ -153,6 +153,10 @@ func (vhs *VHS) Start() error {
 	vhs.close = vhs.browser.Close
 	vhs.started = true
 	return nil
+}
+
+func ttyURL(port int) string {
+	return fmt.Sprintf("http://%s:%d", ttyHost, port)
 }
 
 // Setup sets up the VHS instance and performs the necessary actions to reflect
