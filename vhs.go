@@ -30,6 +30,7 @@ type VHS struct {
 	mutex        *sync.Mutex
 	started      bool
 	recording    bool
+	terminated   bool
 	tty          *exec.Cmd
 	totalFrames  int
 	close        func() error
@@ -122,6 +123,11 @@ func New() VHS {
 }
 
 // Start starts ttyd, browser and everything else needed to create the gif.
+//
+// If browser launch or page creation fails after ttyd has already started,
+// the ttyd process is killed before the error is returned. Without this
+// cleanup, callers cannot reach `terminate()` and the ttyd process is
+// orphaned (issue #738).
 func (vhs *VHS) Start() error {
 	vhs.mutex.Lock()
 	defer vhs.mutex.Unlock()
@@ -136,15 +142,25 @@ func (vhs *VHS) Start() error {
 		return fmt.Errorf("could not start tty: %w", err)
 	}
 
+	// killTty kills the spawned ttyd if a later step in Start() fails.
+	killTty := func() {
+		if vhs.tty != nil && vhs.tty.Process != nil {
+			_ = vhs.tty.Process.Kill()
+		}
+	}
+
 	path, _ := launcher.LookPath()
 	enableNoSandbox := os.Getenv("VHS_NO_SANDBOX") != ""
 	u, err := launcher.New().Leakless(false).Bin(path).NoSandbox(enableNoSandbox).Launch()
 	if err != nil {
+		killTty()
 		return fmt.Errorf("could not launch browser: %w", err)
 	}
 	browser := rod.New().ControlURL(u).MustConnect()
 	page, err := browser.Page(proto.TargetCreateTarget{URL: fmt.Sprintf("http://localhost:%d", port)})
 	if err != nil {
+		_ = browser.Close()
+		killTty()
 		return fmt.Errorf("could not open ttyd: %w", err)
 	}
 
@@ -195,8 +211,20 @@ const cleanupWaitTime = 100 * time.Millisecond
 // Terminate cleans up a VHS instance and terminates the go-rod browser and ttyd
 // processes.
 //
+// Idempotent: safe to call from both the post-Record cleanup path inside
+// Record() and the Evaluate() deferred cleanup that fires on early returns
+// (issue #738). The second call is a no-op.
+//
 //nolint:wrapcheck
 func (vhs *VHS) terminate() error {
+	vhs.mutex.Lock()
+	if vhs.terminated || !vhs.started {
+		vhs.mutex.Unlock()
+		return nil
+	}
+	vhs.terminated = true
+	vhs.mutex.Unlock()
+
 	// Give some time for any commands executed (such as `rm`) to finish.
 	//
 	// If a user runs a long running command, they must sleep for the required time
@@ -204,8 +232,13 @@ func (vhs *VHS) terminate() error {
 	time.Sleep(cleanupWaitTime)
 
 	// Tear down the processes we started.
-	vhs.browser.MustClose()
-	return vhs.tty.Process.Kill()
+	if vhs.browser != nil {
+		vhs.browser.MustClose()
+	}
+	if vhs.tty != nil && vhs.tty.Process != nil {
+		return vhs.tty.Process.Kill()
+	}
+	return nil
 }
 
 // Cleanup individual frames.

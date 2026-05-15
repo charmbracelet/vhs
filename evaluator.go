@@ -42,7 +42,13 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	if err := v.Start(); err != nil {
 		return []error{err}
 	}
-	defer func() { _ = v.close() }()
+	// Use terminate() instead of close() so that every early return below
+	// (Page.Wait error, failed SET, video-dimension error, failed Hide block,
+	// etc.) cleans up the ttyd process as well as the browser. close() only
+	// closes the browser, which left ttyd orphaned before issue #738.
+	// terminate() is idempotent — Record()'s own cleanup path inside vhs.go
+	// also calls it, but the second call is a no-op.
+	defer func() { _ = v.terminate() }()
 
 	// Let's wait until we can access the window.term variable.
 	//
