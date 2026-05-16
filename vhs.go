@@ -136,6 +136,15 @@ func (vhs *VHS) Start() error {
 		return fmt.Errorf("could not start tty: %w", err)
 	}
 
+	// If anything below this point fails, the ttyd we just spawned would
+	// outlive the program. Kill it on the way out unless Start completes.
+	cleanupTTY := true
+	defer func() {
+		if cleanupTTY {
+			_ = vhs.tty.Process.Kill()
+		}
+	}()
+
 	path, _ := launcher.LookPath()
 	enableNoSandbox := os.Getenv("VHS_NO_SANDBOX") != ""
 	u, err := launcher.New().Leakless(false).Bin(path).NoSandbox(enableNoSandbox).Launch()
@@ -145,14 +154,34 @@ func (vhs *VHS) Start() error {
 	browser := rod.New().ControlURL(u).MustConnect()
 	page, err := browser.Page(proto.TargetCreateTarget{URL: fmt.Sprintf("http://localhost:%d", port)})
 	if err != nil {
+		_ = browser.Close()
 		return fmt.Errorf("could not open ttyd: %w", err)
 	}
 
 	vhs.browser = browser
 	vhs.Page = page
-	vhs.close = vhs.browser.Close
+	vhs.close = vhs.shutdown
 	vhs.started = true
+	cleanupTTY = false
 	return nil
+}
+
+// shutdown stops the browser and ttyd that this VHS instance owns. It's
+// safe to call multiple times and after terminate() has already run;
+// already-closed browsers and already-exited processes are not treated as
+// errors so callers can use this from deferred cleanups without worrying
+// about ordering.
+func (vhs *VHS) shutdown() error {
+	var ttyErr error
+	if vhs.tty != nil && vhs.tty.Process != nil {
+		if err := vhs.tty.Process.Kill(); err != nil && !errors.Is(err, os.ErrProcessDone) {
+			ttyErr = err
+		}
+	}
+	if vhs.browser != nil {
+		_ = vhs.browser.Close()
+	}
+	return ttyErr
 }
 
 // Setup sets up the VHS instance and performs the necessary actions to reflect
