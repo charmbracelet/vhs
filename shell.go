@@ -22,8 +22,12 @@ type Shell struct {
 // Shells contains a mapping from shell names to their Shell struct.
 var Shells = map[string]Shell{
 	bash: {
-		Env:     []string{"PS1=\\[\\e[38;2;90;86;224m\\]> \\[\\e[0m\\]", "BASH_SILENCE_DEPRECATION_WARNING=1"},
-		Command: []string{"bash", "--noprofile", "--norc", "--login", "+o", "history"},
+		Env: []string{"PS1=\\[\\e[38;2;90;86;224m\\]> \\[\\e[0m\\]", "BASH_SILENCE_DEPRECATION_WARNING=1"},
+		Command: []string{
+			"bash", "--noprofile", "--norc", "--login", "+o", "history",
+			// Load bash-completion so tab completion in tapes works (e.g. custom completion scripts).
+			"-C", `for f in /usr/share/bash-completion/bash_completion /etc/bash_completion /usr/local/etc/bash_completion /opt/homebrew/etc/profile.d/bash_completion.sh; do [ -f "$f" ] && . "$f" && break; done`,
+		},
 	},
 	zsh: {
 		Env:     []string{`PROMPT=%F{#5B56E0}> %F{reset_color}`},
