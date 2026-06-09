@@ -668,6 +668,17 @@ PageUp 3
 PageDown 5
 ```
 
+#### Function Keys
+
+Press the function keys `F1` through `F12`. Like other keypress commands they
+take an optional `@time` and repeat count: `F3[@<time>] [count]`.
+
+```elixir
+F1
+F3 2
+F5@500ms 3
+```
+
 #### Scroll Up / Down
 
 Scroll the terminal viewport directly with `ScrollUp` and `ScrollDown`.
