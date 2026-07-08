@@ -12,6 +12,8 @@ func TestNextToken(t *testing.T) {
 Output examples/out.gif
 Set FontSize 42
 Set Padding 5
+Set Rows 40
+Set Columns 100
 Set CursorBlink false
 Type "echo 'Hello, world!'"
 Enter
@@ -48,6 +50,12 @@ Wait+Screen@1m /foo\\\/bar/`
 		{token.SET, "Set"},
 		{token.PADDING, "Padding"},
 		{token.NUMBER, "5"},
+		{token.SET, "Set"},
+		{token.ROWS, "Rows"},
+		{token.NUMBER, "40"},
+		{token.SET, "Set"},
+		{token.COLUMNS, "Columns"},
+		{token.NUMBER, "100"},
 		{token.SET, "Set"},
 		{token.CURSOR_BLINK, "CursorBlink"},
 		{token.BOOLEAN, "false"},

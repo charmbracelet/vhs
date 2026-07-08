@@ -92,6 +92,8 @@ const (
 	PLAYBACK_SPEED  = "PLAYBACK_SPEED"
 	HEIGHT          = "HEIGHT"
 	WIDTH           = "WIDTH"
+	ROWS            = "ROWS"
+	COLUMNS         = "COLUMNS"
 	LETTER_SPACING  = "LETTER_SPACING"
 	LINE_HEIGHT     = "LINE_HEIGHT"
 	TYPING_SPEED    = "TYPING_SPEED"
@@ -159,6 +161,8 @@ var Keywords = map[string]Type{
 	"Padding":       PADDING,
 	"Theme":         THEME,
 	"Width":         WIDTH,
+	"Rows":          ROWS,
+	"Columns":       COLUMNS,
 	"LoopOffset":    LOOP_OFFSET,
 	"WaitTimeout":   WAIT_TIMEOUT,
 	"WaitPattern":   WAIT_PATTERN,
@@ -178,6 +182,7 @@ func IsSetting(t Type) bool {
 	switch t {
 	case SHELL, FONT_FAMILY, FONT_SIZE, LETTER_SPACING, LINE_HEIGHT,
 		FRAMERATE, TYPING_SPEED, THEME, PLAYBACK_SPEED, HEIGHT, WIDTH,
+		ROWS, COLUMNS,
 		PADDING, LOOP_OFFSET, MARGIN_FILL, MARGIN, WINDOW_BAR,
 		WINDOW_BAR_SIZE, BORDER_RADIUS, CURSOR_BLINK, WAIT_TIMEOUT, WAIT_PATTERN:
 		return true
