@@ -1,0 +1,70 @@
+{
+    "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+    "logo": {
+        "type": "file-raw",
+        "source": "examples/fastfetch/vhs-color.ascii",
+        "padding": {
+            "right": 2
+        }
+    },
+    "display": {
+        "separator": ": "
+    },
+    "modules": [
+        {
+            "type": "custom",
+            "format": "charmbracelet/vhs",
+            "outputColor": "magenta"
+        },
+        "break",
+        {
+            "type": "custom",
+            "key": "OS",
+            "format": "Video Home System",
+            "keyColor": "green"
+        },
+        {
+            "type": "custom",
+            "key": "Packages",
+            "format": "(2) tree-sitter-vhs, vhs-action",
+            "keyColor": "green"
+        },
+        {
+            "type": "custom",
+            "key": "Shell",
+            "format": "bash 5.2",
+            "keyColor": "green"
+        },
+        {
+            "type": "custom",
+            "key": "Resolution",
+            "format": "1200x600",
+            "keyColor": "green"
+        },
+        {
+            "type": "custom",
+            "key": "Theme",
+            "format": "VHS",
+            "keyColor": "green"
+        },
+        {
+            "type": "custom",
+            "key": "Icons",
+            "format": "VHS",
+            "keyColor": "green"
+        },
+        {
+            "type": "custom",
+            "key": "Terminal",
+            "format": "xterm.js",
+            "keyColor": "green"
+        },
+        {
+            "type": "custom",
+            "key": "Font",
+            "format": "JetBrains Mono",
+            "keyColor": "green"
+        },
+        "colors"
+    ]
+}
