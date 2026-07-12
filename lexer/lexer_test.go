@@ -163,6 +163,8 @@ func TestLexTapeFile(t *testing.T) {
 		{token.STRING, "examples/fixtures/all.mp4"},
 		{token.OUTPUT, "Output"},
 		{token.STRING, "examples/fixtures/all.webm"},
+		{token.OUTPUT, "Output"},
+		{token.STRING, "examples/fixtures/all.webp"},
 		{token.COMMENT, " Settings:"},
 		{token.SET, "Set"},
 		{token.SHELL, "Shell"},
