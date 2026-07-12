@@ -559,6 +559,7 @@ func (vhs *VHS) Render(ctx context.Context) error {
 	cmds = append(cmds, MakeGIF(ctx, vhs.Options.Video))
 	cmds = append(cmds, MakeMP4(ctx, vhs.Options.Video))
 	cmds = append(cmds, MakeWebM(ctx, vhs.Options.Video))
+	cmds = append(cmds, MakeWebP(ctx, vhs.Options.Video))
 	cmds = append(cmds, MakeScreenshots(ctx, vhs.Options.Screenshot)...)
 
 	for _, cmd := range cmds {

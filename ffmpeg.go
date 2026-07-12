@@ -318,6 +318,21 @@ func (sb *StreamBuilder) WithWebm() *StreamBuilder {
 	return sb
 }
 
+// WithWebP adds animated WebP stream configuration.
+func (sb *StreamBuilder) WithWebP() *StreamBuilder {
+	sb.args = append(sb.args,
+		"-vcodec", "libwebp_anim",
+		"-pix_fmt", "yuva420p",
+		"-quality", "100",
+		"-compression_level", "3",
+		"-lossless", "0",
+		"-loop", "0",
+		"-an",
+	)
+
+	return sb
+}
+
 // Build returns streams for using with ffmepg.
 func (sb *StreamBuilder) Build() []string {
 	return sb.args
