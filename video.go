@@ -56,6 +56,7 @@ type VideoOptions struct {
 	Output        VideoOutputs
 	StartingFrame int
 	Style         *StyleOptions
+	CaptionFile   string
 }
 
 const (
@@ -131,6 +132,7 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 		WithCorner()
 
 	filterBuilder := NewVideoFilterBuilder(&opts).
+		WithCaptions(opts.CaptionFile).
 		WithWindowBar(streamBuilder.barStream).
 		WithBorderRadius(streamBuilder.cornerStream).
 		WithMarginFill(streamBuilder.marginStream)

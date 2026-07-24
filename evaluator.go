@@ -114,6 +114,9 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	ctx, cancel := context.WithCancel(ctx) //nolint:gosec
 	ch := v.Record(ctx)
 
+	// Start key logging
+	v.KeyLogger.Start(&v.currentFrame, v.Options.Video.Framerate)
+
 	// Clean up temporary files at the end.
 	defer func() {
 		if v.Options.Video.Output.Frames != "" {
@@ -182,6 +185,22 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	}
 
 	teardown()
+
+	// Generate caption/overlay ASS file
+	hasCaptions := len(v.KeyLogger.Events()) > 0
+	hasOverlays := len(v.OverlayEvents) > 0
+
+	if hasCaptions || hasOverlays {
+		if err := ensureLibass(); err != nil {
+			return []error{err}
+		}
+		assPath, err := GenerateCaptionFile(v.KeyLogger.Events(), v.OverlayEvents, v.Options.Video, v.Options.Caption, v.Options.Overlay)
+		if err != nil {
+			return []error{err}
+		}
+		v.Options.Video.CaptionFile = assPath
+	}
+
 	if err := v.Render(); err != nil {
 		return []error{err}
 	}
