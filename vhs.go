@@ -130,6 +130,16 @@ func (vhs *VHS) Start() error {
 		return fmt.Errorf("vhs is already started")
 	}
 
+	// Refuse to start a nested recording session. Running `vhs` inside a
+	// tape that is itself being recorded (e.g. `Type "vhs other.tape"`)
+	// causes the inner instance to spin up its own ttyd and browser while
+	// sharing the outer process's environment, which leads to port and
+	// connection conflicts and, previously, a panic. Nested rendering is
+	// not supported, so fail fast with a clear error instead.
+	if os.Getenv(recordingEnvVar) != "" {
+		return errors.New("vhs is already recording; nested rendering is not supported")
+	}
+
 	port := randomPort()
 	vhs.tty = buildTtyCmd(port, vhs.Options.Shell)
 	if err := vhs.tty.Start(); err != nil {

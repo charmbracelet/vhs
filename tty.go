@@ -16,6 +16,12 @@ import (
 	"os/exec"
 )
 
+// recordingEnvVar is set in the environment of the shell that VHS drives so
+// that any `vhs` invocation typed into that shell (e.g. a tape that itself
+// runs `vhs`) can detect that it is nested inside an existing recording
+// session. See VHS.Start for where this is checked.
+const recordingEnvVar = "VHS_RECORDING"
+
 // randomPort returns a random port number that is not in use.
 func randomPort() int {
 	addr, _ := net.Listen("tcp", ":0") //nolint:gosec,noctx
@@ -39,8 +45,7 @@ func buildTtyCmd(port int, shell Shell) *exec.Cmd {
 	args = append(args, shell.Command...)
 
 	cmd := exec.Command("ttyd", args...)
-	if shell.Env != nil {
-		cmd.Env = append(shell.Env, os.Environ()...)
-	}
+	env := append(shell.Env, os.Environ()...)
+	cmd.Env = append(env, recordingEnvVar+"=1")
 	return cmd
 }
