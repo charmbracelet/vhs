@@ -1,6 +1,6 @@
 // Package vhs video.go spawns the ffmpeg process to convert the frames,
 // collected by go-rod's  screenshots into the input folder, to a GIF, WebM,
-// MP4.
+// WebP, or MP4.
 //
 // MakeGIF takes several options to modify the behaviour of the ffmpeg process,
 // which can be configured through the Set command.
@@ -25,6 +25,7 @@ const (
 const (
 	mp4  = ".mp4"
 	webm = ".webm"
+	webp = ".webp"
 	gif  = ".gif"
 )
 
@@ -43,6 +44,7 @@ func randomDir() string {
 type VideoOutputs struct {
 	GIF    string
 	WebM   string
+	WebP   string
 	MP4    string
 	Frames string
 }
@@ -70,7 +72,7 @@ func DefaultVideoOptions() VideoOptions {
 		Framerate:     defaultFramerate,
 		Input:         randomDir(),
 		MaxColors:     defaultMaxColors,
-		Output:        VideoOutputs{GIF: "", WebM: "", MP4: "", Frames: ""},
+		Output:        VideoOutputs{GIF: "", WebM: "", WebP: "", MP4: "", Frames: ""},
 		PlaybackSpeed: defaultPlaybackSpeed,
 		StartingFrame: defaultStartingFrame,
 	}
@@ -80,7 +82,7 @@ func marginFillIsColor(marginFill string) bool {
 	return strings.HasPrefix(marginFill, "#")
 }
 
-// makeMedia takes a list of images (as frames) and converts them to a GIF/WebM/MP4.
+// makeMedia takes a list of images (as frames) and converts them to a GIF/WebM/WebP/MP4.
 func makeMedia(opts VideoOptions, targetFile string) *exec.Cmd {
 	if targetFile == "" {
 		return nil
@@ -141,6 +143,8 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 		filterBuilder = filterBuilder.WithGIF()
 	case webm:
 		streamBuilder = streamBuilder.WithWebm()
+	case webp:
+		streamBuilder = streamBuilder.WithWebP()
 	case mp4:
 		streamBuilder = streamBuilder.WithMP4()
 	}
@@ -160,6 +164,11 @@ func MakeGIF(opts VideoOptions) *exec.Cmd {
 // MakeWebM takes a list of images (as frames) and converts them to a WebM.
 func MakeWebM(opts VideoOptions) *exec.Cmd {
 	return makeMedia(opts, opts.Output.WebM)
+}
+
+// MakeWebP takes a list of images (as frames) and converts them to an animated WebP.
+func MakeWebP(opts VideoOptions) *exec.Cmd {
+	return makeMedia(opts, opts.Output.WebP)
 }
 
 // MakeMP4 takes a list of images (as frames) and converts them to an MP4.
