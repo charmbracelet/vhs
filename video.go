@@ -41,10 +41,11 @@ func randomDir() string {
 // VideoOutputs is a mapping from file type to file path for all video outputs
 // of VHS.
 type VideoOutputs struct {
-	GIF    string
-	WebM   string
-	MP4    string
-	Frames string
+	GIF       string
+	WebM      string
+	MP4       string
+	Frames    string
+	Asciinema string
 }
 
 // VideoOptions is the set of options for converting frames to a GIF.
