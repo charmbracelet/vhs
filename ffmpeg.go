@@ -11,6 +11,7 @@ import (
 type FilterComplexBuilder struct {
 	filterComplex *strings.Builder
 	style         *StyleOptions
+	framerate     int
 	termWidth     int
 	termHeight    int
 	prevStageName string
@@ -50,6 +51,7 @@ func NewVideoFilterBuilder(videoOpts *VideoOptions) *FilterComplexBuilder {
 		termHeight:    termHeight,
 		termWidth:     termWidth,
 		style:         videoOpts.Style,
+		framerate:     videoOpts.Framerate,
 		prevStageName: "padded",
 	}
 }
@@ -104,6 +106,18 @@ func calcTermDimensions(style StyleOptions) (int, int) {
 	return width, height
 }
 
+// fps pins a secondary stream to the target framerate. The window bar and
+// margin fill sources (lavfi color, looped images) all default to 25fps, and
+// they are the *main* input of the overlays below, so without this the whole
+// render is forced to 25fps regardless of `Set Framerate`.
+// Returns an empty string for screenshots, which have no framerate.
+func (fb *FilterComplexBuilder) fps() string {
+	if fb.framerate <= 0 {
+		return ""
+	}
+	return fmt.Sprintf(",fps=%d", fb.framerate)
+}
+
 // WithWindowBar adds window bar options to ffmepg filter_complex.
 func (fb *FilterComplexBuilder) WithWindowBar(barStream int) *FilterComplexBuilder {
 	if fb.style.WindowBar != "" {
@@ -111,10 +125,11 @@ func (fb *FilterComplexBuilder) WithWindowBar(barStream int) *FilterComplexBuild
 		_, _ = fmt.Fprintf(
 			fb.filterComplex,
 			`
-			[%d]loop=-1[loopbar];
+			[%d]loop=-1%s[loopbar];
 			[loopbar][%s]overlay=0:%d[withbar]
 			`,
 			barStream,
+			fb.fps(),
 			fb.prevStageName,
 			fb.style.WindowBarSize,
 		)
@@ -154,12 +169,13 @@ func (fb *FilterComplexBuilder) WithMarginFill(marginStream int) *FilterComplexB
 		_, _ = fmt.Fprintf(
 			fb.filterComplex,
 			`
-			[%d]scale=%d:%d[bg];
+			[%d]scale=%d:%d%s[bg];
 			[bg][%s]overlay=(W-w)/2:(H-h)/2:shortest=1[withbg]
 			`,
 			marginStream,
 			fb.style.Width,
 			fb.style.Height,
+			fb.fps(),
 			fb.prevStageName,
 		)
 		fb.prevStageName = "withbg"
