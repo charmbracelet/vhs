@@ -14,6 +14,7 @@ import (
 	"net"
 	"os"
 	"os/exec"
+	"runtime"
 )
 
 // randomPort returns a random port number that is not in use.
@@ -34,6 +35,10 @@ func buildTtyCmd(port int, shell Shell) *exec.Cmd {
 		"-t", "customGlyphs=true",
 		"--once", // will allow one connection and exit
 		"--writable",
+	}
+
+	if runtime.GOOS == "windows" {
+		args = append(args, "-w", ".")
 	}
 
 	args = append(args, shell.Command...)
