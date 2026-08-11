@@ -30,7 +30,7 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 
 	v := New()
 	for _, cmd := range cmds {
-		if cmd.Type == token.SET && cmd.Options == "Shell" || cmd.Type == token.ENV {
+		if cmd.Type == token.SET && cmd.Options == shellSetting || cmd.Type == token.ENV {
 			err := Execute(cmd, &v)
 			if err != nil {
 				return []error{err}
@@ -39,7 +39,7 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	}
 
 	// Start things up
-	if err := v.Start(); err != nil {
+	if err := v.Start(ctx); err != nil {
 		return []error{err}
 	}
 	defer func() { _ = v.close() }()
@@ -56,7 +56,7 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	for i, cmd := range cmds {
 		if cmd.Type == token.SET || cmd.Type == token.OUTPUT || cmd.Type == token.REQUIRE {
 			_, _ = fmt.Fprintln(out, Highlight(cmd, false))
-			if cmd.Options != "Shell" {
+			if cmd.Options != shellSetting {
 				err := Execute(cmd, &v)
 				if err != nil {
 					return []error{err}
@@ -111,7 +111,7 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	}
 
 	// Begin recording frames as we are now in a recording state.
-	ctx, cancel := context.WithCancel(ctx) //nolint:gosec
+	ctx, cancel := context.WithCancel(ctx)
 	ch := v.Record(ctx)
 
 	// Clean up temporary files at the end.
@@ -182,7 +182,7 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	}
 
 	teardown()
-	if err := v.Render(); err != nil {
+	if err := v.Render(ctx); err != nil {
 		return []error{err}
 	}
 	return nil

@@ -122,7 +122,7 @@ func New() VHS {
 }
 
 // Start starts ttyd, browser and everything else needed to create the gif.
-func (vhs *VHS) Start() error {
+func (vhs *VHS) Start(ctx context.Context) error {
 	vhs.mutex.Lock()
 	defer vhs.mutex.Unlock()
 
@@ -131,7 +131,7 @@ func (vhs *VHS) Start() error {
 	}
 
 	port := randomPort()
-	vhs.tty = buildTtyCmd(port, vhs.Options.Shell)
+	vhs.tty = buildTtyCmd(ctx, port, vhs.Options.Shell)
 	if err := vhs.tty.Start(); err != nil {
 		return fmt.Errorf("could not start tty: %w", err)
 	}
@@ -220,7 +220,7 @@ func (vhs *VHS) Cleanup() error {
 }
 
 // Render starts rendering the individual frames into a video.
-func (vhs *VHS) Render() error {
+func (vhs *VHS) Render(ctx context.Context) error {
 	// Apply Loop Offset by modifying frame sequence
 	if err := vhs.ApplyLoopOffset(); err != nil {
 		return err
@@ -228,10 +228,10 @@ func (vhs *VHS) Render() error {
 
 	// Generate the video(s) with the frames.
 	var cmds []*exec.Cmd //nolint:prealloc
-	cmds = append(cmds, MakeGIF(vhs.Options.Video))
-	cmds = append(cmds, MakeMP4(vhs.Options.Video))
-	cmds = append(cmds, MakeWebM(vhs.Options.Video))
-	cmds = append(cmds, MakeScreenshots(vhs.Options.Screenshot)...)
+	cmds = append(cmds, MakeGIF(ctx, vhs.Options.Video))
+	cmds = append(cmds, MakeMP4(ctx, vhs.Options.Video))
+	cmds = append(cmds, MakeWebM(ctx, vhs.Options.Video))
+	cmds = append(cmds, MakeScreenshots(ctx, vhs.Options.Screenshot)...)
 
 	for _, cmd := range cmds {
 		if cmd == nil {

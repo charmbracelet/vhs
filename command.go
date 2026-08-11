@@ -456,6 +456,9 @@ func ExecutePaste(_ parser.Command, v *VHS) error {
 	return nil
 }
 
+// shellSetting is the name of the setting that configures the shell.
+const shellSetting = "Shell"
+
 // Settings maps the Set commands to their respective functions.
 var Settings = map[string]CommandFunc{
 	"FontFamily":    ExecuteSetFontFamily,
@@ -469,7 +472,7 @@ var Settings = map[string]CommandFunc{
 	"Theme":         ExecuteSetTheme,
 	"TypingSpeed":   ExecuteSetTypingSpeed,
 	"Width":         ExecuteSetWidth,
-	"Shell":         ExecuteSetShell,
+	shellSetting:    ExecuteSetShell,
 	"LoopOffset":    ExecuteLoopOffset,
 	"MarginFill":    ExecuteSetMarginFill,
 	"Margin":        ExecuteSetMargin,
