@@ -58,6 +58,7 @@ var CommandTypes = []CommandType{
 	token.COPY,
 	token.PASTE,
 	token.ENV,
+	token.PLAYBACK,
 }
 
 // String returns the string representation of the command.
@@ -185,6 +186,8 @@ func (p *Parser) parseCommand() []Command {
 		return []Command{p.parsePaste()}
 	case token.ENV:
 		return []Command{p.parseEnv()}
+	case token.PLAYBACK:
+		return []Command{p.parsePlayback()}
 	default:
 		p.errors = append(p.errors, NewError(p.cur, "Invalid command: "+p.cur.Literal))
 		return []Command{{Type: token.ILLEGAL}}
@@ -539,6 +542,42 @@ func (p *Parser) parseSet() Command {
 func (p *Parser) parseSleep() Command {
 	cmd := Command{Type: token.SLEEP}
 	cmd.Args = p.parseTime()
+	return cmd
+}
+
+// parsePlayback parses a Playback command.
+// A playback command uses @<number> syntax to set playback speed multiplier.
+//
+//	Playback@<number>
+func (p *Parser) parsePlayback() Command {
+	cmd := Command{Type: token.PLAYBACK}
+
+	if p.peek.Type != token.AT {
+		p.errors = append(p.errors, NewError(p.cur, "Expected @ after Playback"))
+		return cmd
+	}
+	p.nextToken()
+
+	if p.peek.Type != token.NUMBER {
+		p.errors = append(p.errors, NewError(p.cur, "Expected number after Playback@"))
+		return cmd
+	}
+
+	speed, err := strconv.ParseFloat(p.peek.Literal, 64)
+	if err != nil {
+		p.errors = append(p.errors, NewError(p.peek, "Invalid playback speed: "+p.peek.Literal))
+		p.nextToken()
+		return cmd
+	}
+
+	if speed <= 0 {
+		p.errors = append(p.errors, NewError(p.peek, "Playback speed must be positive"))
+		p.nextToken()
+		return cmd
+	}
+
+	cmd.Args = p.peek.Literal
+	p.nextToken()
 	return cmd
 }
 
