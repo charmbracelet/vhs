@@ -54,6 +54,8 @@ var CommandFuncs = map[parser.CommandType]CommandFunc{
 	token.PAGE_DOWN:   ExecuteKey(input.PageDown),
 	token.SCROLL_UP:   ExecuteScroll(-1),
 	token.SCROLL_DOWN: ExecuteScroll(1),
+	token.HOME:        ExecuteKey(input.Home),
+	token.END:         ExecuteKey(input.End),
 	token.HIDE:        ExecuteHide,
 	token.REQUIRE:     ExecuteRequire,
 	token.SHOW:        ExecuteShow,
@@ -237,6 +239,10 @@ func ExecuteCtrl(c parser.Command, v *VHS) error {
 			inputKey = &input.ArrowUp
 		case "Down":
 			inputKey = &input.ArrowDown
+		case "Home":
+			inputKey = &input.Home
+		case "End":
+			inputKey = &input.End
 		default:
 			r := rune(key[0])
 			if k, ok := keymap[r]; ok {
