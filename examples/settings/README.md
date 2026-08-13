@@ -134,10 +134,10 @@ Sleep 2s
 
 ### Window Bars
 
-<img width="600" src="./set-bar.gif">
+<img width="600" src="./set-window-bar.gif">
 
 ```
-Output "examples/settings/set-bar.gif"
+Output "examples/settings/set-window-bar.gif"
 Set FontSize 25
 Set Width 600
 Set Height 300
