@@ -100,7 +100,7 @@ Sleep Bar`
 	_ = p.Parse()
 
 	expectedErrors := []string{
-		" 2:6  │ Type expects string",
+		" 2:6  │ Type expects string or var",
 		" 4:1  │ Invalid command: Foo",
 		" 5:1  │ Expected time after Sleep",
 		" 5:7  │ Invalid command: Bar",
@@ -122,6 +122,8 @@ func TestParseTapeFile(t *testing.T) {
 	if err != nil {
 		t.Fatal("could not read fixture file")
 	}
+
+	os.Setenv("SOME_ENV_VAR", "some env var value")
 
 	expected := []Command{
 		{Type: token.OUTPUT, Options: ".gif", Args: "examples/fixtures/all.gif"},
@@ -152,6 +154,7 @@ func TestParseTapeFile(t *testing.T) {
 		{Type: token.TYPE, Options: "", Args: "Double Quote"},
 		{Type: token.TYPE, Options: "", Args: "\"Single\" Quote"},
 		{Type: token.TYPE, Options: "", Args: `"Backtick" 'Quote'`},
+		{Type: token.TYPE, Options: "", Args: "some env var value"},
 		{Type: token.BACKSPACE, Options: "", Args: "1"},
 		{Type: token.BACKSPACE, Options: "", Args: "2"},
 		{Type: token.BACKSPACE, Options: "1s", Args: "3"},
