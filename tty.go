@@ -41,7 +41,7 @@ func buildTtyCmd(ctx context.Context, port int, shell Shell) *exec.Cmd {
 
 	cmd := exec.CommandContext(ctx, "ttyd", args...)
 	if shell.Env != nil {
-		cmd.Env = append(shell.Env, os.Environ()...)
+		cmd.Env = append(append(shell.Env, os.Environ()...), shell.OverwriteEnv...)
 	}
 	return cmd
 }
