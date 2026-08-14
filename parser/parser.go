@@ -58,6 +58,7 @@ var CommandTypes = []CommandType{
 	token.COPY,
 	token.PASTE,
 	token.ENV,
+	token.SUBTITLE,
 }
 
 // String returns the string representation of the command.
@@ -185,6 +186,8 @@ func (p *Parser) parseCommand() []Command {
 		return []Command{p.parsePaste()}
 	case token.ENV:
 		return []Command{p.parseEnv()}
+	case token.SUBTITLE:
+		return []Command{p.parseSubtitle()}
 	default:
 		p.errors = append(p.errors, NewError(p.cur, "Invalid command: "+p.cur.Literal))
 		return []Command{{Type: token.ILLEGAL}}
@@ -661,6 +664,31 @@ func (p *Parser) parseEnv() Command {
 
 	cmd.Args = p.peek.Literal
 	p.nextToken()
+
+	return cmd
+}
+
+// parseSubtitle parses a subtitle command.
+// Subtitle takes a string argument for the text to display.
+// An empty string hides the subtitle.
+//
+//	Subtitle "text to display"
+//	Subtitle ""
+func (p *Parser) parseSubtitle() Command {
+	cmd := Command{Type: token.SUBTITLE}
+
+	if p.peek.Type != token.STRING {
+		p.errors = append(p.errors, NewError(p.peek, "Subtitle expects string"))
+		return cmd
+	}
+
+	for p.peek.Type == token.STRING {
+		p.nextToken()
+		if cmd.Args != "" {
+			cmd.Args += " "
+		}
+		cmd.Args += p.cur.Literal
+	}
 
 	return cmd
 }

@@ -168,6 +168,22 @@ func (fb *FilterComplexBuilder) WithMarginFill(marginStream int) *FilterComplexB
 	return fb
 }
 
+// WithOverlay adds the overlay stream on top of the styled terminal frame.
+// The overlay canvas is pre-sized to match the full output dimensions.
+func (fb *FilterComplexBuilder) WithOverlay(overlayStream int) *FilterComplexBuilder {
+	fb.filterComplex.WriteString(";")
+	_, _ = fmt.Fprintf(
+		fb.filterComplex,
+		`
+		[%s][%d]overlay=0:0[withoverlay]
+		`,
+		fb.prevStageName,
+		overlayStream,
+	)
+	fb.prevStageName = "withoverlay"
+	return fb
+}
+
 // WithGIF adds gif options to ffmepg filter_complex.
 func (fb *FilterComplexBuilder) WithGIF() *FilterComplexBuilder {
 	fb.filterComplex.WriteString(";")
@@ -200,9 +216,10 @@ type StreamBuilder struct {
 	termWidth    int
 	termHeight   int
 	input        string
-	barStream    int
-	cornerStream int
-	marginStream int
+	barStream      int
+	cornerStream   int
+	marginStream   int
+	overlayStream  int
 }
 
 // NewStreamBuilder returns instance of StreamBuilder.

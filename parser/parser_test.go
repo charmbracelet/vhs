@@ -481,3 +481,53 @@ func TestParseScreeenshot(t *testing.T) {
 		test.run(t)
 	})
 }
+
+func TestParseSubtitle(t *testing.T) {
+	t.Run("subtitle with text", func(t *testing.T) {
+		l := lexer.New(`Subtitle "Hello World"`)
+		p := New(l)
+		cmds := p.Parse()
+
+		if len(p.errors) > 0 {
+			t.Fatalf("unexpected errors: %v", p.errors)
+		}
+		if len(cmds) != 1 {
+			t.Fatalf("expected 1 command, got %d", len(cmds))
+		}
+		if cmds[0].Type != token.SUBTITLE {
+			t.Errorf("expected SUBTITLE, got %s", cmds[0].Type)
+		}
+		if cmds[0].Args != "Hello World" {
+			t.Errorf("expected 'Hello World', got '%s'", cmds[0].Args)
+		}
+	})
+
+	t.Run("subtitle with empty string hides", func(t *testing.T) {
+		l := lexer.New(`Subtitle ""`)
+		p := New(l)
+		cmds := p.Parse()
+
+		if len(p.errors) > 0 {
+			t.Fatalf("unexpected errors: %v", p.errors)
+		}
+		if len(cmds) != 1 {
+			t.Fatalf("expected 1 command, got %d", len(cmds))
+		}
+		if cmds[0].Args != "" {
+			t.Errorf("expected empty string, got '%s'", cmds[0].Args)
+		}
+	})
+
+	t.Run("subtitle with multiple words", func(t *testing.T) {
+		l := lexer.New(`Subtitle "This is a longer subtitle message"`)
+		p := New(l)
+		cmds := p.Parse()
+
+		if len(p.errors) > 0 {
+			t.Fatalf("unexpected errors: %v", p.errors)
+		}
+		if cmds[0].Args != "This is a longer subtitle message" {
+			t.Errorf("expected full message, got '%s'", cmds[0].Args)
+		}
+	})
+}

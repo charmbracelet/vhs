@@ -19,8 +19,9 @@ import (
 )
 
 const (
-	textFrameFormat   = "frame-text-%05d.png"
-	cursorFrameFormat = "frame-cursor-%05d.png"
+	textFrameFormat    = "frame-text-%05d.png"
+	cursorFrameFormat  = "frame-cursor-%05d.png"
+	overlayFrameFormat = "frame-overlay-%05d.png"
 )
 
 const (
@@ -57,6 +58,7 @@ type VideoOptions struct {
 	Output        VideoOutputs
 	StartingFrame int
 	Style         *StyleOptions
+	HasOverlay    bool
 }
 
 const (
@@ -111,12 +113,16 @@ func ensureDir(output string) {
 func buildFFopts(opts VideoOptions, targetFile string) []string {
 	var args []string //nolint:prealloc
 	streamCounter := 2
+	if opts.HasOverlay {
+		streamCounter = 3
+	}
 
 	streamBuilder := NewStreamBuilder(streamCounter, opts.Input, opts.Style)
 
 	// Input frame options, used no matter what
 	// Stream 0: text frames
 	// Stream 1: cursor frames
+	// Stream 2 (optional): overlay frames
 	streamBuilder.args = append(streamBuilder.args,
 		"-y",
 		"-r", fmt.Sprint(opts.Framerate),
@@ -127,6 +133,18 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 		"-i", filepath.Join(opts.Input, cursorFrameFormat),
 	)
 
+	if opts.HasOverlay {
+		streamBuilder.args = append(streamBuilder.args,
+			"-r", fmt.Sprint(opts.Framerate),
+			"-start_number", fmt.Sprint(opts.StartingFrame),
+			"-i", filepath.Join(opts.Input, overlayFrameFormat),
+		)
+	}
+
+	if opts.HasOverlay {
+		streamBuilder.overlayStream = 2 // always stream 2: text=0, cursor=1, overlay=2
+	}
+
 	streamBuilder = streamBuilder.
 		WithMargin().
 		WithBar().
@@ -136,6 +154,10 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 		WithWindowBar(streamBuilder.barStream).
 		WithBorderRadius(streamBuilder.cornerStream).
 		WithMarginFill(streamBuilder.marginStream)
+
+	if opts.HasOverlay {
+		filterBuilder = filterBuilder.WithOverlay(streamBuilder.overlayStream)
+	}
 
 	// Format-specific options
 	switch filepath.Ext(targetFile) {
