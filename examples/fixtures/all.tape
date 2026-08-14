@@ -22,6 +22,10 @@ Set TypingSpeed .1
 Set LoopOffset 60.4
 Set LoopOffset 20.99%
 Set CursorBlink false
+Set Lines 24
+Set Columns 80
+Set Rows 24
+Set Cols 80
 
 # Sleep:
 Sleep 1
