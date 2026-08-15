@@ -159,7 +159,7 @@ func (vhs *VHS) Start(ctx context.Context) error {
 
 // Setup sets up the VHS instance and performs the necessary actions to reflect
 // the options that are default and set by the user.
-func (vhs *VHS) Setup() {
+func (vhs *VHS) Setup() error {
 	style := vhs.Options.Video.Style
 
 	// Find xterm.js canvases for the text and cursor layer for recording.
@@ -191,7 +191,9 @@ func (vhs *VHS) Setup() {
 		bar = style.WindowBarSize
 	}
 	if style.Rows > 0 || style.Columns > 0 {
-		vhs.resolveRowsColumns(padding, margin, bar)
+		if err := vhs.resolveRowsColumns(padding, margin, bar); err != nil {
+			return err
+		}
 	}
 
 	width := style.Width - double(padding) - double(margin)
@@ -203,6 +205,8 @@ func (vhs *VHS) Setup() {
 
 	_ = os.RemoveAll(vhs.Options.Video.Input)
 	_ = os.MkdirAll(vhs.Options.Video.Input, 0o750)
+
+	return nil
 }
 
 const (
@@ -223,7 +227,11 @@ const (
 // term.cols/term.rows (the same public API xterm's own fit addon exposes),
 // and uses that ratio to estimate cell size, then iterates to correct for
 // the integer floor-rounding xterm's fit addon applies internally.
-func (vhs *VHS) resolveRowsColumns(padding, margin, bar int) {
+//
+// Both loops are bounded, and an error is returned rather than settling for a
+// grid that doesn't match what was asked for: giving up quietly would render
+// the tape at the wrong size, or at 0x0 if the terminal was never measured.
+func (vhs *VHS) resolveRowsColumns(padding, margin, bar int) error {
 	style := vhs.Options.Video.Style
 
 	measure := func(w, h int) (cols, rows int) {
@@ -237,8 +245,11 @@ func (vhs *VHS) resolveRowsColumns(padding, margin, bar int) {
 	probeHeight := style.Height - double(padding) - double(margin) - bar
 
 	var cellWidth, cellHeight float64
+	var measured bool
+	var lastCols, lastRows int
 	for range dimensionProbeAttempts {
 		cols, rows := measure(probeWidth, probeHeight)
+		lastCols, lastRows = cols, rows
 
 		tooSmall := cols <= 0 || rows <= 0 ||
 			(style.Columns > 0 && cols < style.Columns) ||
@@ -246,10 +257,21 @@ func (vhs *VHS) resolveRowsColumns(padding, margin, bar int) {
 		if !tooSmall {
 			cellWidth = float64(probeWidth) / float64(cols)
 			cellHeight = float64(probeHeight) / float64(rows)
+			measured = true
 			break
 		}
 		probeWidth = double(probeWidth)
 		probeHeight = double(probeHeight)
+	}
+
+	// Without a successful measurement there is no cell size to scale by, and
+	// continuing would size the viewport to 0x0.
+	if !measured {
+		return fmt.Errorf(
+			"could not fit %s: terminal measured %d columns x %d rows at %dx%d pixels after %d attempts",
+			describeGrid(style.Columns, style.Rows),
+			lastCols, lastRows, probeWidth, probeHeight, dimensionProbeAttempts,
+		)
 	}
 
 	contentWidth := probeWidth
@@ -264,8 +286,10 @@ func (vhs *VHS) resolveRowsColumns(padding, margin, bar int) {
 	// xterm's fit addon floors container-size / cell-size, so the estimate
 	// above can be off by a cell. Nudge the content size until the measured
 	// cols/rows exactly match what was requested.
+	var corrected bool
 	for range dimensionCorrectionAttempts {
 		cols, rows := measure(contentWidth, contentHeight)
+		lastCols, lastRows = cols, rows
 
 		converged := true
 		if style.Columns > 0 && cols != style.Columns {
@@ -277,8 +301,19 @@ func (vhs *VHS) resolveRowsColumns(padding, margin, bar int) {
 			converged = false
 		}
 		if converged {
+			corrected = true
 			break
 		}
+	}
+
+	// The grid never settled on the requested size, so recording now would
+	// silently produce a tape with the wrong number of rows/columns.
+	if !corrected {
+		return fmt.Errorf(
+			"could not resolve a viewport for %s: closest match was %d columns x %d rows after %d attempts",
+			describeGrid(style.Columns, style.Rows),
+			lastCols, lastRows, dimensionCorrectionAttempts,
+		)
 	}
 
 	if style.Columns > 0 {
@@ -286,6 +321,21 @@ func (vhs *VHS) resolveRowsColumns(padding, margin, bar int) {
 	}
 	if style.Rows > 0 {
 		style.Height = contentHeight + double(padding) + double(margin) + bar
+	}
+
+	return nil
+}
+
+// describeGrid names the grid size that was requested, mentioning only the
+// dimension(s) the tape actually set.
+func describeGrid(columns, rows int) string {
+	switch {
+	case columns > 0 && rows > 0:
+		return fmt.Sprintf("%d columns x %d rows", columns, rows)
+	case columns > 0:
+		return fmt.Sprintf("%d columns", columns)
+	default:
+		return fmt.Sprintf("%d rows", rows)
 	}
 }
 

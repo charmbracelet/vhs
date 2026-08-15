@@ -91,7 +91,9 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	}
 
 	// Setup the terminal session so we can start executing commands.
-	v.Setup()
+	if err := v.Setup(); err != nil {
+		return []error{err}
+	}
 
 	// If the first command (after Settings and Outputs) is a Hide command, we can
 	// begin executing the commands before we start recording to avoid capturing
