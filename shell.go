@@ -21,6 +21,9 @@ const (
 // DefaultPromptColor is the default color for the shell prompt.
 const DefaultPromptColor = "#5B56E0"
 
+// hexColorLen is the number of characters in a hex color, sans the leading "#".
+const hexColorLen = 6
+
 // Shell is a type that contains a prompt and the command to set up the shell.
 type Shell struct {
 	Name string
@@ -84,13 +87,17 @@ func ShellConfig(name, promptColor string) (env []string, command []string) {
 	}
 }
 
-// hexToRGB converts a hex color string to RGB components.
+// hexToRGB converts a hex color string to RGB components. Colors that cannot
+// be parsed yield zero values.
 func hexToRGB(hex string) (r, g, b int) {
 	hex = strings.TrimPrefix(hex, "#")
-	if len(hex) == 6 {
-		fmt.Sscanf(hex, "%02x%02x%02x", &r, &g, &b)
+	if len(hex) != hexColorLen {
+		return 0, 0, 0
 	}
-	return
+	if _, err := fmt.Sscanf(hex, "%02x%02x%02x", &r, &g, &b); err != nil {
+		return 0, 0, 0
+	}
+	return r, g, b
 }
 
 // Shells contains a mapping from shell names to their Shell struct.

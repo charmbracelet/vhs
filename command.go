@@ -456,30 +456,37 @@ func ExecutePaste(_ parser.Command, v *VHS) error {
 	return nil
 }
 
+// shellSetting is the name of the setting that configures the shell.
+const shellSetting = "Shell"
+
+// promptColorSetting is the name of the setting that configures the shell
+// prompt color.
+const promptColorSetting = "PromptColor"
+
 // Settings maps the Set commands to their respective functions.
 var Settings = map[string]CommandFunc{
-	"FontFamily":    ExecuteSetFontFamily,
-	"FontSize":      ExecuteSetFontSize,
-	"Framerate":     ExecuteSetFramerate,
-	"Height":        ExecuteSetHeight,
-	"LetterSpacing": ExecuteSetLetterSpacing,
-	"LineHeight":    ExecuteSetLineHeight,
-	"PlaybackSpeed": ExecuteSetPlaybackSpeed,
-	"Padding":       ExecuteSetPadding,
-	"Theme":         ExecuteSetTheme,
-	"TypingSpeed":   ExecuteSetTypingSpeed,
-	"Width":         ExecuteSetWidth,
-	"Shell":         ExecuteSetShell,
-	"LoopOffset":    ExecuteLoopOffset,
-	"MarginFill":    ExecuteSetMarginFill,
-	"Margin":        ExecuteSetMargin,
-	"WindowBar":     ExecuteSetWindowBar,
-	"WindowBarSize": ExecuteSetWindowBarSize,
-	"BorderRadius":  ExecuteSetBorderRadius,
-	"WaitPattern":   ExecuteSetWaitPattern,
-	"WaitTimeout":   ExecuteSetWaitTimeout,
-	"CursorBlink":   ExecuteSetCursorBlink,
-	"PromptColor":   ExecuteSetPromptColor,
+	"FontFamily":       ExecuteSetFontFamily,
+	"FontSize":         ExecuteSetFontSize,
+	"Framerate":        ExecuteSetFramerate,
+	"Height":           ExecuteSetHeight,
+	"LetterSpacing":    ExecuteSetLetterSpacing,
+	"LineHeight":       ExecuteSetLineHeight,
+	"PlaybackSpeed":    ExecuteSetPlaybackSpeed,
+	"Padding":          ExecuteSetPadding,
+	"Theme":            ExecuteSetTheme,
+	"TypingSpeed":      ExecuteSetTypingSpeed,
+	"Width":            ExecuteSetWidth,
+	shellSetting:       ExecuteSetShell,
+	"LoopOffset":       ExecuteLoopOffset,
+	"MarginFill":       ExecuteSetMarginFill,
+	"Margin":           ExecuteSetMargin,
+	"WindowBar":        ExecuteSetWindowBar,
+	"WindowBarSize":    ExecuteSetWindowBarSize,
+	"BorderRadius":     ExecuteSetBorderRadius,
+	"WaitPattern":      ExecuteSetWaitPattern,
+	"WaitTimeout":      ExecuteSetWaitTimeout,
+	"CursorBlink":      ExecuteSetCursorBlink,
+	promptColorSetting: ExecuteSetPromptColor,
 }
 
 // ExecuteSet applies the settings on the running vhs specified by the

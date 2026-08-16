@@ -1,5 +1,7 @@
 // Package token provides the token types and structures for the VHS Tape
 // language.
+//
+//nolint:revive
 package token
 
 import (
