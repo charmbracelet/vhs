@@ -317,13 +317,23 @@ func (vhs *VHS) resolveRowsColumns(padding, margin, bar int) error {
 	}
 
 	if style.Columns > 0 {
-		style.Width = contentWidth + double(padding) + double(margin)
+		style.Width = roundUpToEven(contentWidth + double(padding) + double(margin))
 	}
 	if style.Rows > 0 {
-		style.Height = contentHeight + double(padding) + double(margin) + bar
+		style.Height = roundUpToEven(contentHeight + double(padding) + double(margin) + bar)
 	}
 
 	return nil
+}
+
+// roundUpToEven rounds n up to the nearest even number. MP4 and WebM
+// encoders require even width/height, and the grid-derived dimensions above
+// can land on an odd pixel count.
+func roundUpToEven(n int) int {
+	if n%2 != 0 {
+		return n + 1
+	}
+	return n
 }
 
 // describeGrid names the grid size that was requested, mentioning only the
