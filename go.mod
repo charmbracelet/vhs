@@ -1,5 +1,6 @@
 module github.com/charmbracelet/vhs
 
+
 go 1.25.12
 
 require (
