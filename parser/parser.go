@@ -351,6 +351,33 @@ func (p *Parser) parseCtrl() Command {
 	return Command{Type: token.CTRL, Args: ctrlArgs}
 }
 
+// modifierKeywordArgs are the keyword tokens accepted as the argument to a
+// Shift+ or Alt+ combo, in addition to a literal STRING. Kept in sync with
+// the keys ExecuteShift/ExecuteAlt know how to type (modifierKeywordKeys in
+// command.go).
+var modifierKeywordArgs = map[token.Type]bool{
+	token.STRING:        true,
+	token.LEFT_BRACKET:  true,
+	token.RIGHT_BRACKET: true,
+	token.ENTER:         true,
+	token.TAB:           true,
+	token.UP:            true,
+	token.DOWN:          true,
+	token.LEFT:          true,
+	token.RIGHT:         true,
+	token.PAGE_UP:       true,
+	token.PAGE_DOWN:     true,
+	token.HOME:          true,
+	token.END:           true,
+	token.BACKSPACE:     true,
+	token.DELETE:        true,
+	token.INSERT:        true,
+	token.SPACE:         true,
+	token.ESCAPE:        true,
+	token.SCROLL_UP:     true,
+	token.SCROLL_DOWN:   true,
+}
+
 // parseAlt parses an alt command.
 // An alt command takes a character to type while the modifier is held down.
 //
@@ -358,11 +385,7 @@ func (p *Parser) parseCtrl() Command {
 func (p *Parser) parseAlt() Command {
 	if p.peek.Type == token.PLUS {
 		p.nextToken()
-		if p.peek.Type == token.STRING ||
-			p.peek.Type == token.ENTER ||
-			p.peek.Type == token.LEFT_BRACKET ||
-			p.peek.Type == token.RIGHT_BRACKET ||
-			p.peek.Type == token.TAB {
+		if modifierKeywordArgs[p.peek.Type] {
 			c := p.peek.Literal
 			p.nextToken()
 			return Command{Type: token.ALT, Args: c}
@@ -384,11 +407,7 @@ func (p *Parser) parseAlt() Command {
 func (p *Parser) parseShift() Command {
 	if p.peek.Type == token.PLUS {
 		p.nextToken()
-		if p.peek.Type == token.STRING ||
-			p.peek.Type == token.ENTER ||
-			p.peek.Type == token.LEFT_BRACKET ||
-			p.peek.Type == token.RIGHT_BRACKET ||
-			p.peek.Type == token.TAB {
+		if modifierKeywordArgs[p.peek.Type] {
 			c := p.peek.Literal
 			p.nextToken()
 			return Command{Type: token.SHIFT, Args: c}
