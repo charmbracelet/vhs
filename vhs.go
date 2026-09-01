@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -64,6 +65,18 @@ const (
 	fontsSeparator       = ","
 	defaultCursorBlink   = true
 	defaultWaitTimeout   = 15 * time.Second
+
+	// browserStartTimeout is how long to wait for Chrome to start and expose its
+	// DevTools endpoint before giving up.
+	browserStartTimeout = 30 * time.Second
+
+	// browserPollInterval is how often the DevTools HTTP endpoint is probed
+	// while waiting for the browser to start.
+	browserPollInterval = 100 * time.Millisecond
+
+	// browserCloseTimeout is how long to wait for Chrome to shut down cleanly
+	// before it gets killed.
+	browserCloseTimeout = 5 * time.Second
 )
 
 var defaultWaitPattern = regexp.MustCompile(">$")
@@ -123,6 +136,153 @@ func New() VHS {
 	}
 }
 
+// startBrowser launches a headless Chrome and returns a connected go-rod
+// browser.
+//
+// It does not rely on the "DevTools listening on ws://..." line that Chrome
+// prints to stderr, as recent Chrome versions do not reliably print it
+// (see https://github.com/charmbracelet/vhs/issues/754), which caused VHS to
+// hang forever waiting for it. Instead, Chrome is started on a reserved
+// port and the DevTools HTTP endpoint is polled until it responds.
+func startBrowser(ctx context.Context) (*rod.Browser, func() error, error) {
+	binPath, _ := launcher.LookPath()
+	if binPath == "" {
+		// No browser found on the system, fall back to downloading one.
+		var err error
+		binPath, err = launcher.NewBrowser().Get()
+		if err != nil {
+			return nil, nil, fmt.Errorf("could not find or download a browser: %w", err)
+		}
+	}
+
+	debugPort := randomPort()
+
+	userDataDir, err := os.MkdirTemp("", "vhs-")
+	if err != nil {
+		return nil, nil, fmt.Errorf("could not create temporary user data directory: %w", err)
+	}
+
+	l := launcher.New().
+		Leakless(false).
+		Bin(binPath).
+		UserDataDir(userDataDir).
+		RemoteDebuggingPort(debugPort).
+		NoSandbox(os.Getenv("VHS_NO_SANDBOX") != "")
+
+	cmd := exec.CommandContext(ctx, binPath, l.FormatArgs()...)
+	if err := cmd.Start(); err != nil {
+		_ = os.RemoveAll(userDataDir)
+		return nil, nil, fmt.Errorf("could not start browser: %w", err)
+	}
+
+	exited := make(chan struct{})
+	go func() {
+		_ = cmd.Wait()
+		close(exited)
+	}()
+
+	if !waitForDevTools(ctx, debugPort, exited, browserStartTimeout) {
+		killBrowser(cmd, userDataDir, exited)
+		if ctx.Err() != nil {
+			return nil, nil, fmt.Errorf("could not start browser: %w", ctx.Err())
+		}
+		select {
+		case <-exited:
+			return nil, nil, errors.New("browser exited unexpectedly before its debugging endpoint was ready")
+		default:
+			return nil, nil, fmt.Errorf("browser debugging endpoint did not become ready within %s", browserStartTimeout)
+		}
+	}
+
+	wsURL, err := launcher.ResolveURL(fmt.Sprintf("127.0.0.1:%d", debugPort))
+	if err != nil {
+		killBrowser(cmd, userDataDir, exited)
+		return nil, nil, fmt.Errorf("could not resolve browser debugging endpoint: %w", err)
+	}
+
+	browser := rod.New().ControlURL(wsURL)
+	if err := browser.Connect(); err != nil {
+		killBrowser(cmd, userDataDir, exited)
+		return nil, nil, fmt.Errorf("could not connect to browser: %w", err)
+	}
+
+	closer := func() error {
+		if err := browser.Close(); err != nil {
+			// The browser could not be closed gracefully (e.g. it is already
+			// gone), make sure the process is terminated.
+			_ = cmd.Process.Kill()
+		}
+		select {
+		case <-exited:
+		case <-time.After(browserCloseTimeout):
+			_ = cmd.Process.Kill()
+		}
+		_ = os.RemoveAll(userDataDir)
+		return nil
+	}
+
+	return browser, closer, nil
+}
+
+// waitForDevTools polls the DevTools HTTP endpoint until it is ready to accept
+// connections. It returns true once the endpoint is ready, and false if the
+// context is canceled, the browser exits first, or the timeout elapses.
+//
+// It is the only reliable way to know the browser is ready, regardless of what
+// the browser prints to stdout or stderr.
+func waitForDevTools(ctx context.Context, port int, exited <-chan struct{}, timeout time.Duration) bool {
+	ticker := time.NewTicker(browserPollInterval)
+	defer ticker.Stop()
+	timeoutCh := time.After(timeout)
+	for {
+		select {
+		case <-ctx.Done():
+			return false
+		case <-exited:
+			return false
+		case <-timeoutCh:
+			return false
+		case <-ticker.C:
+			if probeDevTools(port) == nil {
+				return true
+			}
+		}
+	}
+}
+
+// probeDevTools checks whether the DevTools HTTP endpoint of a browser
+// listening on the given port is ready to accept connections.
+func probeDevTools(port int) error {
+	probeCtx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	req, err := http.NewRequestWithContext(probeCtx, http.MethodGet, fmt.Sprintf("http://127.0.0.1:%d/json/version", port), nil)
+	if err != nil {
+		return fmt.Errorf("could not probe browser debugging endpoint: %w", err)
+	}
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return fmt.Errorf("could not probe browser debugging endpoint: %w", err)
+	}
+	defer func() { _ = resp.Body.Close() }()
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("unexpected status code from browser debugging endpoint: %d", resp.StatusCode)
+	}
+	return nil
+}
+
+// killBrowser terminates a browser process and removes its user data
+// directory.
+func killBrowser(cmd *exec.Cmd, userDataDir string, exited <-chan struct{}) {
+	if cmd.Process != nil {
+		_ = cmd.Process.Kill()
+	}
+	select {
+	case <-exited:
+	case <-time.After(browserCloseTimeout):
+	}
+	_ = os.RemoveAll(userDataDir)
+}
+
 // Start starts ttyd, browser and everything else needed to create the gif.
 func (vhs *VHS) Start(ctx context.Context) error {
 	vhs.mutex.Lock()
@@ -138,21 +298,25 @@ func (vhs *VHS) Start(ctx context.Context) error {
 		return fmt.Errorf("could not start tty: %w", err)
 	}
 
-	path, _ := launcher.LookPath()
-	enableNoSandbox := os.Getenv("VHS_NO_SANDBOX") != ""
-	u, err := launcher.New().Leakless(false).Bin(path).NoSandbox(enableNoSandbox).Launch()
+	browser, closeBrowser, err := startBrowser(ctx)
 	if err != nil {
-		return fmt.Errorf("could not launch browser: %w", err)
+		_ = vhs.tty.Process.Kill()
+		return fmt.Errorf("could not start browser: %w", err)
 	}
-	browser := rod.New().ControlURL(u).MustConnect()
 	page, err := browser.Page(proto.TargetCreateTarget{URL: fmt.Sprintf("http://localhost:%d", port)})
 	if err != nil {
+		_ = closeBrowser()
+		_ = vhs.tty.Process.Kill()
 		return fmt.Errorf("could not open ttyd: %w", err)
 	}
 
 	vhs.browser = browser
 	vhs.Page = page
-	vhs.close = vhs.browser.Close
+	vhs.close = func() error {
+		_ = closeBrowser()
+		_ = vhs.tty.Process.Kill()
+		return nil
+	}
 	vhs.started = true
 	return nil
 }
@@ -363,7 +527,10 @@ func (vhs *VHS) terminate() error {
 	time.Sleep(cleanupWaitTime)
 
 	// Tear down the processes we started.
-	vhs.browser.MustClose()
+	//
+	// The browser may have already exited, in which case closing it fails and
+	// its process gets killed as a fallback, so errors are ignored here.
+	_ = vhs.browser.Close()
 	return vhs.tty.Process.Kill()
 }
 
