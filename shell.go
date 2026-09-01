@@ -4,6 +4,7 @@ package main
 const (
 	bash       = "bash"
 	cmdexe     = "cmd"
+	elvish     = "elvish"
 	fish       = "fish"
 	nushell    = "nu"
 	osh        = "osh"
@@ -72,5 +73,8 @@ var Shells = map[string]Shell{
 	},
 	xonsh: {
 		Command: []string{"xonsh", "--no-rc", "-D", "PROMPT=\033[;38;2;91;86;224m>\033[m "},
+	},
+	elvish: {
+		Command: []string{"elvish", "-c", `use os; var rc = (os:temp-file 'vhs-'); try { echo 'set edit:prompt = { styled "> " "#5B56E0" };set edit:rprompt = { }' > $rc; elvish -rc $rc[name] } finally { os:remove $rc[name] }`},
 	},
 }
