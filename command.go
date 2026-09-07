@@ -482,6 +482,7 @@ var Settings = map[string]CommandFunc{
 	"WaitPattern":   ExecuteSetWaitPattern,
 	"WaitTimeout":   ExecuteSetWaitTimeout,
 	"CursorBlink":   ExecuteSetCursorBlink,
+	"Sixel":         ExecuteSetSixel,
 }
 
 // ExecuteSet applies the settings on the running vhs specified by the
@@ -748,6 +749,17 @@ func ExecuteSetCursorBlink(c parser.Command, v *VHS) error {
 		return fmt.Errorf("failed to parse cursor blink: %w", err)
 	}
 
+	return nil
+}
+
+// ExecuteSetSixel enables capture of terminal images.
+func ExecuteSetSixel(c parser.Command, v *VHS) error {
+	enabled, err := strconv.ParseBool(c.Args)
+	if err != nil {
+		return fmt.Errorf("failed to parse sixel: %w", err)
+	}
+	v.Options.Video.Sixel = enabled
+	v.Options.Screenshot.sixel = enabled
 	return nil
 }
 

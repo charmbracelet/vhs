@@ -21,6 +21,7 @@ import (
 const (
 	textFrameFormat   = "frame-text-%05d.png"
 	cursorFrameFormat = "frame-cursor-%05d.png"
+	imageFrameFormat  = "frame-image-%05d.png"
 )
 
 const (
@@ -57,6 +58,7 @@ type VideoOptions struct {
 	Output        VideoOutputs
 	StartingFrame int
 	Style         *StyleOptions
+	Sixel         bool
 }
 
 const (
@@ -111,6 +113,9 @@ func ensureDir(output string) {
 func buildFFopts(opts VideoOptions, targetFile string) []string {
 	var args []string //nolint:prealloc
 	streamCounter := 2
+	if opts.Sixel {
+		streamCounter++
+	}
 
 	streamBuilder := NewStreamBuilder(streamCounter, opts.Input, opts.Style)
 
@@ -126,6 +131,13 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 		"-start_number", fmt.Sprint(opts.StartingFrame),
 		"-i", filepath.Join(opts.Input, cursorFrameFormat),
 	)
+	if opts.Sixel {
+		streamBuilder.args = append(streamBuilder.args,
+			"-r", fmt.Sprint(opts.Framerate),
+			"-start_number", fmt.Sprint(opts.StartingFrame),
+			"-i", filepath.Join(opts.Input, imageFrameFormat),
+		)
+	}
 
 	streamBuilder = streamBuilder.
 		WithMargin().

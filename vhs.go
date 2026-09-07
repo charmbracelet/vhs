@@ -272,49 +272,40 @@ func (vhs *VHS) ApplyLoopOffset() error {
 	// New starting frame will be the next frame after offsetEnd
 	vhs.Options.Video.StartingFrame = offsetEnd + 1
 
-	// Rename all text and cursor frame files in the range concurrently
-	errCh := make(chan error)
-	doneCh := make(chan bool)
-	var wg sync.WaitGroup
-
-	for counter := offsetStart; counter <= offsetEnd; counter++ {
-		wg.Add(1)
-		go func(frameNum int) {
-			defer wg.Done()
-			offsetFrameNum := frameNum + vhs.totalFrames
-			if err := os.Rename(
-				filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(cursorFrameFormat, frameNum)),
-				filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(cursorFrameFormat, offsetFrameNum)),
-			); err != nil {
-				errCh <- fmt.Errorf("error applying offset to cursor frame: %w", err)
-			}
-		}(counter)
-
-		wg.Add(1)
-		go func(frameNum int) {
-			defer wg.Done()
-			offsetFrameNum := frameNum + vhs.totalFrames
-			if err := os.Rename(
-				filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(textFrameFormat, frameNum)),
-				filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(textFrameFormat, offsetFrameNum)),
-			); err != nil {
-				errCh <- fmt.Errorf("error applying offset to text frame: %w", err)
-			}
-		}(counter)
+	// Rename each frame's layers together, retaining every stream's numbering.
+	formats := []string{textFrameFormat, cursorFrameFormat}
+	if vhs.Options.Video.Sixel {
+		formats = append(formats, imageFrameFormat)
 	}
-
-	go func() {
-		wg.Wait()
-		close(doneCh)
-	}()
-
-	select {
-	case <-doneCh:
-		return nil
-	case err := <-errCh:
-		// Bail out in case of an error while renaming
+	errCh := make(chan error, offsetEnd-offsetStart+1)
+	var wg sync.WaitGroup
+	for frame := offsetStart; frame <= offsetEnd; frame++ {
+		wg.Add(1)
+		go func(frame int) {
+			defer wg.Done()
+			for _, format := range formats {
+				if err := os.Rename(
+					filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(format, frame)),
+					filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(format, frame+vhs.totalFrames)),
+				); err != nil {
+					errCh <- fmt.Errorf("error applying offset to %s: %w", format, err)
+					return
+				}
+			}
+		}(frame)
+	}
+	wg.Wait()
+	close(errCh)
+	for err := range errCh {
 		return err
 	}
+
+	for path, frame := range vhs.Options.Screenshot.screenshots {
+		if frame >= offsetStart && frame <= offsetEnd {
+			vhs.Options.Screenshot.screenshots[path] = frame + vhs.totalFrames
+		}
+	}
+	return nil
 }
 
 const quality = 1.0
@@ -327,6 +318,7 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 	//nolint: mnd
 	go func() {
 		counter := 0
+		var images imageLayerCapture
 		start := time.Now()
 		for {
 			select {
@@ -357,6 +349,15 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 					ch <- fmt.Errorf("error: %v, %v", textErr, cursorErr)
 					continue
 				}
+				var image []byte
+				if vhs.Options.Video.Sixel {
+					var err error
+					image, err = images.capture(vhs.Page)
+					if err != nil {
+						ch <- err
+						continue
+					}
+				}
 
 				counter++
 				if err := os.WriteFile(
@@ -374,6 +375,17 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 				); err != nil {
 					ch <- fmt.Errorf("error writing text frame: %w", err)
 					continue
+				}
+
+				if vhs.Options.Video.Sixel {
+					if err := os.WriteFile(
+						filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(imageFrameFormat, counter)),
+						image,
+						0o600,
+					); err != nil {
+						ch <- fmt.Errorf("error writing image frame: %w", err)
+						continue
+					}
 				}
 
 				// Capture current frame and disable frame capturing
