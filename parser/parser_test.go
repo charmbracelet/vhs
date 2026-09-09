@@ -117,6 +117,31 @@ Sleep Bar`
 	}
 }
 
+func TestParseOutputNumericFilename(t *testing.T) {
+	l := lexer.New("Output 1.gif")
+	p := New(l)
+
+	cmds := p.Parse()
+
+	if len(p.errors) != 0 {
+		t.Fatalf("Expected no errors, got %v", p.errors)
+	}
+	if len(cmds) != 1 {
+		t.Fatalf("Expected 1 command, got %d", len(cmds))
+	}
+
+	cmd := cmds[0]
+	if cmd.Type != token.OUTPUT {
+		t.Fatalf("Expected command type %s, got %s", token.OUTPUT, cmd.Type)
+	}
+	if cmd.Options != ".gif" {
+		t.Fatalf("Expected output extension %q, got %q", ".gif", cmd.Options)
+	}
+	if cmd.Args != "1.gif" {
+		t.Fatalf("Expected output path %q, got %q", "1.gif", cmd.Args)
+	}
+}
+
 func TestParseTapeFile(t *testing.T) {
 	input, err := os.ReadFile("../examples/fixtures/all.tape")
 	if err != nil {

@@ -417,24 +417,40 @@ func (p *Parser) parseKeypress(ct token.Type) Command {
 func (p *Parser) parseOutput() Command {
 	cmd := Command{Type: token.OUTPUT}
 
-	if p.peek.Type != token.STRING {
+	if p.peek.Type != token.STRING && p.peek.Type != token.NUMBER {
 		p.errors = append(p.errors, NewError(p.cur, "Expected file path after output"))
 		return cmd
 	}
 
-	ext := filepath.Ext(p.peek.Literal)
+	path := p.parseOutputPath()
+	ext := filepath.Ext(path)
 	if ext != "" {
 		cmd.Options = ext
 	} else {
 		cmd.Options = ".png"
-		if !strings.HasSuffix(p.peek.Literal, "/") {
-			p.errors = append(p.errors, NewError(p.peek, "Expected folder with trailing slash"))
+		if !strings.HasSuffix(path, "/") {
+			p.errors = append(p.errors, NewError(p.cur, "Expected folder with trailing slash"))
 		}
 	}
 
-	cmd.Args = p.peek.Literal
-	p.nextToken()
+	cmd.Args = path
 	return cmd
+}
+
+func (p *Parser) parseOutputPath() string {
+	p.nextToken()
+	path := p.cur.Literal
+
+	for (p.peek.Type == token.STRING || p.peek.Type == token.NUMBER) && isAdjacentToken(p.cur, p.peek) {
+		p.nextToken()
+		path += p.cur.Literal
+	}
+
+	return path
+}
+
+func isAdjacentToken(left, right token.Token) bool {
+	return left.Line == right.Line && left.Column+len(left.Literal) == right.Column
 }
 
 // parseSet parses a set command.
