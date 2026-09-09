@@ -76,6 +76,7 @@ The following is a list of all possible setting commands in VHS:
 * Set %Theme% <json|string>
 * Set %Padding% <number>
 * Set %Framerate% <number>
+* Set %Sixel% <boolean> (default false; capture sixel images)
 * Set %PlaybackSpeed% <float>
 * Set %WaitTimeout% <time>
 * Set %WaitPattern% <regexp>
