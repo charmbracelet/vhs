@@ -169,7 +169,9 @@ func startBrowser(ctx context.Context) (*rod.Browser, func() error, error) {
 		RemoteDebuggingPort(debugPort).
 		NoSandbox(os.Getenv("VHS_NO_SANDBOX") != "")
 
-	cmd := exec.CommandContext(ctx, binPath, l.FormatArgs()...)
+	// binPath is resolved by go-rod's launcher (system lookup or its own
+	// download cache) and is not user-controlled input.
+	cmd := exec.CommandContext(ctx, binPath, l.FormatArgs()...) //nolint:gosec
 	if err := cmd.Start(); err != nil {
 		_ = os.RemoveAll(userDataDir)
 		return nil, nil, fmt.Errorf("could not start browser: %w", err)
