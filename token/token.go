@@ -62,6 +62,19 @@ const (
 	TAB         = "TAB"
 	SHIFT       = "SHIFT"
 
+	F1  = "F1"
+	F2  = "F2"
+	F3  = "F3"
+	F4  = "F4"
+	F5  = "F5"
+	F6  = "F6"
+	F7  = "F7"
+	F8  = "F8"
+	F9  = "F9"
+	F10 = "F10"
+	F11 = "F11"
+	F12 = "F12"
+
 	COMMENT = "COMMENT"
 	NUMBER  = "NUMBER"
 	STRING  = "STRING"
@@ -140,6 +153,18 @@ var Keywords = map[string]Type{
 	"Tab":           TAB,
 	"Escape":        ESCAPE,
 	"End":           END,
+	"F1":            F1,
+	"F2":            F2,
+	"F3":            F3,
+	"F4":            F4,
+	"F5":            F5,
+	"F6":            F6,
+	"F7":            F7,
+	"F8":            F8,
+	"F9":            F9,
+	"F10":           F10,
+	"F11":           F11,
+	"F12":           F12,
 	"Hide":          HIDE,
 	"Require":       REQUIRE,
 	"Show":          SHOW,
@@ -197,6 +222,7 @@ func IsCommand(t Type) bool {
 	case TYPE, SLEEP,
 		UP, DOWN, RIGHT, LEFT, PAGE_UP, PAGE_DOWN, SCROLL_UP, SCROLL_DOWN,
 		ENTER, BACKSPACE, DELETE, TAB,
+		F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12,
 		ESCAPE, HOME, INSERT, END, CTRL, SOURCE, SCREENSHOT, COPY, PASTE, WAIT:
 		return true
 	default:

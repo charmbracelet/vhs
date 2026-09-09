@@ -229,6 +229,41 @@ func TestParseTapeFile(t *testing.T) {
 	}
 }
 
+func TestParseFunctionKeys(t *testing.T) {
+	input := "F1\nF3 2\nF12@1s 3\n"
+
+	expected := []Command{
+		{Type: token.F1, Options: "", Args: "1"},
+		{Type: token.F3, Options: "", Args: "2"},
+		{Type: token.F12, Options: "1s", Args: "3"},
+	}
+
+	l := lexer.New(input)
+	p := New(l)
+
+	cmds := p.Parse()
+
+	if errs := p.Errors(); len(errs) > 0 {
+		t.Fatalf("unexpected parser errors: %v", errs)
+	}
+
+	if len(cmds) != len(expected) {
+		t.Fatalf("Expected %d commands, got %d", len(expected), len(cmds))
+	}
+
+	for i, cmd := range cmds {
+		if cmd.Type != expected[i].Type {
+			t.Errorf("Expected command %d to be %s, got %s", i, expected[i].Type, cmd.Type)
+		}
+		if cmd.Args != expected[i].Args {
+			t.Errorf("Expected command %d to have args %s, got %s", i, expected[i].Args, cmd.Args)
+		}
+		if cmd.Options != expected[i].Options {
+			t.Errorf("Expected command %d to have options %s, got %s", i, expected[i].Options, cmd.Options)
+		}
+	}
+}
+
 func TestParseCtrl(t *testing.T) {
 	tests := []struct {
 		name     string
