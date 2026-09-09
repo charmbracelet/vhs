@@ -17,6 +17,8 @@ import (
 	"os/exec"
 )
 
+const ttyHost = "127.0.0.1"
+
 // randomPort returns a random port number that is not in use.
 func randomPort() int {
 	addr, _ := net.Listen("tcp", ":0") //nolint:gosec,noctx
@@ -28,7 +30,7 @@ func randomPort() int {
 func buildTtyCmd(ctx context.Context, port int, shell Shell) *exec.Cmd {
 	args := []string{ //nolint:prealloc
 		fmt.Sprintf("--port=%d", port),
-		"--interface", "127.0.0.1",
+		"--interface", ttyHost,
 		"-t", "rendererType=canvas",
 		"-t", "disableResizeOverlay=true",
 		"-t", "enableSixel=true",
