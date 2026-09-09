@@ -15,7 +15,7 @@ require (
 	github.com/go-rod/rod v0.116.2
 	github.com/hashicorp/go-version v1.9.0
 	github.com/mattn/go-isatty v0.0.24
-	github.com/mattn/go-runewidth v0.0.27
+	github.com/mattn/go-runewidth v0.0.29
 	github.com/muesli/go-app-paths v0.2.2
 	github.com/muesli/mango-cobra v1.3.0
 	github.com/muesli/roff v0.1.0
