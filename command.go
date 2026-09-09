@@ -263,39 +263,66 @@ func ExecuteCtrl(c parser.Command, v *VHS) error {
 	return nil
 }
 
+// modifierKeywordKeys maps the keyword tokens that Shift+<key> and Alt+<key>
+// accept (per parseShift/parseAlt) to the input.Key they should type.
+var modifierKeywordKeys = map[token.Type]input.Key{
+	token.ENTER:       input.Enter,
+	token.TAB:         input.Tab,
+	token.UP:          input.ArrowUp,
+	token.DOWN:        input.ArrowDown,
+	token.LEFT:        input.ArrowLeft,
+	token.RIGHT:       input.ArrowRight,
+	token.PAGE_UP:     input.PageUp,
+	token.PAGE_DOWN:   input.PageDown,
+	token.HOME:        input.Home,
+	token.END:         input.End,
+	token.BACKSPACE:   input.Backspace,
+	token.DELETE:      input.Delete,
+	token.INSERT:      input.Insert,
+	token.SPACE:       input.Space,
+	token.ESCAPE:      input.Escape,
+	token.SCROLL_UP:   input.PageUp,
+	token.SCROLL_DOWN: input.PageDown,
+}
+
+// typeModifiedKey types c.Args's key, held with the given modifier already
+// pressed. c.Args is either a keyword recognized by modifierKeywordKeys (as
+// accepted by parseShift/parseAlt) or a literal string typed character by
+// character.
+func typeModifiedKey(c parser.Command, v *VHS, modifierName string) error {
+	if k, ok := token.Keywords[c.Args]; ok {
+		key, ok := modifierKeywordKeys[k]
+		if !ok {
+			return fmt.Errorf("%s+%s is not supported", modifierName, c.Args)
+		}
+		if err := v.Page.Keyboard.Type(key); err != nil {
+			return fmt.Errorf("failed to type %s key: %w", c.Args, err)
+		}
+		return nil
+	}
+
+	for _, r := range c.Args {
+		if k, ok := keymap[r]; ok {
+			if err := v.Page.Keyboard.Type(k); err != nil {
+				return fmt.Errorf("failed to type key %c: %w", r, err)
+			}
+		}
+	}
+	return nil
+}
+
 // ExecuteAlt is a CommandFunc that presses the argument key with the alt key
 // held down on the running instance of vhs.
 func ExecuteAlt(c parser.Command, v *VHS) error {
-	err := v.Page.Keyboard.Press(input.AltLeft)
-	if err != nil {
+	if err := v.Page.Keyboard.Press(input.AltLeft); err != nil {
 		return fmt.Errorf("failed to press Alt key: %w", err)
 	}
-	if k, ok := token.Keywords[c.Args]; ok { //nolint:nestif
-		switch k {
-		case token.ENTER:
-			err = v.Page.Keyboard.Type(input.Enter)
-			if err != nil {
-				return fmt.Errorf("failed to type Enter key: %w", err)
-			}
-		case token.TAB:
-			err := v.Page.Keyboard.Type(input.Tab)
-			if err != nil {
-				return fmt.Errorf("failed to type Tab key: %w", err)
-			}
-		}
-	} else {
-		for _, r := range c.Args {
-			if k, ok := keymap[r]; ok {
-				err = v.Page.Keyboard.Type(k)
-				if err != nil {
-					return fmt.Errorf("failed to type key %c: %w", r, err)
-				}
-			}
-		}
+
+	if err := typeModifiedKey(c, v, "Alt"); err != nil {
+		return err
 	}
 
-	err = v.Page.Keyboard.Release(input.AltLeft)
-	if err != nil {
+	if err := v.Page.Keyboard.Release(input.AltLeft); err != nil {
 		return fmt.Errorf("failed to release Alt key: %w", err)
 	}
 
@@ -305,37 +332,15 @@ func ExecuteAlt(c parser.Command, v *VHS) error {
 // ExecuteShift is a CommandFunc that presses the argument key with the shift
 // key held down on the running instance of vhs.
 func ExecuteShift(c parser.Command, v *VHS) error {
-	err := v.Page.Keyboard.Press(input.ShiftLeft)
-	if err != nil {
+	if err := v.Page.Keyboard.Press(input.ShiftLeft); err != nil {
 		return fmt.Errorf("failed to press Shift key: %w", err)
 	}
 
-	if k, ok := token.Keywords[c.Args]; ok { //nolint:nestif
-		switch k {
-		case token.ENTER:
-			err = v.Page.Keyboard.Type(input.Enter)
-			if err != nil {
-				return fmt.Errorf("failed to type Enter key: %w", err)
-			}
-		case token.TAB:
-			err = v.Page.Keyboard.Type(input.Tab)
-			if err != nil {
-				return fmt.Errorf("failed to type Tab key: %w", err)
-			}
-		}
-	} else {
-		for _, r := range c.Args {
-			if k, ok := keymap[r]; ok {
-				err = v.Page.Keyboard.Type(k)
-				if err != nil {
-					return fmt.Errorf("failed to type key %c: %w", r, err)
-				}
-			}
-		}
+	if err := typeModifiedKey(c, v, "Shift"); err != nil {
+		return err
 	}
 
-	err = v.Page.Keyboard.Release(input.ShiftLeft)
-	if err != nil {
+	if err := v.Page.Keyboard.Release(input.ShiftLeft); err != nil {
 		return fmt.Errorf("failed to release Shift key: %w", err)
 	}
 
