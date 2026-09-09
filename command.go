@@ -39,37 +39,38 @@ type CommandFunc func(c parser.Command, v *VHS) error
 
 // CommandFuncs maps command types to their executable functions.
 var CommandFuncs = map[parser.CommandType]CommandFunc{
-	token.BACKSPACE:   ExecuteKey(input.Backspace),
-	token.DELETE:      ExecuteKey(input.Delete),
-	token.INSERT:      ExecuteKey(input.Insert),
-	token.DOWN:        ExecuteKey(input.ArrowDown),
-	token.ENTER:       ExecuteKey(input.Enter),
-	token.LEFT:        ExecuteKey(input.ArrowLeft),
-	token.RIGHT:       ExecuteKey(input.ArrowRight),
-	token.SPACE:       ExecuteKey(input.Space),
-	token.UP:          ExecuteKey(input.ArrowUp),
-	token.TAB:         ExecuteKey(input.Tab),
-	token.ESCAPE:      ExecuteKey(input.Escape),
-	token.PAGE_UP:     ExecuteKey(input.PageUp),
-	token.PAGE_DOWN:   ExecuteKey(input.PageDown),
-	token.SCROLL_UP:   ExecuteScroll(-1),
-	token.SCROLL_DOWN: ExecuteScroll(1),
-	token.HIDE:        ExecuteHide,
-	token.REQUIRE:     ExecuteRequire,
-	token.SHOW:        ExecuteShow,
-	token.SET:         ExecuteSet,
-	token.OUTPUT:      ExecuteOutput,
-	token.SLEEP:       ExecuteSleep,
-	token.TYPE:        ExecuteType,
-	token.CTRL:        ExecuteCtrl,
-	token.ALT:         ExecuteAlt,
-	token.SHIFT:       ExecuteShift,
-	token.ILLEGAL:     ExecuteNoop,
-	token.SCREENSHOT:  ExecuteScreenshot,
-	token.COPY:        ExecuteCopy,
-	token.PASTE:       ExecutePaste,
-	token.ENV:         ExecuteEnv,
-	token.WAIT:        ExecuteWait,
+	token.BACKSPACE:     ExecuteKey(input.Backspace),
+	token.DELETE:        ExecuteKey(input.Delete),
+	token.INSERT:        ExecuteKey(input.Insert),
+	token.DOWN:          ExecuteKey(input.ArrowDown),
+	token.ENTER:         ExecuteKey(input.Enter),
+	token.LEFT:          ExecuteKey(input.ArrowLeft),
+	token.RIGHT:         ExecuteKey(input.ArrowRight),
+	token.SPACE:         ExecuteKey(input.Space),
+	token.UP:            ExecuteKey(input.ArrowUp),
+	token.TAB:           ExecuteKey(input.Tab),
+	token.ESCAPE:        ExecuteKey(input.Escape),
+	token.PAGE_UP:       ExecuteKey(input.PageUp),
+	token.PAGE_DOWN:     ExecuteKey(input.PageDown),
+	token.SCROLL_UP:     ExecuteScroll(-1),
+	token.SCROLL_DOWN:   ExecuteScroll(1),
+	token.HIDE:          ExecuteHide,
+	token.REQUIRE:       ExecuteRequire,
+	token.SHOW:          ExecuteShow,
+	token.SET:           ExecuteSet,
+	token.OUTPUT:        ExecuteOutput,
+	token.SLEEP:         ExecuteSleep,
+	token.TYPE:          ExecuteType,
+	token.CTRL:          ExecuteCtrl,
+	token.ALT:           ExecuteAlt,
+	token.SHIFT:         ExecuteShift,
+	token.ILLEGAL:       ExecuteNoop,
+	token.SCREENSHOT:    ExecuteScreenshot,
+	token.COPY:          ExecuteCopy,
+	token.PASTE:         ExecutePaste,
+	token.ENV:           ExecuteEnv,
+	token.AWAIT_PROMPT:  ExecuteAwaitPrompt,
+	token.WAIT:          ExecuteWait,
 }
 
 // ExecuteNoop is a no-op command that does nothing.
@@ -204,6 +205,47 @@ func ExecuteWait(c parser.Command, v *VHS) error {
 			continue
 		case <-timeoutT.C:
 			return fmt.Errorf("timeout waiting for %q to match %s; last value was: %s", c.Args, rx.String(), last)
+		}
+	}
+}
+
+// ExecuteAwaitPrompt waits for the shell to emit a new prompt marker.
+// It detects prompt markers (OSC 133;A) that are embedded in each shell's prompt
+// configuration. Unlike Wait (which matches terminal content), AwaitPrompt
+// detects when the shell has finished executing a command and is ready for input.
+func ExecuteAwaitPrompt(c parser.Command, v *VHS) error {
+	timeout := v.Options.WaitTimeout
+	if c.Options != "" {
+		t, err := time.ParseDuration(c.Options)
+		if err != nil {
+			return fmt.Errorf("failed to parse duration: %w", err)
+		}
+		timeout = t
+	}
+
+	// Record the current prompt count so we can detect the next one.
+	baseline, err := v.PromptCount()
+	if err != nil {
+		return fmt.Errorf("failed to read prompt count: %w", err)
+	}
+
+	checkT := time.NewTicker(WaitTick)
+	defer checkT.Stop()
+	timeoutT := time.NewTimer(timeout)
+	defer timeoutT.Stop()
+
+	for {
+		select {
+		case <-checkT.C:
+			current, err := v.PromptCount()
+			if err != nil {
+				return fmt.Errorf("failed to read prompt count: %w", err)
+			}
+			if current > baseline {
+				return nil
+			}
+		case <-timeoutT.C:
+			return fmt.Errorf("timeout waiting for shell prompt (waited %s)", timeout)
 		}
 	}
 }
