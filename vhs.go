@@ -568,6 +568,7 @@ func (vhs *VHS) Render(ctx context.Context) error {
 		out, err := cmd.CombinedOutput()
 		if err != nil {
 			log.Println(string(out))
+			return fmt.Errorf("render failed: %w", err)
 		}
 	}
 
