@@ -65,6 +65,20 @@ func TestShellConfigCustomColor(t *testing.T) {
 	if !strings.Contains(env[0], "FF8000") {
 		t.Errorf("zsh PROMPT does not contain hex colour FF8000: %s", env[0])
 	}
+
+	// Windows PowerShell and PowerShell Core use ANSI true color escapes. This
+	// avoids Write-Host's named-color-only ForegroundColor parameter and the
+	// optional System.Drawing dependency on Linux and macOS.
+	for _, name := range []string{powershell, pwsh} {
+		_, command := ShellConfig(name, "#FF8000")
+		promptCommand := command[len(command)-1]
+		if !strings.Contains(promptCommand, "38;2;255;128;0") {
+			t.Errorf("%s prompt does not contain expected ANSI RGB values: %s", name, promptCommand)
+		}
+		if strings.Contains(promptCommand, "System.Drawing") {
+			t.Errorf("%s prompt unexpectedly depends on System.Drawing: %s", name, promptCommand)
+		}
+	}
 }
 
 func TestShellConfigDefaultColor(t *testing.T) {

@@ -283,6 +283,18 @@ Set the shell with the `Set Shell <shell>` command
 Set Shell fish
 ```
 
+#### Set Prompt Color
+
+Set the shell prompt color with the `Set PromptColor "#RRGGBB"` command. The
+default is `#5B56E0`.
+
+```elixir
+Set PromptColor "#FF8000"
+```
+
+This setting works with all supported shells except `cmd.exe`, whose `prompt`
+command does not support colors.
+
 #### Set Font Size
 
 Set the font size with the `Set FontSize <number>` command.
@@ -352,6 +364,34 @@ Set Height 1000
   <source media="(prefers-color-scheme: light)" srcset="https://stuff.charm.sh/vhs/examples/height.gif">
   <img width="300" alt="Example of changing the height of the terminal" src="https://stuff.charm.sh/vhs/examples/height.gif">
 </picture>
+
+#### Set Columns
+
+Set the width of the terminal in columns (character cells) with the `Set
+Columns` command. VHS derives the final pixel width from the current font
+settings (`FontSize`, `FontFamily`, `LetterSpacing`) plus `Padding`/`Margin`.
+
+```elixir
+Set Columns 100
+```
+
+`Set Columns` cannot be combined with `Set Width` — use one or the other to
+control the terminal's width. It can be freely combined with `Set Height`
+or `Set Rows` to control height.
+
+#### Set Rows
+
+Set the height of the terminal in rows (character cells) with the `Set Rows`
+command. VHS derives the final pixel height from the current font settings
+(`FontSize`, `FontFamily`, `LineHeight`) plus `Padding`/`Margin`/`WindowBar`.
+
+```elixir
+Set Rows 40
+```
+
+`Set Rows` cannot be combined with `Set Height` — use one or the other to
+control the terminal's height. It can be freely combined with `Set Width`
+or `Set Columns` to control width.
 
 #### Set Letter Spacing
 

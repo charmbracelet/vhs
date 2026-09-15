@@ -61,7 +61,7 @@ func ShellConfig(name, promptColor string) (env []string, command []string) {
 			"-NoExit",
 			"-NoProfile",
 			"-Command",
-			fmt.Sprintf(`Set-PSReadLineOption -HistorySaveStyle SaveNothing; function prompt { Write-Host '>' -NoNewLine -ForegroundColor ([System.Drawing.Color]::FromArgb(%d,%d,%d)); return ' ' }`, r, g, b),
+			fmt.Sprintf(`Set-PSReadLineOption -HistorySaveStyle SaveNothing; function prompt { Write-Host "$([char]27)[38;2;%d;%d;%dm>$([char]27)[0m" -NoNewLine; return ' ' }`, r, g, b),
 		}
 	case pwsh:
 		return nil, []string{
@@ -71,9 +71,11 @@ func ShellConfig(name, promptColor string) (env []string, command []string) {
 			"-NoExit",
 			"-NoProfile",
 			"-Command",
-			fmt.Sprintf(`Set-PSReadLineOption -HistorySaveStyle SaveNothing; Function prompt { Write-Host -ForegroundColor ([System.Drawing.Color]::FromArgb(%d,%d,%d)) -NoNewLine '>'; return ' ' }`, r, g, b),
+			fmt.Sprintf(`Set-PSReadLineOption -HistorySaveStyle SaveNothing; Function prompt { Write-Host "$([char]27)[38;2;%d;%d;%dm>$([char]27)[0m" -NoNewLine; return ' ' }`, r, g, b),
 		}
 	case cmdexe:
+		// cmd.exe's prompt command does not support RGB colors, so keep its
+		// existing uncolored prompt.
 		return nil, []string{"cmd.exe", "/k", "prompt=^> "}
 	case nushell:
 		return nil, []string{"nu", "--execute", fmt.Sprintf("$env.PROMPT_COMMAND = {'\033[;38;2;%d;%d;%dm>\033[m '}; $env.PROMPT_COMMAND_RIGHT = {''}", r, g, b)}

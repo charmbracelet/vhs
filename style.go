@@ -60,8 +60,13 @@ var (
 
 // StyleOptions represents the ui options for video and screenshots.
 type StyleOptions struct {
-	Width           int
-	Height          int
+	Width  int
+	Height int
+	// Rows and Columns, when non-zero, take precedence over Height and Width
+	// respectively: the terminal is sized to fit exactly that many rows/columns
+	// of the configured font, and Height/Width are derived from it instead.
+	Rows            int
+	Columns         int
 	Padding         int
 	BackgroundColor string
 	MarginFill      string

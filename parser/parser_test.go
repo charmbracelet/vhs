@@ -462,6 +462,27 @@ func (st *parseScreenshotTest) run(t *testing.T) {
 	}
 }
 
+func TestParseSetRowsColumns(t *testing.T) {
+	input := `
+Set Rows 40
+Set Columns 100`
+
+	expected := []Command{
+		{Type: token.SET, Options: "Rows", Args: "40"},
+		{Type: token.SET, Options: "Columns", Args: "100"},
+	}
+
+	l := lexer.New(input)
+	p := New(l)
+	actual := p.Parse()
+
+	for i, cmd := range actual {
+		if cmd != expected[i] {
+			t.Errorf("Expected %+v, got %+v", expected[i], cmd)
+		}
+	}
+}
+
 func TestParseScreeenshot(t *testing.T) {
 	t.Run("should return error when screenshot extension is NOT (.png)", func(t *testing.T) {
 		test := &parseScreenshotTest{

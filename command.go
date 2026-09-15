@@ -477,6 +477,8 @@ var Settings = map[string]CommandFunc{
 	"TypingSpeed":      ExecuteSetTypingSpeed,
 	"Width":            ExecuteSetWidth,
 	shellSetting:       ExecuteSetShell,
+	"Rows":             ExecuteSetRows,
+	"Columns":          ExecuteSetColumns,
 	"LoopOffset":       ExecuteLoopOffset,
 	"MarginFill":       ExecuteSetMarginFill,
 	"Margin":           ExecuteSetMargin,
@@ -536,7 +538,11 @@ func ExecuteSetHeight(c parser.Command, v *VHS) error {
 	if err != nil {
 		return fmt.Errorf("failed to parse height: %w", err)
 	}
+	if v.Options.Video.Style.Rows > 0 {
+		return fmt.Errorf("cannot set both Height and Rows")
+	}
 	v.Options.Video.Style.Height = height
+	v.heightExplicit = true
 
 	return nil
 }
@@ -547,7 +553,47 @@ func ExecuteSetWidth(c parser.Command, v *VHS) error {
 	if err != nil {
 		return fmt.Errorf("failed to parse width: %w", err)
 	}
+	if v.Options.Video.Style.Columns > 0 {
+		return fmt.Errorf("cannot set both Width and Columns")
+	}
 	v.Options.Video.Style.Width = width
+	v.widthExplicit = true
+
+	return nil
+}
+
+// ExecuteSetRows applies the number of terminal rows on the vhs, overriding
+// Height once the terminal is set up.
+func ExecuteSetRows(c parser.Command, v *VHS) error {
+	rows, err := strconv.Atoi(c.Args)
+	if err != nil {
+		return fmt.Errorf("failed to parse rows: %w", err)
+	}
+	if rows <= 0 {
+		return fmt.Errorf("rows must be a positive integer")
+	}
+	if v.heightExplicit {
+		return fmt.Errorf("cannot set both Height and Rows")
+	}
+	v.Options.Video.Style.Rows = rows
+
+	return nil
+}
+
+// ExecuteSetColumns applies the number of terminal columns on the vhs,
+// overriding Width once the terminal is set up.
+func ExecuteSetColumns(c parser.Command, v *VHS) error {
+	columns, err := strconv.Atoi(c.Args)
+	if err != nil {
+		return fmt.Errorf("failed to parse columns: %w", err)
+	}
+	if columns <= 0 {
+		return fmt.Errorf("columns must be a positive integer")
+	}
+	if v.widthExplicit {
+		return fmt.Errorf("cannot set both Width and Columns")
+	}
+	v.Options.Video.Style.Columns = columns
 
 	return nil
 }
@@ -758,7 +804,15 @@ func ExecuteSetCursorBlink(c parser.Command, v *VHS) error {
 
 // ExecuteSetPromptColor sets the prompt color.
 func ExecuteSetPromptColor(c parser.Command, v *VHS) error {
-	v.Options.PromptColor = c.Args
+	hex := strings.TrimPrefix(c.Args, "#")
+	if len(hex) != hexColorLen {
+		return fmt.Errorf("invalid prompt color %q: must be a 6-digit hexadecimal color", c.Args)
+	}
+	if _, err := strconv.ParseUint(hex, 16, 24); err != nil {
+		return fmt.Errorf("invalid prompt color %q: must be a 6-digit hexadecimal color", c.Args)
+	}
+
+	v.Options.PromptColor = "#" + hex
 	return nil
 }
 
