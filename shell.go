@@ -21,6 +21,9 @@ const (
 // DefaultPromptColor is the default color for the shell prompt.
 const DefaultPromptColor = "#5B56E0"
 
+// hexColorLen is the number of characters in a hex color, sans the leading "#".
+const hexColorLen = 6
+
 // DefaultPrompt is the default prompt symbol.
 const DefaultPrompt = ">"
 
@@ -61,7 +64,7 @@ func ShellConfig(name, promptColor, prompt string) (env []string, command []stri
 			"-NoExit",
 			"-NoProfile",
 			"-Command",
-			fmt.Sprintf(`Set-PSReadLineOption -HistorySaveStyle SaveNothing; function prompt { Write-Host '%s' -NoNewLine -ForegroundColor ([System.Drawing.Color]::FromArgb(%d,%d,%d)); return ' ' }`, prompt, r, g, b),
+			fmt.Sprintf(`Set-PSReadLineOption -HistorySaveStyle SaveNothing; function prompt { Write-Host ([char]27 + '[38;2;%d;%d;%dm' + %s + [char]27 + '[0m') -NoNewLine; return ' ' }`, r, g, b, powerShellSingleQuoted(prompt)),
 		}
 	case pwsh:
 		return nil, []string{
@@ -71,9 +74,11 @@ func ShellConfig(name, promptColor, prompt string) (env []string, command []stri
 			"-NoExit",
 			"-NoProfile",
 			"-Command",
-			fmt.Sprintf(`Set-PSReadLineOption -HistorySaveStyle SaveNothing; Function prompt { Write-Host -ForegroundColor ([System.Drawing.Color]::FromArgb(%d,%d,%d)) -NoNewLine '%s'; return ' ' }`, r, g, b, prompt),
+			fmt.Sprintf(`Set-PSReadLineOption -HistorySaveStyle SaveNothing; Function prompt { Write-Host ([char]27 + '[38;2;%d;%d;%dm' + %s + [char]27 + '[0m') -NoNewLine; return ' ' }`, r, g, b, powerShellSingleQuoted(prompt)),
 		}
 	case cmdexe:
+		// cmd.exe's prompt command does not support RGB colors, so only apply
+		// the custom prompt symbol.
 		return nil, []string{"cmd.exe", "/k", fmt.Sprintf("prompt=%s ", prompt)}
 	case nushell:
 		return nil, []string{"nu", "--execute", fmt.Sprintf("$env.PROMPT_COMMAND = {'\033[;38;2;%d;%d;%dm%s\033[m '}; $env.PROMPT_COMMAND_RIGHT = {''}", r, g, b, prompt)}
@@ -87,13 +92,21 @@ func ShellConfig(name, promptColor, prompt string) (env []string, command []stri
 	}
 }
 
-// hexToRGB converts a hex color string to RGB components.
+func powerShellSingleQuoted(value string) string {
+	return "'" + strings.ReplaceAll(value, "'", "''") + "'"
+}
+
+// hexToRGB converts a hex color string to RGB components. Colors that cannot
+// be parsed yield zero values.
 func hexToRGB(hex string) (r, g, b int) {
 	hex = strings.TrimPrefix(hex, "#")
-	if len(hex) == 6 {
-		fmt.Sscanf(hex, "%02x%02x%02x", &r, &g, &b)
+	if len(hex) != hexColorLen {
+		return 0, 0, 0
 	}
-	return
+	if _, err := fmt.Sscanf(hex, "%02x%02x%02x", &r, &g, &b); err != nil {
+		return 0, 0, 0
+	}
+	return r, g, b
 }
 
 // Shells contains a mapping from shell names to their Shell struct.

@@ -143,10 +143,12 @@ func (l *Lexer) readString(endChar byte) string {
 
 // readRegex reads a regex pattern from the input, handling escaped delimiters.
 // It counts consecutive backslashes to determine if a delimiter is truly escaped.
+//
 // Examples:
-//   /foo\/bar/ => Token(foo\/bar) - delimiter is escaped
-//   /foo\\/    => Token(foo\\)    - delimiter is NOT escaped (backslash is escaped)
-//   /foo\\\/bar/ => Token(foo\\\/bar) - delimiter is escaped
+//
+//	/foo\/bar/ => Token(foo\/bar) - delimiter is escaped
+//	/foo\\/    => Token(foo\\)    - delimiter is NOT escaped (backslash is escaped)
+//	/foo\\\/bar/ => Token(foo\\\/bar) - delimiter is escaped
 func (l *Lexer) readRegex(endChar byte) string {
 	pos := l.pos + 1
 	for {

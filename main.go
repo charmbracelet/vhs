@@ -63,7 +63,11 @@ var (
 			// Set the input to the file contents if a file is given
 			// otherwise, use stdin
 			if len(args) > 0 && args[0] != "-" {
-				in, err = os.Open(args[0])
+				filename := args[0]
+				if !strings.HasSuffix(filename, extension) {
+					filename = filename + extension
+				}
+				in, err = os.Open(filename)
 				if err != nil {
 					return err
 				}
@@ -293,8 +297,8 @@ func init() {
 var versionRegex = regexp.MustCompile(`\d+\.\d+\.\d+`)
 
 // getVersion returns the parsed version of a program.
-func getVersion(program string) *version.Version {
-	cmd := exec.Command(program, "--version")
+func getVersion(ctx context.Context, program string) *version.Version {
+	cmd := exec.CommandContext(ctx, program, "--version")
 	out, err := cmd.Output()
 	if err != nil {
 		return nil
@@ -319,7 +323,7 @@ func ensureDependencies() error {
 		return fmt.Errorf("%v is not installed", defaultShell)
 	}
 
-	ttydVersion := getVersion("ttyd")
+	ttydVersion := getVersion(context.Background(), "ttyd")
 	if ttydVersion == nil || ttydVersion.LessThan(ttydMinVersion) {
 		return fmt.Errorf("ttyd version (%s) is out of date, VHS requires %s\n%s",
 			ttydVersion,

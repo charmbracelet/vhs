@@ -41,6 +41,8 @@ The following is a list of all possible commands in VHS:
 * %Up% [repeat]
 * %PageUp% [repeat]
 * %PageDown% [repeat]
+* %ScrollUp% [repeat]
+* %ScrollDown% [repeat]
 * %Hide%
 * %Show%
 * %Wait%[+Screen][@<timeout>] /<regexp>/
@@ -66,6 +68,8 @@ The following is a list of all possible setting commands in VHS:
 * Set %FontFamily% <string>
 * Set %Height% <number>
 * Set %Width% <number>
+* Set %Rows% <number>
+* Set %Columns% <number>
 * Set %LetterSpacing% <float>
 * Set %LineHeight% <float>
 * Set %TypingSpeed% <time>

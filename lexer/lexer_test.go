@@ -12,6 +12,8 @@ func TestNextToken(t *testing.T) {
 Output examples/out.gif
 Set FontSize 42
 Set Padding 5
+Set Rows 40
+Set Columns 100
 Set CursorBlink false
 Type "echo 'Hello, world!'"
 Enter
@@ -19,6 +21,8 @@ Type@.1 "echo 'Hello, world!'"
 Left 3
 Sleep 1
 Right@100ms 3
+ScrollUp 3
+ScrollDown@100ms 2
 Sleep 500ms
 Ctrl+C
 Enter
@@ -47,6 +51,12 @@ Wait+Screen@1m /foo\\\/bar/`
 		{token.PADDING, "Padding"},
 		{token.NUMBER, "5"},
 		{token.SET, "Set"},
+		{token.ROWS, "Rows"},
+		{token.NUMBER, "40"},
+		{token.SET, "Set"},
+		{token.COLUMNS, "Columns"},
+		{token.NUMBER, "100"},
+		{token.SET, "Set"},
 		{token.CURSOR_BLINK, "CursorBlink"},
 		{token.BOOLEAN, "false"},
 		{token.TYPE, "Type"},
@@ -65,6 +75,13 @@ Wait+Screen@1m /foo\\\/bar/`
 		{token.NUMBER, "100"},
 		{token.MILLISECONDS, "ms"},
 		{token.NUMBER, "3"},
+		{token.SCROLL_UP, "ScrollUp"},
+		{token.NUMBER, "3"},
+		{token.SCROLL_DOWN, "ScrollDown"},
+		{token.AT, "@"},
+		{token.NUMBER, "100"},
+		{token.MILLISECONDS, "ms"},
+		{token.NUMBER, "2"},
 		{token.SLEEP, "Sleep"},
 		{token.NUMBER, "500"},
 		{token.MILLISECONDS, "ms"},
@@ -266,6 +283,13 @@ func TestLexTapeFile(t *testing.T) {
 		{token.AT, "@"},
 		{token.NUMBER, "1"},
 		{token.NUMBER, "3"},
+		{token.SCROLL_DOWN, "ScrollDown"},
+		{token.SCROLL_DOWN, "ScrollDown"},
+		{token.NUMBER, "2"},
+		{token.SCROLL_DOWN, "ScrollDown"},
+		{token.AT, "@"},
+		{token.NUMBER, "1"},
+		{token.NUMBER, "3"},
 		{token.ENTER, "Enter"},
 		{token.ENTER, "Enter"},
 		{token.NUMBER, "2"},
@@ -312,6 +336,13 @@ func TestLexTapeFile(t *testing.T) {
 		{token.PAGE_UP, "PageUp"},
 		{token.NUMBER, "2"},
 		{token.PAGE_UP, "PageUp"},
+		{token.AT, "@"},
+		{token.NUMBER, "1"},
+		{token.NUMBER, "3"},
+		{token.SCROLL_UP, "ScrollUp"},
+		{token.SCROLL_UP, "ScrollUp"},
+		{token.NUMBER, "2"},
+		{token.SCROLL_UP, "ScrollUp"},
 		{token.AT, "@"},
 		{token.NUMBER, "1"},
 		{token.NUMBER, "3"},

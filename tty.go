@@ -10,6 +10,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net"
 	"os"
@@ -18,14 +19,14 @@ import (
 
 // randomPort returns a random port number that is not in use.
 func randomPort() int {
-	addr, _ := net.Listen("tcp", ":0") //nolint:gosec
+	addr, _ := net.Listen("tcp", ":0") //nolint:gosec,noctx
 	_ = addr.Close()
 	return addr.Addr().(*net.TCPAddr).Port
 }
 
 // buildTtyCmd builds the ttyd exec.Command on the given port.
-func buildTtyCmd(port int, shell Shell, promptColor, prompt string) *exec.Cmd {
-	args := []string{
+func buildTtyCmd(ctx context.Context, port int, shell Shell, promptColor, prompt string) *exec.Cmd {
+	args := []string{ //nolint:prealloc
 		fmt.Sprintf("--port=%d", port),
 		"--interface", "127.0.0.1",
 		"-t", "rendererType=canvas",
@@ -39,7 +40,7 @@ func buildTtyCmd(port int, shell Shell, promptColor, prompt string) *exec.Cmd {
 	env, command := ShellConfig(shell.Name, promptColor, prompt)
 	args = append(args, command...)
 
-	cmd := exec.Command("ttyd", args...)
+	cmd := exec.CommandContext(ctx, "ttyd", args...)
 	if env != nil {
 		cmd.Env = append(env, os.Environ()...)
 	}

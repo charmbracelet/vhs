@@ -39,35 +39,37 @@ type CommandFunc func(c parser.Command, v *VHS) error
 
 // CommandFuncs maps command types to their executable functions.
 var CommandFuncs = map[parser.CommandType]CommandFunc{
-	token.BACKSPACE:  ExecuteKey(input.Backspace),
-	token.DELETE:     ExecuteKey(input.Delete),
-	token.INSERT:     ExecuteKey(input.Insert),
-	token.DOWN:       ExecuteKey(input.ArrowDown),
-	token.ENTER:      ExecuteKey(input.Enter),
-	token.LEFT:       ExecuteKey(input.ArrowLeft),
-	token.RIGHT:      ExecuteKey(input.ArrowRight),
-	token.SPACE:      ExecuteKey(input.Space),
-	token.UP:         ExecuteKey(input.ArrowUp),
-	token.TAB:        ExecuteKey(input.Tab),
-	token.ESCAPE:     ExecuteKey(input.Escape),
-	token.PAGE_UP:    ExecuteKey(input.PageUp),
-	token.PAGE_DOWN:  ExecuteKey(input.PageDown),
-	token.HIDE:       ExecuteHide,
-	token.REQUIRE:    ExecuteRequire,
-	token.SHOW:       ExecuteShow,
-	token.SET:        ExecuteSet,
-	token.OUTPUT:     ExecuteOutput,
-	token.SLEEP:      ExecuteSleep,
-	token.TYPE:       ExecuteType,
-	token.CTRL:       ExecuteCtrl,
-	token.ALT:        ExecuteAlt,
-	token.SHIFT:      ExecuteShift,
-	token.ILLEGAL:    ExecuteNoop,
-	token.SCREENSHOT: ExecuteScreenshot,
-	token.COPY:       ExecuteCopy,
-	token.PASTE:      ExecutePaste,
-	token.ENV:        ExecuteEnv,
-	token.WAIT:       ExecuteWait,
+	token.BACKSPACE:   ExecuteKey(input.Backspace),
+	token.DELETE:      ExecuteKey(input.Delete),
+	token.INSERT:      ExecuteKey(input.Insert),
+	token.DOWN:        ExecuteKey(input.ArrowDown),
+	token.ENTER:       ExecuteKey(input.Enter),
+	token.LEFT:        ExecuteKey(input.ArrowLeft),
+	token.RIGHT:       ExecuteKey(input.ArrowRight),
+	token.SPACE:       ExecuteKey(input.Space),
+	token.UP:          ExecuteKey(input.ArrowUp),
+	token.TAB:         ExecuteKey(input.Tab),
+	token.ESCAPE:      ExecuteKey(input.Escape),
+	token.PAGE_UP:     ExecuteKey(input.PageUp),
+	token.PAGE_DOWN:   ExecuteKey(input.PageDown),
+	token.SCROLL_UP:   ExecuteScroll(-1),
+	token.SCROLL_DOWN: ExecuteScroll(1),
+	token.HIDE:        ExecuteHide,
+	token.REQUIRE:     ExecuteRequire,
+	token.SHOW:        ExecuteShow,
+	token.SET:         ExecuteSet,
+	token.OUTPUT:      ExecuteOutput,
+	token.SLEEP:       ExecuteSleep,
+	token.TYPE:        ExecuteType,
+	token.CTRL:        ExecuteCtrl,
+	token.ALT:         ExecuteAlt,
+	token.SHIFT:       ExecuteShift,
+	token.ILLEGAL:     ExecuteNoop,
+	token.SCREENSHOT:  ExecuteScreenshot,
+	token.COPY:        ExecuteCopy,
+	token.PASTE:       ExecutePaste,
+	token.ENV:         ExecuteEnv,
+	token.WAIT:        ExecuteWait,
 }
 
 // ExecuteNoop is a no-op command that does nothing.
@@ -95,6 +97,44 @@ func ExecuteKey(k input.Key) CommandFunc {
 			err = v.Page.Keyboard.Type(k)
 			if err != nil {
 				return fmt.Errorf("failed to type key %c: %w", k, err)
+			}
+			time.Sleep(typingSpeed)
+		}
+
+		return nil
+	}
+}
+
+// ExecuteScroll returns a command function that scrolls xterm's viewport.
+//
+// The direction argument is expected to be:
+//
+//	-1 for ScrollUp
+//	+1 for ScrollDown
+//
+// Each command repeat applies one viewport row movement with the same timing
+// semantics as other repeatable key-like commands (Options is the per-step
+// delay, Args is repeat count).
+//
+// A caller that wires an unexpected direction (for example 10) will still call
+// xterm's scroll API with that value and produce larger jumps per step.
+func ExecuteScroll(direction int) CommandFunc {
+	return func(c parser.Command, v *VHS) error {
+		typingSpeed, err := time.ParseDuration(c.Options)
+		if err != nil {
+			typingSpeed = v.Options.TypingSpeed
+		}
+		repeat, err := strconv.Atoi(c.Args)
+		if err != nil {
+			repeat = 1
+		}
+
+		for i := 0; i < repeat; i++ {
+			// ScrollUp/ScrollDown are viewport operations implemented directly via
+			// xterm's scroll API.
+			_, err = v.Page.Eval(fmt.Sprintf("() => term.scrollLines(%d)", direction))
+			if err != nil {
+				return fmt.Errorf("failed to scroll viewport: %w", err)
 			}
 			time.Sleep(typingSpeed)
 		}
@@ -189,6 +229,14 @@ func ExecuteCtrl(c parser.Command, v *VHS) error {
 			inputKey = &input.Space
 		case "Backspace":
 			inputKey = &input.Backspace
+		case "Left":
+			inputKey = &input.ArrowLeft
+		case "Right":
+			inputKey = &input.ArrowRight
+		case "Up":
+			inputKey = &input.ArrowUp
+		case "Down":
+			inputKey = &input.ArrowDown
 		default:
 			r := rune(key[0])
 			if k, ok := keymap[r]; ok {
@@ -408,31 +456,43 @@ func ExecutePaste(_ parser.Command, v *VHS) error {
 	return nil
 }
 
+// shellSetting is the name of the setting that configures the shell.
+const shellSetting = "Shell"
+
+// promptColorSetting is the name of the setting that configures the shell
+// prompt color.
+const promptColorSetting = "PromptColor"
+
+// promptSetting is the name of the setting that configures the shell prompt.
+const promptSetting = "Prompt"
+
 // Settings maps the Set commands to their respective functions.
 var Settings = map[string]CommandFunc{
-	"FontFamily":    ExecuteSetFontFamily,
-	"FontSize":      ExecuteSetFontSize,
-	"Framerate":     ExecuteSetFramerate,
-	"Height":        ExecuteSetHeight,
-	"LetterSpacing": ExecuteSetLetterSpacing,
-	"LineHeight":    ExecuteSetLineHeight,
-	"PlaybackSpeed": ExecuteSetPlaybackSpeed,
-	"Padding":       ExecuteSetPadding,
-	"Theme":         ExecuteSetTheme,
-	"TypingSpeed":   ExecuteSetTypingSpeed,
-	"Width":         ExecuteSetWidth,
-	"Shell":         ExecuteSetShell,
-	"LoopOffset":    ExecuteLoopOffset,
-	"MarginFill":    ExecuteSetMarginFill,
-	"Margin":        ExecuteSetMargin,
-	"WindowBar":     ExecuteSetWindowBar,
-	"WindowBarSize": ExecuteSetWindowBarSize,
-	"BorderRadius":  ExecuteSetBorderRadius,
-	"WaitPattern":   ExecuteSetWaitPattern,
-	"WaitTimeout":   ExecuteSetWaitTimeout,
-	"CursorBlink":   ExecuteSetCursorBlink,
-	"PromptColor":   ExecuteSetPromptColor,
-	"Prompt":        ExecuteSetPrompt,
+	"FontFamily":       ExecuteSetFontFamily,
+	"FontSize":         ExecuteSetFontSize,
+	"Framerate":        ExecuteSetFramerate,
+	"Height":           ExecuteSetHeight,
+	"LetterSpacing":    ExecuteSetLetterSpacing,
+	"LineHeight":       ExecuteSetLineHeight,
+	"PlaybackSpeed":    ExecuteSetPlaybackSpeed,
+	"Padding":          ExecuteSetPadding,
+	"Theme":            ExecuteSetTheme,
+	"TypingSpeed":      ExecuteSetTypingSpeed,
+	"Width":            ExecuteSetWidth,
+	shellSetting:       ExecuteSetShell,
+	"Rows":             ExecuteSetRows,
+	"Columns":          ExecuteSetColumns,
+	"LoopOffset":       ExecuteLoopOffset,
+	"MarginFill":       ExecuteSetMarginFill,
+	"Margin":           ExecuteSetMargin,
+	"WindowBar":        ExecuteSetWindowBar,
+	"WindowBarSize":    ExecuteSetWindowBarSize,
+	"BorderRadius":     ExecuteSetBorderRadius,
+	"WaitPattern":      ExecuteSetWaitPattern,
+	"WaitTimeout":      ExecuteSetWaitTimeout,
+	"CursorBlink":      ExecuteSetCursorBlink,
+	promptColorSetting: ExecuteSetPromptColor,
+	promptSetting:      ExecuteSetPrompt,
 }
 
 // ExecuteSet applies the settings on the running vhs specified by the
@@ -482,7 +542,11 @@ func ExecuteSetHeight(c parser.Command, v *VHS) error {
 	if err != nil {
 		return fmt.Errorf("failed to parse height: %w", err)
 	}
+	if v.Options.Video.Style.Rows > 0 {
+		return fmt.Errorf("cannot set both Height and Rows")
+	}
 	v.Options.Video.Style.Height = height
+	v.heightExplicit = true
 
 	return nil
 }
@@ -493,7 +557,47 @@ func ExecuteSetWidth(c parser.Command, v *VHS) error {
 	if err != nil {
 		return fmt.Errorf("failed to parse width: %w", err)
 	}
+	if v.Options.Video.Style.Columns > 0 {
+		return fmt.Errorf("cannot set both Width and Columns")
+	}
 	v.Options.Video.Style.Width = width
+	v.widthExplicit = true
+
+	return nil
+}
+
+// ExecuteSetRows applies the number of terminal rows on the vhs, overriding
+// Height once the terminal is set up.
+func ExecuteSetRows(c parser.Command, v *VHS) error {
+	rows, err := strconv.Atoi(c.Args)
+	if err != nil {
+		return fmt.Errorf("failed to parse rows: %w", err)
+	}
+	if rows <= 0 {
+		return fmt.Errorf("rows must be a positive integer")
+	}
+	if v.heightExplicit {
+		return fmt.Errorf("cannot set both Height and Rows")
+	}
+	v.Options.Video.Style.Rows = rows
+
+	return nil
+}
+
+// ExecuteSetColumns applies the number of terminal columns on the vhs,
+// overriding Width once the terminal is set up.
+func ExecuteSetColumns(c parser.Command, v *VHS) error {
+	columns, err := strconv.Atoi(c.Args)
+	if err != nil {
+		return fmt.Errorf("failed to parse columns: %w", err)
+	}
+	if columns <= 0 {
+		return fmt.Errorf("columns must be a positive integer")
+	}
+	if v.widthExplicit {
+		return fmt.Errorf("cannot set both Width and Columns")
+	}
+	v.Options.Video.Style.Columns = columns
 
 	return nil
 }
@@ -704,7 +808,15 @@ func ExecuteSetCursorBlink(c parser.Command, v *VHS) error {
 
 // ExecuteSetPromptColor sets the prompt color.
 func ExecuteSetPromptColor(c parser.Command, v *VHS) error {
-	v.Options.PromptColor = c.Args
+	hex := strings.TrimPrefix(c.Args, "#")
+	if len(hex) != hexColorLen {
+		return fmt.Errorf("invalid prompt color %q: must be a 6-digit hexadecimal color", c.Args)
+	}
+	if _, err := strconv.ParseUint(hex, 16, 24); err != nil {
+		return fmt.Errorf("invalid prompt color %q: must be a 6-digit hexadecimal color", c.Args)
+	}
+
+	v.Options.PromptColor = "#" + hex
 	return nil
 }
 
