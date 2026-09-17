@@ -113,8 +113,13 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	}
 
 	// Begin recording frames as we are now in a recording state.
-	ctx, cancel := context.WithCancel(ctx)
-	ch := v.Record(ctx)
+	//
+	// The recorder gets its own cancellable context. teardown cancels it to
+	// stop frame capture, but ctx itself must stay live past that point:
+	// Render launches ffmpeg with it, and exec.CommandContext refuses to
+	// start a process whose context is already done.
+	recordCtx, stopRecording := context.WithCancel(ctx)
+	ch := v.Record(recordCtx)
 
 	// Clean up temporary files at the end.
 	defer func() {
@@ -128,7 +133,7 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 
 	teardown := func() {
 		// Stop recording frames.
-		cancel()
+		stopRecording()
 		// Read from channel to ensure recorder is done.
 		<-ch
 	}
