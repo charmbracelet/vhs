@@ -113,8 +113,14 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	}
 
 	// Begin recording frames as we are now in a recording state.
-	ctx, cancel := context.WithCancel(ctx)
-	ch := v.Record(ctx)
+	//
+	// This context belongs to the recorder alone. teardown cancels it to stop
+	// the frame capture, and encoding runs after teardown, so the encoders must
+	// not inherit it: makeMedia builds its ffmpeg commands with
+	// exec.CommandContext, and a command started on a cancelled context is
+	// killed at Start before it writes anything.
+	recordCtx, cancel := context.WithCancel(ctx)
+	ch := v.Record(recordCtx)
 
 	// Clean up temporary files at the end.
 	defer func() {
@@ -141,9 +147,9 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	}()
 
 	for _, cmd := range cmds[offset:] {
-		if ctx.Err() != nil {
+		if recordCtx.Err() != nil {
 			teardown()
-			return []error{ctx.Err()}
+			return []error{recordCtx.Err()}
 		}
 
 		// When changing the FontFamily, FontSize, LineHeight, Padding
