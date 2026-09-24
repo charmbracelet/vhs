@@ -147,20 +147,20 @@ func publishShareInstructions(url string) {
 }
 
 // Publish publishes the given GIF file to the web.
-//
-//nolint:wrapcheck
 func Publish(ctx context.Context, path string) (string, error) {
 	s, err := sshSession()
 	if err != nil {
 		return "", err
 	}
+	return publishSession(ctx, path, s)
+}
+
+//nolint:wrapcheck
+func publishSession(ctx context.Context, path string, s *ssh.Session) (string, error) {
 	defer s.Close() //nolint:errcheck
 
-	// Close connection when context is done
-	go func() {
-		<-ctx.Done()
-		_ = s.Close()
-	}()
+	stop := context.AfterFunc(ctx, func() { _ = s.Close() })
+	defer stop()
 
 	in, err := s.StdinPipe()
 	if err != nil {
@@ -192,5 +192,14 @@ func Publish(ctx context.Context, path string) (string, error) {
 		return "", err
 	}
 
-	return string(b), nil
+	if err := s.Wait(); err != nil {
+		return "", fmt.Errorf("publishing failed: %w", err)
+	}
+
+	url := strings.TrimSpace(string(b))
+	if url == "" {
+		return "", errors.New("publishing failed: server returned an empty URL")
+	}
+
+	return url, nil
 }
