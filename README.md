@@ -11,9 +11,9 @@
 
 Write terminal GIFs as code for integration testing and demoing your CLI tools.
 
-<img alt="Welcome to VHS" src="https://stuff.charm.sh/vhs/examples/neofetch_3.gif" width="600" />
+<img alt="Welcome to VHS" src="https://vhs.charm.sh/vhs-5pZ3XQIYm4T2oSh5fQwV0N.gif" width="600" />
 
-The above example was generated with VHS ([view source](./examples/neofetch/neofetch.tape)).
+The above example was generated with VHS ([view source](./examples/fastfetch/fastfetch.tape)).
 
 ## Tutorial
 
@@ -248,6 +248,7 @@ will render them to the respective locations.
 Output out.gif
 Output out.mp4
 Output out.webm
+Output out.webp
 Output frames/ # a directory of frames as a PNG sequence
 ```
 
