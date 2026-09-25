@@ -22,6 +22,7 @@ type ScreenshotOptions struct {
 	input string
 
 	style *StyleOptions
+	sixel bool
 }
 
 // NewScreenshotOptions returns ScreenshotOptions by given input.
@@ -57,8 +58,9 @@ func MakeScreenshots(ctx context.Context, opts ScreenshotOptions) []*exec.Cmd {
 	for path, frame := range opts.screenshots {
 		cursorStream := filepath.Join(opts.input, fmt.Sprintf(cursorFrameFormat, frame))
 		textStream := filepath.Join(opts.input, fmt.Sprintf(textFrameFormat, frame))
+		imageStream := filepath.Join(opts.input, fmt.Sprintf(imageFrameFormat, frame))
 
-		args := opts.buildFFopts(path, textStream, cursorStream)
+		args := opts.buildFFopts(path, textStream, cursorStream, imageStream)
 
 		cmds = append(cmds, exec.CommandContext(
 			ctx,
@@ -71,9 +73,12 @@ func MakeScreenshots(ctx context.Context, opts ScreenshotOptions) []*exec.Cmd {
 }
 
 // buildFFopts assembles an ffmpeg command from some VideoOptions.
-func (opts *ScreenshotOptions) buildFFopts(targetFile, textStream, cursorStream string) []string {
+func (opts *ScreenshotOptions) buildFFopts(targetFile, textStream, cursorStream, imageStream string) []string {
 	var args []string //nolint:prealloc
 	streamCounter := 2
+	if opts.sixel {
+		streamCounter++
+	}
 
 	streamBuilder := NewStreamBuilder(streamCounter, opts.input, opts.style)
 	// Input frame options, used no matter what
@@ -84,13 +89,16 @@ func (opts *ScreenshotOptions) buildFFopts(targetFile, textStream, cursorStream 
 		"-i", textStream,
 		"-i", cursorStream,
 	)
+	if opts.sixel {
+		streamBuilder.args = append(streamBuilder.args, "-i", imageStream)
+	}
 
 	streamBuilder = streamBuilder.
 		WithMargin().
 		WithBar().
 		WithCorner()
 
-	filterBuilder := NewScreenshotFilterComplexBuilder(opts.style).
+	filterBuilder := NewScreenshotFilterComplexBuilder(opts.style, opts.sixel).
 		WithWindowBar(streamBuilder.barStream).
 		WithBorderRadius(streamBuilder.cornerStream).
 		WithMarginFill(streamBuilder.marginStream)

@@ -22,12 +22,13 @@ func NewVideoFilterBuilder(videoOpts *VideoOptions) *FilterComplexBuilder {
 	termWidth, termHeight := calcTermDimensions(*videoOpts.Style)
 
 	_, _ = fmt.Fprintf(&filterCode, `
-		[0][1]overlay[merged];
+		%s;
 		[merged]scale=%d:%d:force_original_aspect_ratio=1[scaled];
 		[scaled]fps=%d,setpts=PTS/%f[speed];
 		[speed]pad=%d:%d:(ow-iw)/2:(oh-ih)/2:%s[padded];
 		[padded]fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s[padded]
 		`,
+		terminalOverlay(videoOpts.Sixel),
 		termWidth-double(videoOpts.Style.Padding),
 		termHeight-double(videoOpts.Style.Padding),
 
@@ -55,16 +56,17 @@ func NewVideoFilterBuilder(videoOpts *VideoOptions) *FilterComplexBuilder {
 }
 
 // NewScreenshotFilterComplexBuilder returns instance of FilterComplexBuilder with screenshot config.
-func NewScreenshotFilterComplexBuilder(style *StyleOptions) *FilterComplexBuilder {
+func NewScreenshotFilterComplexBuilder(style *StyleOptions, sixel bool) *FilterComplexBuilder {
 	filterCode := strings.Builder{}
 	termWidth, termHeight := calcTermDimensions(*style)
 
 	_, _ = fmt.Fprintf(&filterCode, `
-		[0][1]overlay[merged];
+		%s;
 		[merged]scale=%d:%d:force_original_aspect_ratio=1[scaled];
 		[scaled]pad=%d:%d:(ow-iw)/2:(oh-ih)/2:%s[padded];
 		[padded]fillborders=left=%d:right=%d:top=%d:bottom=%d:mode=fixed:color=%s[padded]
 		`,
+		terminalOverlay(sixel),
 		termWidth-double(style.Padding),
 		termHeight-double(style.Padding),
 
@@ -86,6 +88,13 @@ func NewScreenshotFilterComplexBuilder(style *StyleOptions) *FilterComplexBuilde
 		style:         style,
 		prevStageName: "padded",
 	}
+}
+
+func terminalOverlay(sixel bool) string {
+	if sixel {
+		return "[0][2]overlay[withimg];[withimg][1]overlay[merged]"
+	}
+	return "[0][1]overlay[merged]"
 }
 
 // calcTermDimensions computes terminal dimensions.

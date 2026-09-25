@@ -522,6 +522,21 @@ Set the rate at which VHS captures frames with the `Set Framerate` command.
 Set Framerate 60
 ```
 
+#### Set Sixel
+
+Capture sixel images with `Set Sixel true`. Disabled by default because capturing
+the additional image layer increases CPU and disk usage and can reduce the
+achieved frame rate. Requires a ttyd build with sixel support.
+
+```elixir
+Set Sixel true
+```
+
+Images are included in videos, screenshots, and exported frame layers. See
+[`examples/sixel.tape`](./examples/sixel.tape) for a standalone example.
+
+![Sixel recording](./examples/sixel.gif)
+
 #### Set Playback Speed
 
 Set the playback speed of the final render.
