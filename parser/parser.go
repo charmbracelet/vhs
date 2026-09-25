@@ -220,12 +220,14 @@ func (p *Parser) parseWait() Command {
 		return cmd
 	}
 	p.nextToken()
-	if _, err := regexp.Compile(p.cur.Literal); err != nil {
+	
+	regexLiteral := strings.ReplaceAll(p.cur.Literal, `\/`, `/`)
+	if _, err := regexp.Compile(regexLiteral); err != nil {
 		p.errors = append(p.errors, NewError(p.cur, fmt.Sprintf("Invalid regular expression '%s': %v", p.cur.Literal, err)))
 		return cmd
 	}
 
-	cmd.Args += " " + p.cur.Literal
+	cmd.Args += " " + regexLiteral
 
 	return cmd
 }
@@ -455,8 +457,9 @@ func (p *Parser) parseSet() Command {
 	case token.WAIT_TIMEOUT:
 		cmd.Args = p.parseTime()
 	case token.WAIT_PATTERN:
-		cmd.Args = p.peek.Literal
-		_, err := regexp.Compile(p.peek.Literal)
+		regexLiteral := strings.ReplaceAll(p.peek.Literal, `\/`, `/`)
+		cmd.Args = regexLiteral
+		_, err := regexp.Compile(regexLiteral)
 		if err != nil {
 			p.errors = append(p.errors, NewError(p.peek, "Invalid regexp pattern: "+p.peek.Literal))
 		}
