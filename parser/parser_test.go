@@ -345,6 +345,98 @@ func TestParseCtrl(t *testing.T) {
 	}
 }
 
+// TestParseShift is a regression test for
+// https://github.com/charmbracelet/vhs/issues/641: Shift+<arrow/nav key>
+// used to fail to parse at all, so ExecuteShift's keyword switch never had a
+// chance to run for these keys.
+func TestParseShift(t *testing.T) {
+	tests := []struct {
+		name    string
+		tape    string
+		wantArg string
+		wantErr bool
+	}{
+		{name: "Shift+Enter", tape: "Shift+Enter", wantArg: "Enter"},
+		{name: "Shift+Tab", tape: "Shift+Tab", wantArg: "Tab"},
+		{name: "Shift+Up", tape: "Shift+Up", wantArg: "Up"},
+		{name: "Shift+Down", tape: "Shift+Down", wantArg: "Down"},
+		{name: "Shift+Left", tape: "Shift+Left", wantArg: "Left"},
+		{name: "Shift+Right", tape: "Shift+Right", wantArg: "Right"},
+		{name: "Shift+PageUp", tape: "Shift+PageUp", wantArg: "PageUp"},
+		{name: "Shift+PageDown", tape: "Shift+PageDown", wantArg: "PageDown"},
+		{name: "Shift+Home", tape: "Shift+Home", wantArg: "Home"},
+		{name: "Shift+End", tape: "Shift+End", wantArg: "End"},
+		{name: "Shift+Backspace", tape: "Shift+Backspace", wantArg: "Backspace"},
+		{name: "Shift+A", tape: "Shift+A", wantArg: "A"},
+		{name: "should not parse Shift with no argument", tape: "Shift+", wantErr: true},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			l := lexer.New(tc.tape)
+			p := New(l)
+
+			cmd := p.parseShift()
+			if tc.wantErr {
+				if len(p.errors) == 0 {
+					t.Errorf("Expected to parse with errors but was success")
+				}
+				return
+			}
+
+			if len(p.errors) > 0 {
+				t.Fatalf("unexpected parse errors: %v", p.errors)
+			}
+
+			if cmd.Args != tc.wantArg {
+				t.Errorf("want arg %q, got %q", tc.wantArg, cmd.Args)
+			}
+		})
+	}
+}
+
+// TestParseAlt mirrors TestParseShift for Alt+<key>.
+func TestParseAlt(t *testing.T) {
+	tests := []struct {
+		name    string
+		tape    string
+		wantArg string
+		wantErr bool
+	}{
+		{name: "Alt+Enter", tape: "Alt+Enter", wantArg: "Enter"},
+		{name: "Alt+Tab", tape: "Alt+Tab", wantArg: "Tab"},
+		{name: "Alt+Up", tape: "Alt+Up", wantArg: "Up"},
+		{name: "Alt+Down", tape: "Alt+Down", wantArg: "Down"},
+		{name: "Alt+Left", tape: "Alt+Left", wantArg: "Left"},
+		{name: "Alt+Right", tape: "Alt+Right", wantArg: "Right"},
+		{name: "Alt+A", tape: "Alt+A", wantArg: "A"},
+		{name: "should not parse Alt with no argument", tape: "Alt+", wantErr: true},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			l := lexer.New(tc.tape)
+			p := New(l)
+
+			cmd := p.parseAlt()
+			if tc.wantErr {
+				if len(p.errors) == 0 {
+					t.Errorf("Expected to parse with errors but was success")
+				}
+				return
+			}
+
+			if len(p.errors) > 0 {
+				t.Fatalf("unexpected parse errors: %v", p.errors)
+			}
+
+			if cmd.Args != tc.wantArg {
+				t.Errorf("want arg %q, got %q", tc.wantArg, cmd.Args)
+			}
+		})
+	}
+}
+
 type parseSourceTest struct {
 	tape      string
 	srcTape   string
