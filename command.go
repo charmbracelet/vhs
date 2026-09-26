@@ -459,31 +459,40 @@ func ExecutePaste(_ parser.Command, v *VHS) error {
 // shellSetting is the name of the setting that configures the shell.
 const shellSetting = "Shell"
 
+// promptColorSetting is the name of the setting that configures the shell
+// prompt color.
+const promptColorSetting = "PromptColor"
+
+// promptSetting is the name of the setting that configures the shell prompt.
+const promptSetting = "Prompt"
+
 // Settings maps the Set commands to their respective functions.
 var Settings = map[string]CommandFunc{
-	"FontFamily":    ExecuteSetFontFamily,
-	"FontSize":      ExecuteSetFontSize,
-	"Framerate":     ExecuteSetFramerate,
-	"Height":        ExecuteSetHeight,
-	"LetterSpacing": ExecuteSetLetterSpacing,
-	"LineHeight":    ExecuteSetLineHeight,
-	"PlaybackSpeed": ExecuteSetPlaybackSpeed,
-	"Padding":       ExecuteSetPadding,
-	"Theme":         ExecuteSetTheme,
-	"TypingSpeed":   ExecuteSetTypingSpeed,
-	"Width":         ExecuteSetWidth,
-	shellSetting:    ExecuteSetShell,
-	"Rows":          ExecuteSetRows,
-	"Columns":       ExecuteSetColumns,
-	"LoopOffset":    ExecuteLoopOffset,
-	"MarginFill":    ExecuteSetMarginFill,
-	"Margin":        ExecuteSetMargin,
-	"WindowBar":     ExecuteSetWindowBar,
-	"WindowBarSize": ExecuteSetWindowBarSize,
-	"BorderRadius":  ExecuteSetBorderRadius,
-	"WaitPattern":   ExecuteSetWaitPattern,
-	"WaitTimeout":   ExecuteSetWaitTimeout,
-	"CursorBlink":   ExecuteSetCursorBlink,
+	"FontFamily":       ExecuteSetFontFamily,
+	"FontSize":         ExecuteSetFontSize,
+	"Framerate":        ExecuteSetFramerate,
+	"Height":           ExecuteSetHeight,
+	"LetterSpacing":    ExecuteSetLetterSpacing,
+	"LineHeight":       ExecuteSetLineHeight,
+	"PlaybackSpeed":    ExecuteSetPlaybackSpeed,
+	"Padding":          ExecuteSetPadding,
+	"Theme":            ExecuteSetTheme,
+	"TypingSpeed":      ExecuteSetTypingSpeed,
+	"Width":            ExecuteSetWidth,
+	shellSetting:       ExecuteSetShell,
+	"Rows":             ExecuteSetRows,
+	"Columns":          ExecuteSetColumns,
+	"LoopOffset":       ExecuteLoopOffset,
+	"MarginFill":       ExecuteSetMarginFill,
+	"Margin":           ExecuteSetMargin,
+	"WindowBar":        ExecuteSetWindowBar,
+	"WindowBarSize":    ExecuteSetWindowBarSize,
+	"BorderRadius":     ExecuteSetBorderRadius,
+	"WaitPattern":      ExecuteSetWaitPattern,
+	"WaitTimeout":      ExecuteSetWaitTimeout,
+	"CursorBlink":      ExecuteSetCursorBlink,
+	promptColorSetting: ExecuteSetPromptColor,
+	promptSetting:      ExecuteSetPrompt,
 }
 
 // ExecuteSet applies the settings on the running vhs specified by the
@@ -794,6 +803,26 @@ func ExecuteSetCursorBlink(c parser.Command, v *VHS) error {
 		return fmt.Errorf("failed to parse cursor blink: %w", err)
 	}
 
+	return nil
+}
+
+// ExecuteSetPromptColor sets the prompt color.
+func ExecuteSetPromptColor(c parser.Command, v *VHS) error {
+	hex := strings.TrimPrefix(c.Args, "#")
+	if len(hex) != hexColorLen {
+		return fmt.Errorf("invalid prompt color %q: must be a 6-digit hexadecimal color", c.Args)
+	}
+	if _, err := strconv.ParseUint(hex, 16, 24); err != nil {
+		return fmt.Errorf("invalid prompt color %q: must be a 6-digit hexadecimal color", c.Args)
+	}
+
+	v.Options.PromptColor = "#" + hex
+	return nil
+}
+
+// ExecuteSetPrompt sets the prompt symbol.
+func ExecuteSetPrompt(c parser.Command, v *VHS) error {
+	v.Options.Prompt = c.Args
 	return nil
 }
 

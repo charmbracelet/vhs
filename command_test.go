@@ -142,6 +142,37 @@ func TestExecuteSetRowsColumns(t *testing.T) {
 	})
 }
 
+func TestExecuteSetPromptColor(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		v := New()
+		err := ExecuteSetPromptColor(parser.Command{Type: token.SET, Options: promptColorSetting, Args: "#FF8000"}, &v)
+		requireNoErr(t, err)
+		if v.Options.PromptColor != "#FF8000" {
+			t.Errorf("expected PromptColor to be #FF8000, got %q", v.Options.PromptColor)
+		}
+	})
+
+	t.Run("valid without hash", func(t *testing.T) {
+		v := New()
+		err := ExecuteSetPromptColor(parser.Command{Type: token.SET, Options: promptColorSetting, Args: "FF8000"}, &v)
+		requireNoErr(t, err)
+		if v.Options.PromptColor != "#FF8000" {
+			t.Errorf("expected PromptColor to be normalized to #FF8000, got %q", v.Options.PromptColor)
+		}
+	})
+
+	for _, color := range []string{"#5B56E", "#GG0000", "", "#1234567"} {
+		t.Run("invalid "+color, func(t *testing.T) {
+			v := New()
+			err := ExecuteSetPromptColor(parser.Command{Type: token.SET, Options: promptColorSetting, Args: color}, &v)
+			requireErr(t, err)
+			if v.Options.PromptColor != DefaultPromptColor {
+				t.Errorf("expected invalid color to leave PromptColor unchanged, got %q", v.Options.PromptColor)
+			}
+		})
+	}
+}
+
 func requireErr(tb testing.TB, err error) {
 	tb.Helper()
 	if err == nil {

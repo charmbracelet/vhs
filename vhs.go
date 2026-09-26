@@ -55,6 +55,8 @@ type Options struct {
 	CursorBlink   bool
 	Screenshot    ScreenshotOptions
 	Style         StyleOptions
+	PromptColor   string
+	Prompt        string
 }
 
 const (
@@ -122,6 +124,8 @@ func DefaultVHSOptions() Options {
 		Screenshot:    screenshot,
 		WaitTimeout:   defaultWaitTimeout,
 		WaitPattern:   defaultWaitPattern,
+		PromptColor:   DefaultPromptColor,
+		Prompt:        DefaultPrompt,
 	}
 }
 
@@ -295,7 +299,7 @@ func (vhs *VHS) Start(ctx context.Context) error {
 	}
 
 	port := randomPort()
-	vhs.tty = buildTtyCmd(ctx, port, vhs.Options.Shell)
+	vhs.tty = buildTtyCmd(ctx, port, vhs.Options.Shell, vhs.Options.PromptColor, vhs.Options.Prompt)
 	if err := vhs.tty.Start(); err != nil {
 		return fmt.Errorf("could not start tty: %w", err)
 	}
