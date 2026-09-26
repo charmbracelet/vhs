@@ -283,6 +283,18 @@ Set the shell with the `Set Shell <shell>` command
 Set Shell fish
 ```
 
+#### Set Prompt Color
+
+Set the shell prompt color with the `Set PromptColor "#RRGGBB"` command. The
+default is `#5B56E0`.
+
+```elixir
+Set PromptColor "#FF8000"
+```
+
+This setting works with all supported shells except `cmd.exe`, whose `prompt`
+command does not support colors.
+
 #### Set Font Size
 
 Set the font size with the `Set FontSize <number>` command.
