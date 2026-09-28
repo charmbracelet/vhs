@@ -29,6 +29,7 @@ func buildTtyCmd(ctx context.Context, port int, shell Shell) *exec.Cmd {
 	args := []string{ //nolint:prealloc
 		fmt.Sprintf("--port=%d", port),
 		"--interface", "127.0.0.1",
+		"--cwd", ".",
 		"-t", "rendererType=canvas",
 		"-t", "disableResizeOverlay=true",
 		"-t", "enableSixel=true",
