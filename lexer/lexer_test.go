@@ -10,6 +10,7 @@ import (
 func TestNextToken(t *testing.T) {
 	input := `
 Output examples/out.gif
+Output /tmp/examples/out.gif
 Set FontSize 42
 Set Padding 5
 Set Rows 40
@@ -44,6 +45,8 @@ Wait+Screen@1m /foo\\\/bar/`
 	}{
 		{token.OUTPUT, "Output"},
 		{token.STRING, "examples/out.gif"},
+		{token.OUTPUT, "Output"},
+		{token.STRING, "/tmp/examples/out.gif"},
 		{token.SET, "Set"},
 		{token.FONT_SIZE, "FontSize"},
 		{token.NUMBER, "42"},

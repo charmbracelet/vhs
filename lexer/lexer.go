@@ -11,6 +11,7 @@ type Lexer struct {
 	nextPos int
 	line    int
 	column  int
+	command token.Type
 }
 
 // New returns a new lexer for tokenizing the input string.
@@ -84,9 +85,14 @@ func (l *Lexer) NextToken() token.Token {
 		tok.Literal = l.readString('"')
 		l.readChar()
 	case '/':
-		tok.Type = token.REGEX
-		tok.Literal = l.readRegex('/')
-		l.readChar()
+		if l.command == token.WAIT || l.command == token.SET {
+			tok.Type = token.REGEX
+			tok.Literal = l.readRegex('/')
+			l.readChar()
+		} else {
+			tok.Literal = l.readIdentifier()
+			tok.Type = token.LookupIdentifier(tok.Literal)
+		}
 	default:
 		if isDigit(l.ch) || (isDot(l.ch) && isDigit(l.peekChar())) {
 			tok.Literal = l.readNumber()
@@ -99,7 +105,25 @@ func (l *Lexer) NextToken() token.Token {
 			l.readChar()
 		}
 	}
+
+	if isCommandToken(tok.Type) {
+		l.command = tok.Type
+	}
+
 	return tok
+}
+
+func isCommandToken(t token.Type) bool {
+	switch t {
+	case token.TYPE, token.SLEEP,
+		token.UP, token.DOWN, token.RIGHT, token.LEFT, token.PAGE_UP, token.PAGE_DOWN, token.SCROLL_UP, token.SCROLL_DOWN,
+		token.ENTER, token.BACKSPACE, token.DELETE, token.TAB,
+		token.ESCAPE, token.HOME, token.INSERT, token.END, token.CTRL, token.SOURCE, token.SCREENSHOT, token.COPY, token.PASTE, token.WAIT,
+		token.SET, token.OUTPUT, token.REQUIRE, token.HIDE, token.SHOW, token.ENV:
+		return true
+	default:
+		return false
+	}
 }
 
 // newToken creates a new token with the given type and literal.
@@ -227,6 +251,7 @@ func (l *Lexer) skipWhitespace() {
 		if l.ch == '\n' {
 			l.line++
 			l.column = 0
+			l.command = ""
 		}
 		l.readChar()
 	}
