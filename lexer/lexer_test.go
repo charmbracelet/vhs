@@ -392,3 +392,35 @@ func TestLexTapeFile(t *testing.T) {
 		}
 	}
 }
+
+func TestFunctionKeys(t *testing.T) {
+	input := "F1\nF3 2\nF12@500ms 3\n"
+
+	tests := []struct {
+		expectedType    token.Type
+		expectedLiteral string
+	}{
+		{token.F1, "F1"},
+		{token.F3, "F3"},
+		{token.NUMBER, "2"},
+		{token.F12, "F12"},
+		{token.AT, "@"},
+		{token.NUMBER, "500"},
+		{token.MILLISECONDS, "ms"},
+		{token.NUMBER, "3"},
+	}
+
+	l := New(input)
+
+	for i, tt := range tests {
+		tok := l.NextToken()
+
+		if tok.Type != tt.expectedType {
+			t.Fatalf("tests[%d] - tokentype wrong. expected=%q, got=%q", i, tt.expectedType, tok.Type)
+		}
+
+		if tok.Literal != tt.expectedLiteral {
+			t.Fatalf("tests[%d] - literal wrong. expected=%q, got=%q", i, tt.expectedLiteral, tok.Literal)
+		}
+	}
+}
