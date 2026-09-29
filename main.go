@@ -264,7 +264,11 @@ func init() {
 	outputs = rootCmd.Flags().StringSliceP("output", "o", []string{}, "file name(s) of video output")
 	themesCmd.Flags().BoolVar(&markdown, "markdown", false, "output as markdown")
 	_ = themesCmd.Flags().MarkHidden("markdown")
-	recordShell := filepath.Base(os.Getenv("SHELL"))
+	// filepath.Base maps an empty SHELL to "." rather than "", so guard first.
+	var recordShell string
+	if s := os.Getenv("SHELL"); s != "" {
+		recordShell = filepath.Base(s)
+	}
 	if recordShell == "" {
 		recordShell = defaultShell
 	}

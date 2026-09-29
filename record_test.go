@@ -82,6 +82,32 @@ PageDown 4
 `,
 		},
 	}
+	tests = append(tests,
+		struct {
+			name  string
+			input string
+			want  string
+		}{
+			name:  "win32 input-mode events and focus reports",
+			input: "\x1b[O\x1b[Iecho hello vhs\x1b[13;28;13;1;0;1_\x1b[13;28;13;0;0;1_dir\x1b[13;28;13;1;0;1_\x1b[13;28;13;0;0;1_exit\x1b[13;28;13;1;0;1_\x1b[13;28;13;0;0;1_\x1b[I",
+			want: `Type "echo hello vhs"
+Enter
+Type "dir"
+Enter
+`,
+		},
+		struct {
+			name  string
+			input string
+			want  string
+		}{
+			name:  "win32 ctrl+key and modifier-only events",
+			input: "ls\x1b[17;29;0;1;40;1_\x1b[67;15;3;1;8;1_\x1b[67;15;3;0;8;1_\x1b[17;29;0;0;40;1_\x1b[13;28;13;1;0;1_exit\x1b[13;28;13;1;0;1_",
+			want: `Type "ls"
+Ctrl+C
+Enter
+`,
+		})
 	for _, tc := range tests {
 		got := inputToTape(tc.input)
 		if tc.want != got {

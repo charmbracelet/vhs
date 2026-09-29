@@ -4,15 +4,13 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"log"
 	"os"
-	"os/exec"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/charmbracelet/vhs/token"
-	"github.com/creack/pty"
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
 )
@@ -70,17 +68,9 @@ var EscapeSequences = map[string]string{
 //
 //nolint:wrapcheck
 func Record(cmd *cobra.Command, _ []string) error {
-	command := exec.CommandContext(cmd.Context(), shell)
-
-	command.Env = append(os.Environ(), "VHS_RECORD=true")
-
-	terminal, err := pty.Start(command)
+	terminal, err := startRecordingTerminal(cmd.Context(), shell)
 	if err != nil {
 		return err
-	}
-
-	if err := pty.InheritSize(os.Stdin, terminal); err != nil {
-		log.Printf("error resizing pty: %s", err)
 	}
 
 	prevState, err := term.MakeRaw(int(os.Stdin.Fd()))
@@ -125,7 +115,65 @@ func Record(cmd *cobra.Command, _ []string) error {
 var (
 	cursorResponse = regexp.MustCompile(`\x1b\[\d+;\d+R`)
 	oscResponse    = regexp.MustCompile(`\x1b\]\d+;rgb:....\/....\/....(\x07|\x1b\\)`)
+	// win32InputEvent matches a Windows console input-mode key event
+	// (Vk;Sc;Uc;Kd;Cs;Rc) as emitted by terminals in win32-input-mode.
+	win32InputEvent = regexp.MustCompile(`\x1b\[(\d+);(\d+);(\d+);(\d+);(\d+);(\d+)_`)
+	// focusEvent matches the focus in/out reports terminals emit once
+	// focus reporting is enabled.
+	focusEvent = regexp.MustCompile(`\x1b\[[IO]`)
 )
+
+// win32VirtualKeys maps Windows virtual-key codes to the byte sequences a
+// Unix pseudo-terminal emits for the same keys.
+var win32VirtualKeys = map[int]string{
+	0x08: "\x08",    // backspace
+	0x09: "\x09",    // tab
+	0x0d: "\x0d",    // enter
+	0x1b: "\x1b",    // escape
+	0x21: "\x1b[5~", // page up
+	0x22: "\x1b[6~", // page down
+	0x23: "\x1b[4~", // end
+	0x24: "\x1b[1~", // home
+	0x25: "\x1b[D",  // left
+	0x26: "\x1b[A",  // up
+	0x27: "\x1b[C",  // right
+	0x28: "\x1b[B",  // down
+	0x2d: "\x1b[2~", // insert
+	0x2e: "\x1b[3~", // delete
+}
+
+// translateConsoleInput rewrites console input-mode event sequences into the
+// byte stream a Unix pseudo-terminal would produce for the same keystrokes:
+// win32-input-mode key events become their key equivalents and focus reports
+// are dropped. Key releases, modifier presses, and events that produce no
+// text have no Unix counterpart and are dropped as well.
+func translateConsoleInput(s string) string {
+	s = focusEvent.ReplaceAllString(s, "")
+	return win32InputEvent.ReplaceAllStringFunc(s, func(seq string) string {
+		m := win32InputEvent.FindStringSubmatch(seq)
+		vk, _ := strconv.Atoi(m[1])
+		uc, _ := strconv.Atoi(m[3])
+		kd, _ := strconv.Atoi(m[4])
+		cs, _ := strconv.Atoi(m[5])
+		if kd == 0 {
+			return "" // key release
+		}
+		if b, ok := win32VirtualKeys[vk]; ok {
+			return b
+		}
+		switch vk {
+		case 0x10, 0x11, 0x12, 0x5b, 0x5c:
+			return "" // shift, ctrl, alt, and win keys produce no input
+		}
+		if uc == 0 {
+			return "" // event produced no text
+		}
+		if cs&0x0c != 0 && uc < 0x80 {
+			return string(byte(uc & 0x1f)) // ctrl+key -> control byte
+		}
+		return string(rune(uc))
+	})
+}
 
 // inputToTape takes input from a PTY stdin and converts it into a tape file.
 func inputToTape(input string) string {
@@ -135,7 +183,7 @@ func inputToTape(input string) string {
 	// NOTE: this is not very robust as if someone types exii<BS>t it will not work
 	// correctly and the exit will show up. In this case, the user should edit the
 	// tape file.
-	s := strings.TrimSuffix(strings.TrimSpace(input), "exit")
+	s := strings.TrimSuffix(strings.TrimSpace(translateConsoleInput(input)), "exit")
 
 	// Remove cursor / osc responses
 	s = cursorResponse.ReplaceAllString(s, "")
