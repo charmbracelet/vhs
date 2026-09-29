@@ -12,6 +12,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"net"
 	"os"
 	"os/exec"
@@ -24,12 +25,28 @@ func randomPort() int {
 	return addr.Addr().(*net.TCPAddr).Port
 }
 
+// terminalRenderer returns the xterm.js renderer type to request from ttyd,
+// controlled by the VHS_RENDERER environment variable. It defaults to
+// "canvas"; "dom" may be used on systems where canvas-based capture produces
+// blank frames, such as headless or remote Windows environments.
+func terminalRenderer() string {
+	switch r := os.Getenv("VHS_RENDERER"); r {
+	case "", "canvas":
+		return "canvas"
+	case "dom":
+		return "dom"
+	default:
+		log.Printf("unknown VHS_RENDERER %q, using canvas renderer", r)
+		return "canvas"
+	}
+}
+
 // buildTtyCmd builds the ttyd exec.Command on the given port.
 func buildTtyCmd(ctx context.Context, port int, shell Shell) *exec.Cmd {
 	args := []string{ //nolint:prealloc
 		fmt.Sprintf("--port=%d", port),
 		"--interface", "127.0.0.1",
-		"-t", "rendererType=canvas",
+		"-t", "rendererType=" + terminalRenderer(),
 		"-t", "disableResizeOverlay=true",
 		"-t", "enableSixel=true",
 		"-t", "customGlyphs=true",

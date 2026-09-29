@@ -28,6 +28,7 @@ type VHS struct {
 	browser        *rod.Browser
 	TextCanvas     *rod.Element
 	CursorCanvas   *rod.Element
+	Screen         *rod.Element // capture target for the DOM renderer
 	mutex          *sync.Mutex
 	started        bool
 	recording      bool
@@ -328,11 +329,21 @@ func (vhs *VHS) Start(ctx context.Context) error {
 func (vhs *VHS) Setup() error {
 	style := vhs.Options.Video.Style
 
-	// Find xterm.js canvases for the text and cursor layer for recording.
-	// These exist as soon as ttyd opens the terminal, so this doesn't need
-	// to wait for the viewport/font to be set below.
-	vhs.TextCanvas, _ = vhs.Page.Element("canvas.xterm-text-layer")
-	vhs.CursorCanvas, _ = vhs.Page.Element("canvas.xterm-cursor-layer")
+	// Find the elements frames are captured from. These exist as soon as
+	// ttyd opens the terminal, so this doesn't need to wait for the
+	// viewport/font to be set below. The canvas renderer exposes text and
+	// cursor canvases; the DOM renderer (VHS_RENDERER=dom) has no canvases,
+	// so the whole screen is captured from the .xterm-screen element.
+	if terminalRenderer() == "dom" {
+		screen, err := vhs.Page.Element(".xterm-screen")
+		if err != nil {
+			return fmt.Errorf("could not find xterm screen element: %w", err)
+		}
+		vhs.Screen = screen
+	} else {
+		vhs.TextCanvas, _ = vhs.Page.Element("canvas.xterm-text-layer")
+		vhs.CursorCanvas, _ = vhs.Page.Element("canvas.xterm-cursor-layer")
+	}
 
 	// Apply options to the terminal
 	// By this point the setting commands have been executed, so the `opts` struct is up to date.
@@ -680,11 +691,26 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 					continue
 				}
 
-				cursor, cursorErr := vhs.CursorCanvas.CanvasToImage("image/png", quality)
-				text, textErr := vhs.TextCanvas.CanvasToImage("image/png", quality)
-				if textErr != nil || cursorErr != nil {
-					ch <- fmt.Errorf("error: %v, %v", textErr, cursorErr)
-					continue
+				var text, cursor []byte
+				if vhs.Screen != nil {
+					// DOM renderer: text and cursor are already composited
+					// in the screen element, so both layers capture the
+					// same image.
+					screen, screenErr := vhs.Screen.Screenshot(proto.PageCaptureScreenshotFormatPng, int(quality*100))
+					if screenErr != nil {
+						ch <- fmt.Errorf("error capturing screen: %w", screenErr)
+						continue
+					}
+					text = screen
+					cursor = screen
+				} else {
+					var cursorErr, textErr error
+					cursor, cursorErr = vhs.CursorCanvas.CanvasToImage("image/png", quality)
+					text, textErr = vhs.TextCanvas.CanvasToImage("image/png", quality)
+					if textErr != nil || cursorErr != nil {
+						ch <- fmt.Errorf("error: %v, %v", textErr, cursorErr)
+						continue
+					}
 				}
 
 				counter++
