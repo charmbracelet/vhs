@@ -173,6 +173,11 @@ settings or modify actions. Then, you can generate the GIF:
 vhs cassette.tape
 ```
 
+> [!NOTE]
+> On systems where the canvas renderer produces blank frames (such as some
+> Windows or headless environments), set `VHS_RENDERER=dom` to capture frames
+> with xterm.js's DOM renderer instead.
+
 ## Publish Tapes
 
 VHS allows you to publish your GIFs to our servers for easy sharing with your
