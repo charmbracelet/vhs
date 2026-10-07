@@ -125,8 +125,8 @@ func (fb *FilterComplexBuilder) WithWindowBar(barStream int) *FilterComplexBuild
 		_, _ = fmt.Fprintf(
 			fb.filterComplex,
 			`
-			[%d]loop=-1%s[loopbar];
-			[loopbar][%s]overlay=0:%d[withbar]
+			[%d]loop=loop=-1:size=1:start=0%s[loopbar];
+			[loopbar][%s]overlay=0:%d:shortest=1[withbar]
 			`,
 			barStream,
 			fb.fps(),
