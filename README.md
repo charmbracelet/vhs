@@ -33,6 +33,9 @@ Tape files consist of a series of [commands](#vhs-command-reference). The comman
 instructions for VHS to perform on its virtual terminal. For a list of all
 possible commands see [the command reference](#vhs-command-reference).
 
+> [!NOTE]
+> You can include inline comments in your tape file by starting a line with `#`.
+
 ```elixir
 # Where should we write the GIF?
 Output demo.gif
