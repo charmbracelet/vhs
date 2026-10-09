@@ -173,6 +173,63 @@ settings or modify actions. Then, you can generate the GIF:
 vhs cassette.tape
 ```
 
+## From README
+
+VHS can automatically generate a GIF by running shell commands found in a
+Markdown document such as your project's `README.md`.
+
+```bash
+vhs from-readme README.md --output demo.gif
+```
+
+If no file is given, VHS searches the current directory for a README file
+automatically.
+
+Use `--section` to scope extraction to a specific heading:
+
+```bash
+vhs from-readme README.md --section "Tutorial" --output tutorial.gif
+```
+
+Use `--command` to only record lines that start with a particular CLI tool
+(handles `sudo`/`npx`/`env` prefixes transparently):
+
+```bash
+vhs from-readme README.md --command myapp --output myapp.gif
+```
+
+Use `--dry-run` to preview the generated tape without recording:
+
+```bash
+vhs from-readme README.md --dry-run
+```
+
+Save the generated tape to a file for further editing:
+
+```bash
+vhs from-readme README.md --tape-out demo.tape --dry-run
+```
+
+<details>
+<summary>All flags</summary>
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--section STRING` | | Only extract commands under this heading (case-insensitive) |
+| `--command STRING` | | Only include lines whose first token matches this CLI name |
+| `-o, --output STRING` | `vhs.gif` | Output GIF file path |
+| `--pause DURATION` | `2s` | Sleep between commands |
+| `--typing-speed DURATION` | `75ms` | Per-keystroke typing delay |
+| `--dry-run` | | Print the generated tape without recording |
+| `--tape-out STRING` | | Also save the generated tape to this file |
+| `--font-size INT` | `15` | Terminal font size |
+| `--width INT` | `1600` | Terminal width in pixels |
+| `--height INT` | `900` | Terminal height in pixels |
+| `--wait-timeout DURATION` | `2m` | Max time to wait for shell prompt after each command (increase for long-running commands) |
+| `--wait-pattern REGEX` | `[$#>%] *$` | Regex to detect shell prompt (matches bash, zsh, fish, root) |
+
+</details>
+
 ## Publish Tapes
 
 VHS allows you to publish your GIFs to our servers for easy sharing with your
