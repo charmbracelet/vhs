@@ -37,7 +37,7 @@ const (
 	defaultWidth         = 1200
 )
 
-// Styles for syntax highlightin.
+// Styles for syntax highlighting.
 var (
 	CommandStyle    = lipgloss.NewStyle().Foreground(lipgloss.Color("12"))
 	FaintStyle      = lipgloss.NewStyle().Foreground(lipgloss.AdaptiveColor{Light: "242", Dark: "238"})
