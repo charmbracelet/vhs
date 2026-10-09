@@ -331,6 +331,8 @@ func (p *Parser) parseCtrl() Command {
 			peek.Type == token.RIGHT,
 			peek.Type == token.UP,
 			peek.Type == token.DOWN,
+			peek.Type == token.HOME,
+			peek.Type == token.END,
 			peek.Type == token.STRING && len(peek.Literal) == 1:
 			args = append(args, peek.Literal)
 		default:
