@@ -229,6 +229,54 @@ func TestParseTapeFile(t *testing.T) {
 	}
 }
 
+func TestParseAbsolutePaths(t *testing.T) {
+	input := `
+Output /tmp/demo.gif
+Output /tmp/demo.mp4
+Output /home/user/recordings/demo.webm
+Output /frames/
+Output examples/out.gif
+Output frames/
+Screenshot /tmp/screenshot.png
+Screenshot examples/screenshot.png`
+
+	expected := []Command{
+		{Type: token.OUTPUT, Options: ".gif", Args: "/tmp/demo.gif"},
+		{Type: token.OUTPUT, Options: ".mp4", Args: "/tmp/demo.mp4"},
+		{Type: token.OUTPUT, Options: ".webm", Args: "/home/user/recordings/demo.webm"},
+		{Type: token.OUTPUT, Options: ".png", Args: "/frames/"},
+		{Type: token.OUTPUT, Options: ".gif", Args: "examples/out.gif"},
+		{Type: token.OUTPUT, Options: ".png", Args: "frames/"},
+		{Type: token.SCREENSHOT, Args: "/tmp/screenshot.png"},
+		{Type: token.SCREENSHOT, Args: "examples/screenshot.png"},
+	}
+
+	l := lexer.New(input)
+	p := New(l)
+
+	cmds := p.Parse()
+
+	if len(p.Errors()) > 0 {
+		t.Fatalf("Expected no parser errors, got %v", p.Errors())
+	}
+
+	if len(cmds) != len(expected) {
+		t.Fatalf("Expected %d commands, got %d", len(expected), len(cmds))
+	}
+
+	for i, cmd := range cmds {
+		if cmd.Type != expected[i].Type {
+			t.Errorf("Expected command %d to be %s, got %s", i, expected[i].Type, cmd.Type)
+		}
+		if cmd.Args != expected[i].Args {
+			t.Errorf("Expected command %d to have args %s, got %s", i, expected[i].Args, cmd.Args)
+		}
+		if cmd.Options != expected[i].Options {
+			t.Errorf("Expected command %d to have options %s, got %s", i, expected[i].Options, cmd.Options)
+		}
+	}
+}
+
 func TestParseCtrl(t *testing.T) {
 	tests := []struct {
 		name     string

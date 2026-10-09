@@ -417,23 +417,23 @@ func (p *Parser) parseKeypress(ct token.Type) Command {
 func (p *Parser) parseOutput() Command {
 	cmd := Command{Type: token.OUTPUT}
 
-	if p.peek.Type != token.STRING {
+	path, ok := p.parsePathArgument()
+	if !ok {
 		p.errors = append(p.errors, NewError(p.cur, "Expected file path after output"))
 		return cmd
 	}
 
-	ext := filepath.Ext(p.peek.Literal)
+	ext := filepath.Ext(path)
 	if ext != "" {
 		cmd.Options = ext
 	} else {
 		cmd.Options = ".png"
-		if !strings.HasSuffix(p.peek.Literal, "/") {
-			p.errors = append(p.errors, NewError(p.peek, "Expected folder with trailing slash"))
+		if !strings.HasSuffix(path, "/") {
+			p.errors = append(p.errors, NewError(p.cur, "Expected folder with trailing slash"))
 		}
 	}
 
-	cmd.Args = p.peek.Literal
-	p.nextToken()
+	cmd.Args = path
 	return cmd
 }
 
@@ -756,26 +756,44 @@ func (p *Parser) parseSource() []Command {
 func (p *Parser) parseScreenshot() Command {
 	cmd := Command{Type: token.SCREENSHOT}
 
-	if p.peek.Type != token.STRING {
+	path, ok := p.parsePathArgument()
+	if !ok {
 		p.errors = append(p.errors, NewError(p.cur, "Expected path after Screenshot"))
 		p.nextToken()
 		return cmd
 	}
 
-	path := p.peek.Literal
-
 	// Check if path has .png extension
 	ext := filepath.Ext(path)
 	if ext != ".png" {
-		p.errors = append(p.errors, NewError(p.peek, "Expected file with .png extension"))
-		p.nextToken()
+		p.errors = append(p.errors, NewError(p.cur, "Expected file with .png extension"))
 		return cmd
 	}
 
 	cmd.Args = path
-	p.nextToken()
 
 	return cmd
+}
+
+// parsePathArgument parses either a regular string path or an absolute path
+// tokenized as REGEX followed by an optional STRING suffix.
+func (p *Parser) parsePathArgument() (string, bool) {
+	switch p.peek.Type {
+	case token.STRING:
+		path := p.peek.Literal
+		p.nextToken()
+		return path, true
+	case token.REGEX:
+		path := "/" + p.peek.Literal + "/"
+		p.nextToken()
+		if p.peek.Type == token.STRING {
+			path += p.peek.Literal
+			p.nextToken()
+		}
+		return path, true
+	default:
+		return "", false
+	}
 }
 
 // Errors returns any errors that occurred during parsing.
