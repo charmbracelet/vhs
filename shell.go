@@ -67,7 +67,7 @@ func ShellConfig(name, promptColor string) (env []string, command []string) {
 			"-NoExit",
 			"-NoProfile",
 			"-Command",
-			fmt.Sprintf(`Set-PSReadLineOption -HistorySaveStyle SaveNothing; function prompt { Write-Host '>' -NoNewLine -ForegroundColor ([System.Drawing.Color]::FromArgb(%d,%d,%d)); return ' ' }`, r, g, b),
+			"Set-PSReadLineOption -HistorySaveStyle SaveNothing; " + powershellPrompt(r, g, b),
 		}
 	case pwsh:
 		return nil, []string{
@@ -91,6 +91,14 @@ func ShellConfig(name, promptColor string) (env []string, command []string) {
 	default:
 		return nil, nil
 	}
+}
+
+// powershellPrompt returns a PowerShell prompt function that draws a colored
+// "> ". Write-Host -ForegroundColor only takes named console colors, so the
+// color is set with an ANSI escape sequence instead. [char]27 is used for the
+// escape character because Windows PowerShell 5.1 has no `e escape.
+func powershellPrompt(r, g, b int) string {
+	return fmt.Sprintf(`function prompt { Write-Host ('{0}[38;2;%d;%d;%dm>{0}[0m' -f [char]27) -NoNewLine; return ' ' }`, r, g, b)
 }
 
 // hexToRGB converts a hex color string, with or without a leading "#", to RGB
