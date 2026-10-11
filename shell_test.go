@@ -12,18 +12,43 @@ func TestHexToRGB(t *testing.T) {
 	}{
 		{"#5B56E0", 91, 86, 224},
 		{"5B56E0", 91, 86, 224},
+		{"#5b56e0", 91, 86, 224},
 		{"#F6821F", 246, 130, 31},
 		{"#000000", 0, 0, 0},
 		{"#FFFFFF", 255, 255, 255},
-		{"", 0, 0, 0},
-		{"#FFF", 0, 0, 0}, // invalid length
 	}
 
 	for _, tc := range tests {
-		r, g, b := hexToRGB(tc.hex)
+		r, g, b, err := hexToRGB(tc.hex)
+		if err != nil {
+			t.Errorf("hexToRGB(%q) returned unexpected error: %v", tc.hex, err)
+			continue
+		}
 		if r != tc.r || g != tc.g || b != tc.b {
 			t.Errorf("hexToRGB(%q) = (%d,%d,%d), want (%d,%d,%d)",
 				tc.hex, r, g, b, tc.r, tc.g, tc.b)
+		}
+	}
+}
+
+func TestHexToRGBInvalid(t *testing.T) {
+	invalid := []string{
+		"",
+		"#",
+		"#FFF",      // too short
+		"#5B56E",    // missing a digit
+		"#5B56E00",  // too long
+		"#GGGGGG",   // not hex
+		"#12345Z",   // last digit not hex
+		"#+12345",   // sign
+		"red",       // named colour
+		"##5B56E0",  // double hash
+		" #5B56E0 ", // surrounding spaces
+	}
+
+	for _, hex := range invalid {
+		if _, _, _, err := hexToRGB(hex); err == nil {
+			t.Errorf("hexToRGB(%q) expected an error, got nil", hex)
 		}
 	}
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -32,7 +33,7 @@ type Shell struct {
 // ShellConfig returns the shell configuration with the given prompt color.
 func ShellConfig(name, promptColor string) (env []string, command []string) {
 	// Parse hex color to RGB components
-	r, g, b := hexToRGB(promptColor)
+	r, g, b, _ := hexToRGB(promptColor)
 	hexNoHash := strings.TrimPrefix(promptColor, "#")
 
 	switch name {
@@ -87,17 +88,15 @@ func ShellConfig(name, promptColor string) (env []string, command []string) {
 	}
 }
 
-// hexToRGB converts a hex color string to RGB components. Colors that cannot
-// be parsed yield zero values.
-func hexToRGB(hex string) (r, g, b int) {
-	hex = strings.TrimPrefix(hex, "#")
-	if len(hex) != hexColorLen {
-		return 0, 0, 0
+// hexToRGB converts a hex color string, with or without a leading "#", to RGB
+// components. It returns an error if the string is not a 6-digit hex color.
+func hexToRGB(hex string) (r, g, b int, err error) {
+	digits := strings.TrimPrefix(hex, "#")
+	n, parseErr := strconv.ParseUint(digits, 16, 32)
+	if len(digits) != hexColorLen || parseErr != nil {
+		return 0, 0, 0, fmt.Errorf("%q is not a valid hex color, expected 6 hex digits like \"#5B56E0\"", hex)
 	}
-	if _, err := fmt.Sscanf(hex, "%02x%02x%02x", &r, &g, &b); err != nil {
-		return 0, 0, 0
-	}
-	return r, g, b
+	return int(n >> 16 & 0xFF), int(n >> 8 & 0xFF), int(n & 0xFF), nil
 }
 
 // Shells contains a mapping from shell names to their Shell struct.

@@ -756,9 +756,15 @@ func ExecuteSetCursorBlink(c parser.Command, v *VHS) error {
 	return nil
 }
 
-// ExecuteSetPromptColor sets the prompt color.
+// ExecuteSetPromptColor sets the prompt color. The color must be a 6-digit
+// hex color, such as "#5B56E0".
 func ExecuteSetPromptColor(c parser.Command, v *VHS) error {
-	v.Options.PromptColor = c.Args
+	r, g, b, err := hexToRGB(c.Args)
+	if err != nil {
+		return fmt.Errorf("invalid `Set PromptColor`: %w", err)
+	}
+
+	v.Options.PromptColor = fmt.Sprintf("#%02X%02X%02X", r, g, b)
 	return nil
 }
 

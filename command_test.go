@@ -55,6 +55,33 @@ func TestExecuteSetTheme(t *testing.T) {
 	})
 }
 
+func TestExecuteSetPromptColor(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		v := New()
+		err := ExecuteSetPromptColor(parser.Command{Args: "#ff8000"}, &v)
+		requireNoErr(t, err)
+		if v.Options.PromptColor != "#FF8000" {
+			t.Errorf("wrong prompt color, expected %q, got %q", "#FF8000", v.Options.PromptColor)
+		}
+	})
+	t.Run("without hash", func(t *testing.T) {
+		v := New()
+		err := ExecuteSetPromptColor(parser.Command{Args: "FF8000"}, &v)
+		requireNoErr(t, err)
+		if v.Options.PromptColor != "#FF8000" {
+			t.Errorf("wrong prompt color, expected %q, got %q", "#FF8000", v.Options.PromptColor)
+		}
+	})
+	t.Run("invalid", func(t *testing.T) {
+		v := New()
+		err := ExecuteSetPromptColor(parser.Command{Args: "#5B56E"}, &v)
+		requireErr(t, err)
+		if v.Options.PromptColor != DefaultPromptColor {
+			t.Errorf("prompt color should be unchanged, expected %q, got %q", DefaultPromptColor, v.Options.PromptColor)
+		}
+	})
+}
+
 func requireErr(tb testing.TB, err error) {
 	tb.Helper()
 	if err == nil {
