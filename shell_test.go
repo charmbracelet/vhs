@@ -104,6 +104,25 @@ func TestShellConfigDefaultColor(t *testing.T) {
 	}
 }
 
+func TestShellConfigInvalidColorFallsBack(t *testing.T) {
+	// An invalid colour should give every shell the default colour, rather
+	// than passing the bad value through to shells that use hex directly.
+	env, _ := ShellConfig(bash, "not-a-color")
+	if !strings.Contains(env[0], "91;86;224") {
+		t.Errorf("bash PS1 should use the default colour for invalid input: %s", env[0])
+	}
+
+	env, _ = ShellConfig(zsh, "not-a-color")
+	if !strings.Contains(env[0], "%F{#5B56E0}") {
+		t.Errorf("zsh PROMPT should use the default colour for invalid input: %s", env[0])
+	}
+
+	_, command := ShellConfig(fish, "not-a-color")
+	if !strings.Contains(strings.Join(command, " "), "set_color 5B56E0") {
+		t.Errorf("fish prompt should use the default colour for invalid input: %v", command)
+	}
+}
+
 func TestShellConfigUnknownShell(t *testing.T) {
 	env, command := ShellConfig("unknown-shell", DefaultPromptColor)
 	if env != nil || command != nil {

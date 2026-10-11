@@ -32,9 +32,14 @@ type Shell struct {
 
 // ShellConfig returns the shell configuration with the given prompt color.
 func ShellConfig(name, promptColor string) (env []string, command []string) {
-	// Parse hex color to RGB components
-	r, g, b, _ := hexToRGB(promptColor)
-	hexNoHash := strings.TrimPrefix(promptColor, "#")
+	// Parse the hex color once so every shell gets the same value. Fall back
+	// to the default color if it can't be parsed, so bad input never reaches
+	// a shell.
+	r, g, b, err := hexToRGB(promptColor)
+	if err != nil {
+		r, g, b, _ = hexToRGB(DefaultPromptColor)
+	}
+	hexNoHash := fmt.Sprintf("%02X%02X%02X", r, g, b)
 
 	switch name {
 	case bash:
