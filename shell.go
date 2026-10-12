@@ -80,6 +80,8 @@ func ShellConfig(name, promptColor string) (env []string, command []string) {
 			"Set-PSReadLineOption -HistorySaveStyle SaveNothing; " + powershellPrompt(r, g, b),
 		}
 	case cmdexe:
+		// cmd.exe keeps its plain, uncolored prompt. The prompt color
+		// setting is ignored for this shell.
 		return nil, []string{"cmd.exe", "/k", "prompt=^> "}
 	case nushell:
 		return nil, []string{"nu", "--execute", fmt.Sprintf("$env.PROMPT_COMMAND = {'\033[;38;2;%d;%d;%dm>\033[m '}; $env.PROMPT_COMMAND_RIGHT = {''}", r, g, b)}
