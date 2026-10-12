@@ -528,6 +528,28 @@ Set CursorBlink false
   <img width="600" alt="Example of setting the cursor blink." src="https://vhs.charm.sh/vhs-3rMCb80VEkaDdTOJMCrxKy.gif">
 </picture>
 
+#### Set Prompt Color
+
+Set the color of the shell prompt (`>`) with the `Set PromptColor` command. The
+value must be a 6-digit hex color. The default is `#5B56E0`.
+
+This is useful when the default prompt is hard to see on your theme, or clashes
+with your margin color.
+
+```elixir
+Set Theme "Ocean"
+Set PromptColor "#00FF88"
+```
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://vhs.charm.sh/vhs-T9sExewjipfQhQHl2AUyS.gif">
+  <source media="(prefers-color-scheme: light)" srcset="https://vhs.charm.sh/vhs-T9sExewjipfQhQHl2AUyS.gif">
+  <img width="600" alt="Example of setting the prompt color." src="https://vhs.charm.sh/vhs-T9sExewjipfQhQHl2AUyS.gif">
+</picture>
+
+The prompt color works with every shell except `cmd`, which keeps its plain
+prompt.
+
 ### Type
 
 Use `Type` to emulate key presses. That is, you can use `Type` to script typing
