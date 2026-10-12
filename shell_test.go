@@ -1,6 +1,7 @@
 package main
 
 import (
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -119,6 +120,86 @@ func TestShellConfigDefaultColor(t *testing.T) {
 	}
 	if !strings.Contains(env[0], "91;86;224") {
 		t.Errorf("bash PS1 with default colour does not contain expected RGB: %s", env[0])
+	}
+}
+
+func TestShellConfigDefaultOutput(t *testing.T) {
+	// Pin the exact output for the default colour, so changes to a shell's
+	// prompt are deliberate. These match the old hardcoded prompts, with two
+	// changes: bash and osh used 90;86;224, a typo for #5B56E0 (91;86;224),
+	// and PowerShell used the named colour Blue.
+	tests := []struct {
+		name    string
+		env     []string
+		command []string
+	}{
+		{
+			bash,
+			[]string{"PS1=\\[\\e[38;2;91;86;224m\\]> \\[\\e[0m\\]", "BASH_SILENCE_DEPRECATION_WARNING=1"},
+			[]string{"bash", "--noprofile", "--norc", "--login", "+o", "history"},
+		},
+		{
+			zsh,
+			[]string{`PROMPT=%F{#5B56E0}> %F{reset_color}`},
+			[]string{"zsh", "--histnostore", "--no-rcs"},
+		},
+		{
+			fish,
+			nil,
+			[]string{
+				"fish", "--login", "--no-config", "--private",
+				"-C", "function fish_greeting; end",
+				"-C", `function fish_prompt; set_color 5B56E0; echo -n "> "; set_color normal; end`,
+			},
+		},
+		{
+			powershell,
+			nil,
+			[]string{
+				"powershell", "-NoLogo", "-NoExit", "-NoProfile", "-Command",
+				`Set-PSReadLineOption -HistorySaveStyle SaveNothing; function prompt { Write-Host ('{0}[38;2;91;86;224m>{0}[0m' -f [char]27) -NoNewLine; return ' ' }`,
+			},
+		},
+		{
+			pwsh,
+			nil,
+			[]string{
+				"pwsh", "-Login", "-NoLogo", "-NoExit", "-NoProfile", "-Command",
+				`Set-PSReadLineOption -HistorySaveStyle SaveNothing; function prompt { Write-Host ('{0}[38;2;91;86;224m>{0}[0m' -f [char]27) -NoNewLine; return ' ' }`,
+			},
+		},
+		{
+			cmdexe,
+			nil,
+			[]string{"cmd.exe", "/k", "prompt=^> "},
+		},
+		{
+			nushell,
+			nil,
+			[]string{"nu", "--execute", "$env.PROMPT_COMMAND = {'\033[;38;2;91;86;224m>\033[m '}; $env.PROMPT_COMMAND_RIGHT = {''}"},
+		},
+		{
+			osh,
+			[]string{"PS1=\\[\\e[38;2;91;86;224m\\]> \\[\\e[0m\\]"},
+			[]string{"osh", "--norc"},
+		},
+		{
+			xonsh,
+			nil,
+			[]string{"xonsh", "--no-rc", "-D", "PROMPT=\033[;38;2;91;86;224m>\033[m "},
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			env, command := ShellConfig(tc.name, DefaultPromptColor)
+			if !reflect.DeepEqual(env, tc.env) {
+				t.Errorf("env = %q, want %q", env, tc.env)
+			}
+			if !reflect.DeepEqual(command, tc.command) {
+				t.Errorf("command = %q, want %q", command, tc.command)
+			}
+		})
 	}
 }
 
