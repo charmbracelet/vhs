@@ -25,7 +25,8 @@ const DefaultPromptColor = "#5B56E0"
 // hexColorLen is the number of characters in a hex color, sans the leading "#".
 const hexColorLen = 6
 
-// Shell is a type that contains a prompt and the command to set up the shell.
+// Shell is a supported shell. Its prompt and the command to start it come from
+// ShellConfig.
 type Shell struct {
 	Name string
 }
