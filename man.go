@@ -79,6 +79,7 @@ The following is a list of all possible setting commands in VHS:
 * Set %PlaybackSpeed% <float>
 * Set %WaitTimeout% <time>
 * Set %WaitPattern% <regexp>
+* Set %PromptColor% <#RRGGBB>
 `
 	manBugs = "See GitHub Issues: <https://github.com/charmbracelet/vhs/issues>"
 
