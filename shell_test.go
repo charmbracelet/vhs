@@ -95,13 +95,18 @@ func TestShellConfigCustomColor(t *testing.T) {
 func TestShellConfigPowerShellColor(t *testing.T) {
 	// PowerShell should set the colour with an ANSI escape sequence, since
 	// Write-Host -ForegroundColor only accepts named console colours.
-	_, command := ShellConfig(powershell, "#FF8000")
-	prompt := command[len(command)-1]
-	if !strings.Contains(prompt, "[38;2;255;128;0m") {
-		t.Errorf("powershell prompt does not contain expected ANSI colour for #FF8000: %s", prompt)
-	}
-	if strings.Contains(prompt, "System.Drawing") {
-		t.Errorf("powershell prompt should not use System.Drawing: %s", prompt)
+	// System.Drawing is also not always loaded on Linux and macOS.
+	for _, name := range []string{powershell, pwsh} {
+		t.Run(name, func(t *testing.T) {
+			_, command := ShellConfig(name, "#FF8000")
+			prompt := command[len(command)-1]
+			if !strings.Contains(prompt, "[38;2;255;128;0m") {
+				t.Errorf("%s prompt does not contain expected ANSI colour for #FF8000: %s", name, prompt)
+			}
+			if strings.Contains(prompt, "System.Drawing") {
+				t.Errorf("%s prompt should not use System.Drawing: %s", name, prompt)
+			}
+		})
 	}
 }
 

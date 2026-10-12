@@ -77,7 +77,7 @@ func ShellConfig(name, promptColor string) (env []string, command []string) {
 			"-NoExit",
 			"-NoProfile",
 			"-Command",
-			fmt.Sprintf(`Set-PSReadLineOption -HistorySaveStyle SaveNothing; Function prompt { Write-Host -ForegroundColor ([System.Drawing.Color]::FromArgb(%d,%d,%d)) -NoNewLine '>'; return ' ' }`, r, g, b),
+			"Set-PSReadLineOption -HistorySaveStyle SaveNothing; " + powershellPrompt(r, g, b),
 		}
 	case cmdexe:
 		return nil, []string{"cmd.exe", "/k", "prompt=^> "}
