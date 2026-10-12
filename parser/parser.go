@@ -513,6 +513,23 @@ func (p *Parser) parseSet() Command {
 				)
 			}
 		}
+	case token.PROMPT_COLOR:
+		cmd.Args = p.peek.Literal
+		p.nextToken()
+
+		// The prompt color must be a 6-digit hex color, with or without
+		// a leading "#".
+		promptColor := strings.TrimPrefix(p.cur.Literal, "#")
+		_, err := strconv.ParseUint(promptColor, 16, 32)
+		if err != nil || len(promptColor) != 6 {
+			p.errors = append(
+				p.errors,
+				NewError(
+					p.cur,
+					"\""+p.cur.Literal+"\" is not a valid color, expected a hex color like \"#5B56E0\".",
+				),
+			)
+		}
 	case token.CURSOR_BLINK:
 		cmd.Args = p.peek.Literal
 		p.nextToken()

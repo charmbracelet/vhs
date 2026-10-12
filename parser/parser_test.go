@@ -117,6 +117,33 @@ Sleep Bar`
 	}
 }
 
+func TestParsePromptColor(t *testing.T) {
+	valid := []string{`"#5B56E0"`, `"#ff8000"`, `"FF8000"`}
+	for _, color := range valid {
+		t.Run("valid "+color, func(t *testing.T) {
+			p := New(lexer.New("Set PromptColor " + color))
+			cmds := p.Parse()
+			if len(p.errors) != 0 {
+				t.Fatalf("expected no errors, got %v", p.errors)
+			}
+			if len(cmds) != 1 || cmds[0].Options != "PromptColor" || cmds[0].Args != strings.Trim(color, `"`) {
+				t.Errorf("unexpected commands: %+v", cmds)
+			}
+		})
+	}
+
+	invalid := []string{`"#5B56E"`, `"#GGGGGG"`, `"red"`, `"#5B56E00"`, `""`}
+	for _, color := range invalid {
+		t.Run("invalid "+color, func(t *testing.T) {
+			p := New(lexer.New("Set PromptColor " + color))
+			_ = p.Parse()
+			if len(p.errors) == 0 {
+				t.Errorf("expected an error for Set PromptColor %s", color)
+			}
+		})
+	}
+}
+
 func TestParseTapeFile(t *testing.T) {
 	input, err := os.ReadFile("../examples/fixtures/all.tape")
 	if err != nil {
