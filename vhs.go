@@ -554,8 +554,13 @@ func (vhs *VHS) Render(ctx context.Context) error {
 		return err
 	}
 
+	if vhs.Options.Video.Output.GIF != "" {
+		defer func() { _ = os.Remove(filepath.Join(vhs.Options.Video.Input, "palette.png")) }()
+	}
+
 	// Generate the video(s) with the frames.
 	var cmds []*exec.Cmd //nolint:prealloc
+	cmds = append(cmds, makeGIFPalette(ctx, vhs.Options.Video))
 	cmds = append(cmds, MakeGIF(ctx, vhs.Options.Video))
 	cmds = append(cmds, MakeMP4(ctx, vhs.Options.Video))
 	cmds = append(cmds, MakeWebM(ctx, vhs.Options.Video))

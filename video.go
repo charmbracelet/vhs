@@ -109,6 +109,10 @@ func ensureDir(output string) {
 
 // buildFFopts assembles an ffmpeg command from some VideoOptions.
 func buildFFopts(opts VideoOptions, targetFile string) []string {
+	return buildFFoptsWithPalette(opts, targetFile, false)
+}
+
+func buildFFoptsWithPalette(opts VideoOptions, targetFile string, palette bool) []string {
 	var args []string //nolint:prealloc
 	streamCounter := 2
 
@@ -138,13 +142,19 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 		WithMarginFill(streamBuilder.marginStream)
 
 	// Format-specific options
-	switch filepath.Ext(targetFile) {
-	case gif:
-		filterBuilder = filterBuilder.WithGIF()
-	case webm:
-		streamBuilder = streamBuilder.WithWebm()
-	case mp4:
-		streamBuilder = streamBuilder.WithMP4()
+	if palette {
+		filterBuilder = filterBuilder.WithPalette()
+		streamBuilder.args = append(streamBuilder.args, "-frames:v", "1", "-update", "1")
+	} else {
+		switch filepath.Ext(targetFile) {
+		case gif:
+			filterBuilder = filterBuilder.WithGIF(streamBuilder.counter)
+			streamBuilder.args = append(streamBuilder.args, "-i", filepath.Join(opts.Input, "palette.png"))
+		case webm:
+			streamBuilder = streamBuilder.WithWebm()
+		case mp4:
+			streamBuilder = streamBuilder.WithMP4()
+		}
 	}
 
 	args = append(args, streamBuilder.Build()...)
@@ -152,6 +162,15 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 	args = append(args, targetFile)
 
 	return args
+}
+
+func makeGIFPalette(ctx context.Context, opts VideoOptions) *exec.Cmd {
+	if opts.Output.GIF == "" {
+		return nil
+	}
+
+	//nolint:gosec
+	return exec.CommandContext(ctx, "ffmpeg", buildFFoptsWithPalette(opts, filepath.Join(opts.Input, "palette.png"), true)...)
 }
 
 // MakeGIF takes a list of images (as frames) and converts them to a GIF.
