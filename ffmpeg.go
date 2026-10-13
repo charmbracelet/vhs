@@ -169,16 +169,24 @@ func (fb *FilterComplexBuilder) WithMarginFill(marginStream int) *FilterComplexB
 }
 
 // WithGIF adds gif options to ffmepg filter_complex.
-func (fb *FilterComplexBuilder) WithGIF() *FilterComplexBuilder {
+func (fb *FilterComplexBuilder) WithGIF(paletteStream int) *FilterComplexBuilder {
 	fb.filterComplex.WriteString(";")
 	_, _ = fmt.Fprintf(
 		fb.filterComplex,
 		`
-		[%s]split[plt_a][plt_b];
-		[plt_a]palettegen=max_colors=256[plt];
-		[plt_b][plt]paletteuse[palette]`,
+		[%s][%d]paletteuse[palette]`,
 		fb.prevStageName,
+		paletteStream,
 	)
+	fb.prevStageName = "palette"
+
+	return fb
+}
+
+// WithPalette adds palette generation to ffmpeg filter_complex.
+func (fb *FilterComplexBuilder) WithPalette() *FilterComplexBuilder {
+	fb.filterComplex.WriteString(";")
+	_, _ = fmt.Fprintf(fb.filterComplex, "[%s]palettegen=max_colors=256[palette]", fb.prevStageName)
 	fb.prevStageName = "palette"
 
 	return fb
