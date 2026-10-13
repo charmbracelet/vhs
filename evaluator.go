@@ -113,6 +113,9 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	}
 
 	// Begin recording frames as we are now in a recording state.
+	// The recorder's context is cancelled at teardown to stop ttyd and the
+	// browser. Rendering must not use it: exec.CommandContext refuses to
+	// start a process on a cancelled context, so ffmpeg would never run.
 	recordCtx, cancel := context.WithCancel(ctx)
 	ch := v.Record(recordCtx)
 
