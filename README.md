@@ -33,7 +33,7 @@ Tape files consist of a series of [commands](#vhs-command-reference). The comman
 instructions for VHS to perform on its virtual terminal. For a list of all
 possible commands see [the command reference](#vhs-command-reference).
 
-```elixir
+```tape
 # Where should we write the GIF?
 Output demo.gif
 
@@ -244,7 +244,7 @@ The `Output` command allows you to specify the location and file format
 of the render. You can specify more than one output in a tape file which
 will render them to the respective locations.
 
-```elixir
+```tape
 Output out.gif
 Output out.mp4
 Output out.webm
@@ -260,7 +260,7 @@ These are useful to fail early if a required program is missing from the
 Require commands must be defined at the top of a tape file, before any non-
 setting or non-output command.
 
-```elixir
+```tape
 # A tape file that requires gum and glow to be in the $PATH
 Require gum
 Require glow
@@ -279,7 +279,7 @@ ignored.
 
 Set the shell with the `Set Shell <shell>` command
 
-```elixir
+```tape
 Set Shell fish
 ```
 
@@ -287,7 +287,7 @@ Set Shell fish
 
 Set the font size with the `Set FontSize <number>` command.
 
-```elixir
+```tape
 Set FontSize 10
 Set FontSize 20
 Set FontSize 40
@@ -315,7 +315,7 @@ Set FontSize 40
 
 Set the font family with the `Set FontFamily "<font>"` command
 
-```elixir
+```tape
 Set FontFamily "Monoflow"
 ```
 
@@ -329,7 +329,7 @@ Set FontFamily "Monoflow"
 
 Set the width of the terminal with the `Set Width` command.
 
-```elixir
+```tape
 Set Width 300
 ```
 
@@ -343,7 +343,7 @@ Set Width 300
 
 Set the height of the terminal with the `Set Height` command.
 
-```elixir
+```tape
 Set Height 1000
 ```
 
@@ -359,7 +359,7 @@ Set the width of the terminal in columns (character cells) with the `Set
 Columns` command. VHS derives the final pixel width from the current font
 settings (`FontSize`, `FontFamily`, `LetterSpacing`) plus `Padding`/`Margin`.
 
-```elixir
+```tape
 Set Columns 100
 ```
 
@@ -373,7 +373,7 @@ Set the height of the terminal in rows (character cells) with the `Set Rows`
 command. VHS derives the final pixel height from the current font settings
 (`FontSize`, `FontFamily`, `LineHeight`) plus `Padding`/`Margin`/`WindowBar`.
 
-```elixir
+```tape
 Set Rows 40
 ```
 
@@ -386,7 +386,7 @@ or `Set Columns` to control width.
 Set the spacing between letters (tracking) with the `Set LetterSpacing`
 Command.
 
-```elixir
+```tape
 Set LetterSpacing 20
 ```
 
@@ -400,7 +400,7 @@ Set LetterSpacing 20
 
 Set the spacing between lines with the `Set LineHeight` Command.
 
-```elixir
+```tape
 Set LineHeight 1.8
 ```
 
@@ -412,7 +412,7 @@ Set LineHeight 1.8
 
 #### Set Typing Speed
 
-```elixir
+```tape
 Set TypingSpeed 500ms # 500ms
 Set TypingSpeed 1s    # 1s
 ```
@@ -422,7 +422,7 @@ Set the typing speed of seconds per key press. For example, a typing speed of
 
 This setting can also be overwritten per command with the `@<time>` syntax.
 
-```elixir
+```tape
 Set TypingSpeed 0.1
 Type "100ms delay per character"
 Type@500ms "500ms delay per character"
@@ -439,7 +439,7 @@ Type@500ms "500ms delay per character"
 Set the theme of the terminal with the `Set Theme` command. The theme value
 should be a JSON string with the base 16 colors and foreground + background.
 
-```elixir
+```tape
 Set Theme { "name": "Whimsy", "black": "#535178", "red": "#ef6487", "green": "#5eca89", "yellow": "#fdd877", "blue": "#65aef7", "magenta": "#aa7ff0", "cyan": "#43c1be", "white": "#ffffff", "brightBlack": "#535178", "brightRed": "#ef6487", "brightGreen": "#5eca89", "brightYellow": "#fdd877", "brightBlue": "#65aef7", "brightMagenta": "#aa7ff0", "brightCyan": "#43c1be", "brightWhite": "#ffffff", "background": "#29283b", "foreground": "#b3b0d6", "selection": "#3d3c58", "cursor": "#b3b0d6" }
 ```
 
@@ -447,7 +447,7 @@ Set Theme { "name": "Whimsy", "black": "#535178", "red": "#ef6487", "green": "#5
 
 You can also set themes by name:
 
-```elixir
+```tape
 Set Theme "Catppuccin Frappe"
 ```
 
@@ -458,7 +458,7 @@ See the full list by running `vhs themes`, or in [THEMES.md](./THEMES.md).
 Set the padding (in pixels) of the terminal frame with the `Set Padding`
 command.
 
-```elixir
+```tape
 Set Padding 0
 ```
 
@@ -472,7 +472,7 @@ Set Padding 0
 
 Set the margin (in pixels) of the video with the `Set Margin` command.
 
-```elixir
+```tape
 Set Margin 60
 Set MarginFill "#6B50FF"
 ```
@@ -487,7 +487,7 @@ Set MarginFill "#6B50FF"
 
 Set the type of window bar (Colorful, ColorfulRight, Rings, RingsRight) on the terminal window with the `Set WindowBar` command.
 
-```elixir
+```tape
 Set WindowBar Colorful
 ```
 
@@ -501,7 +501,7 @@ Set WindowBar Colorful
 
 Set the border radius (in pixels) of the terminal window with the `Set BorderRadius` command.
 
-```elixir
+```tape
 # You'll likely want to add a Margin + MarginFill if you use BorderRadius.
 Set Margin 20
 Set MarginFill "#674EFF"
@@ -518,7 +518,7 @@ Set BorderRadius 10
 
 Set the rate at which VHS captures frames with the `Set Framerate` command.
 
-```elixir
+```tape
 Set Framerate 60
 ```
 
@@ -526,7 +526,7 @@ Set Framerate 60
 
 Set the playback speed of the final render.
 
-```elixir
+```tape
 Set PlaybackSpeed 0.5 # Make output 2 times slower
 Set PlaybackSpeed 1.0 # Keep output at normal speed (default)
 Set PlaybackSpeed 2.0 # Make output 2 times faster
@@ -537,7 +537,7 @@ Set PlaybackSpeed 2.0 # Make output 2 times faster
 Set the offset for when the GIF loop should begin. This allows you to make the
 first frame of the GIF (generally used for previews) more interesting.
 
-```elixir
+```tape
 Set LoopOffset 5 # Start the GIF at the 5th frame
 Set LoopOffset 50% # Start the GIF halfway through
 ```
@@ -546,7 +546,7 @@ Set LoopOffset 50% # Start the GIF halfway through
 
 Set whether the cursor should blink. Enabled by default.
 
-```elixir
+```tape
 Set CursorBlink false
 ```
 
@@ -566,7 +566,7 @@ characters to type.
 You can set the standard typing speed with [`Set TypingSpeed`](#set-typing-speed)
 and override it in places with a `@time` argument.
 
-```elixir
+```tape
 # Type something
 Type "Whatever you want"
 
@@ -576,7 +576,7 @@ Type@500ms "Slow down there, partner."
 
 Escape single and double quotes with backticks.
 
-```elixir
+```tape
 Type `VAR="Escaped"`
 ```
 
@@ -599,7 +599,7 @@ Key[@<time>] [count]
 
 Press the backspace key with the `Backspace` command.
 
-```elixir
+```tape
 Backspace 18
 ```
 
@@ -614,7 +614,7 @@ Backspace 18
 You can access the control modifier and send control sequences with the `Ctrl`
 command.
 
-```elixir
+```tape
 Ctrl+R
 ```
 
@@ -628,7 +628,7 @@ Ctrl+R
 
 Press the enter key with the `Enter` command.
 
-```elixir
+```tape
 Enter 2
 ```
 
@@ -642,7 +642,7 @@ Enter 2
 
 Press any of the arrow keys with the `Up`, `Down`, `Left`, `Right` commands.
 
-```elixir
+```tape
 Up 2
 Down 2
 Left
@@ -663,7 +663,7 @@ Type "A"
 
 Enter a tab with the `Tab` command.
 
-```elixir
+```tape
 Tab@500ms 2
 ```
 
@@ -677,7 +677,7 @@ Tab@500ms 2
 
 Press the space bar with the `Space` command.
 
-```elixir
+```tape
 Space 10
 ```
 
@@ -691,7 +691,7 @@ Space 10
 
 Press the Page Up / Down keys with the `PageUp` or `PageDown` commands.
 
-```elixir
+```tape
 PageUp 3
 PageDown 5
 ```
@@ -702,7 +702,7 @@ Scroll the terminal viewport directly with `ScrollUp` and `ScrollDown`.
 Both commands use the same optional `@time` and repeat count shape as other
 repeatable key commands: `ScrollUp[@<time>] [count]`.
 
-```elixir
+```tape
 ScrollUp 10
 ScrollDown 4
 ScrollDown@100ms 12
@@ -718,7 +718,7 @@ The command takes a regular expression as an argument, and optionally allows you
 to set the duration to wait and if you want to check the whole screen or just the
 last line (the scope).
 
-```elixir
+```tape
 Wait
 Wait            /World/
 Wait+Screen     /World/
@@ -737,7 +737,7 @@ with the terminal. This is useful when you need to wait on something to
 complete while including it in the recording like a spinner or loading state.
 The command takes a number argument in seconds.
 
-```elixir
+```tape
 Sleep 0.5   # 500ms
 Sleep 2     # 2s
 Sleep 100ms # 100ms
@@ -749,7 +749,7 @@ Sleep 1s    # 1s
 The `Hide` command instructs VHS to stop capturing frames. It's useful to pause
 a recording to perform hidden commands.
 
-```elixir
+```tape
 Hide
 ```
 
@@ -757,7 +757,7 @@ This command is helpful for performing any setup and cleanup required to record
 a GIF, such as building the latest version of a binary and removing the binary
 once the demo is recorded.
 
-```elixir
+```tape
 Output example.gif
 
 # Setup
@@ -782,7 +782,7 @@ Enter
 The `Show` command instructs VHS to begin capturing frames, again. It's useful
 after a `Hide` command to resume frame recording for the output.
 
-```elixir
+```tape
 Hide
 Type "You won't see this being typed."
 Show
@@ -799,7 +799,7 @@ Type "You will see this being typed."
 
 The `Screenshot` command captures the current frame (png format).
 
-```elixir
+```tape
 # At any point...
 Screenshot examples/screenshot.png
 ```
@@ -808,7 +808,7 @@ Screenshot examples/screenshot.png
 
 The `Copy` and `Paste` copy and paste the string from clipboard.
 
-```elixir
+```tape
 Copy "https://github.com/charmbracelet"
 Type "open "
 Sleep 500ms
@@ -819,7 +819,7 @@ Paste
 
 `Env` command sets the environment variable via key-value pair.
 
-```elixir
+```tape
 Env HELLO "WORLD"
 
 Type "echo $HELLO"
@@ -831,7 +831,7 @@ Sleep 1s
 
 The `source` command allows you to execute commands from another tape.
 
-```elixir
+```tape
 Source config.tape
 ```
 
@@ -848,7 +848,7 @@ VHS can also be used for integration testing. Use the `.txt` or `.ascii` output
 to generate golden files. Store these files in a git repository to ensure there
 are no diffs between runs of the tape file.
 
-```elixir
+```tape
 Output golden.ascii
 ```
 
