@@ -56,6 +56,7 @@ type VideoOptions struct {
 	MaxColors     int
 	Output        VideoOutputs
 	StartingFrame int
+	NumFrames     int
 	Style         *StyleOptions
 }
 
@@ -149,6 +150,9 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 
 	args = append(args, streamBuilder.Build()...)
 	args = append(args, filterBuilder.Build()...)
+	if opts.NumFrames > 0 {
+		args = append(args, "-vframes", fmt.Sprint(opts.NumFrames))
+	}
 	args = append(args, targetFile)
 
 	return args
