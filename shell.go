@@ -11,6 +11,9 @@ const (
 	pwsh       = "pwsh"
 	xonsh      = "xonsh"
 	zsh        = "zsh"
+	sh         = "sh"
+	mksh       = "mksh"
+	dash       = "dash"
 )
 
 // Shell is a type that contains a prompt and the command to set up the shell.
@@ -72,5 +75,17 @@ var Shells = map[string]Shell{
 	},
 	xonsh: {
 		Command: []string{"xonsh", "--no-rc", "-D", "PROMPT=\033[;38;2;91;86;224m>\033[m "},
+	},
+	sh: {
+		Env:     []string{"PS1=\\[\\e[38;2;90;86;224m\\]> \\[\\e[0m\\]"},
+		Command: []string{"sh"},
+	},
+	mksh: {
+		Env:     []string{"PS1=\\[\\e[38;2;90;86;224m\\]> \\[\\e[0m\\]"},
+		Command: []string{"mksh", "+o", "history"},
+	},
+	dash: {
+		Env:     []string{"PS1=\\[\\e[38;2;90;86;224m\\]> \\[\\e[0m\\]"},
+		Command: []string{"dash"},
 	},
 }

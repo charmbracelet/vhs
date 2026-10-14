@@ -142,6 +142,44 @@ func TestExecuteSetRowsColumns(t *testing.T) {
 	})
 }
 
+func TestExecuteSetShell(t *testing.T) {
+	shells := []struct {
+		name    string
+		command []string
+		env     []string
+	}{
+		{
+			name:    "sh",
+			command: []string{"sh"},
+			env:     []string{"PS1=\\[\\e[38;2;90;86;224m\\]> \\[\\e[0m\\]"},
+		},
+		{
+			name:    "mksh",
+			command: []string{"mksh", "+o", "history"},
+			env:     []string{"PS1=\\[\\e[38;2;90;86;224m\\]> \\[\\e[0m\\]"},
+		},
+		{
+			name:    "dash",
+			command: []string{"dash"},
+			env:     []string{"PS1=\\[\\e[38;2;90;86;224m\\]> \\[\\e[0m\\]"},
+		},
+	}
+
+	for _, s := range shells {
+		t.Run(s.name, func(t *testing.T) {
+			v := New()
+			err := ExecuteSetShell(parser.Command{Type: token.SET, Options: "Shell", Args: s.name}, &v)
+			requireNoErr(t, err)
+			if !reflect.DeepEqual(v.Options.Shell.Command, s.command) {
+				t.Errorf("expected command %v, got %v", s.command, v.Options.Shell.Command)
+			}
+			if !reflect.DeepEqual(v.Options.Shell.Env, s.env) {
+				t.Errorf("expected env %v, got %v", s.env, v.Options.Shell.Env)
+			}
+		})
+	}
+}
+
 func requireErr(tb testing.TB, err error) {
 	tb.Helper()
 	if err == nil {
