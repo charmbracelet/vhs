@@ -20,6 +20,13 @@ import (
 	"github.com/go-rod/rod/lib/proto"
 )
 
+// VideoSegment represents a segment of recording emitted via Split.
+type VideoSegment struct {
+	Path       string
+	StartFrame int
+	EndFrame   int
+}
+
 // VHS is the object that controls the setup.
 type VHS struct {
 	Options        *Options
@@ -33,6 +40,9 @@ type VHS struct {
 	recording      bool
 	tty            *exec.Cmd
 	totalFrames    int
+	currentFrame   int
+	lastSplitFrame int
+	segments       []VideoSegment
 	close          func() error
 	widthExplicit  bool
 	heightExplicit bool
@@ -549,13 +559,22 @@ func (vhs *VHS) Cleanup() error {
 
 // Render starts rendering the individual frames into a video.
 func (vhs *VHS) Render(ctx context.Context) error {
+	var cmds []*exec.Cmd //nolint:prealloc
+
+	// Render segments if any
+	for _, seg := range vhs.segments {
+		segOpts := vhs.Options.Video
+		segOpts.StartingFrame = seg.StartFrame
+		segOpts.NumFrames = seg.EndFrame - seg.StartFrame + 1
+		cmds = append(cmds, makeMedia(ctx, segOpts, seg.Path))
+	}
+
 	// Apply Loop Offset by modifying frame sequence
 	if err := vhs.ApplyLoopOffset(); err != nil {
 		return err
 	}
 
 	// Generate the video(s) with the frames.
-	var cmds []*exec.Cmd //nolint:prealloc
 	cmds = append(cmds, MakeGIF(ctx, vhs.Options.Video))
 	cmds = append(cmds, MakeMP4(ctx, vhs.Options.Video))
 	cmds = append(cmds, MakeWebM(ctx, vhs.Options.Video))
@@ -573,6 +592,23 @@ func (vhs *VHS) Render(ctx context.Context) error {
 	}
 
 	return nil
+}
+
+// Split records a video segment up to the current point.
+func (vhs *VHS) Split(path string) {
+	vhs.mutex.Lock()
+	defer vhs.mutex.Unlock()
+
+	start := vhs.lastSplitFrame + vhs.Options.Video.StartingFrame
+	end := vhs.currentFrame
+	if end >= start {
+		vhs.segments = append(vhs.segments, VideoSegment{
+			Path:       path,
+			StartFrame: start,
+			EndFrame:   end,
+		})
+		vhs.lastSplitFrame = end - vhs.Options.Video.StartingFrame + 1
+	}
 }
 
 // ApplyLoopOffset by modifying frame sequence.
@@ -688,6 +724,10 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 				}
 
 				counter++
+				vhs.mutex.Lock()
+				vhs.currentFrame = counter
+				vhs.mutex.Unlock()
+
 				if err := os.WriteFile(
 					filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(cursorFrameFormat, counter)),
 					cursor,

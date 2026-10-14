@@ -502,3 +502,32 @@ func TestParseScreeenshot(t *testing.T) {
 		test.run(t)
 	})
 }
+
+func TestParseSplit(t *testing.T) {
+	input := `
+Output all.mp4
+Split "install.mp4"
+Split "configure.gif"
+Split "run.webm"`
+
+	expected := []Command{
+		{Type: token.OUTPUT, Options: ".mp4", Args: "all.mp4"},
+		{Type: token.SPLIT, Options: ".mp4", Args: "install.mp4"},
+		{Type: token.SPLIT, Options: ".gif", Args: "configure.gif"},
+		{Type: token.SPLIT, Options: ".webm", Args: "run.webm"},
+	}
+
+	l := lexer.New(input)
+	p := New(l)
+	actual := p.Parse()
+
+	if len(actual) != len(expected) {
+		t.Fatalf("Expected %d commands, got %d", len(expected), len(actual))
+	}
+
+	for i, cmd := range actual {
+		if cmd != expected[i] {
+			t.Errorf("Expected %+v, got %+v", expected[i], cmd)
+		}
+	}
+}

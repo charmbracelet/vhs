@@ -70,6 +70,7 @@ var CommandFuncs = map[parser.CommandType]CommandFunc{
 	token.PASTE:       ExecutePaste,
 	token.ENV:         ExecuteEnv,
 	token.WAIT:        ExecuteWait,
+	token.SPLIT:       ExecuteSplit,
 }
 
 // ExecuteNoop is a no-op command that does nothing.
@@ -418,6 +419,12 @@ func ExecuteOutput(c parser.Command, v *VHS) error {
 		v.Options.Video.Output.GIF = c.Args
 	}
 
+	return nil
+}
+
+// ExecuteSplit records a video segment up to the current point.
+func ExecuteSplit(c parser.Command, v *VHS) error {
+	v.Split(c.Args)
 	return nil
 }
 

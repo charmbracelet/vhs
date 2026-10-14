@@ -58,6 +58,7 @@ var CommandTypes = []CommandType{
 	token.COPY,
 	token.PASTE,
 	token.ENV,
+	token.SPLIT,
 }
 
 // String returns the string representation of the command.
@@ -185,6 +186,8 @@ func (p *Parser) parseCommand() []Command {
 		return []Command{p.parsePaste()}
 	case token.ENV:
 		return []Command{p.parseEnv()}
+	case token.SPLIT:
+		return []Command{p.parseSplit()}
 	default:
 		p.errors = append(p.errors, NewError(p.cur, "Invalid command: "+p.cur.Literal))
 		return []Command{{Type: token.ILLEGAL}}
@@ -419,6 +422,33 @@ func (p *Parser) parseOutput() Command {
 
 	if p.peek.Type != token.STRING {
 		p.errors = append(p.errors, NewError(p.cur, "Expected file path after output"))
+		return cmd
+	}
+
+	ext := filepath.Ext(p.peek.Literal)
+	if ext != "" {
+		cmd.Options = ext
+	} else {
+		cmd.Options = ".png"
+		if !strings.HasSuffix(p.peek.Literal, "/") {
+			p.errors = append(p.errors, NewError(p.peek, "Expected folder with trailing slash"))
+		}
+	}
+
+	cmd.Args = p.peek.Literal
+	p.nextToken()
+	return cmd
+}
+
+// parseSplit parses a split command.
+// A split command takes a file path to which to output a segment.
+//
+//	Split <path>
+func (p *Parser) parseSplit() Command {
+	cmd := Command{Type: token.SPLIT}
+
+	if p.peek.Type != token.STRING {
+		p.errors = append(p.errors, NewError(p.cur, "Expected file path after split"))
 		return cmd
 	}
 

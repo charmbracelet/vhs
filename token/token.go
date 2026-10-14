@@ -109,6 +109,7 @@ const (
 	WAIT_TIMEOUT    = "WAIT_TIMEOUT"
 	WAIT_PATTERN    = "WAIT_PATTERN"
 	CURSOR_BLINK    = "CURSOR_BLINK"
+	SPLIT           = "SPLIT"
 )
 
 // Keywords maps keyword strings to tokens.
@@ -144,6 +145,7 @@ var Keywords = map[string]Type{
 	"Require":       REQUIRE,
 	"Show":          SHOW,
 	"Output":        OUTPUT,
+	"Split":         SPLIT,
 	"Shell":         SHELL,
 	"FontFamily":    FONT_FAMILY,
 	"MarginFill":    MARGIN_FILL,
@@ -197,7 +199,7 @@ func IsCommand(t Type) bool {
 	case TYPE, SLEEP,
 		UP, DOWN, RIGHT, LEFT, PAGE_UP, PAGE_DOWN, SCROLL_UP, SCROLL_DOWN,
 		ENTER, BACKSPACE, DELETE, TAB,
-		ESCAPE, HOME, INSERT, END, CTRL, SOURCE, SCREENSHOT, COPY, PASTE, WAIT:
+		ESCAPE, HOME, INSERT, END, CTRL, SOURCE, SCREENSHOT, COPY, PASTE, WAIT, SPLIT:
 		return true
 	default:
 		return false
