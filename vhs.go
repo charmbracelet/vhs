@@ -31,6 +31,7 @@ type VHS struct {
 	mutex          *sync.Mutex
 	started        bool
 	recording      bool
+	recordStopped  bool
 	tty            *exec.Cmd
 	totalFrames    int
 	close          func() error
@@ -660,6 +661,11 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 		for {
 			select {
 			case <-ctx.Done():
+				vhs.mutex.Lock()
+				vhs.recordStopped = true
+				vhs.Options.Screenshot.cancelFrameCapture()
+				vhs.mutex.Unlock()
+
 				_ = vhs.terminate()
 
 				// Save total # of frames for offset calculation
@@ -706,9 +712,11 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 				}
 
 				// Capture current frame and disable frame capturing
+				vhs.mutex.Lock()
 				if vhs.Options.Screenshot.frameCapture {
 					vhs.Options.Screenshot.makeScreenshot(counter)
 				}
+				vhs.mutex.Unlock()
 			}
 		}
 	}()
@@ -733,9 +741,18 @@ func (vhs *VHS) PauseRecording() {
 }
 
 // ScreenshotNextFrame indicates to VHS that screenshot of next frame must be taken.
-func (vhs *VHS) ScreenshotNextFrame(path string) {
+// The returned channel is closed once the frame is captured, or right away if
+// no frame is being recorded.
+func (vhs *VHS) ScreenshotNextFrame(path string) <-chan struct{} {
 	vhs.mutex.Lock()
 	defer vhs.mutex.Unlock()
 
-	vhs.Options.Screenshot.enableFrameCapture(path)
+	captured := vhs.Options.Screenshot.enableFrameCapture(path)
+	if vhs.recording && !vhs.recordStopped {
+		return captured
+	}
+
+	done := make(chan struct{})
+	close(done)
+	return done
 }

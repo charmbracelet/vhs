@@ -15,6 +15,10 @@ type ScreenshotOptions struct {
 	// nextScreenshotPath holds the path of new screenshot.
 	nextScreenshotPath string
 
+	// captured is closed once the pending screenshot has a frame, or when
+	// recording stops before one was captured.
+	captured chan struct{}
+
 	// screenshots represents a map holding screenshot path as key and frame as value.
 	screenshots map[string]int
 
@@ -40,14 +44,28 @@ func NewScreenshotOptions(input string, style *StyleOptions) ScreenshotOptions {
 func (opts *ScreenshotOptions) makeScreenshot(frame int) {
 	opts.screenshots[opts.nextScreenshotPath] = frame
 
-	opts.frameCapture = false
-	opts.nextScreenshotPath = ""
+	opts.cancelFrameCapture()
 }
 
-// captureNextFrame prepares capture of next frame by given path.
-func (opts *ScreenshotOptions) enableFrameCapture(path string) {
+// enableFrameCapture prepares capture of next frame by given path. The
+// returned channel is closed once the frame is captured.
+func (opts *ScreenshotOptions) enableFrameCapture(path string) <-chan struct{} {
 	opts.frameCapture = true
 	opts.nextScreenshotPath = path
+	opts.captured = make(chan struct{})
+	return opts.captured
+}
+
+// cancelFrameCapture disables frame capture and releases anyone waiting on
+// the pending screenshot.
+func (opts *ScreenshotOptions) cancelFrameCapture() {
+	if opts.captured != nil {
+		close(opts.captured)
+		opts.captured = nil
+	}
+
+	opts.frameCapture = false
+	opts.nextScreenshotPath = ""
 }
 
 // MakeScreenshots generates screenshots by given ScreenshotOptions.
