@@ -799,7 +799,9 @@ func ExecuteSetCursorBlink(c parser.Command, v *VHS) error {
 
 // ExecuteScreenshot is a CommandFunc that indicates a new screenshot must be taken.
 func ExecuteScreenshot(c parser.Command, v *VHS) error {
-	v.ScreenshotNextFrame(c.Args)
+	// Wait for the frame so that a following Hide, or the end of the tape,
+	// does not stop the recording before the screenshot is taken.
+	<-v.ScreenshotNextFrame(c.Args)
 	return nil
 }
 

@@ -66,3 +66,35 @@ func TestEvaluateGIF(t *testing.T) {
 		})
 	}
 }
+
+func TestEvaluateScreenshot(t *testing.T) {
+	if os.Getenv("VHS_TEST_BROWSER") == "" {
+		t.Skip("set VHS_TEST_BROWSER=1 to run this test")
+	}
+	for _, name := range []string{"ttyd", "ffmpeg"} {
+		if _, err := exec.LookPath(name); err != nil {
+			t.Fatalf("%s is required: %v", name, err)
+		}
+	}
+
+	for name, after := range map[string]string{
+		"last command": "",
+		"before hide":  "Hide\nType q\n",
+		"before sleep": "Sleep 500ms\n",
+	} {
+		t.Run(name, func(t *testing.T) {
+			ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+			defer cancel()
+			dir := t.TempDir()
+			output := filepath.Join(dir, "output.gif")
+			screenshot := filepath.Join(dir, "screenshot.png")
+			tape := fmt.Sprintf("Output %q\nSet Shell bash\nSet Width 320\nSet Height 200\nType hello\nScreenshot %q\n%s", filepath.ToSlash(output), filepath.ToSlash(screenshot), after)
+			if errs := Evaluate(ctx, tape, io.Discard); len(errs) != 0 {
+				t.Fatalf("Evaluate failed: %v", errs)
+			}
+			if _, err := os.Stat(screenshot); err != nil {
+				t.Fatalf("screenshot was not created: %v", err)
+			}
+		})
+	}
+}
