@@ -69,8 +69,8 @@ var EscapeSequences = map[string]string{
 //	vhs record > file.tape
 //
 //nolint:wrapcheck
-func Record(_ *cobra.Command, _ []string) error {
-	command := exec.Command(shell)
+func Record(cmd *cobra.Command, _ []string) error {
+	command := exec.CommandContext(cmd.Context(), shell)
 
 	command.Env = append(os.Environ(), "VHS_RECORD=true")
 

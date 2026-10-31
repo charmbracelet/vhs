@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"strings"
 	"sync"
 	"testing"
@@ -20,7 +21,7 @@ func TestStart_NestedRecordingRejected(t *testing.T) {
 		mutex:   &sync.Mutex{},
 	}
 
-	err := vhs.Start()
+	err := vhs.Start(context.Background())
 	if err == nil {
 		t.Fatal("expected an error when starting a nested recording, got nil")
 	}

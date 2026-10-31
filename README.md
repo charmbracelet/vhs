@@ -353,6 +353,34 @@ Set Height 1000
   <img width="300" alt="Example of changing the height of the terminal" src="https://stuff.charm.sh/vhs/examples/height.gif">
 </picture>
 
+#### Set Columns
+
+Set the width of the terminal in columns (character cells) with the `Set
+Columns` command. VHS derives the final pixel width from the current font
+settings (`FontSize`, `FontFamily`, `LetterSpacing`) plus `Padding`/`Margin`.
+
+```elixir
+Set Columns 100
+```
+
+`Set Columns` cannot be combined with `Set Width` — use one or the other to
+control the terminal's width. It can be freely combined with `Set Height`
+or `Set Rows` to control height.
+
+#### Set Rows
+
+Set the height of the terminal in rows (character cells) with the `Set Rows`
+command. VHS derives the final pixel height from the current font settings
+(`FontSize`, `FontFamily`, `LineHeight`) plus `Padding`/`Margin`/`WindowBar`.
+
+```elixir
+Set Rows 40
+```
+
+`Set Rows` cannot be combined with `Set Height` — use one or the other to
+control the terminal's height. It can be freely combined with `Set Width`
+or `Set Columns` to control width.
+
 #### Set Letter Spacing
 
 Set the spacing between letters (tracking) with the `Set LetterSpacing`
@@ -686,8 +714,8 @@ The `Wait` command allows you to wait for something to appear on the screen.
 This is useful when you need to wait on something to complete, even if you don't
 know how long it'll take, while including it in the recording like a spinner or
 loading state.
-The command takes a regular expression as an argument, and optionally allows to
-set the duration to wait and if you want to check the whole screen or just the
+The command takes a regular expression as an argument, and optionally allows you
+to set the duration to wait and if you want to check the whole screen or just the
 last line (the scope).
 
 ```elixir

@@ -10,6 +10,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net"
 	"os"
@@ -30,7 +31,7 @@ func randomPort() int {
 }
 
 // buildTtyCmd builds the ttyd exec.Command on the given port.
-func buildTtyCmd(port int, shell Shell) *exec.Cmd {
+func buildTtyCmd(ctx context.Context, port int, shell Shell) *exec.Cmd {
 	args := []string{ //nolint:prealloc
 		fmt.Sprintf("--port=%d", port),
 		"--interface", "127.0.0.1",
@@ -44,7 +45,8 @@ func buildTtyCmd(port int, shell Shell) *exec.Cmd {
 
 	args = append(args, shell.Command...)
 
-	cmd := exec.Command("ttyd", args...)
+	cmd := exec.CommandContext(ctx, "ttyd", args...)
+	// Set even when shell.Env is nil so a nested vhs can see VHS_RECORDING.
 	env := append(shell.Env, os.Environ()...)
 	cmd.Env = append(env, recordingEnvVar+"=1")
 	return cmd

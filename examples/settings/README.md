@@ -32,6 +32,68 @@ Type "I'm a big teapot"
 Sleep 1s
 ```
 
+### Rows
+
+<img width="600" src="./rows.gif" />
+
+```
+Output examples/settings/rows.gif
+
+Set Width 475
+Set Rows 8
+Set FontSize 32
+
+# Fill the terminal with a line-numbered count. Since it's cleared
+# first, the count fills the frame edge-to-edge with nothing else
+# on screen: exactly 8 lines for 8 rows, no more, no less. The
+# last line skips its trailing newline so the terminal doesn't
+# scroll once more to make room for the next prompt.
+Type "clear; for i in $(seq 1 7); do echo $i; done; printf 8; sleep 5"
+Enter
+
+Sleep 2s
+```
+
+### Columns
+
+<img width="600" src="./columns.gif" />
+
+```
+Output examples/settings/columns.gif
+
+Set Height 400
+Set Columns 30
+Set FontSize 32
+
+# Print a 30-character ruler after clearing. It touches the left
+# and right edges of the frame exactly, with no wrap: 30 columns.
+Type "clear; printf '%030d\n' 0 | tr '0' '#'; sleep 5"
+Enter
+
+Sleep 2s
+```
+
+### Rows and Columns
+
+<img width="600" src="./rows-columns.gif" />
+
+```
+Output examples/settings/rows-columns.gif
+
+Set FontSize 32
+Set Rows 10
+Set Columns 40
+
+# A 40-char ruler as the first line proves the column count, and
+# it plus 9 more numbered lines below it fill the frame exactly
+# top to bottom, proving all 10 rows. The last line skips its
+# trailing newline so the terminal doesn't scroll for a new prompt.
+Type "clear; printf '%040d\n' 0 | tr '0' '#'; for i in $(seq 1 8); do echo $i; done; printf 9; sleep 5"
+Enter
+
+Sleep 2s
+```
+
 ### Font Family
 
 <img width="600" src="./set-font-family.gif" />

@@ -30,7 +30,7 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 
 	v := New()
 	for _, cmd := range cmds {
-		if cmd.Type == token.SET && cmd.Options == "Shell" || cmd.Type == token.ENV {
+		if cmd.Type == token.SET && cmd.Options == shellSetting || cmd.Type == token.ENV {
 			err := Execute(cmd, &v)
 			if err != nil {
 				return []error{err}
@@ -39,7 +39,7 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	}
 
 	// Start things up
-	if err := v.Start(); err != nil {
+	if err := v.Start(ctx); err != nil {
 		return []error{err}
 	}
 	defer func() { _ = v.close() }()
@@ -56,7 +56,7 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	for i, cmd := range cmds {
 		if cmd.Type == token.SET || cmd.Type == token.OUTPUT || cmd.Type == token.REQUIRE {
 			_, _ = fmt.Fprintln(out, Highlight(cmd, false))
-			if cmd.Options != "Shell" {
+			if cmd.Options != shellSetting {
 				err := Execute(cmd, &v)
 				if err != nil {
 					return []error{err}
@@ -91,7 +91,9 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	}
 
 	// Setup the terminal session so we can start executing commands.
-	v.Setup()
+	if err := v.Setup(); err != nil {
+		return []error{err}
+	}
 
 	// If the first command (after Settings and Outputs) is a Hide command, we can
 	// begin executing the commands before we start recording to avoid capturing
@@ -111,8 +113,8 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	}
 
 	// Begin recording frames as we are now in a recording state.
-	ctx, cancel := context.WithCancel(ctx) //nolint:gosec
-	ch := v.Record(ctx)
+	recordCtx, cancel := context.WithCancel(ctx)
+	ch := v.Record(recordCtx)
 
 	// Clean up temporary files at the end.
 	defer func() {
@@ -182,7 +184,7 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	}
 
 	teardown()
-	if err := v.Render(); err != nil {
+	if err := v.Render(ctx); err != nil {
 		return []error{err}
 	}
 	return nil

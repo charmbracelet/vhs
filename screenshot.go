@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os/exec"
 	"path/filepath"
@@ -50,7 +51,7 @@ func (opts *ScreenshotOptions) enableFrameCapture(path string) {
 }
 
 // MakeScreenshots generates screenshots by given ScreenshotOptions.
-func MakeScreenshots(opts ScreenshotOptions) []*exec.Cmd {
+func MakeScreenshots(ctx context.Context, opts ScreenshotOptions) []*exec.Cmd {
 	cmds := []*exec.Cmd{} //nolint:prealloc
 
 	for path, frame := range opts.screenshots {
@@ -59,7 +60,8 @@ func MakeScreenshots(opts ScreenshotOptions) []*exec.Cmd {
 
 		args := opts.buildFFopts(path, textStream, cursorStream)
 
-		cmds = append(cmds, exec.Command(
+		cmds = append(cmds, exec.CommandContext(
+			ctx,
 			"ffmpeg",
 			args...,
 		))
