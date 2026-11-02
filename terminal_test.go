@@ -46,8 +46,11 @@ func TestTerminalCtrlC(t *testing.T) {
 	// Ctrl+C only interrupts the foreground program when the shell runs with
 	// the pty as its controlling terminal.
 	term := startTestShell(t, 40, 10)
-	term.SendText("sleep 10\r")
-	time.Sleep(300 * time.Millisecond)
+	// Wait until the shell has run the command, so Ctrl+C reaches sleep and
+	// not a shell that is still starting up on a slow machine.
+	term.SendText("echo started; sleep 10\r")
+	waitForLine(t, term, "started")
+	time.Sleep(100 * time.Millisecond)
 	k, _ := ctrlKey("c")
 	term.SendKey(k)
 	term.SendText("echo done\r")
