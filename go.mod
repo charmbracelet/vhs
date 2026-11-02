@@ -13,7 +13,7 @@ require (
 	github.com/charmbracelet/ultraviolet v0.0.0-20260303162955-0b88c25f3fff
 	github.com/charmbracelet/wish v1.4.7
 	github.com/charmbracelet/x/ansi v0.11.7
-	github.com/charmbracelet/x/vt v0.1.1-0.20261102080350-f4c583c3c1e4
+	github.com/charmbracelet/x/vt v0.1.1-0.20261102113342-556f63d37da4
 	github.com/charmbracelet/x/xpty v0.1.5-0.20261102080350-f4c583c3c1e4
 	github.com/creack/pty v1.1.24
 	github.com/go-text/typesetting v0.3.5

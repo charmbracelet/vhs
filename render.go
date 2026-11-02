@@ -6,13 +6,17 @@ import (
 	"image/color"
 	"image/draw"
 	"math"
+	"strings"
 	"sync"
 	"time"
+	"unicode/utf8"
 
 	uv "github.com/charmbracelet/ultraviolet"
 	"github.com/charmbracelet/x/ansi"
 	"github.com/charmbracelet/x/vt"
+	xdraw "golang.org/x/image/draw"
 	"golang.org/x/image/font"
+	"golang.org/x/image/font/sfnt"
 	"golang.org/x/image/math/fixed"
 )
 
@@ -31,18 +35,34 @@ type Renderer struct {
 	glyphX, baseline  int
 	strikeY, lineW    int
 	width, height     int
+	origin            image.Point
 	blink             bool
 	cursor, accent    color.Color
 	glyphs            map[glyphKey]*glyphMask
+	colorGlyphs       map[colorKey]*image.RGBA
+	custom            map[rune]*image.Alpha
 	seed              maphash.Seed
-	lastHash          uint64
-	hasLast           bool
 	textPool, curPool sync.Pool
+
+	// What the last frame drew, to tell when the layers change, and memory
+	// reused from frame to frame.
+	lastText, lastCursor uint64
+	drawn                bool
+	snapshot             uv.ScreenBuffer
+	cells                []cellDraw
 }
 
 type glyphKey struct {
-	r    rune
-	face font.Face
+	r      rune
+	face   font.Face
+	italic bool
+}
+
+// colorKey is a color glyph drawn over a number of cells.
+type colorKey struct {
+	face  *fontFace
+	gid   sfnt.GlyphIndex
+	cells int
 }
 
 // glyphMask is a rasterized glyph and where it goes relative to the top-left
@@ -68,14 +88,16 @@ func NewRenderer(opts *Options) (*Renderer, error) {
 	spacing := int(math.Round(opts.LetterSpacing))
 	charH := (m.Ascent + m.Descent).Ceil()
 	r := &Renderer{
-		fonts:  fonts,
-		cellW:  max(1, adv.Floor()+spacing),
-		cellH:  max(1, int(math.Floor(float64(charH)*opts.LineHeight))),
-		glyphX: max(0, spacing/2),                                  //nolint:mnd
-		lineW:  max(1, int(math.Round(float64(opts.FontSize)/15))), //nolint:mnd
-		blink:  opts.CursorBlink,
-		glyphs: map[glyphKey]*glyphMask{},
-		seed:   maphash.MakeSeed(),
+		fonts:       fonts,
+		cellW:       max(1, adv.Floor()+spacing),
+		cellH:       max(1, int(math.Floor(float64(charH)*opts.LineHeight))),
+		glyphX:      max(0, spacing/2),                                  //nolint:mnd
+		lineW:       max(1, int(math.Round(float64(opts.FontSize)/15))), //nolint:mnd
+		blink:       opts.CursorBlink,
+		glyphs:      map[glyphKey]*glyphMask{},
+		colorGlyphs: map[colorKey]*image.RGBA{},
+		custom:      map[rune]*image.Alpha{},
+		seed:        maphash.MakeSeed(),
 	}
 	top := 0
 	if r.cellH != charH {
@@ -94,20 +116,29 @@ func NewRenderer(opts *Options) (*Renderer, error) {
 // CellSize returns the size of a terminal cell in pixels.
 func (r *Renderer) CellSize() (w, h int) { return r.cellW, r.cellH }
 
-// SetSize sets the size of the frames in pixels.
-func (r *Renderer) SetSize(w, h int) {
+// SetSize sets the size of the frames in pixels, and of the terminal in
+// cells, which is centered in the frames.
+func (r *Renderer) SetSize(w, h, cols, rows int) {
 	r.width, r.height = w, h
+	r.origin = image.Pt(max(0, (w-cols*r.cellW)/2), max(0, (h-rows*r.cellH)/2)) //nolint:mnd
 }
 
-// Release returns frame images to be reused once they have been encoded.
-func (r *Renderer) Release(text, cursor *image.RGBA) {
-	if text != nil {
-		r.textPool.Put(text)
-	}
-	if cursor != nil {
-		r.curPool.Put(cursor)
-	}
+// Close lets go of the fonts, the glyphs drawn with them, and the memory
+// frames were drawn with.
+func (r *Renderer) Close() error {
+	clear(r.glyphs)
+	clear(r.colorGlyphs)
+	clear(r.custom)
+	r.cells = nil
+	r.snapshot = uv.ScreenBuffer{}
+	r.textPool, r.curPool = sync.Pool{}, sync.Pool{}
+	return r.fonts.Close()
 }
+
+// ReleaseText and ReleaseCursor return frame images to be reused once they
+// have been encoded.
+func (r *Renderer) ReleaseText(img *image.RGBA)   { r.textPool.Put(img) }
+func (r *Renderer) ReleaseCursor(img *image.RGBA) { r.curPool.Put(img) }
 
 func (r *Renderer) newImage(pool *sync.Pool) *image.RGBA {
 	if img, ok := pool.Get().(*image.RGBA); ok && img.Rect.Dx() == r.width && img.Rect.Dy() == r.height {
@@ -133,10 +164,12 @@ type cursorState struct {
 	style   vt.CursorStyle
 }
 
-// Frame renders the terminal. When nothing visible changed since the last
-// frame it returns changed == false and no images.
-func (r *Renderer) Frame(t *Terminal, now time.Time) (text, cursor *image.RGBA, changed bool) {
-	buf := t.Snapshot()
+// Frame renders the terminal into its two layers, the text and the cursor.
+// A layer that looks the same as in the last frame isn't drawn again, and is
+// returned as nil.
+func (r *Renderer) Frame(t *Terminal, now time.Time) (text, cursor *image.RGBA) {
+	t.SnapshotInto(&r.snapshot)
+	buf := r.snapshot
 	offset := t.ViewOffset()
 	defFg, defBg := t.Colors()
 	fg0, bg0 := toRGBA(defFg), toRGBA(defBg)
@@ -172,7 +205,7 @@ func (r *Renderer) Frame(t *Terminal, now time.Time) (text, cursor *image.RGBA, 
 	writeInt := func(i int) { _, _ = h.Write([]byte{byte(i), byte(i >> 8), byte(i >> 16)}) } //nolint:gosec,mnd
 	writeColor(bg0)
 
-	cells := make([]cellDraw, 0, buf.Width()*buf.Height())
+	cells := r.cells[:0]
 	for y := range buf.Height() {
 		for x := 0; x < buf.Width(); {
 			c := buf.CellAt(x, y)
@@ -217,37 +250,45 @@ func (r *Renderer) Frame(t *Terminal, now time.Time) (text, cursor *image.RGBA, 
 		}
 		writeInt(-1)
 	}
+	r.cells = cells
+	textHash := h.Sum64()
 
+	h.Reset()
 	cur := r.cursorState(t, buf, offset, now)
 	if cur.visible {
 		writeInt(cur.pos.X)
 		writeInt(cur.pos.Y)
 		writeInt(int(cur.style))
-	}
-
-	sum := h.Sum64()
-	if r.hasLast && sum == r.lastHash {
-		return nil, nil, false
-	}
-	r.lastHash, r.hasLast = sum, true
-
-	text = r.newImage(&r.textPool)
-	draw.Draw(text, text.Rect, image.NewUniform(bg0), image.Point{}, draw.Src)
-	for _, d := range cells {
-		if d.bg != bg0 {
-			draw.Draw(text, r.cellRect(d.x, d.y, d.cell.Width), image.NewUniform(d.bg), image.Point{}, draw.Src)
+		// A block cursor draws the character under it.
+		if c := buf.CellAt(cur.pos.X, cur.pos.Y); c != nil && cur.style == vt.CursorBlock {
+			_, _ = h.WriteString(c.Content)
+			writeInt(c.Width)
+			_, _ = h.Write([]byte{c.Style.Attrs})
 		}
 	}
-	for _, d := range cells {
-		r.drawCell(text, d)
-	}
+	cursorHash := h.Sum64()
 
-	cursor = r.newImage(&r.curPool)
-	clear(cursor.Pix)
-	if cur.visible {
-		r.drawCursor(cursor, buf, cur)
+	if !r.drawn || textHash != r.lastText {
+		text = r.newImage(&r.textPool)
+		draw.Draw(text, text.Rect, image.NewUniform(bg0), image.Point{}, draw.Src)
+		for _, d := range cells {
+			if d.bg != bg0 {
+				draw.Draw(text, r.cellRect(d.x, d.y, d.cell.Width), image.NewUniform(d.bg), image.Point{}, draw.Src)
+			}
+		}
+		for _, d := range cells {
+			r.drawCell(text, d)
+		}
 	}
-	return text, cursor, true
+	if !r.drawn || cursorHash != r.lastCursor {
+		cursor = r.newImage(&r.curPool)
+		clear(cursor.Pix)
+		if cur.visible {
+			r.drawCursor(cursor, buf, cur)
+		}
+	}
+	r.lastText, r.lastCursor, r.drawn = textHash, cursorHash, true
+	return text, cursor
 }
 
 // cursorState reports where and how the cursor is drawn, if at all.
@@ -267,18 +308,19 @@ func (r *Renderer) cursorState(t *Terminal, buf uv.ScreenBuffer, offset int, now
 }
 
 func (r *Renderer) cellRect(x, y, width int) image.Rectangle {
-	px, py := x*r.cellW, y*r.cellH
+	px, py := r.origin.X+x*r.cellW, r.origin.Y+y*r.cellH
 	return image.Rect(px, py, px+max(width, 1)*r.cellW, py+r.cellH)
 }
 
 func (r *Renderer) drawCell(dst *image.RGBA, d cellDraw) {
 	c := d.cell
-	px, py := d.x*r.cellW, d.y*r.cellH
+	rect := r.cellRect(d.x, d.y, c.Width)
+	px, py := rect.Min.X, rect.Min.Y
 	if !d.conceal && c.Content != "" && c.Content != " " {
-		r.drawText(dst, px, py, c.Content, d.style, d.fg)
+		r.drawText(dst, px, py, max(c.Width, 1), c.Content, d.style, d.fg)
 	}
 
-	width := max(c.Width, 1) * r.cellW
+	width := rect.Dx()
 	if c.Style.Underline != uv.UnderlineNone {
 		r.drawUnderline(dst, px, py, width, c.Style.Underline, d.ul)
 	}
@@ -287,19 +329,46 @@ func (r *Renderer) drawCell(dst *image.RGBA, d cellDraw) {
 	}
 }
 
-// drawText draws a grapheme cluster with its top-left at px, py.
-func (r *Renderer) drawText(dst *image.RGBA, px, py int, s string, style fontStyle, fg color.RGBA) {
-	runes := []rune(s)
-	if len(runes) == 1 && r.drawCustomGlyph(dst, px, py, runes[0], fg) {
+// drawText draws a grapheme cluster over a number of cells, with its
+// top-left at px, py.
+func (r *Renderer) drawText(dst *image.RGBA, px, py, cells int, s string, style fontStyle, fg color.RGBA) {
+	first, n := utf8.DecodeRuneInString(s)
+	if n == len(s) && r.drawCustomGlyph(dst, px, py, first, fg) {
 		return
 	}
+	// Emoji are drawn from the images in their font. Without shaping, a
+	// sequence (skin tones, ZWJ sequences) is drawn as its first one. A
+	// variation selector asks for the emoji of a character that also has a
+	// text form.
+	gf := r.fonts.face(first, style)
+	if strings.ContainsRune(s, emojiPresentation) {
+		if e := r.fonts.emojiFace(first); e != nil {
+			gf = e
+		}
+	}
+	if gf != nil && gf.color != nil && r.drawColorGlyph(dst, px, py, cells, gf, first) {
+		return
+	}
+	// Flags are made of two regional indicators, which emoji fonts only have
+	// images for together. Draw their letters, the country code, instead.
+	if isRegionalIndicator(first) {
+		x := px
+		for _, ch := range s {
+			if isRegionalIndicator(ch) {
+				r.drawText(dst, x, py, 1, string('A'+ch-regionalIndicatorA), style, fg)
+				x += r.cellW
+			}
+		}
+		return
+	}
+
 	src := image.NewUniform(fg)
-	for _, ch := range runes {
+	for _, ch := range s {
 		gf := r.fonts.face(ch, style)
-		if gf == nil {
+		if gf == nil || gf.color != nil {
 			continue
 		}
-		g := r.glyph(ch, gf.face)
+		g := r.glyph(ch, gf.face, gf.fakeItalic)
 		if g == nil {
 			continue
 		}
@@ -311,10 +380,62 @@ func (r *Renderer) drawText(dst *image.RGBA, px, py int, s string, style fontSty
 	}
 }
 
+// emojiPresentation is the variation selector that asks for a character to
+// be drawn as an emoji.
+const emojiPresentation = '\ufe0f'
+
+// regionalIndicatorA is the regional indicator for the letter A.
+const regionalIndicatorA = 0x1f1e6
+
+func isRegionalIndicator(r rune) bool {
+	return r >= regionalIndicatorA && r < regionalIndicatorA+26
+}
+
+// drawColorGlyph draws the color image of an emoji over a number of cells.
+// It reports false if the font has no image for it.
+func (r *Renderer) drawColorGlyph(dst *image.RGBA, px, py, cells int, gf *glyphFace, ch rune) bool {
+	key := colorKey{gf.fontFace, gf.glyphIndex(ch), cells}
+	img, ok := r.colorGlyphs[key]
+	if !ok {
+		img = r.colorGlyph(gf, key)
+		r.colorGlyphs[key] = img
+	}
+	if img == nil {
+		return false
+	}
+	draw.Draw(dst, img.Rect.Add(image.Pt(px, py)), img, img.Rect.Min, draw.Over)
+	return true
+}
+
+// emojiScale is how tall emoji images are drawn relative to the font size,
+// which is what browsers draw Apple and Noto color emoji at.
+const emojiScale = 1.1
+
+// colorGlyph scales the image of an emoji like browsers draw it, shrunk to
+// fit its cells if needed, and centers it in them.
+func (r *Renderer) colorGlyph(gf *glyphFace, key colorKey) *image.RGBA {
+	size := r.fonts.size * emojiScale
+	src, _, err := gf.color.glyph(key.gid, int(math.Ceil(size)))
+	if err != nil || src == nil || src.Bounds().Empty() {
+		return nil
+	}
+	w, h := float64(src.Bounds().Dx()), float64(src.Bounds().Dy())
+	fit := min(size/h, float64(key.cells*r.cellW)/w, float64(r.cellH)/h)
+	dw, dh := max(1, int(math.Round(w*fit))), max(1, int(math.Round(h*fit)))
+	x0, y0 := (key.cells*r.cellW-dw)/2, (r.cellH-dh)/2 //nolint:mnd
+	img := image.NewRGBA(image.Rect(x0, y0, x0+dw, y0+dh))
+	xdraw.CatmullRom.Scale(img, img.Rect, src, src.Bounds(), xdraw.Src, nil)
+	return img
+}
+
+// italicSlant is how much synthetic italics lean: about 11 degrees.
+const italicSlant = 0.2
+
 // glyph returns the rasterized glyph, cached since the rasterizer reuses its
-// mask buffer between calls.
-func (r *Renderer) glyph(ch rune, face font.Face) *glyphMask {
-	key := glyphKey{ch, face}
+// mask buffer between calls. Italic glyphs of fonts without an italic face are
+// slanted, like browsers do.
+func (r *Renderer) glyph(ch rune, face font.Face, italic bool) *glyphMask {
+	key := glyphKey{ch, face, italic}
 	if g, ok := r.glyphs[key]; ok {
 		return g
 	}
@@ -324,9 +445,25 @@ func (r *Renderer) glyph(ch rune, face font.Face) *glyphMask {
 		a := image.NewAlpha(image.Rect(0, 0, dr.Dx(), dr.Dy()))
 		draw.Draw(a, a.Rect, mask, maskp, draw.Src)
 		g = &glyphMask{mask: a, rect: dr}
+		if italic {
+			g = slant(g, r.baseline)
+		}
 	}
 	r.glyphs[key] = g
 	return g
+}
+
+// slant leans a glyph to the right, rows above the baseline more.
+func slant(g *glyphMask, baseline int) *glyphMask {
+	shift := func(y int) int { return int(math.Round(float64(baseline-y) * italicSlant)) }
+	lo, hi := shift(g.rect.Max.Y-1), shift(g.rect.Min.Y)
+	w, h := g.rect.Dx(), g.rect.Dy()
+	out := image.NewAlpha(image.Rect(0, 0, w+hi-lo, h))
+	for row := range h {
+		dx := shift(g.rect.Min.Y+row) - lo
+		copy(out.Pix[row*out.Stride+dx:], g.mask.Pix[row*g.mask.Stride:row*g.mask.Stride+w])
+	}
+	return &glyphMask{mask: out, rect: image.Rect(g.rect.Min.X+lo, g.rect.Min.Y, g.rect.Max.X+hi, g.rect.Max.Y)}
 }
 
 func (r *Renderer) drawUnderline(dst *image.RGBA, px, py, width int, style uv.Underline, c color.RGBA) {
@@ -381,7 +518,7 @@ func (r *Renderer) drawCursor(dst *image.RGBA, buf uv.ScreenBuffer, cur cursorSt
 			if cell.Style.Attrs&uv.AttrItalic != 0 {
 				style |= styleItalic
 			}
-			r.drawText(dst, rect.Min.X, rect.Min.Y, cell.Content, style, toRGBA(r.accent))
+			r.drawText(dst, rect.Min.X, rect.Min.Y, width, cell.Content, style, toRGBA(r.accent))
 		}
 	}
 }

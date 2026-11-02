@@ -14,6 +14,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"runtime"
+	"runtime/debug"
 	"strings"
 	"sync"
 	"time"
@@ -188,7 +189,7 @@ func (vhs *VHS) Setup() error {
 		)
 	}
 
-	renderer.SetSize(width, height)
+	renderer.SetSize(width, height, cols, rows)
 	if err := vhs.term.Resize(cols, rows); err != nil {
 		return err
 	}
@@ -240,9 +241,13 @@ func (vhs *VHS) Render(ctx context.Context) error {
 		return err
 	}
 
+	// The frames are on disk: give the memory used to record them back to
+	// the system before ffmpeg needs its own.
+	debug.FreeOSMemory()
+
 	// Generate the video(s) with the frames.
 	var cmds []*exec.Cmd //nolint:prealloc
-	cmds = append(cmds, MakeGIF(ctx, vhs.Options.Video))
+	cmds = append(cmds, MakeGIF(ctx, vhs.Options.Video)...)
 	cmds = append(cmds, MakeMP4(ctx, vhs.Options.Video))
 	cmds = append(cmds, MakeWebM(ctx, vhs.Options.Video))
 	cmds = append(cmds, MakeScreenshots(ctx, vhs.Options.Screenshot)...)
@@ -332,40 +337,39 @@ func (vhs *VHS) ApplyLoopOffset() error {
 	}
 }
 
-// encodedFrame is a frame encoded to PNG, shared by every recorded frame
-// that looks the same.
-type encodedFrame struct {
-	done         chan struct{}
-	text, cursor []byte
-	err          error
+// encodedLayer is a layer of a frame encoded to PNG, shared by the frames in
+// which it looks the same.
+type encodedLayer struct {
+	done chan struct{}
+	png  []byte
+	err  error
 }
 
-var pngEncoder = png.Encoder{CompressionLevel: png.BestSpeed}
+// pngBuffers lets the PNG encoder reuse its buffers from frame to frame.
+type pngBuffers struct{ pool sync.Pool }
 
-func (f *encodedFrame) encode(text, cursor *image.RGBA) {
-	defer close(f.done)
-	var tb, cb bytes.Buffer
-	if err := pngEncoder.Encode(&tb, text); err != nil {
-		f.err = fmt.Errorf("error encoding text frame: %w", err)
-		return
-	}
-	if err := pngEncoder.Encode(&cb, cursor); err != nil {
-		f.err = fmt.Errorf("error encoding cursor frame: %w", err)
-		return
-	}
-	f.text, f.cursor = tb.Bytes(), cb.Bytes()
+func (p *pngBuffers) Get() *png.EncoderBuffer {
+	b, _ := p.pool.Get().(*png.EncoderBuffer)
+	return b
 }
 
-func (f *encodedFrame) write(dir string, n int) error {
-	<-f.done
-	if f.err != nil {
-		return f.err
-	}
-	if err := os.WriteFile(filepath.Join(dir, fmt.Sprintf(cursorFrameFormat, n)), f.cursor, 0o600); err != nil {
-		return fmt.Errorf("error writing cursor frame: %w", err)
-	}
-	if err := os.WriteFile(filepath.Join(dir, fmt.Sprintf(textFrameFormat, n)), f.text, 0o600); err != nil {
-		return fmt.Errorf("error writing text frame: %w", err)
+func (p *pngBuffers) Put(b *png.EncoderBuffer) { p.pool.Put(b) }
+
+var pngEncoder = png.Encoder{CompressionLevel: png.BestSpeed, BufferPool: &pngBuffers{}}
+
+// writeFrame writes the layers of frame n once they are encoded.
+func writeFrame(dir string, n int, text, cursor *encodedLayer) error {
+	for _, l := range []struct {
+		layer  *encodedLayer
+		format string
+	}{{cursor, cursorFrameFormat}, {text, textFrameFormat}} {
+		<-l.layer.done
+		if l.layer.err != nil {
+			return l.layer.err
+		}
+		if err := os.WriteFile(filepath.Join(dir, fmt.Sprintf(l.format, n)), l.layer.png, 0o600); err != nil {
+			return fmt.Errorf("error writing frame: %w", err)
+		}
 	}
 	return nil
 }
@@ -373,16 +377,33 @@ func (f *encodedFrame) write(dir string, n int) error {
 // Record begins the goroutine which renders the terminal into frames.
 //
 // Frames are encoded and written in the background so that slow encoding
-// doesn't skew the frame timing, and frames identical to the previous one
-// reuse its encoding.
+// doesn't skew the frame timing. The text and cursor layers of a frame are
+// only encoded when they change: frames that look the same as the previous
+// one, in either layer, reuse its encoding.
 func (vhs *VHS) Record(ctx context.Context) <-chan error {
 	ch := make(chan error)
 	interval := time.Second / time.Duration(vhs.Options.Video.Framerate)
 
 	go func() {
 		var wg sync.WaitGroup
-		encoders := make(chan struct{}, runtime.NumCPU())
-		var last *encodedFrame
+		// Frames being encoded hold their images: bound how many.
+		encoders := make(chan struct{}, max(2, runtime.NumCPU()/2)) //nolint:mnd
+		encode := func(img *image.RGBA, release func(*image.RGBA)) *encodedLayer {
+			l := &encodedLayer{done: make(chan struct{})}
+			encoders <- struct{}{}
+			wg.Go(func() {
+				defer func() { <-encoders }()
+				defer close(l.done)
+				var b bytes.Buffer
+				if err := pngEncoder.Encode(&b, img); err != nil {
+					l.err = fmt.Errorf("error encoding frame: %w", err)
+				}
+				l.png = b.Bytes()
+				release(img)
+			})
+			return l
+		}
+		var text, cursor *encodedLayer
 		counter := 0
 		start := time.Now()
 		for {
@@ -390,6 +411,11 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 			case <-ctx.Done():
 				wg.Wait()
 				_ = vhs.terminate()
+
+				// Making the video only needs the frames: let go of the
+				// terminal and what drew it while ffmpeg runs.
+				_ = vhs.renderer.Close()
+				vhs.renderer, vhs.term = nil, nil
 
 				// Save total # of frames for offset calculation
 				vhs.totalFrames = counter
@@ -406,22 +432,18 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 					continue
 				}
 
-				text, cursor, changed := vhs.renderer.Frame(vhs.term, start)
-				if changed || last == nil {
-					frame := &encodedFrame{done: make(chan struct{})}
-					last = frame
-					encoders <- struct{}{}
-					wg.Go(func() {
-						defer func() { <-encoders }()
-						frame.encode(text, cursor)
-						vhs.renderer.Release(text, cursor)
-					})
+				t, c := vhs.renderer.Frame(vhs.term, start)
+				if t != nil {
+					text = encode(t, vhs.renderer.ReleaseText)
+				}
+				if c != nil {
+					cursor = encode(c, vhs.renderer.ReleaseCursor)
 				}
 
 				counter++
-				frame, n := last, counter
+				text, cursor, n := text, cursor, counter
 				wg.Go(func() {
-					if err := frame.write(vhs.Options.Video.Input, n); err != nil {
+					if err := writeFrame(vhs.Options.Video.Input, n, text, cursor); err != nil {
 						ch <- err
 					}
 				})

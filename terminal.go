@@ -158,13 +158,23 @@ func (t *Terminal) viewOffset(sb int) int {
 // Snapshot returns a copy of the visible viewport, including scrollback lines
 // when scrolled up.
 func (t *Terminal) Snapshot() uv.ScreenBuffer {
+	var buf uv.ScreenBuffer
+	t.SnapshotInto(&buf)
+	return buf
+}
+
+// SnapshotInto copies the visible viewport into buf like Snapshot, reusing
+// its memory when it has the size of the terminal.
+func (t *Terminal) SnapshotInto(buf *uv.ScreenBuffer) {
 	cols, rows := t.Size()
-	buf := uv.NewScreenBuffer(cols, rows)
+	if buf.RenderBuffer == nil || buf.Width() != cols || buf.Height() != rows {
+		*buf = uv.NewScreenBuffer(cols, rows)
+	}
 	t.emu.Draw(buf, buf.Bounds())
 
 	offset := t.ViewOffset()
 	if offset == 0 {
-		return buf
+		return
 	}
 
 	// Rows are filled bottom-up: screen rows move down by offset, so each
@@ -186,7 +196,6 @@ func (t *Terminal) Snapshot() uv.ScreenBuffer {
 			x += max(c.Width, 1)
 		}
 	}
-	return buf
 }
 
 // Lines returns the text of the visible viewport, one string per row, with

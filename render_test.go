@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"image"
@@ -32,7 +33,7 @@ func newScreen(tb testing.TB, cols, rows int) (*Terminal, *Renderer) {
 	term := &Terminal{emu: vt.NewSafeEmulator(cols, rows), lastInput: time.Now()}
 	term.SetTheme(opts.Theme)
 	w, h := r.CellSize()
-	r.SetSize(cols*w, rows*h)
+	r.SetSize(cols*w, rows*h, cols, rows)
 	return term, r
 }
 
@@ -46,9 +47,9 @@ func write(tb testing.TB, term *Terminal, s string) {
 // render renders a frame even if nothing changed since the last one.
 func render(tb testing.TB, term *Terminal, r *Renderer, now time.Time) (text, cursor *image.RGBA) {
 	tb.Helper()
-	r.hasLast = false
-	text, cursor, changed := r.Frame(term, now)
-	if !changed {
+	r.drawn = false
+	text, cursor = r.Frame(term, now)
+	if text == nil || cursor == nil {
 		tb.Fatal("expected a frame")
 	}
 	return text, cursor
@@ -204,16 +205,27 @@ func TestFrameCursor(t *testing.T) {
 func TestFrameUnchanged(t *testing.T) {
 	term, r := newScreen(t, 4, 2)
 	r.blink = false
-	text, _, changed := r.Frame(term, time.Now())
-	if !changed || text.Rect != image.Rect(0, 0, r.width, r.height) {
+	text, cursor := r.Frame(term, time.Now())
+	if text == nil || cursor == nil || text.Rect != image.Rect(0, 0, r.width, r.height) {
 		t.Fatalf("expected a %dx%d frame", r.width, r.height)
 	}
-	if _, _, changed := r.Frame(term, time.Now()); changed {
-		t.Fatal("expected no new frame when nothing changed")
+	if text, cursor := r.Frame(term, time.Now()); text != nil || cursor != nil {
+		t.Fatal("expected no new layers when nothing changed")
 	}
+	// Output changes both layers: the text, and the cursor moving.
 	write(t, term, "x")
-	if _, _, changed := r.Frame(term, time.Now()); !changed {
-		t.Fatal("expected a new frame after output")
+	if text, cursor := r.Frame(term, time.Now()); text == nil || cursor == nil {
+		t.Fatal("expected new layers after output")
+	}
+	// Moving the cursor back over the same text changes the cursor only.
+	write(t, term, "\b")
+	if text, cursor := r.Frame(term, time.Now()); text != nil || cursor == nil {
+		t.Fatal("expected only a new cursor layer after moving the cursor")
+	}
+	// Color changes change the text only.
+	write(t, term, "\x1b[31mx\x1b[0m\b")
+	if text, cursor := r.Frame(term, time.Now()); text == nil || cursor != nil {
+		t.Fatal("expected only a new text layer after recoloring")
 	}
 }
 
@@ -270,12 +282,14 @@ func BenchmarkFrame(b *testing.B) {
 	term, r := newShellTerminal(b)
 	term.SendText("ls -la /usr/bin | head -15; echo DONE\r")
 	waitForLine(b, term, "DONE")
+	b.ReportAllocs()
 	var i int64
 	for b.Loop() {
 		i++
-		r.hasLast = false
-		text, cur, _ := r.Frame(term, time.Unix(i, 0))
-		r.Release(text, cur)
+		r.drawn = false
+		text, cur := r.Frame(term, time.Unix(i, 0))
+		r.ReleaseText(text)
+		r.ReleaseCursor(cur)
 	}
 }
 
@@ -283,10 +297,13 @@ func BenchmarkEncode(b *testing.B) {
 	term, r := newShellTerminal(b)
 	term.SendText("ls -la /usr/bin | head -15; echo DONE\r")
 	waitForLine(b, term, "DONE")
-	text, cur, _ := r.Frame(term, time.Now())
+	text, _ := r.Frame(term, time.Now())
+	b.ReportAllocs()
 	for b.Loop() {
-		f := &encodedFrame{done: make(chan struct{})}
-		f.encode(text, cur)
+		var buf bytes.Buffer
+		if err := pngEncoder.Encode(&buf, text); err != nil {
+			b.Fatal(err)
+		}
 	}
 }
 
@@ -301,7 +318,7 @@ func newShellTerminal(tb testing.TB) (*Terminal, *Renderer) {
 	tb.Cleanup(func() { _ = term.Close() })
 	term.SetTheme(opts.Theme)
 	w, h := r.CellSize()
-	r.SetSize(60*w, 20*h)
+	r.SetSize(60*w, 20*h, 60, 20)
 	return term, r
 }
 
