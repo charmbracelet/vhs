@@ -58,7 +58,6 @@ github.com/charmbracelet/x/vt v0.1.1-0.20261102080350-f4c583c3c1e4 h1:KgMgjN90bb
 github.com/charmbracelet/x/vt v0.1.1-0.20261102080350-f4c583c3c1e4/go.mod h1:u1LOIABor9JqY54oZdktK3TCRrgzP6tzHrDYx1nd3wY=
 github.com/charmbracelet/x/windows v0.2.2 h1:IofanmuvaxnKHuV04sC0eBy/smG6kIKrWG2/jYn2GuM=
 github.com/charmbracelet/x/windows v0.2.2/go.mod h1:/8XtdKZzedat74NQFn0NGlGL4soHB0YQZrETF96h75k=
-github.com/charmbracelet/x/xpty v0.1.4/go.mod h1:7t8P7BpPiolHJ1pLzz7/4ujDbD+sUxI9yA3CBOLOIcU=
 github.com/charmbracelet/x/xpty v0.1.5-0.20261102080350-f4c583c3c1e4 h1:Ci7B531PPtMTsbua6ykLplcONGcqVzMrbL890p9eeJY=
 github.com/charmbracelet/x/xpty v0.1.5-0.20261102080350-f4c583c3c1e4/go.mod h1:7t8P7BpPiolHJ1pLzz7/4ujDbD+sUxI9yA3CBOLOIcU=
 github.com/clipperhouse/displaywidth v0.11.0 h1:lBc6kY44VFw+TDx4I8opi/EtL9m20WSEFgwIwO+UVM8=
