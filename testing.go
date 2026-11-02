@@ -44,12 +44,7 @@ func (v *VHS) SaveOutput() error {
 		return fmt.Errorf("failed to create output file: %w", err)
 	}
 
-	lines, err := v.Buffer()
-	if err != nil {
-		return fmt.Errorf("failed to get buffer: %w", err)
-	}
-
-	for _, line := range lines {
+	for _, line := range v.Buffer() {
 		_, err = file.WriteString(line + "\n")
 		if err != nil {
 			return fmt.Errorf("failed to write buffer to file: %w", err)
@@ -64,29 +59,12 @@ func (v *VHS) SaveOutput() error {
 	return nil
 }
 
-// Buffer returns the current buffer.
-func (v *VHS) Buffer() ([]string, error) {
-	// Get the current buffer.
-	buf, err := v.Page.Eval("() => Array(term.rows).fill(0).map((e, i) => term.buffer.active.getLine(i).translateToString().trimEnd())")
-	if err != nil {
-		return nil, fmt.Errorf("read buffer: %w", err)
-	}
-
-	arr := buf.Value.Arr()
-	lines := make([]string, 0, len(arr))
-	for _, line := range arr {
-		lines = append(lines, line.Str())
-	}
-
-	return lines, nil
+// Buffer returns the text of the visible terminal rows.
+func (v *VHS) Buffer() []string {
+	return v.term.Lines()
 }
 
-// CurrentLine returns the current line from the buffer.
-func (v *VHS) CurrentLine() (string, error) {
-	buf, err := v.Page.Eval("() => term.buffer.active.getLine(term.buffer.active.cursorY+term.buffer.active.viewportY).translateToString().trimEnd()")
-	if err != nil {
-		return "", fmt.Errorf("read current line from buffer: %w", err)
-	}
-
-	return buf.Value.Str(), nil
+// CurrentLine returns the line the cursor is on.
+func (v *VHS) CurrentLine() string {
+	return v.term.CurrentLine()
 }

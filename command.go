@@ -11,9 +11,9 @@ import (
 	"time"
 
 	"github.com/atotto/clipboard"
+	uv "github.com/charmbracelet/ultraviolet"
 	"github.com/charmbracelet/vhs/parser"
 	"github.com/charmbracelet/vhs/token"
-	"github.com/go-rod/rod/lib/input"
 )
 
 // Execute executes a command on a running instance of vhs.
@@ -39,19 +39,19 @@ type CommandFunc func(c parser.Command, v *VHS) error
 
 // CommandFuncs maps command types to their executable functions.
 var CommandFuncs = map[parser.CommandType]CommandFunc{
-	token.BACKSPACE:   ExecuteKey(input.Backspace),
-	token.DELETE:      ExecuteKey(input.Delete),
-	token.INSERT:      ExecuteKey(input.Insert),
-	token.DOWN:        ExecuteKey(input.ArrowDown),
-	token.ENTER:       ExecuteKey(input.Enter),
-	token.LEFT:        ExecuteKey(input.ArrowLeft),
-	token.RIGHT:       ExecuteKey(input.ArrowRight),
-	token.SPACE:       ExecuteKey(input.Space),
-	token.UP:          ExecuteKey(input.ArrowUp),
-	token.TAB:         ExecuteKey(input.Tab),
-	token.ESCAPE:      ExecuteKey(input.Escape),
-	token.PAGE_UP:     ExecuteKey(input.PageUp),
-	token.PAGE_DOWN:   ExecuteKey(input.PageDown),
+	token.BACKSPACE:   ExecuteKey(keyBackspace),
+	token.DELETE:      ExecuteKey(keyDelete),
+	token.INSERT:      ExecuteKey(keyInsert),
+	token.DOWN:        ExecuteKey(keyDown),
+	token.ENTER:       ExecuteKey(keyEnter),
+	token.LEFT:        ExecuteKey(keyLeft),
+	token.RIGHT:       ExecuteKey(keyRight),
+	token.SPACE:       ExecuteKey(keySpace),
+	token.UP:          ExecuteKey(keyUp),
+	token.TAB:         ExecuteKey(keyTab),
+	token.ESCAPE:      ExecuteKey(keyEscape),
+	token.PAGE_UP:     ExecuteKey(keyPgUp),
+	token.PAGE_DOWN:   ExecuteKey(keyPgDown),
 	token.SCROLL_UP:   ExecuteScroll(-1),
 	token.SCROLL_DOWN: ExecuteScroll(1),
 	token.HIDE:        ExecuteHide,
@@ -81,9 +81,9 @@ func ExecuteNoop(_ parser.Command, _ *VHS) error { return nil }
 // a key press for a given key. This is so that the logic for key pressing
 // (since they are repeatable and delayable) can be re-used.
 //
-// i.e. ExecuteKey(input.ArrowDown) would return a CommandFunc that executes
+// i.e. ExecuteKey(keyDown) would return a CommandFunc that executes
 // the ArrowDown key press.
-func ExecuteKey(k input.Key) CommandFunc {
+func ExecuteKey(k uv.KeyPressEvent) CommandFunc {
 	return func(c parser.Command, v *VHS) error {
 		typingSpeed, err := time.ParseDuration(c.Options)
 		if err != nil {
@@ -93,11 +93,8 @@ func ExecuteKey(k input.Key) CommandFunc {
 		if err != nil {
 			repeat = 1
 		}
-		for i := 0; i < repeat; i++ {
-			err = v.Page.Keyboard.Type(k)
-			if err != nil {
-				return fmt.Errorf("failed to type key %c: %w", k, err)
-			}
+		for range repeat {
+			v.term.SendKey(k)
 			time.Sleep(typingSpeed)
 		}
 
@@ -105,7 +102,8 @@ func ExecuteKey(k input.Key) CommandFunc {
 	}
 }
 
-// ExecuteScroll returns a command function that scrolls xterm's viewport.
+// ExecuteScroll returns a command function that scrolls the terminal
+// viewport through the scrollback.
 //
 // The direction argument is expected to be:
 //
@@ -115,9 +113,6 @@ func ExecuteKey(k input.Key) CommandFunc {
 // Each command repeat applies one viewport row movement with the same timing
 // semantics as other repeatable key-like commands (Options is the per-step
 // delay, Args is repeat count).
-//
-// A caller that wires an unexpected direction (for example 10) will still call
-// xterm's scroll API with that value and produce larger jumps per step.
 func ExecuteScroll(direction int) CommandFunc {
 	return func(c parser.Command, v *VHS) error {
 		typingSpeed, err := time.ParseDuration(c.Options)
@@ -129,13 +124,8 @@ func ExecuteScroll(direction int) CommandFunc {
 			repeat = 1
 		}
 
-		for i := 0; i < repeat; i++ {
-			// ScrollUp/ScrollDown are viewport operations implemented directly via
-			// xterm's scroll API.
-			_, err = v.Page.Eval(fmt.Sprintf("() => term.scrollLines(%d)", direction))
-			if err != nil {
-				return fmt.Errorf("failed to scroll viewport: %w", err)
-			}
+		for range repeat {
+			v.term.Scroll(direction)
 			time.Sleep(typingSpeed)
 		}
 
@@ -174,22 +164,12 @@ func ExecuteWait(c parser.Command, v *VHS) error {
 		var last string
 		switch scope {
 		case "Line":
-			line, err := v.CurrentLine()
-			if err != nil {
-				return fmt.Errorf("failed to get current line: %w", err)
-			}
-			last = line
-
-			if rx.MatchString(line) {
+			last = v.CurrentLine()
+			if rx.MatchString(last) {
 				return nil
 			}
 		case "Screen":
-			lines, err := v.Buffer()
-			if err != nil {
-				return fmt.Errorf("failed to get buffer: %w", err)
-			}
-			last = strings.Join(lines, "\n")
-
+			last = strings.Join(v.Buffer(), "\n")
 			if rx.MatchString(last) {
 				return nil
 			}
@@ -211,134 +191,40 @@ func ExecuteWait(c parser.Command, v *VHS) error {
 // ExecuteCtrl is a CommandFunc that presses the argument keys and/or modifiers
 // with the ctrl key held down on the running instance of vhs.
 func ExecuteCtrl(c parser.Command, v *VHS) error {
-	// Create key combination by holding ControlLeft
-	action := v.Page.KeyActions().Press(input.ControlLeft)
-	keys := strings.Split(c.Args, " ")
-
-	for i, key := range keys {
-		var inputKey *input.Key
-
-		switch key {
-		case "Shift":
-			inputKey = &input.ShiftLeft
-		case "Alt":
-			inputKey = &input.AltLeft
-		case "Enter":
-			inputKey = &input.Enter
-		case "Space":
-			inputKey = &input.Space
-		case "Backspace":
-			inputKey = &input.Backspace
-		case "Left":
-			inputKey = &input.ArrowLeft
-		case "Right":
-			inputKey = &input.ArrowRight
-		case "Up":
-			inputKey = &input.ArrowUp
-		case "Down":
-			inputKey = &input.ArrowDown
-		default:
-			r := rune(key[0])
-			if k, ok := keymap[r]; ok {
-				inputKey = &k
-			}
-		}
-
-		// Press or hold key in case it's valid
-		if inputKey != nil {
-			if i != len(keys)-1 {
-				action.Press(*inputKey)
-			} else {
-				// Other keys will remain pressed until the combination reaches the end
-				action.Type(*inputKey)
-			}
-		}
+	if k, ok := ctrlKey(c.Args); ok {
+		v.term.SendKey(k)
 	}
-
-	err := action.Do()
-	if err != nil {
-		return fmt.Errorf("failed to type key %s: %w", c.Args, err)
-	}
-
 	return nil
 }
 
 // ExecuteAlt is a CommandFunc that presses the argument key with the alt key
 // held down on the running instance of vhs.
 func ExecuteAlt(c parser.Command, v *VHS) error {
-	err := v.Page.Keyboard.Press(input.AltLeft)
-	if err != nil {
-		return fmt.Errorf("failed to press Alt key: %w", err)
-	}
-	if k, ok := token.Keywords[c.Args]; ok { //nolint:nestif
+	sendModified(v, c.Args, uv.ModAlt)
+	return nil
+}
+
+// sendModified types the argument of an Alt or Shift command with the
+// modifier held down.
+func sendModified(v *VHS, args string, mod uv.KeyMod) {
+	if k, ok := token.Keywords[args]; ok {
 		switch k {
 		case token.ENTER:
-			err = v.Page.Keyboard.Type(input.Enter)
-			if err != nil {
-				return fmt.Errorf("failed to type Enter key: %w", err)
-			}
+			v.term.SendKey(uv.KeyPressEvent{Code: keyEnter.Code, Mod: mod})
 		case token.TAB:
-			err := v.Page.Keyboard.Type(input.Tab)
-			if err != nil {
-				return fmt.Errorf("failed to type Tab key: %w", err)
-			}
+			v.term.SendKey(uv.KeyPressEvent{Code: keyTab.Code, Mod: mod})
 		}
-	} else {
-		for _, r := range c.Args {
-			if k, ok := keymap[r]; ok {
-				err = v.Page.Keyboard.Type(k)
-				if err != nil {
-					return fmt.Errorf("failed to type key %c: %w", r, err)
-				}
-			}
-		}
+		return
 	}
-
-	err = v.Page.Keyboard.Release(input.AltLeft)
-	if err != nil {
-		return fmt.Errorf("failed to release Alt key: %w", err)
+	for _, r := range args {
+		v.term.SendKey(runeKey(r, mod))
 	}
-
-	return nil
 }
 
 // ExecuteShift is a CommandFunc that presses the argument key with the shift
 // key held down on the running instance of vhs.
 func ExecuteShift(c parser.Command, v *VHS) error {
-	err := v.Page.Keyboard.Press(input.ShiftLeft)
-	if err != nil {
-		return fmt.Errorf("failed to press Shift key: %w", err)
-	}
-
-	if k, ok := token.Keywords[c.Args]; ok { //nolint:nestif
-		switch k {
-		case token.ENTER:
-			err = v.Page.Keyboard.Type(input.Enter)
-			if err != nil {
-				return fmt.Errorf("failed to type Enter key: %w", err)
-			}
-		case token.TAB:
-			err = v.Page.Keyboard.Type(input.Tab)
-			if err != nil {
-				return fmt.Errorf("failed to type Tab key: %w", err)
-			}
-		}
-	} else {
-		for _, r := range c.Args {
-			if k, ok := keymap[r]; ok {
-				err = v.Page.Keyboard.Type(k)
-				if err != nil {
-					return fmt.Errorf("failed to type key %c: %w", r, err)
-				}
-			}
-		}
-	}
-
-	err = v.Page.Keyboard.Release(input.ShiftLeft)
-	if err != nil {
-		return fmt.Errorf("failed to release Shift key: %w", err)
-	}
-
+	sendModified(v, c.Args, uv.ModShift)
 	return nil
 }
 
@@ -383,24 +269,20 @@ func ExecuteType(c parser.Command, v *VHS) error {
 		}
 	}
 	for _, r := range c.Args {
-		k, ok := keymap[r]
-		if ok {
-			err := v.Page.Keyboard.Type(k)
-			if err != nil {
-				return fmt.Errorf("failed to type key %c: %w", r, err)
-			}
-		} else {
-			err := v.Page.MustElement("textarea").Input(string(r))
-			if err != nil {
-				return fmt.Errorf("failed to input text: %w", err)
-			}
-
-			v.Page.MustWaitIdle()
-		}
+		typeRune(v, r)
 		time.Sleep(typingSpeed)
 	}
 
 	return nil
+}
+
+// typeRune types a single character into the terminal.
+func typeRune(v *VHS, r rune) {
+	if k, ok := runeKeys[r]; ok {
+		v.term.SendKey(k)
+		return
+	}
+	v.term.SendText(string(r))
 }
 
 // ExecuteOutput applies the output on the vhs videos.
@@ -438,19 +320,7 @@ func ExecutePaste(_ parser.Command, v *VHS) error {
 		return fmt.Errorf("failed to read clipboard: %w", err)
 	}
 	for _, r := range clip {
-		k, ok := keymap[r]
-		if ok {
-			err = v.Page.Keyboard.Type(k)
-			if err != nil {
-				return fmt.Errorf("failed to type key %c: %w", r, err)
-			}
-		} else {
-			err = v.Page.MustElement("textarea").Input(string(r))
-			if err != nil {
-				return fmt.Errorf("failed to input text: %w", err)
-			}
-			v.Page.MustWaitIdle()
-		}
+		typeRune(v, r)
 	}
 
 	return nil
@@ -499,31 +369,12 @@ func ExecuteSetFontSize(c parser.Command, v *VHS) error {
 		return fmt.Errorf("failed to parse font size: %w", err)
 	}
 	v.Options.FontSize = fontSize
-	_, err = v.Page.Eval(fmt.Sprintf("() => term.options.fontSize = %d", fontSize))
-	if err != nil {
-		return fmt.Errorf("failed to set font size: %w", err)
-	}
-
-	// When changing the font size only the canvas dimensions change which are
-	// scaled back during the render to fit the aspect ration and dimensions.
-	//
-	// We need to call term.fit to ensure that everything is resized properly.
-	_, err = v.Page.Eval("term.fit")
-	if err != nil {
-		return fmt.Errorf("failed to fit terminal: %w", err)
-	}
-
 	return nil
 }
 
 // ExecuteSetFontFamily applies the font family on the vhs.
 func ExecuteSetFontFamily(c parser.Command, v *VHS) error {
 	v.Options.FontFamily = c.Args
-	_, err := v.Page.Eval(fmt.Sprintf("() => term.options.fontFamily = '%s'", withSymbolsFallback(c.Args)))
-	if err != nil {
-		return fmt.Errorf("failed to set font family: %w", err)
-	}
-
 	return nil
 }
 
@@ -618,11 +469,6 @@ func ExecuteSetLetterSpacing(c parser.Command, v *VHS) error {
 	}
 
 	v.Options.LetterSpacing = letterSpacing
-	_, err = v.Page.Eval(fmt.Sprintf("() => term.options.letterSpacing = %f", letterSpacing))
-	if err != nil {
-		return fmt.Errorf("failed to set letter spacing: %w", err)
-	}
-
 	return nil
 }
 
@@ -634,11 +480,6 @@ func ExecuteSetLineHeight(c parser.Command, v *VHS) error {
 	}
 
 	v.Options.LineHeight = lineHeight
-	_, err = v.Page.Eval(fmt.Sprintf("() => term.options.lineHeight = %f", lineHeight))
-	if err != nil {
-		return fmt.Errorf("failed to set line height: %w", err)
-	}
-
 	return nil
 }
 
@@ -648,16 +489,6 @@ func ExecuteSetTheme(c parser.Command, v *VHS) error {
 	v.Options.Theme, err = getTheme(c.Args)
 	if err != nil {
 		return err
-	}
-
-	bts, err := json.Marshal(v.Options.Theme)
-	if err != nil {
-		return fmt.Errorf("failed to marshal theme: %w", err)
-	}
-
-	_, err = v.Page.Eval(fmt.Sprintf("() => term.options.theme = %s", string(bts)))
-	if err != nil {
-		return fmt.Errorf("failed to set theme: %w", err)
 	}
 
 	v.Options.Video.Style.BackgroundColor = v.Options.Theme.Background

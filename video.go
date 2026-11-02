@@ -1,6 +1,5 @@
 // Package vhs video.go spawns the ffmpeg process to convert the frames,
-// collected by go-rod's  screenshots into the input folder, to a GIF, WebM,
-// MP4.
+// rendered from the terminal into the input folder, to a GIF, WebM, MP4.
 //
 // MakeGIF takes several options to modify the behaviour of the ffmpeg process,
 // which can be configured through the Set command.

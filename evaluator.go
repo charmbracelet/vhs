@@ -10,7 +10,6 @@ import (
 	"github.com/charmbracelet/vhs/lexer"
 	"github.com/charmbracelet/vhs/parser"
 	"github.com/charmbracelet/vhs/token"
-	"github.com/go-rod/rod"
 )
 
 // EvaluatorOption is a function that can be used to modify the VHS instance.
@@ -43,14 +42,6 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 		return []error{err}
 	}
 	defer func() { _ = v.close() }()
-
-	// Let's wait until we can access the window.term variable.
-	//
-	// This is necessary because some SET commands modify the terminal.
-	err := v.Page.Wait(rod.Eval("() => window.term != undefined"))
-	if err != nil {
-		return []error{err}
-	}
 
 	var offset int
 	for i, cmd := range cmds {
@@ -129,8 +120,11 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 	teardown := func() {
 		// Stop recording frames.
 		cancel()
-		// Read from channel to ensure recorder is done.
-		<-ch
+		// Drain the channel until it is closed to ensure the recorder is
+		// done: it can still be sending errors.
+		for err := range ch {
+			log.Print(err.Error())
+		}
 	}
 
 	// Log errors from the recording process.
@@ -147,7 +141,7 @@ func Evaluate(ctx context.Context, tape string, out io.Writer, opts ...Evaluator
 		}
 
 		// When changing the FontFamily, FontSize, LineHeight, Padding
-		// The xterm.js canvas changes dimensions and causes FFMPEG to not work
+		// The frame dimensions change and cause FFMPEG to not work
 		// correctly (specifically) with palettegen.
 		// It will be possible to change settings on the fly in the future, but
 		// it is currently not as it does not result in a proper render of the
