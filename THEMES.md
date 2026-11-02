@@ -340,6 +340,7 @@
 * `wilmersdorf`
 * `Wombat`
 * `Wryan`
+* `ZenBlue`
 * `zenbones`
 * `zenbones_dark`
 * `zenbones_light`
