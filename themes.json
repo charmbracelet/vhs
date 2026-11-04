@@ -10685,5 +10685,37 @@
       "isDark": true,
       "credits": null
     }
+  },
+  {
+    "name": "ZenBlue",
+    "black": "#000520",
+    "red": "#d95ca8",
+    "green": "#5dcd97",
+    "yellow": "#ffcb6b",
+    "blue": "#007ce2",
+    "magenta": "#1e4872",
+    "cyan": "#2ec0ff",
+    "white": "#bbbbbb",
+    "brightBlack": "#0e3672",
+    "brightRed": "#ff96e5",
+    "brightGreen": "#7cf2b4",
+    "brightYellow": "#ffe4c2",
+    "brightBlue": "#229bff",
+    "brightMagenta": "#6289bd",
+    "brightCyan": "#00eeff",
+    "brightWhite": "#ffffff",
+    "background": "#000520",
+    "foreground": "#ffffff",
+    "cursor": "#ffe4c2",
+    "selection": "#0e3672",
+    "meta": {
+      "isDark": true,
+      "credits": [
+        {
+          "name": "Y4M06",
+          "link": "https://github.com/Y4M06"
+        }
+      ]
+    }
   }
 ]
