@@ -22,9 +22,9 @@ func startTestShell(t *testing.T, cols, rows int) *Terminal {
 
 func TestTerminalShell(t *testing.T) {
 	term := startTestShell(t, 40, 10)
-	term.SendText("echo hello\r")
-	waitForLine(t, term, "hello")
-	waitForLine(t, term, ">")
+	term.SendText("echo he\"\"llo\r")
+	waitForText(t, term, "hello")
+	waitForText(t, term, "> ")
 	if got := term.CurrentLine(); got != ">" {
 		t.Fatalf("expected the prompt on the current line, got %q", got)
 	}
@@ -36,7 +36,7 @@ func TestTerminalResize(t *testing.T) {
 		t.Fatal(err)
 	}
 	term.SendText("stty size\r")
-	waitForLine(t, term, "12 50")
+	waitForText(t, term, "12 50")
 	if cols, rows := term.Size(); cols != 50 || rows != 12 {
 		t.Fatalf("expected 50x12, got %dx%d", cols, rows)
 	}
@@ -48,14 +48,17 @@ func TestTerminalCtrlC(t *testing.T) {
 	term := startTestShell(t, 40, 10)
 	// Wait until the shell has run the command, so Ctrl+C reaches sleep and
 	// not a shell that is still starting up on a slow machine.
-	term.SendText("echo started; sleep 10\r")
-	waitForLine(t, term, "started")
+	term.SendText("echo st\"\"arted; sleep 10\r")
+	waitForText(t, term, "started")
 	time.Sleep(100 * time.Millisecond)
 	k, _ := ctrlKey("c")
 	term.SendKey(k)
-	term.SendText("echo done\r")
+	// The terminal echoes input as it is typed, so the output can follow a
+	// prompt on the same line. The marker is split so the echo of the command
+	// does not match it.
+	term.SendText("echo do\"\"ne\r")
 	// Times out before sleep would end on its own.
-	waitForLine(t, term, "done")
+	waitForText(t, term, "done")
 }
 
 func TestTerminalKeysFollowModes(t *testing.T) {
@@ -65,7 +68,7 @@ func TestTerminalKeysFollowModes(t *testing.T) {
 	time.Sleep(200 * time.Millisecond)
 	term.SendKey(uv.KeyPressEvent{Code: keyLeft.Code, Mod: uv.ModCtrl})
 	term.SendKey(keyEnter)
-	waitForLine(t, term, "^[[1;5D")
+	waitForText(t, term, "^[[1;5D")
 }
 
 func TestTerminalCloseTwice(t *testing.T) {

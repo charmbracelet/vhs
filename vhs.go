@@ -33,6 +33,7 @@ type VHS struct {
 	close          func() error
 	widthExplicit  bool
 	heightExplicit bool
+	outputFile     *os.File
 }
 
 // Options is the set of options for the setup.

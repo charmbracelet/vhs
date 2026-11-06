@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"image"
 	"image/color"
-	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -280,8 +279,8 @@ func isTransparent(img *image.RGBA) bool {
 
 func BenchmarkFrame(b *testing.B) {
 	term, r := newShellTerminal(b)
-	term.SendText("ls -la /usr/bin | head -15; echo DONE\r")
-	waitForLine(b, term, "DONE")
+	term.SendText("ls -la /usr/bin | head -15; echo DO\"\"NE\r")
+	waitForText(b, term, "DONE")
 	b.ReportAllocs()
 	var i int64
 	for b.Loop() {
@@ -295,8 +294,8 @@ func BenchmarkFrame(b *testing.B) {
 
 func BenchmarkEncode(b *testing.B) {
 	term, r := newShellTerminal(b)
-	term.SendText("ls -la /usr/bin | head -15; echo DONE\r")
-	waitForLine(b, term, "DONE")
+	term.SendText("ls -la /usr/bin | head -15; echo DO\"\"NE\r")
+	waitForText(b, term, "DONE")
 	text, _ := r.Frame(term, time.Now())
 	b.ReportAllocs()
 	for b.Loop() {
@@ -322,12 +321,12 @@ func newShellTerminal(tb testing.TB) (*Terminal, *Renderer) {
 	return term, r
 }
 
-// waitForLine waits until a line of the screen is want.
-func waitForLine(tb testing.TB, term *Terminal, want string) {
+// waitForText waits until the text is anywhere on the screen.
+func waitForText(tb testing.TB, term *Terminal, want string) {
 	tb.Helper()
 	deadline := time.Now().Add(5 * time.Second)
 	for time.Now().Before(deadline) {
-		if slices.Contains(term.Lines(), want) {
+		if strings.Contains(strings.Join(term.Lines(), "\n"), want) {
 			return
 		}
 		time.Sleep(10 * time.Millisecond)
