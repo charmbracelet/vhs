@@ -51,6 +51,31 @@ type fontFace struct {
 	// of outlines.
 	color *colorGlyphs
 	buf   sfnt.Buffer
+
+	// file and index say where the font is, to shape emoji sequences with it.
+	file  io.ReaderAt
+	index int
+	// shaper is made when the first sequence is shaped.
+	shaper       *clusterShaper
+	shaperFailed bool
+}
+
+// sequenceGlyph returns the glyph a color font draws an emoji sequence with
+// (a skin tone, a ZWJ sequence, a flag), or 0 if it has no image for the
+// whole sequence.
+func (f *fontFace) sequenceGlyph(cluster string) sfnt.GlyphIndex {
+	if f.color == nil || f.shaperFailed {
+		return 0
+	}
+	if f.shaper == nil {
+		shaper, err := newClusterShaper(f.file, f.index)
+		if err != nil {
+			f.shaperFailed = true
+			return 0
+		}
+		f.shaper = shaper
+	}
+	return f.shaper.glyph(cluster)
 }
 
 // glyphIndex returns the glyph for r, or 0 if the font has none.
@@ -396,7 +421,7 @@ func (fs *fontSet) open(loc fontscan.Location) *fontFace {
 	if err != nil {
 		color = nil
 	}
-	return &fontFace{font: ft, face: face, color: color}
+	return &fontFace{font: ft, face: face, color: color, file: file, index: int(loc.Index)}
 }
 
 // Close closes the font files.

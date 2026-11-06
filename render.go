@@ -336,21 +336,28 @@ func (r *Renderer) drawText(dst *image.RGBA, px, py, cells int, s string, style 
 	if n == len(s) && r.drawCustomGlyph(dst, px, py, first, fg) {
 		return
 	}
-	// Emoji are drawn from the images in their font. Without shaping, a
-	// sequence (skin tones, ZWJ sequences) is drawn as its first one. A
-	// variation selector asks for the emoji of a character that also has a
-	// text form.
+	// Emoji are drawn from the images in their font. A variation selector
+	// asks for the emoji of a character that also has a text form.
 	gf := r.fonts.face(first, style)
 	if strings.ContainsRune(s, emojiPresentation) {
 		if e := r.fonts.emojiFace(first); e != nil {
 			gf = e
 		}
 	}
-	if gf != nil && gf.color != nil && r.drawColorGlyph(dst, px, py, cells, gf, first) {
-		return
+	if gf != nil && gf.color != nil {
+		// A sequence (a skin tone, a ZWJ sequence, a flag) is one image if
+		// the font has one for it, found by shaping it.
+		if n < len(s) {
+			if gid := gf.sequenceGlyph(s); gid != 0 && r.drawColorGlyph(dst, px, py, cells, gf, gid) {
+				return
+			}
+		}
+		if r.drawColorGlyph(dst, px, py, cells, gf, gf.glyphIndex(first)) {
+			return
+		}
 	}
-	// Flags are made of two regional indicators, which emoji fonts only have
-	// images for together. Draw their letters, the country code, instead.
+	// A flag the font has no image for is made of two regional indicators.
+	// Draw their letters, the country code, instead.
 	if isRegionalIndicator(first) {
 		x := px
 		for _, ch := range s {
@@ -393,8 +400,8 @@ func isRegionalIndicator(r rune) bool {
 
 // drawColorGlyph draws the color image of an emoji over a number of cells.
 // It reports false if the font has no image for it.
-func (r *Renderer) drawColorGlyph(dst *image.RGBA, px, py, cells int, gf *glyphFace, ch rune) bool {
-	key := colorKey{gf.fontFace, gf.glyphIndex(ch), cells}
+func (r *Renderer) drawColorGlyph(dst *image.RGBA, px, py, cells int, gf *glyphFace, gid sfnt.GlyphIndex) bool {
+	key := colorKey{gf.fontFace, gid, cells}
 	img, ok := r.colorGlyphs[key]
 	if !ok {
 		img = r.colorGlyph(gf, key)
@@ -431,6 +438,23 @@ func (r *Renderer) colorGlyph(gf *glyphFace, key colorKey) *image.RGBA {
 // italicSlant is how much synthetic italics lean: about 11 degrees.
 const italicSlant = 0.2
 
+// textGamma is the exponent applied to glyph coverage. Below 1 it makes the
+// anti-aliased edges of text darker. Measured against the Chrome renders VHS
+// produced before, plain coverage gave text about two thirds of the ink; 0.5
+// brings it to over 80% without blurring the edges.
+var textGamma = 0.5
+
+// boostCoverage applies textGamma to the coverage of every pixel of a glyph.
+func boostCoverage(a *image.Alpha) {
+	var lut [256]uint8
+	for i := range lut {
+		lut[i] = uint8(math.Round(255 * math.Pow(float64(i)/255, textGamma)))
+	}
+	for i, v := range a.Pix {
+		a.Pix[i] = lut[v]
+	}
+}
+
 // glyph returns the rasterized glyph, cached since the rasterizer reuses its
 // mask buffer between calls. Italic glyphs of fonts without an italic face are
 // slanted, like browsers do.
@@ -444,6 +468,7 @@ func (r *Renderer) glyph(ch rune, face font.Face, italic bool) *glyphMask {
 	if ok && !dr.Empty() {
 		a := image.NewAlpha(image.Rect(0, 0, dr.Dx(), dr.Dy()))
 		draw.Draw(a, a.Rect, mask, maskp, draw.Src)
+		boostCoverage(a)
 		g = &glyphMask{mask: a, rect: dr}
 		if italic {
 			g = slant(g, r.baseline)

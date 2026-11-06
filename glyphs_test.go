@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"image"
 	"os"
 	"os/exec"
@@ -210,5 +211,158 @@ func TestCustomGlyphs(t *testing.T) {
 	}
 	if isCustomGlyph('a') || isCustomGlyph('日') {
 		t.Error("expected text not to be a custom glyph")
+	}
+}
+
+// cellsDiffer reports whether two renders differ within the first n cells.
+func cellsDiffer(a, b *image.RGBA, r *Renderer, n int) bool {
+	w, h := r.CellSize()
+	for y := range h {
+		for x := range n * w {
+			if a.RGBAAt(x, y) != b.RGBAAt(x, y) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+// cellsBlank reports whether the cells from col on are the background.
+func cellsBlank(img *image.RGBA, r *Renderer, col int) bool {
+	w, h := r.CellSize()
+	bg := img.RGBAAt(img.Rect.Max.X-1, img.Rect.Max.Y-1)
+	for y := range h {
+		for x := col * w; x < 8*w; x++ {
+			if img.RGBAAt(x, y) != bg {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+func TestEmojiSequences(t *testing.T) {
+	emojiFonts(t)
+	draw := func(s string) (*image.RGBA, *Renderer) {
+		term, r := newScreen(t, 8, 1)
+		if r.fonts.emojiFace('👋') == nil {
+			t.Skip("no color emoji font installed")
+		}
+		write(t, term, s)
+		text, _ := render(t, term, r, term.LastInput())
+		return text, r
+	}
+
+	hand, r := draw("👋")
+	toned, _ := draw("👋🏽")
+	if !cellsDiffer(hand, toned, r, 2) {
+		t.Error("expected a skin tone to change the emoji")
+	}
+	if !cellsBlank(toned, r, 2) {
+		t.Error("expected a skin tone to be part of the emoji, not drawn next to it")
+	}
+
+	for name, s := range map[string]string{
+		"family":  "👨\u200d👩\u200d👧",
+		"flag":    "🇺🇸",
+		"couple":  "🧑🏽\u200d💻",
+		"heart":   "❤\ufe0f",
+		"rainbow": "🏳\ufe0f\u200d🌈",
+	} {
+		img, r := draw(s)
+		if isTransparent(img) {
+			t.Errorf("%s: expected an image", name)
+		}
+		if !cellsBlank(img, r, 2) {
+			t.Errorf("%s: expected one emoji in two cells, found more drawn after them", name)
+		}
+	}
+
+	// A sequence is a different image than its first emoji.
+	man, r := draw("👨")
+	family, _ := draw("👨\u200d👩\u200d👧")
+	if !cellsDiffer(man, family, r, 2) {
+		t.Error("expected a family to look different from one person")
+	}
+	// Flags are not drawn as the two letters of their country.
+	flag, r := draw("🇺🇸")
+	letters, _ := draw("US")
+	if !cellsDiffer(flag, letters, r, 2) {
+		t.Error("expected a flag, not letters")
+	}
+}
+
+func TestClusterShaper(t *testing.T) {
+	for _, path := range emojiFonts(t) {
+		t.Run(filepath.Base(path), func(t *testing.T) {
+			f, err := os.Open(path)
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer f.Close()
+			s, err := newClusterShaper(f, 0)
+			if err != nil {
+				t.Fatal(err)
+			}
+			base := s.glyph("👋")
+			if base == 0 {
+				t.Fatal("expected a glyph for a single emoji")
+			}
+			seen := map[string]bool{}
+			for _, seq := range []string{"👋🏽", "👨\u200d👩\u200d👧", "🇺🇸", "🇯🇵", "🧑🏽\u200d💻"} {
+				g := s.glyph(seq)
+				if g == 0 || g == base {
+					t.Errorf("%q: expected its own glyph, got %d (single emoji is %d)", seq, g, base)
+				}
+				if seen[fmt.Sprint(g)] {
+					t.Errorf("%q: expected a glyph of its own, got a repeat", seq)
+				}
+				seen[fmt.Sprint(g)] = true
+			}
+			// Text with no emoji sequence has more than one glyph.
+			if g := s.glyph("ab"); g != 0 {
+				t.Errorf("expected no single glyph for two letters, got %d", g)
+			}
+			// The selector is ignored when the font keeps it as a glyph.
+			if g := s.glyph("❤\ufe0f"); g == 0 {
+				t.Error("expected a glyph for a heart with the emoji selector")
+			}
+		})
+	}
+}
+
+func TestSlimFontKeepsGlyphNumbers(t *testing.T) {
+	for _, path := range emojiFonts(t) {
+		t.Run(filepath.Base(path), func(t *testing.T) {
+			f, err := os.Open(path)
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer f.Close()
+			data, err := slimFont(f, 0)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(data) > 8<<20 {
+				t.Fatalf("expected a font without images, got %d bytes", len(data))
+			}
+			orig, err := opentype.ParseCollectionReaderAt(f)
+			if err != nil {
+				t.Fatal(err)
+			}
+			ft, _ := orig.Font(0)
+			shaper, err := newClusterShaper(f, 0)
+			if err != nil {
+				t.Fatal(err)
+			}
+			var buf sfnt.Buffer
+			for _, r := range "😀👍a" {
+				want, _ := ft.GlyphIndex(&buf, r)
+				got, _ := shaper.face.NominalGlyph(r)
+				if sfnt.GlyphIndex(got) != want {
+					t.Errorf("%q: glyph %d in the font, %d in the slim copy", r, want, got)
+				}
+			}
+		})
 	}
 }
