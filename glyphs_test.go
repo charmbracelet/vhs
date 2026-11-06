@@ -110,7 +110,11 @@ func TestFontFallbacks(t *testing.T) {
 	if f := fs.face('日', styleRegular); f == nil {
 		t.Skip("no CJK font installed")
 	}
-	if f := fs.face('😀', styleRegular); f != nil && f.color == nil {
+	// Only checked where a color emoji font is installed: CI runners may have
+	// none, and then emoji come from a monochrome font.
+	if fs.emojiFace('😀') == nil {
+		t.Log("no color emoji font installed; skipping the emoji check")
+	} else if f := fs.face('😀', styleRegular); f == nil || f.color == nil {
 		t.Error("expected emoji to come from a color font")
 	}
 	// Private use characters are only drawn from listed fonts, since they

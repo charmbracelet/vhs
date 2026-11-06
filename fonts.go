@@ -306,7 +306,17 @@ func (fs *fontSet) resolve(r rune, style fontStyle) *glyphFace {
 	return nil
 }
 
+// emojiStart is where the Unicode blocks of emoji start.
+const emojiStart = 0x1f000
+
 func (fs *fontSet) fallbackFace(r rune) *glyphFace {
+	// Emoji are drawn in color when any installed font has them, even when a
+	// monochrome symbol font comes first in the search.
+	if r >= emojiStart {
+		if f := fs.emojiFace(r); f != nil {
+			return f
+		}
+	}
 	return fs.search(r, func(*fontFace) bool { return true })
 }
 
