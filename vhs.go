@@ -1,41 +1,39 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
+	"image"
+	"image/png"
 	"log"
 	"math"
-	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"runtime"
+	"runtime/debug"
 	"strings"
 	"sync"
 	"time"
-
-	"github.com/go-rod/rod"
-	"github.com/go-rod/rod/lib/launcher"
-	"github.com/go-rod/rod/lib/proto"
 )
 
 // VHS is the object that controls the setup.
 type VHS struct {
 	Options        *Options
 	Errors         []error
-	Page           *rod.Page
-	browser        *rod.Browser
-	TextCanvas     *rod.Element
-	CursorCanvas   *rod.Element
+	term           *Terminal
+	renderer       *Renderer
 	mutex          *sync.Mutex
 	started        bool
 	recording      bool
-	tty            *exec.Cmd
 	totalFrames    int
 	close          func() error
 	widthExplicit  bool
 	heightExplicit bool
+	outputFile     *os.File
 }
 
 // Options is the set of options for the setup.
@@ -66,22 +64,15 @@ const (
 	defaultCursorBlink   = true
 	defaultWaitTimeout   = 15 * time.Second
 
-	// browserStartTimeout is how long to wait for Chrome to start and expose its
-	// DevTools endpoint before giving up.
-	browserStartTimeout = 30 * time.Second
-
-	// browserPollInterval is how often the DevTools HTTP endpoint is probed
-	// while waiting for the browser to start.
-	browserPollInterval = 100 * time.Millisecond
-
-	// browserCloseTimeout is how long to wait for Chrome to shut down cleanly
-	// before it gets killed.
-	browserCloseTimeout = 5 * time.Second
+	// The terminal starts at this size, and is resized to fit the video
+	// once the settings are known.
+	initialColumns = 80
+	initialRows    = 24
 )
 
 var defaultWaitPattern = regexp.MustCompile(">$")
 
-var defaultFontFamily = withSymbolsFallback(strings.Join([]string{
+var defaultFontFamily = strings.Join([]string{
 	"JetBrains Mono",
 	"DejaVu Sans Mono",
 	"Menlo",
@@ -92,14 +83,11 @@ var defaultFontFamily = withSymbolsFallback(strings.Join([]string{
 	"Consolas",
 	"ui-monospace",
 	"monospace",
-}, fontsSeparator))
+}, fontsSeparator)
 
+// symbolsFallback are fonts used for symbols the chosen fonts lack.
 var symbolsFallback = []string{
 	"Apple Symbols",
-}
-
-func withSymbolsFallback(font string) string {
-	return font + fontsSeparator + strings.Join(symbolsFallback, fontsSeparator)
 }
 
 // DefaultVHSOptions returns the default set of options to use for the setup function.
@@ -125,7 +113,7 @@ func DefaultVHSOptions() Options {
 	}
 }
 
-// New sets up ttyd and go-rod for recording frames.
+// New creates a VHS instance with the default options.
 func New() VHS {
 	mu := &sync.Mutex{}
 	opts := DefaultVHSOptions()
@@ -136,156 +124,7 @@ func New() VHS {
 	}
 }
 
-// startBrowser launches a headless Chrome and returns a connected go-rod
-// browser.
-//
-// It does not rely on the "DevTools listening on ws://..." line that Chrome
-// prints to stderr, as recent Chrome versions do not reliably print it
-// (see https://github.com/charmbracelet/vhs/issues/754), which caused VHS to
-// hang forever waiting for it. Instead, Chrome is started on a reserved
-// port and the DevTools HTTP endpoint is polled until it responds.
-func startBrowser(ctx context.Context) (*rod.Browser, func() error, error) {
-	binPath, _ := launcher.LookPath()
-	if binPath == "" {
-		// No browser found on the system, fall back to downloading one.
-		var err error
-		binPath, err = launcher.NewBrowser().Get()
-		if err != nil {
-			return nil, nil, fmt.Errorf("could not find or download a browser: %w", err)
-		}
-	}
-
-	debugPort := randomPort()
-
-	userDataDir, err := os.MkdirTemp("", "vhs-")
-	if err != nil {
-		return nil, nil, fmt.Errorf("could not create temporary user data directory: %w", err)
-	}
-
-	l := launcher.New().
-		Leakless(false).
-		Bin(binPath).
-		UserDataDir(userDataDir).
-		RemoteDebuggingPort(debugPort).
-		NoSandbox(os.Getenv("VHS_NO_SANDBOX") != "")
-
-	// binPath is resolved by go-rod's launcher (system lookup or its own
-	// download cache) and is not user-controlled input.
-	cmd := exec.CommandContext(ctx, binPath, l.FormatArgs()...) //nolint:gosec
-	if err := cmd.Start(); err != nil {
-		_ = os.RemoveAll(userDataDir)
-		return nil, nil, fmt.Errorf("could not start browser: %w", err)
-	}
-
-	exited := make(chan struct{})
-	go func() {
-		_ = cmd.Wait()
-		close(exited)
-	}()
-
-	if !waitForDevTools(ctx, debugPort, exited, browserStartTimeout) {
-		killBrowser(cmd, userDataDir, exited)
-		if ctx.Err() != nil {
-			return nil, nil, fmt.Errorf("could not start browser: %w", ctx.Err())
-		}
-		select {
-		case <-exited:
-			return nil, nil, errors.New("browser exited unexpectedly before its debugging endpoint was ready")
-		default:
-			return nil, nil, fmt.Errorf("browser debugging endpoint did not become ready within %s", browserStartTimeout)
-		}
-	}
-
-	wsURL, err := launcher.ResolveURL(fmt.Sprintf("127.0.0.1:%d", debugPort))
-	if err != nil {
-		killBrowser(cmd, userDataDir, exited)
-		return nil, nil, fmt.Errorf("could not resolve browser debugging endpoint: %w", err)
-	}
-
-	browser := rod.New().ControlURL(wsURL)
-	if err := browser.Connect(); err != nil {
-		killBrowser(cmd, userDataDir, exited)
-		return nil, nil, fmt.Errorf("could not connect to browser: %w", err)
-	}
-
-	closer := func() error {
-		if err := browser.Close(); err != nil {
-			// The browser could not be closed gracefully (e.g. it is already
-			// gone), make sure the process is terminated.
-			_ = cmd.Process.Kill()
-		}
-		select {
-		case <-exited:
-		case <-time.After(browserCloseTimeout):
-			_ = cmd.Process.Kill()
-		}
-		_ = os.RemoveAll(userDataDir)
-		return nil
-	}
-
-	return browser, closer, nil
-}
-
-// waitForDevTools polls the DevTools HTTP endpoint until it is ready to accept
-// connections. It returns true once the endpoint is ready, and false if the
-// context is canceled, the browser exits first, or the timeout elapses.
-//
-// It is the only reliable way to know the browser is ready, regardless of what
-// the browser prints to stdout or stderr.
-func waitForDevTools(ctx context.Context, port int, exited <-chan struct{}, timeout time.Duration) bool {
-	ticker := time.NewTicker(browserPollInterval)
-	defer ticker.Stop()
-	timeoutCh := time.After(timeout)
-	for {
-		select {
-		case <-ctx.Done():
-			return false
-		case <-exited:
-			return false
-		case <-timeoutCh:
-			return false
-		case <-ticker.C:
-			if probeDevTools(port) == nil {
-				return true
-			}
-		}
-	}
-}
-
-// probeDevTools checks whether the DevTools HTTP endpoint of a browser
-// listening on the given port is ready to accept connections.
-func probeDevTools(port int) error {
-	probeCtx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-	req, err := http.NewRequestWithContext(probeCtx, http.MethodGet, fmt.Sprintf("http://127.0.0.1:%d/json/version", port), nil)
-	if err != nil {
-		return fmt.Errorf("could not probe browser debugging endpoint: %w", err)
-	}
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return fmt.Errorf("could not probe browser debugging endpoint: %w", err)
-	}
-	defer func() { _ = resp.Body.Close() }()
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("unexpected status code from browser debugging endpoint: %d", resp.StatusCode)
-	}
-	return nil
-}
-
-// killBrowser terminates a browser process and removes its user data
-// directory.
-func killBrowser(cmd *exec.Cmd, userDataDir string, exited <-chan struct{}) {
-	if cmd.Process != nil {
-		_ = cmd.Process.Kill()
-	}
-	select {
-	case <-exited:
-	case <-time.After(browserCloseTimeout):
-	}
-	_ = os.RemoveAll(userDataDir)
-}
-
-// Start starts ttyd, browser and everything else needed to create the gif.
+// Start starts the shell in a terminal.
 func (vhs *VHS) Start(ctx context.Context) error {
 	vhs.mutex.Lock()
 	defer vhs.mutex.Unlock()
@@ -294,31 +133,13 @@ func (vhs *VHS) Start(ctx context.Context) error {
 		return fmt.Errorf("vhs is already started")
 	}
 
-	port := randomPort()
-	vhs.tty = buildTtyCmd(ctx, port, vhs.Options.Shell)
-	if err := vhs.tty.Start(); err != nil {
-		return fmt.Errorf("could not start tty: %w", err)
+	term, err := StartTerminal(ctx, vhs.Options.Shell, initialColumns, initialRows)
+	if err != nil {
+		return err
 	}
 
-	browser, closeBrowser, err := startBrowser(ctx)
-	if err != nil {
-		_ = vhs.tty.Process.Kill()
-		return fmt.Errorf("could not start browser: %w", err)
-	}
-	page, err := browser.Page(proto.TargetCreateTarget{URL: fmt.Sprintf("http://localhost:%d", port)})
-	if err != nil {
-		_ = closeBrowser()
-		_ = vhs.tty.Process.Kill()
-		return fmt.Errorf("could not open ttyd: %w", err)
-	}
-
-	vhs.browser = browser
-	vhs.Page = page
-	vhs.close = func() error {
-		_ = closeBrowser()
-		_ = vhs.tty.Process.Kill()
-		return nil
-	}
+	vhs.term = term
+	vhs.close = term.Close
 	vhs.started = true
 	return nil
 }
@@ -328,25 +149,16 @@ func (vhs *VHS) Start(ctx context.Context) error {
 func (vhs *VHS) Setup() error {
 	style := vhs.Options.Video.Style
 
-	// Find xterm.js canvases for the text and cursor layer for recording.
-	// These exist as soon as ttyd opens the terminal, so this doesn't need
-	// to wait for the viewport/font to be set below.
-	vhs.TextCanvas, _ = vhs.Page.Element("canvas.xterm-text-layer")
-	vhs.CursorCanvas, _ = vhs.Page.Element("canvas.xterm-cursor-layer")
-
-	// Apply options to the terminal
-	// By this point the setting commands have been executed, so the `opts` struct is up to date.
-	//
-	// This must happen before the viewport is sized below: it determines the
-	// pixel size of a rendered character cell, which the Rows/Columns case
-	// needs in order to compute the viewport, and FontSize/FontFamily/
-	// LetterSpacing/LineHeight all affect it.
-	vhs.Page.MustEval(fmt.Sprintf("() => { term.options = { fontSize: %d, fontFamily: '%s', letterSpacing: %f, lineHeight: %f, theme: %s, cursorBlink: %t } }",
-		vhs.Options.FontSize, vhs.Options.FontFamily, vhs.Options.LetterSpacing,
-		vhs.Options.LineHeight, vhs.Options.Theme.String(), vhs.Options.CursorBlink))
+	// By this point the setting commands have been executed, so the options
+	// are final.
+	renderer, err := NewRenderer(vhs.Options)
+	if err != nil {
+		return err
+	}
+	vhs.term.SetTheme(vhs.Options.Theme)
 
 	// Account for the padding, margin, and window bar that will be added
-	// during the render to determine the viewport size.
+	// during the render to determine the terminal size.
 	padding := style.Padding
 	margin := 0
 	if style.MarginFill != "" {
@@ -356,138 +168,36 @@ func (vhs *VHS) Setup() error {
 	if style.WindowBar != "" {
 		bar = style.WindowBarSize
 	}
-	if style.Rows > 0 || style.Columns > 0 {
-		if err := vhs.resolveRowsColumns(padding, margin, bar); err != nil {
-			return err
-		}
+
+	cellW, cellH := renderer.CellSize()
+	if style.Columns > 0 {
+		style.Width = roundUpToEven(style.Columns*cellW + double(padding) + double(margin))
+	}
+	if style.Rows > 0 {
+		style.Height = roundUpToEven(style.Rows*cellH + double(padding) + double(margin) + bar)
 	}
 
 	width := style.Width - double(padding) - double(margin)
 	height := style.Height - double(padding) - double(margin) - bar
-	vhs.Page = vhs.Page.MustSetViewport(width, height, 0, false)
+	cols, rows := 0, 0
+	if width > 0 && height > 0 {
+		cols, rows = width/cellW, height/cellH
+	}
+	if cols < 1 || rows < 1 {
+		return fmt.Errorf(
+			"could not fit the terminal in %dx%d pixels: each cell is %dx%d pixels",
+			width, height, cellW, cellH,
+		)
+	}
 
-	// Fit the terminal into the window
-	vhs.Page.MustEval("term.fit")
+	renderer.SetSize(width, height, cols, rows)
+	if err := vhs.term.Resize(cols, rows); err != nil {
+		return err
+	}
+	vhs.renderer = renderer
 
 	_ = os.RemoveAll(vhs.Options.Video.Input)
 	_ = os.MkdirAll(vhs.Options.Video.Input, 0o750)
-
-	return nil
-}
-
-const (
-	dimensionProbeAttempts      = 6
-	dimensionCorrectionAttempts = 5
-)
-
-// resolveRowsColumns derives the pixel Width/Height needed to render the
-// requested number of terminal Rows/Columns, overwriting
-// vhs.Options.Video.Style.Width/Height in place. The normal viewport-sizing
-// code that follows this call then behaves exactly as it does for a plain
-// Set Height/Set Width, since by the time it runs, style.Width/style.Height
-// already reflect the resolved grid size.
-//
-// VHS has no native pty (it drives a headless-browser xterm.js instance via
-// ttyd), so there is no Go-side font metrics available. Instead, this probes
-// the live terminal at a candidate pixel size, reads back the resulting
-// term.cols/term.rows (the same public API xterm's own fit addon exposes),
-// and uses that ratio to estimate cell size, then iterates to correct for
-// the integer floor-rounding xterm's fit addon applies internally.
-//
-// Both loops are bounded, and an error is returned rather than settling for a
-// grid that doesn't match what was asked for: giving up quietly would render
-// the tape at the wrong size, or at 0x0 if the terminal was never measured.
-func (vhs *VHS) resolveRowsColumns(padding, margin, bar int) error {
-	style := vhs.Options.Video.Style
-
-	measure := func(w, h int) (cols, rows int) {
-		vhs.Page = vhs.Page.MustSetViewport(w, h, 0, false)
-		vhs.Page.MustEval("term.fit")
-		dims := vhs.Page.MustEval("() => ({ cols: term.cols, rows: term.rows })")
-		return dims.Get("cols").Int(), dims.Get("rows").Int()
-	}
-
-	probeWidth := style.Width - double(padding) - double(margin)
-	probeHeight := style.Height - double(padding) - double(margin) - bar
-
-	var cellWidth, cellHeight float64
-	var measured bool
-	var lastCols, lastRows int
-	for range dimensionProbeAttempts {
-		cols, rows := measure(probeWidth, probeHeight)
-		lastCols, lastRows = cols, rows
-
-		tooSmall := cols <= 0 || rows <= 0 ||
-			(style.Columns > 0 && cols < style.Columns) ||
-			(style.Rows > 0 && rows < style.Rows)
-		if !tooSmall {
-			cellWidth = float64(probeWidth) / float64(cols)
-			cellHeight = float64(probeHeight) / float64(rows)
-			measured = true
-			break
-		}
-		probeWidth = double(probeWidth)
-		probeHeight = double(probeHeight)
-	}
-
-	// Without a successful measurement there is no cell size to scale by, and
-	// continuing would size the viewport to 0x0.
-	if !measured {
-		return fmt.Errorf(
-			"could not fit %s: terminal measured %d columns x %d rows at %dx%d pixels after %d attempts",
-			describeGrid(style.Columns, style.Rows),
-			lastCols, lastRows, probeWidth, probeHeight, dimensionProbeAttempts,
-		)
-	}
-
-	contentWidth := probeWidth
-	contentHeight := probeHeight
-	if style.Columns > 0 {
-		contentWidth = int(math.Round(cellWidth * float64(style.Columns)))
-	}
-	if style.Rows > 0 {
-		contentHeight = int(math.Round(cellHeight * float64(style.Rows)))
-	}
-
-	// xterm's fit addon floors container-size / cell-size, so the estimate
-	// above can be off by a cell. Nudge the content size until the measured
-	// cols/rows exactly match what was requested.
-	var corrected bool
-	for range dimensionCorrectionAttempts {
-		cols, rows := measure(contentWidth, contentHeight)
-		lastCols, lastRows = cols, rows
-
-		converged := true
-		if style.Columns > 0 && cols != style.Columns {
-			contentWidth += int(math.Round(float64(style.Columns-cols) * cellWidth))
-			converged = false
-		}
-		if style.Rows > 0 && rows != style.Rows {
-			contentHeight += int(math.Round(float64(style.Rows-rows) * cellHeight))
-			converged = false
-		}
-		if converged {
-			corrected = true
-			break
-		}
-	}
-
-	// The grid never settled on the requested size, so recording now would
-	// silently produce a tape with the wrong number of rows/columns.
-	if !corrected {
-		return fmt.Errorf(
-			"could not resolve a viewport for %s: closest match was %d columns x %d rows after %d attempts",
-			describeGrid(style.Columns, style.Rows),
-			lastCols, lastRows, dimensionCorrectionAttempts,
-		)
-	}
-
-	if style.Columns > 0 {
-		style.Width = roundUpToEven(contentWidth + double(padding) + double(margin))
-	}
-	if style.Rows > 0 {
-		style.Height = roundUpToEven(contentHeight + double(padding) + double(margin) + bar)
-	}
 
 	return nil
 }
@@ -502,38 +212,16 @@ func roundUpToEven(n int) int {
 	return n
 }
 
-// describeGrid names the grid size that was requested, mentioning only the
-// dimension(s) the tape actually set.
-func describeGrid(columns, rows int) string {
-	switch {
-	case columns > 0 && rows > 0:
-		return fmt.Sprintf("%d columns x %d rows", columns, rows)
-	case columns > 0:
-		return fmt.Sprintf("%d columns", columns)
-	default:
-		return fmt.Sprintf("%d rows", rows)
-	}
-}
-
 const cleanupWaitTime = 100 * time.Millisecond
 
-// Terminate cleans up a VHS instance and terminates the go-rod browser and ttyd
-// processes.
-//
-//nolint:wrapcheck
+// terminate cleans up a VHS instance and stops the shell.
 func (vhs *VHS) terminate() error {
 	// Give some time for any commands executed (such as `rm`) to finish.
 	//
 	// If a user runs a long running command, they must sleep for the required time
 	// to finish.
 	time.Sleep(cleanupWaitTime)
-
-	// Tear down the processes we started.
-	//
-	// The browser may have already exited, in which case closing it fails and
-	// its process gets killed as a fallback, so errors are ignored here.
-	_ = vhs.browser.Close()
-	return vhs.tty.Process.Kill()
+	return vhs.term.Close()
 }
 
 // Cleanup individual frames.
@@ -554,9 +242,13 @@ func (vhs *VHS) Render(ctx context.Context) error {
 		return err
 	}
 
+	// The frames are on disk: give the memory used to record them back to
+	// the system before ffmpeg needs its own.
+	debug.FreeOSMemory()
+
 	// Generate the video(s) with the frames.
 	var cmds []*exec.Cmd //nolint:prealloc
-	cmds = append(cmds, MakeGIF(ctx, vhs.Options.Video))
+	cmds = append(cmds, MakeGIF(ctx, vhs.Options.Video)...)
 	cmds = append(cmds, MakeMP4(ctx, vhs.Options.Video))
 	cmds = append(cmds, MakeWebM(ctx, vhs.Options.Video))
 	cmds = append(cmds, MakeScreenshots(ctx, vhs.Options.Screenshot)...)
@@ -646,21 +338,85 @@ func (vhs *VHS) ApplyLoopOffset() error {
 	}
 }
 
-const quality = 1.0
+// encodedLayer is a layer of a frame encoded to PNG, shared by the frames in
+// which it looks the same.
+type encodedLayer struct {
+	done chan struct{}
+	png  []byte
+	err  error
+}
 
-// Record begins the goroutine which captures images from the xterm.js canvases.
+// pngBuffers lets the PNG encoder reuse its buffers from frame to frame.
+type pngBuffers struct{ pool sync.Pool }
+
+func (p *pngBuffers) Get() *png.EncoderBuffer {
+	b, _ := p.pool.Get().(*png.EncoderBuffer)
+	return b
+}
+
+func (p *pngBuffers) Put(b *png.EncoderBuffer) { p.pool.Put(b) }
+
+var pngEncoder = png.Encoder{CompressionLevel: png.BestSpeed, BufferPool: &pngBuffers{}}
+
+// writeFrame writes the layers of frame n once they are encoded.
+func writeFrame(dir string, n int, text, cursor *encodedLayer) error {
+	for _, l := range []struct {
+		layer  *encodedLayer
+		format string
+	}{{cursor, cursorFrameFormat}, {text, textFrameFormat}} {
+		<-l.layer.done
+		if l.layer.err != nil {
+			return l.layer.err
+		}
+		if err := os.WriteFile(filepath.Join(dir, fmt.Sprintf(l.format, n)), l.layer.png, 0o600); err != nil {
+			return fmt.Errorf("error writing frame: %w", err)
+		}
+	}
+	return nil
+}
+
+// Record begins the goroutine which renders the terminal into frames.
+//
+// Frames are encoded and written in the background so that slow encoding
+// doesn't skew the frame timing. The text and cursor layers of a frame are
+// only encoded when they change: frames that look the same as the previous
+// one, in either layer, reuse its encoding.
 func (vhs *VHS) Record(ctx context.Context) <-chan error {
 	ch := make(chan error)
 	interval := time.Second / time.Duration(vhs.Options.Video.Framerate)
 
-	//nolint: mnd
 	go func() {
+		var wg sync.WaitGroup
+		// Frames being encoded hold their images: bound how many.
+		encoders := make(chan struct{}, max(2, runtime.NumCPU()/2)) //nolint:mnd
+		encode := func(img *image.RGBA, release func(*image.RGBA)) *encodedLayer {
+			l := &encodedLayer{done: make(chan struct{})}
+			encoders <- struct{}{}
+			wg.Go(func() {
+				defer func() { <-encoders }()
+				defer close(l.done)
+				var b bytes.Buffer
+				if err := pngEncoder.Encode(&b, img); err != nil {
+					l.err = fmt.Errorf("error encoding frame: %w", err)
+				}
+				l.png = b.Bytes()
+				release(img)
+			})
+			return l
+		}
+		var text, cursor *encodedLayer
 		counter := 0
 		start := time.Now()
 		for {
 			select {
 			case <-ctx.Done():
+				wg.Wait()
 				_ = vhs.terminate()
+
+				// Making the video only needs the frames: let go of the
+				// terminal and what drew it while ffmpeg runs.
+				_ = vhs.renderer.Close()
+				vhs.renderer, vhs.term = nil, nil
 
 				// Save total # of frames for offset calculation
 				vhs.totalFrames = counter
@@ -676,34 +432,22 @@ func (vhs *VHS) Record(ctx context.Context) <-chan error {
 				if !vhs.recording {
 					continue
 				}
-				if vhs.Page == nil {
-					continue
-				}
 
-				cursor, cursorErr := vhs.CursorCanvas.CanvasToImage("image/png", quality)
-				text, textErr := vhs.TextCanvas.CanvasToImage("image/png", quality)
-				if textErr != nil || cursorErr != nil {
-					ch <- fmt.Errorf("error: %v, %v", textErr, cursorErr)
-					continue
+				t, c := vhs.renderer.Frame(vhs.term, start)
+				if t != nil {
+					text = encode(t, vhs.renderer.ReleaseText)
+				}
+				if c != nil {
+					cursor = encode(c, vhs.renderer.ReleaseCursor)
 				}
 
 				counter++
-				if err := os.WriteFile(
-					filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(cursorFrameFormat, counter)),
-					cursor,
-					0o600,
-				); err != nil {
-					ch <- fmt.Errorf("error writing cursor frame: %w", err)
-					continue
-				}
-				if err := os.WriteFile(
-					filepath.Join(vhs.Options.Video.Input, fmt.Sprintf(textFrameFormat, counter)),
-					text,
-					0o600,
-				); err != nil {
-					ch <- fmt.Errorf("error writing text frame: %w", err)
-					continue
-				}
+				text, cursor, n := text, cursor, counter
+				wg.Go(func() {
+					if err := writeFrame(vhs.Options.Video.Input, n, text, cursor); err != nil {
+						ch <- err
+					}
+				})
 
 				// Capture current frame and disable frame capturing
 				if vhs.Options.Screenshot.frameCapture {

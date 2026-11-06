@@ -75,7 +75,7 @@ For more examples see the [`examples/`](https://github.com/charmbracelet/vhs/tre
 ## Installation
 
 > [!NOTE]
-> VHS requires [`ttyd`](https://github.com/tsl0922/ttyd) and [`ffmpeg`](https://ffmpeg.org) to be installed and available on your `PATH`.
+> VHS requires [`ffmpeg`](https://ffmpeg.org) to be installed and available on your `PATH`.
 
 Use a package manager:
 
@@ -120,7 +120,6 @@ go install github.com/charmbracelet/vhs@latest
 sudo mkdir -p /etc/apt/keyrings
 curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
 echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | sudo tee /etc/apt/sources.list.d/charm.list
-# Install ttyd from https://github.com/tsl0922/ttyd/releases
 sudo apt update && sudo apt install vhs ffmpeg
 ```
 
@@ -133,7 +132,6 @@ baseurl=https://repo.charm.sh/yum/
 enabled=1
 gpgcheck=1
 gpgkey=https://repo.charm.sh/yum/gpg.key' | sudo tee /etc/yum.repos.d/charm.repo
-# Install ttyd from https://github.com/tsl0922/ttyd/releases
 sudo yum install vhs ffmpeg
 ```
 

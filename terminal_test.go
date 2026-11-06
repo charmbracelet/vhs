@@ -1,0 +1,82 @@
+//go:build !windows
+
+package main
+
+import (
+	"context"
+	"testing"
+	"time"
+
+	uv "github.com/charmbracelet/ultraviolet"
+)
+
+func startTestShell(t *testing.T, cols, rows int) *Terminal {
+	t.Helper()
+	term, err := StartTerminal(context.Background(), Shell{Command: []string{"sh"}, Env: []string{"PS1=> "}}, cols, rows)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = term.Close() })
+	return term
+}
+
+func TestTerminalShell(t *testing.T) {
+	term := startTestShell(t, 40, 10)
+	term.SendText("echo he\"\"llo\r")
+	waitForText(t, term, "hello")
+	waitForText(t, term, "> ")
+	if got := term.CurrentLine(); got != ">" {
+		t.Fatalf("expected the prompt on the current line, got %q", got)
+	}
+}
+
+func TestTerminalResize(t *testing.T) {
+	term := startTestShell(t, 40, 10)
+	if err := term.Resize(50, 12); err != nil {
+		t.Fatal(err)
+	}
+	term.SendText("stty size\r")
+	waitForText(t, term, "12 50")
+	if cols, rows := term.Size(); cols != 50 || rows != 12 {
+		t.Fatalf("expected 50x12, got %dx%d", cols, rows)
+	}
+}
+
+func TestTerminalCtrlC(t *testing.T) {
+	// Ctrl+C only interrupts the foreground program when the shell runs with
+	// the pty as its controlling terminal.
+	term := startTestShell(t, 40, 10)
+	// Wait until the shell has run the command, so Ctrl+C reaches sleep and
+	// not a shell that is still starting up on a slow machine.
+	term.SendText("echo st\"\"arted; sleep 10\r")
+	waitForText(t, term, "started")
+	time.Sleep(100 * time.Millisecond)
+	k, _ := ctrlKey("c")
+	term.SendKey(k)
+	// The terminal echoes input as it is typed, so the output can follow a
+	// prompt on the same line. The marker is split so the echo of the command
+	// does not match it.
+	term.SendText("echo do\"\"ne\r")
+	// Times out before sleep would end on its own.
+	waitForText(t, term, "done")
+}
+
+func TestTerminalKeysFollowModes(t *testing.T) {
+	// cat -v shows the bytes the keys send.
+	term := startTestShell(t, 40, 10)
+	term.SendText("cat -v\r")
+	time.Sleep(200 * time.Millisecond)
+	term.SendKey(uv.KeyPressEvent{Code: keyLeft.Code, Mod: uv.ModCtrl})
+	term.SendKey(keyEnter)
+	waitForText(t, term, "^[[1;5D")
+}
+
+func TestTerminalCloseTwice(t *testing.T) {
+	term := startTestShell(t, 40, 10)
+	if err := term.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if err := term.Close(); err != nil {
+		t.Fatal(err)
+	}
+}

@@ -1,4 +1,3 @@
-FROM tsl0922/ttyd:alpine as ttyd
 FROM alpine:latest as fontcollector
 
 # Install Fonts
@@ -26,9 +25,6 @@ RUN apt-get update
 # Add fonts
 COPY --from=fontcollector /usr/share/fonts/ /usr/share/fonts
 
-# Install latest ttyd
-COPY --from=ttyd /usr/bin/ttyd /usr/bin/ttyd
-
 # Expose port
 EXPOSE 1976
 
@@ -37,7 +33,7 @@ VOLUME /vhs
 WORKDIR /vhs
 
 # Install Dependencies
-RUN apt-get -y install ffmpeg chromium bash
+RUN apt-get -y install ffmpeg bash
 
 # Create user
 RUN useradd -u 1976 -U -s /bin/false vhs
@@ -52,6 +48,5 @@ ENV VHS_GID="1976"
 ENV VHS_UID="1976"
 ENV VHS_KEY_PATH="/vhs/vhs"
 ENV VHS_AUTHORIZED_KEYS_PATH=""
-ENV VHS_NO_SANDBOX="true"
 
 ENTRYPOINT ["/usr/bin/vhs"]

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"sync"
 )
 
 // TestOptions is the set of options for the testing functionality.
@@ -23,33 +22,20 @@ func DefaultTestOptions() TestOptions {
 // Alternatively, `var separator = strings.Repeat("─", 80)`.
 const separator = "────────────────────────────────────────────────────────────────────────────────"
 
-var (
-	once sync.Once
-	file *os.File
-)
-
-// SaveOutput saves the current buffer to the output file.
+// SaveOutput saves the current buffer to the output file. The file is created
+// on the first call of each run, and the later calls append to it.
 func (v *VHS) SaveOutput() error {
-	var err error
-	// Create output file (once)
-	once.Do(func() {
-		err = os.MkdirAll(filepath.Dir(v.Options.Test.Output), 0o750)
+	if v.outputFile == nil {
+		file, err := v.createOutputFile()
 		if err != nil {
-			file, err = os.CreateTemp(os.TempDir(), "vhs-*.txt")
-			return
+			return fmt.Errorf("failed to create output file: %w", err)
 		}
-		file, err = os.Create(v.Options.Test.Output)
-	})
-	if err != nil {
-		return fmt.Errorf("failed to create output file: %w", err)
+		v.outputFile = file
 	}
+	file := v.outputFile
+	var err error
 
-	lines, err := v.Buffer()
-	if err != nil {
-		return fmt.Errorf("failed to get buffer: %w", err)
-	}
-
-	for _, line := range lines {
+	for _, line := range v.Buffer() {
 		_, err = file.WriteString(line + "\n")
 		if err != nil {
 			return fmt.Errorf("failed to write buffer to file: %w", err)
@@ -64,29 +50,28 @@ func (v *VHS) SaveOutput() error {
 	return nil
 }
 
-// Buffer returns the current buffer.
-func (v *VHS) Buffer() ([]string, error) {
-	// Get the current buffer.
-	buf, err := v.Page.Eval("() => Array(term.rows).fill(0).map((e, i) => term.buffer.active.getLine(i).translateToString().trimEnd())")
-	if err != nil {
-		return nil, fmt.Errorf("read buffer: %w", err)
-	}
-
-	arr := buf.Value.Arr()
-	lines := make([]string, 0, len(arr))
-	for _, line := range arr {
-		lines = append(lines, line.Str())
-	}
-
-	return lines, nil
+// Buffer returns the text of the visible terminal rows.
+func (v *VHS) Buffer() []string {
+	return v.term.Lines()
 }
 
-// CurrentLine returns the current line from the buffer.
-func (v *VHS) CurrentLine() (string, error) {
-	buf, err := v.Page.Eval("() => term.buffer.active.getLine(term.buffer.active.cursorY+term.buffer.active.viewportY).translateToString().trimEnd()")
-	if err != nil {
-		return "", fmt.Errorf("read current line from buffer: %w", err)
-	}
+// CurrentLine returns the line the cursor is on.
+func (v *VHS) CurrentLine() string {
+	return v.term.CurrentLine()
+}
 
-	return buf.Value.Str(), nil
+// createOutputFile creates the file the test output is saved to, or a
+// temporary file if its directory can't be created.
+func (v *VHS) createOutputFile() (*os.File, error) {
+	var file *os.File
+	var err error
+	if err = os.MkdirAll(filepath.Dir(v.Options.Test.Output), 0o750); err != nil {
+		file, err = os.CreateTemp(os.TempDir(), "vhs-*.txt")
+	} else {
+		file, err = os.Create(v.Options.Test.Output)
+	}
+	if err != nil {
+		return nil, fmt.Errorf("could not create %s: %w", v.Options.Test.Output, err)
+	}
+	return file, nil
 }

@@ -12,14 +12,12 @@ import (
 	"os/exec"
 	"os/signal"
 	"path/filepath"
-	"regexp"
 	"runtime/debug"
 	"strings"
 	"syscall"
 
 	"github.com/charmbracelet/vhs/lexer"
 	"github.com/charmbracelet/vhs/parser"
-	version "github.com/hashicorp/go-version"
 	"github.com/mattn/go-isatty"
 	"github.com/spf13/cobra"
 )
@@ -32,8 +30,6 @@ var (
 
 	// CommitSHA stores the commit SHA of VHS at the time of packaging through -ldflags.
 	CommitSHA string
-
-	ttydMinVersion = version.Must(version.NewVersion("1.7.2"))
 
 	publishFlag bool
 	outputs     *[]string
@@ -294,41 +290,16 @@ func init() {
 	rootCmd.Version = Version
 }
 
-var versionRegex = regexp.MustCompile(`\d+\.\d+\.\d+`)
-
-// getVersion returns the parsed version of a program.
-func getVersion(ctx context.Context, program string) *version.Version {
-	cmd := exec.CommandContext(ctx, program, "--version")
-	out, err := cmd.Output()
-	if err != nil {
-		return nil
-	}
-	programVersion, _ := version.NewVersion(versionRegex.FindString(string(out)))
-	return programVersion
-}
-
 // ensureDependencies ensures that all dependencies are correctly installed
-// and versioned before continuing.
+// before continuing.
 func ensureDependencies() error {
 	_, ffmpegErr := exec.LookPath("ffmpeg")
 	if ffmpegErr != nil {
 		return fmt.Errorf("ffmpeg is not installed. Install it from: http://ffmpeg.org")
 	}
-	_, ttydErr := exec.LookPath("ttyd")
-	if ttydErr != nil {
-		return fmt.Errorf("ttyd is not installed. Install it from: https://github.com/tsl0922/ttyd")
-	}
 	_, shellErr := exec.LookPath(defaultShell)
 	if shellErr != nil {
 		return fmt.Errorf("%v is not installed", defaultShell)
-	}
-
-	ttydVersion := getVersion(context.Background(), "ttyd")
-	if ttydVersion == nil || ttydVersion.LessThan(ttydMinVersion) {
-		return fmt.Errorf("ttyd version (%s) is out of date, VHS requires %s\n%s",
-			ttydVersion,
-			ttydMinVersion,
-			"Install the latest version from: https://github.com/tsl0922/ttyd")
 	}
 
 	return nil

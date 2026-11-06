@@ -1,6 +1,5 @@
 // Package vhs video.go spawns the ffmpeg process to convert the frames,
-// collected by go-rod's  screenshots into the input folder, to a GIF, WebM,
-// MP4.
+// rendered from the terminal into the input folder, to a GIF, WebM, MP4.
 //
 // MakeGIF takes several options to modify the behaviour of the ffmpeg process,
 // which can be configured through the Set command.
@@ -109,7 +108,39 @@ func ensureDir(output string) {
 
 // buildFFopts assembles an ffmpeg command from some VideoOptions.
 func buildFFopts(opts VideoOptions, targetFile string) []string {
-	var args []string //nolint:prealloc
+	streamBuilder, filterBuilder := videoPipeline(opts)
+
+	// Format-specific options
+	switch filepath.Ext(targetFile) {
+	case gif:
+		palette := streamBuilder.counter
+		streamBuilder.args = append(streamBuilder.args, "-i", paletteFile(opts))
+		filterBuilder = filterBuilder.WithPaletteUse(palette)
+	case webm:
+		streamBuilder = streamBuilder.WithWebm()
+	case mp4:
+		streamBuilder = streamBuilder.WithMP4()
+	}
+
+	args := append(streamBuilder.Build(), filterBuilder.Build()...)
+	return append(args, targetFile)
+}
+
+// buildPaletteOpts assembles the ffmpeg command that makes the GIF palette.
+func buildPaletteOpts(opts VideoOptions) []string {
+	streamBuilder, filterBuilder := videoPipeline(opts)
+	args := append(streamBuilder.Build(), filterBuilder.WithPaletteGen().Build()...)
+	return append(args, "-update", "1", "-frames:v", "1", paletteFile(opts))
+}
+
+// paletteFile is where the GIF palette is made.
+func paletteFile(opts VideoOptions) string {
+	return filepath.Join(opts.Input, "palette.png")
+}
+
+// videoPipeline returns the inputs and filters that make the video from the
+// frames, before the format-specific ones.
+func videoPipeline(opts VideoOptions) (*StreamBuilder, *FilterComplexBuilder) {
 	streamCounter := 2
 
 	streamBuilder := NewStreamBuilder(streamCounter, opts.Input, opts.Style)
@@ -136,27 +167,18 @@ func buildFFopts(opts VideoOptions, targetFile string) []string {
 		WithWindowBar(streamBuilder.barStream).
 		WithBorderRadius(streamBuilder.cornerStream).
 		WithMarginFill(streamBuilder.marginStream)
-
-	// Format-specific options
-	switch filepath.Ext(targetFile) {
-	case gif:
-		filterBuilder = filterBuilder.WithGIF()
-	case webm:
-		streamBuilder = streamBuilder.WithWebm()
-	case mp4:
-		streamBuilder = streamBuilder.WithMP4()
-	}
-
-	args = append(args, streamBuilder.Build()...)
-	args = append(args, filterBuilder.Build()...)
-	args = append(args, targetFile)
-
-	return args
+	return streamBuilder, filterBuilder
 }
 
-// MakeGIF takes a list of images (as frames) and converts them to a GIF.
-func MakeGIF(ctx context.Context, opts VideoOptions) *exec.Cmd {
-	return makeMedia(ctx, opts, opts.Output.GIF)
+// MakeGIF takes a list of images (as frames) and converts them to a GIF: one
+// command makes the palette, the next one the GIF.
+func MakeGIF(ctx context.Context, opts VideoOptions) []*exec.Cmd {
+	cmd := makeMedia(ctx, opts, opts.Output.GIF)
+	if cmd == nil {
+		return nil
+	}
+	//nolint:gosec
+	return []*exec.Cmd{exec.CommandContext(ctx, "ffmpeg", buildPaletteOpts(opts)...), cmd}
 }
 
 // MakeWebM takes a list of images (as frames) and converts them to a WebM.

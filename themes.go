@@ -13,8 +13,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"image/color"
 	"sort"
 	"strings"
+
+	xansi "github.com/charmbracelet/x/ansi"
 
 	"github.com/charmbracelet/glamour/ansi"
 
@@ -23,9 +26,8 @@ import (
 	"github.com/agnivade/levenshtein"
 )
 
-// Theme is a terminal theme for xterm.js
-// It is used for marshalling between the xterm.js readable json format and a
-// valid go struct.
+// Theme is a terminal theme. Its JSON format follows xterm.js' ITheme, so
+// existing themes keep working.
 // https://xtermjs.org/docs/api/terminal/interfaces/itheme/
 type Theme struct {
 	Name          string `json:"name"`
@@ -59,6 +61,38 @@ func (t Theme) String() string {
 		return string(dts)
 	}
 	return string(ts)
+}
+
+// themeColor parses a theme hex color, returning def when s is not a valid
+// hex color.
+func themeColor(s string, def color.Color) color.Color {
+	c, err := parseHexColor(strings.TrimSpace(s))
+	if err != nil {
+		return def
+	}
+	return c
+}
+
+// palette returns the 16 ANSI colors of the theme, using the standard
+// colors for any the theme leaves out.
+func (t Theme) palette() [16]color.Color {
+	var p [16]color.Color
+	for i, s := range []string{
+		t.Black, t.Red, t.Green, t.Yellow, t.Blue, t.Magenta, t.Cyan, t.White,
+		t.BrightBlack, t.BrightRed, t.BrightGreen, t.BrightYellow,
+		t.BrightBlue, t.BrightMagenta, t.BrightCyan, t.BrightWhite,
+	} {
+		p[i] = themeColor(s, xansi.IndexedColor(i))
+	}
+	return p
+}
+
+// colors returns the theme's foreground, background, cursor, and cursor
+// accent colors, defaulting like xterm.js does.
+func (t Theme) colors() (fg, bg, cursor, accent color.Color) {
+	fg = themeColor(t.Foreground, color.White)
+	bg = themeColor(t.Background, color.Black)
+	return fg, bg, themeColor(t.Cursor, fg), themeColor(t.CursorAccent, bg)
 }
 
 // DefaultTheme is the default theme to use for recording demos and
