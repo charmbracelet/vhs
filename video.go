@@ -168,3 +168,14 @@ func MakeWebM(ctx context.Context, opts VideoOptions) *exec.Cmd {
 func MakeMP4(ctx context.Context, opts VideoOptions) *exec.Cmd {
 	return makeMedia(ctx, opts, opts.Output.MP4)
 }
+
+// MakeFrames processes raw captured frames through the styling pipeline
+// (padding, margin, window bar, border radius) and writes them as individual
+// PNGs to the output directory.
+func MakeFrames(ctx context.Context, opts VideoOptions) *exec.Cmd {
+	if opts.Output.Frames == "" {
+		return nil
+	}
+	target := filepath.Join(opts.Output.Frames, textFrameFormat)
+	return makeMedia(ctx, opts, target)
+}
